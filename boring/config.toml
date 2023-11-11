@@ -33,6 +33,9 @@ render_emoji = true
 # For example, `...` into `…`, `"quote"` into `“curly”` etc
 smart_punctuation = true
 
+[link_checker]
+internal_level = "warn"
+
 [extra]
 homepage_title = "Roc's Blog"
 homepage_subtitle = "Less is more!"
