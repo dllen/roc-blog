@@ -6,9 +6,11 @@ tags: [docker, container]
 
 ---
 
-Namespaces 是 Linux 内核的特性，用来做进程间资源隔离，Namespaces 中进程使用的资源对其他进程不可见（包括 进程ID、Hostnames、用户ID、文件、网络 等内核资源）。
+Namespaces 用来做进程间资源隔离，Namespaces 中进程使用的资源对其他进程不可见（包括 进程ID、Hostnames、用户ID、文件、网络 等内核资源）。
 
-Namespaces 是Linux 容器技术的基石。
+Cgroup 用来做资源限制，包括 CPU、内存、网络、磁盘 等系统资源；
+
+Namespaces和 Cgroup 是Linux 容器技术的基石。
 
 如果进程更改了特定Namespaces下的全局资源(如 PID) ，则只有同一Namespaces中的进程才能看到此更改。(不管初始化进程是什么，都可以用 PID 1启动进程)
 
