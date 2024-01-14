@@ -6,8 +6,6 @@ tags: [docker, container]
 
 ---
 
-> 原文 [CGroups and Namespaces](https://alperenbayramoglu2.medium.com/cgroups-and-namespaces-8e6447050784)
-
 Namespaces 是 Linux 内核的特性，用来做进程间资源隔离，Namespaces 中进程使用的资源对其他进程不可见（包括 进程ID、Hostnames、用户ID、文件、网络 等内核资源）。
 
 Namespaces 是Linux 容器技术的基石。
@@ -93,7 +91,7 @@ Options:
 --fork: 执行unshare的进程fork一个新的子进程，在子进程里执行unshare传入的参数
 ```
 
-> 注意：使用 `--mount-proc`，可以隔离宿主机 `/proc` 文件系统，使用独立的进程ID；
+> 使用 `--mount-proc`，可以隔离宿主机 `/proc` 文件系统，使用独立的进程ID；
 > 可以通过 `lsns` 命令列出 namespaces；
 > 
 
