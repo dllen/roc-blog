@@ -16,7 +16,6 @@ Namespaces和 Cgroup 是Linux 容器技术的基石。
 
 以下是Linux内核中的几种Namespaces类型:
 
-
 **User Namespace**
 
 给予进程的独立用户和组ID。进程可以在其命名空间中升级到Root用户。
@@ -95,7 +94,6 @@ Options:
 
 > 使用 `--mount-proc`，可以隔离宿主机 `/proc` 文件系统，使用独立的进程ID；
 > 可以通过 `lsns` 命令列出 namespaces；
-> 
 
 **Control Groups**
 
@@ -104,7 +102,6 @@ Options:
 - 优先级: 我们可以使用 cgroup 对名称空间中的进程进行优先排序。
 - 统计和监控: 可以在 cgroup 级别进行监控和统计资源。
 - 管理：同一 cgroup 下的进程可以由单个命令管理。
-
 
 CGroup 工具：
 
@@ -115,7 +112,6 @@ Centos `sudo yum install libcgroup` `sudo yum install libcgroup-tools`
 **示例**
 
 ```shell
-
 # 创建 memory cgroup
 sudo cgcreate -g memory:test-memory-limiter
 ls -la /sys/fs/cgroup/memory/test-memory-limiter/
@@ -132,7 +128,6 @@ cat /sys/fs/cgroup/memory/test-memory-limiter/memory.limit_in_bytes
 
 # namespace 下执行内存限制进程
 sudo cgexec -g memory:test-memory-limiter unshare -fp - mount-proc /bin/bash
-
 ```
 
 `high_mem.c` 代码
@@ -149,7 +144,6 @@ int main()
 }
 ```
 
-
 > 可以通过 `systemd-cgtop`  查看 `cgroup` 资源使用情况；
 
 **参考文档**
@@ -160,20 +154,3 @@ int main()
 * [Wiki Linux namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
 * [namespaces(7) — Linux manual page](https://man7.org/linux/man-pages/man7/namespaces.7.html)
 * [The Power of Linux Cgroups: How Containers Take Control of Their Resources](https://towardsdatascience.com/the-power-of-linux-cgroups-how-containers-take-control-of-their-resources-ba564fef13b0)
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
