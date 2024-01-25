@@ -43,7 +43,7 @@ tc filter add dev eth0 parent 10: protocol ip prio 10 handle 1: cgroup
 
 > **Host模式，容器与主机的网络配置没有隔离**，需要通过设置 net_cls.classid 标记流量
 > 
-> 参考文档：[Network classifier cgroup &mdash; The Linux Kernel documentation]{https://www.kernel.org/doc/html/v5.3/admin-guide/cgroup-v1/net_cls.html}
+> 参考文档：[Network classifier cgroup](https://www.kernel.org/doc/html/v5.3/admin-guide/cgroup-v1/net_cls.html)
 
 > net_cls.classid 数据格式：0xAAAABBBB， AAAA is the major handle number and BBBB is the minor handle number，eg： 0x100001 => 10:1
 
@@ -61,11 +61,11 @@ nsenter --net=/proc/$PID/ns/net iptables -t nat -A PREROUTING -p tcp --dport 80 
 
 说明：
 
-> **非Host模式，容器与主机网络配置通过 [Network namespaces]{https://lwn.net/Articles/580893/} 隔离**，需要切换 network namespace 进行配置
+> **非Host模式，容器与主机网络配置通过 [Network namespaces](https://lwn.net/Articles/580893/) 隔离**，需要切换 network namespace 进行配置
 
-> network_namespaces手册：[network_namespaces(7) - Linux manual page]{https://man7.org/linux/man-pages/man7/network_namespaces.7.html}
+> network_namespaces手册：[network_namespaces(7) - Linux manual page](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
 
-**namespace 执行小工具**，`nsexec.c` [nsexec.c]{https://github.com/chaosblade-io/chaosblade/blob/master/nsexec.c}
+**namespace 执行小工具**，`nsexec.c` [nsexec.c](https://github.com/chaosblade-io/chaosblade/blob/master/nsexec.c)
 
 ```c
 #define _GNU_SOURCE
