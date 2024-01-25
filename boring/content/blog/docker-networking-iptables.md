@@ -45,7 +45,7 @@ tc filter add dev eth0 parent 10: protocol ip prio 10 handle 1: cgroup
 
 > net_cls.classid 数据格式：0xAAAABBBB， AAAA is the major handle number and BBBB is the minor handle number，eg： 0x100001 => 10:1
 
-## 
+
 
 ## 非Host网络模式
 
@@ -62,8 +62,6 @@ nsenter --net=/proc/$PID/ns/net iptables -t nat -A PREROUTING -p tcp --dport 80 
 > **非Host模式，容器与主机网络配置通过 [Network namespaces](https://lwn.net/Articles/580893/) 隔离**，需要切换 network namespace 进行配置
 
 > network_namespaces手册：[network_namespaces(7) - Linux manual page](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
-
-
 
 **namespace 执行小工具**，`nsexec.c` https://github.com/chaosblade-io/chaosblade/blob/master/nsexec.c
 
