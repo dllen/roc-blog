@@ -477,3 +477,7 @@ iperf Done.
 * [cgroup 子系统之 net_cls 和 net_prio](https://ggaaooppeenngg.github.io/zh-CN/2017/05/19/cgroup-%E5%AD%90%E7%B3%BB%E7%BB%9F%E4%B9%8B-net-cls-%E5%92%8C-net-prio/)
 
 * [网络测试工具——iperf3详细使用说明](https://cloud.tencent.com/developer/article/2166027)
+
+* https://github.com/magnific0/wondershaper
+
+* [GitHub - sivel/speedtest-cli: Command line interface for testing internet bandwidth using speedtest.net](https://github.com/sivel/speedtest-cli)
