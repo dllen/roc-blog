@@ -40,7 +40,8 @@ internal_level = "warn"
 [extra]
 homepage_title = "Roc's Blog"
 homepage_subtitle = "Less is more!"
-homepage_img_url = "/homepage-img.jpg"
+# homepage_img_url = "/homepage-img.jpg"
+homepage_img_url = "/images/_93e58e29-d3f0-4ad8-b36e-fd865437bf98.jpeg"
 
 # Refer https://support.google.com/analytics/answer/9539598?hl=en
 google_analytics_measurement_id = ""
