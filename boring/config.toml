@@ -23,7 +23,8 @@ build_search_index = false
 highlight_code = true
 
 # The theme to use for code highlighting.
-highlight_theme = "nord"
+# highlight_theme = "nord"
+highlight_theme = "base16-ocean-dark"
 
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
