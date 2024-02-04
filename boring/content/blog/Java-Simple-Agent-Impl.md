@@ -89,6 +89,23 @@ Agent-Class: class
 
 首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。
 
+
+
+**[Instrumentation (Java Platform SE 8 )](https://docs.oracle.com/javase/8/docs/api/java/lang/instrument/Instrumentation.html)** 类提供检测 Java 编程语言代码所需的服务。Instrumentation 是在方法中添加字节码，以收集工具使用的数据。由于更改纯粹是附加的，因此这些工具不会修改应用程序状态或行为。这种良性工具的示例包括监控代理、分析器、覆盖分析器和事件记录器。
+
+- `addTransformer`: 添加一个类转换器
+- `removeTransformer`: 删除一个类转换器
+- `isRetransformClassesSupported`: 判断是否支持类的重新转换
+- `retransformClasses`: 在类加载后，重新定义该类
+- `isRedefineClassesSupported`: 判断是否支持重新定义类
+- `redefineClasses`: 重新进行类的定义
+- `isModifiableClass`: 确定一个类是否可以通过重新转换或重新定义来修改
+- `getAllLoadedClasses`: 返回 JVM 当前加载的所有类的数组
+- `getInitiatedClasses`: 返回 loader 为其初始加载器的所有类的数组。如果提供的加载器为空，则返回由引导类加载器启动的类
+- ......
+
+
+
 ### premain 静态方式
 
 > 大多数中间件/工具的使用方式
@@ -180,7 +197,7 @@ import java.lang.instrument.Instrumentation;
 
 public class PremainMain {
 
-    /**
+    /*
      * 注意，这个premain方法签名是Java Agent约定的，不要随意修改
      * @param agentArgs
      * @param instrumentation
@@ -336,7 +353,7 @@ import java.lang.instrument.UnmodifiableClassException;
 
 public class AttachAgent {
 
-    /**
+    /*
      * 注意：agentmain的方法签名也是约定好的，不能随意修改
      *
      * 其实如果要支持premain和attach两种方式的话，可以把premain和agentmain两个方法写在一个类里，这里为了方便演示，写成了两个
@@ -398,7 +415,7 @@ import java.net.URLClassLoader;
 
 public class AttachMain {
 
-    /**
+    /*
      * 加载 tools.jar
      *
      * @throws NoSuchMethodException
