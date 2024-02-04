@@ -23,11 +23,7 @@ Java Agent本质上可以理解为一个插件，该插件就是一个精心提�
 
 - 混沌工程：jvm-sandbox 等
 
-
-
 ![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png)
-
-
 
 #### 实现Agent启动方法
 
@@ -49,7 +45,7 @@ JVM将首先寻找[1]，如果没有发现[1]，再寻找[2]。如果希望在�
 
 #### 指定Main-Class
 
-Agent需要打包成一个jar包，在ManiFest属性中指定“Premain-Class”或者“Agent-Class”：
+Agent需要打包成一个jar包，在ManiFest属性中指定`Premain-Class`或者`Agent-Class`：
 
 ```
 Premain-Class: class
@@ -58,9 +54,13 @@ Agent-Class: class
 
 #### 挂载到目标JVM
 
-将编写的Agent打成jar包后，就可以挂载到目标JVM上去了。如果选择在目标JVM启动时加载Agent，则可以使用 “-javaagent:[=
+将编写的Agent打成jar包后，就可以挂载到目标JVM上去了。如果选择在目标JVM启动时加载Agent，则可以使用`-javaagent:[=]`，具体的使用方法可以使用`Java -Help`来查看。
 
-com.sun.tools.attach.VirtualMachine 这个类代表一个JVM抽象，可以通过这个类找到目标JVM，并且将Agent挂载到目标JVM上。下面是使用com.sun.tools.attach.VirtualMachine进行动态挂载Agent的一般实现：
+如果想要在运行时挂载Agent到目标JVM，就需要做一些额外的开发了。
+
+``com.sun.tools.attach.VirtualMachine 这个类代表一个JVM抽象，可以通过这个类找到目标JVM，并且将Agent挂载到目标JVM上。
+
+下面是使用`com.sun.tools.attach.VirtualMachine`进行动态挂载Agent的一般实现：
 
 ```java
     private void attachAgentToTargetJVM() throws Exception {
@@ -89,15 +89,11 @@ com.sun.tools.attach.VirtualMachine 这个类代表一个JVM抽象，可以通�
 
 首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。
 
-
-
 ### premain 静态方式
 
 > 大多数中间件/工具的使用方式
 > 
 > 使用方法：java -javaagent:xxx.jar MyApp
-
-
 
 代码地址：[application-premain](https://gitee.com/dllen/dllen-demos/tree/master/application-premain)
 
@@ -117,8 +113,6 @@ Hello World!
 Hello World!
 =====end=====
 ```
-
-
 
 #### 核心代码
 
@@ -179,8 +173,6 @@ public class MyTransformer implements ClassFileTransformer {
 }
 ```
 
-
-
 `PremainMain.java` Java Agent内部约定的 `premain` 实现：
 
 ```java
@@ -208,7 +200,6 @@ public class PremainMain {
 Manifest-Version: 1.0
 Created-By: dllen
 Premain-Class: com.ks.test.app.PremainMain
-
 ```
 
 > 注意：最后一行需要留一个空行
@@ -238,10 +229,7 @@ public class MyApp {
         }
     }
 }
-
 ```
-
-
 
 ### attach 动态方式
 
@@ -281,8 +269,6 @@ Hello World!
 Hello World!
 =====end=====
 ```
-
-
 
 #### 核心代码
 
@@ -397,7 +383,6 @@ Created-By: dllen
 Agent-Class: com.ks.test.app.AttachAgent
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
-
 ```
 
 `AttachMain.java` 在运行时挂载Agent到目标JVM
@@ -472,12 +457,6 @@ public class AttachMain {
 > 
 >     Agent的路径
 
-
-
-
-
-
-
 ### 参考资料
 
 - [java agent · GitBook](http://www.taoxuefeng.com/JAVA/jdk/agent.html)
@@ -498,8 +477,6 @@ public class AttachMain {
 
 - [深入探索 Java 热部署](https://www.hollischuang.com/archives/592)
 
-
-
 ### 字节码操作库
 
 - https://asm.ow2.io/
@@ -509,8 +486,6 @@ public class AttachMain {
 - https://www.javassist.org/
 
 - [Byte Buddy - runtime code generation for the Java virtual machine](https://bytebuddy.net/#/)
-
-
 
 ### 开源项目
 
