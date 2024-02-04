@@ -5,7 +5,7 @@ date: 2021-03-18T12:13:38+05:30
 
 ## 什么是Java Agent技术
 
-Java Agent本质上可以理解为一个插件，该插件就是一个精心提供的Jar包，这个Jar包通过JVMTI（JVM Tool Interface）完成加载，最终借助JPLISAgent（Java Programming Language Instrumentation Services Agent）完成对目标代码的修改。
+Java Agent本质上可以理解为一个插件，该插件就是一个精心提供的Jar包，这个Jar包通过JVMTI（JVM Tool Interface）完成加载，最终借助[JPLISAgent](https://github.com/openjdk/jdk/blob/master/src/java.instrument/share/native/libinstrument/JPLISAgent.c)（Java Programming Language Instrumentation Services Agent）完成对目标代码的修改。
 
 **Java agent的功能**
 
@@ -41,7 +41,7 @@ JVM将首先寻找[1]，如果没有发现[1]，再寻找[2]。如果希望在�
 [2] public static void agentmain(String agentArgs);
 ```
 
-这两组方法的第一个参数AgentArgs是随同 “– javaagent”一起传入的程序参数，如果这个字符串代表了多个参数，就需要自己解析这些参数。inst是Instrumentation类型的对象，是JVM自动传入的，我们可以拿这个参数进行类增强等操作。
+这两组方法的第一个参数AgentArgs是随同 `–javaagent` 一起传入的程序参数，如果这个字符串代表了多个参数，就需要自己解析这些参数。inst是`Instrumentation`类型的对象，是JVM自动传入的，我们可以拿这个参数进行类增强等操作。
 
 #### 指定Main-Class
 
