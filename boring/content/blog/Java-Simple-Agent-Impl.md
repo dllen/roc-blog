@@ -89,8 +89,6 @@ Agent-Class: class
 
 首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。
 
-
-
 **[Instrumentation (Java Platform SE 8 )](https://docs.oracle.com/javase/8/docs/api/java/lang/instrument/Instrumentation.html)** 类提供检测 Java 编程语言代码所需的服务。Instrumentation 是在方法中添加字节码，以收集工具使用的数据。由于更改纯粹是附加的，因此这些工具不会修改应用程序状态或行为。这种良性工具的示例包括监控代理、分析器、覆盖分析器和事件记录器。
 
 - `addTransformer`: 添加一个类转换器
@@ -103,8 +101,6 @@ Agent-Class: class
 - `getAllLoadedClasses`: 返回 JVM 当前加载的所有类的数组
 - `getInitiatedClasses`: 返回 loader 为其初始加载器的所有类的数组。如果提供的加载器为空，则返回由引导类加载器启动的类
 - ......
-
-
 
 ### premain 静态方式
 
@@ -515,3 +511,5 @@ public class AttachMain {
 - [GitHub - pinpoint-apm/pinpoint: APM, (Application Performance Management) tool for large-scale distributed systems.](https://github.com/pinpoint-apm/pinpoint)
 
 - [GitHub - apache/skywalking: APM, Application Performance Monitoring System](https://github.com/apache/skywalking)
+
+- [GitHub - pandening/Java-debug-tool: Java dynamic debug tool](https://github.com/pandening/Java-debug-tool)
