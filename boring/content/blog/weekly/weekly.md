@@ -5,8 +5,6 @@ description: 大佬们的周刊
 tldr: 大佬们的周刊
 ---
 
-
-
 * [GitHub - ruanyf/weekly: 科技爱好者周刊，每周五发布](https://github.com/ruanyf/weekly)
 
 * https://ruanyf-weekly.plantree.me/
