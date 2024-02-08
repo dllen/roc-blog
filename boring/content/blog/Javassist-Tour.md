@@ -11,17 +11,11 @@ date: 2019-12-01T12:13:38+05:30
 
 - [tutorial3](https://www.javassist.org/tutorial/tutorial3.html)
 
-
-
 [示例代码地址](https://gitee.com/dllen/dllen-demos/tree/master/javassist-tour)
-
-
 
 ### Java Bytecode
 
 [Java字节码指令列表](https://en.wikipedia.org/wiki/Java_bytecode_instruction_listings)
-
-
 
 示例：`Point.java`
 
@@ -69,8 +63,6 @@ mvn clean compile
 
 javap -c target.classes.com.ks.test.app.Point
 ```
-
-
 
 Java 字节码
 
@@ -128,8 +120,6 @@ public class com.ks.test.app.Point {
 }
 ```
 
-
-
 分析一下`move()`方法的字节码
 
 - aload_0: 从局部变量0加载一个引用到堆栈上
@@ -139,8 +129,6 @@ public class com.ks.test.app.Point {
 - putfield：给对象赋值
 
 - return：方法返回
-
-
 
 Java代码都会编译成字节码，使用 *[Javasisst](http://jboss-javassist.github.io/javassist/)* 可以非常容易的修改字节码；
 
@@ -158,7 +146,7 @@ import javassist.bytecode.FieldInfo;
 public class Demo1 {
 
     public static void main(String[] args) throws Exception {
-        
+
         // 生产一个Demo类，并添加一个id字段
         ClassFile cf = new ClassFile(false, "com.ks.test.app.Demo", null);
 
@@ -178,8 +166,6 @@ public class Demo1 {
 
 }
 ```
-
-
 
 ### Loading Bytecode instructions of Class
 
@@ -205,7 +191,7 @@ public class Demo2 {
         CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
 
         CodeIterator codeIterator = codeAttribute.iterator();
-        
+
         // 打印 move 方法的字节码
         System.out.println("start print move byte code....");
         System.out.println();
@@ -220,10 +206,6 @@ public class Demo2 {
 
 }
 ```
-
-
-
-
 
 ### Adding Fields to Existing Class Bytecode
 
@@ -259,8 +241,6 @@ public class Demo3 {
 }
 ```
 
-
-
 ### Adding Constructor to Class Bytecode
 
 添加构造方法
@@ -276,7 +256,7 @@ import javassist.bytecode.Mnemonic;
 public class Demo4 {
 
     public static void main(String[] args) throws Exception {
-        
+
         ClassPool classPool = ClassPool.getDefault();
         ClassFile classFile = classPool.get("com.ks.test.app.Point").getClassFile();
 
@@ -300,8 +280,6 @@ public class Demo4 {
     }
 }
 ```
-
-
 
 ### Hot load Java Class
 
@@ -406,11 +384,7 @@ RedefineClassAgent 工具类，生成 jvm agent，并load agent，利用 `Instru
     }
 ```
 
-
-
 **运行时更新类字节码**
-
-
 
 ```java
     /**
@@ -433,11 +407,7 @@ RedefineClassAgent 工具类，生成 jvm agent，并load agent，利用 `Instru
     }
 ```
 
-
-
 **测试代码**
-
-
 
 ```java
 import java.lang.instrument.ClassDefinition;
@@ -473,8 +443,6 @@ public class Demo5 {
 }
 ```
 
-
-
 #### HotSwapper
 
 使用 javassist HotSwapper 工具，该工具依赖 [JDWP](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html)；
@@ -487,9 +455,9 @@ public class Demo5 {
 > 
 > - [Java Application Remote Debugging | Baeldung](https://www.baeldung.com/java-application-remote-debugging)
 > 
+> - [JDWP Structure Overview](https://docs.oracle.com/en/java/javase/12/docs/specs/jpda/architecture.html)
+> 
 > - [Remote Debugging Java Applications With JDWP | Learning Quest](https://mahmoudanouti.wordpress.com/2019/07/07/remote-debugging-java-applications-with-jdwp/)
-
-
 
 测试代码：
 
@@ -532,8 +500,6 @@ public class Demo6 {
 }
 ```
 
-
-
 测试命令：
 
 ```
@@ -543,8 +509,6 @@ java -cp "$JAVA_HOME/lib/*:target/javassit-tour-jar-with-dependencies.jar" -agen
 ```
 
 > 注意：需要把 jdk 目录里 lib 下 jar 加载到 classpath 
-
-
 
 运行结果：
 
