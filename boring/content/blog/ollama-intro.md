@@ -253,7 +253,7 @@ ollama run codellama:7b '<PRE> def max_val(x, y): <SUF>return result <MID>'
      <EOT>
 ```
 
-> <EOT> 是一个结束标记，与 <PRE> <SUF> <MID> 类似
+> `<EOT>` 是一个结束标记，与 `<PRE>` `<SUF>` `<MID>` 类似
 
 
 
@@ -282,13 +282,13 @@ public String helloworld() {
 
 ### Ollamac
 
-[GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models](https://github.com/kevinhermawan/Ollamac)
+地址：[GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models](https://github.com/kevinhermawan/Ollamac)
 
 
 
 **安装命令**
 
-```
+```shell
 brew install --cask ollamac
 ```
 
@@ -300,13 +300,13 @@ brew install --cask ollamac
 
 ### Open WebUI
 
-[GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)](https://github.com/open-webui/open-webui)
+地址：[GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)](https://github.com/open-webui/open-webui)
 
 
 
 **安装命令**
 
-```
+```shell
 docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
@@ -315,6 +315,8 @@ docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-
 **演示Demo**
 
 浏览器打开 `http://127.0.0.1:3000/`
+
+
 
 <img src="https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221002641.png" title="" alt="" width="694">
 
