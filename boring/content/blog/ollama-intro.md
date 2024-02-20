@@ -5,11 +5,7 @@ description: "How to prompt Code Llama"
 tags: [Llama, ai]
 ---
 
-
-
 使用 `ollama` 在本地运行大模型，并完成几个辅助编程的示例。
-
-
 
 ## 安装 ollama
 
@@ -19,15 +15,9 @@ GitHub 地址：[GitHub - ollama/ollama](https://github.com/ollama/ollama)
 
 开源模型列表：[Models](https://ollama.com/library)
 
-
-
 可以根据官网介绍安装 ollama 到本地
 
 <img title="" src="https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240220230742.png" alt="" width="463">
-
-
-
-
 
 安装完后执行以下命令
 
@@ -46,26 +36,28 @@ ollama run codellama:7b '使用 java 写一个 hello world 程序'
 
 Here is an example of a "Hello World" program in Java:
 ```
+
 public class HelloWorld {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
 }
+
 ```
 This program will print the string "Hello, World!" to the console when it is run.
 
 To compile and run this program, you can use the following commands:
 ```
+
 $ javac HelloWorld.java
 $ java HelloWorld
+
 ```
 The first command compiles the Java code into a class file named `HelloWorld.class`. The second command runs the `main` method of the
 `HelloWorld` class, which prints the string "Hello, World!" to the console.
 ```
 
 ## 辅助编程 Demo
-
-
 
 ### 代码编写
 
@@ -105,8 +97,6 @@ num2`，否则将引发一个 `ValueError`。
 这个代码使用了 Python 中的 `raise ValueError` 来引发一个 `ValueError`。在 Python 中，`ValueError` 是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一个 `ValueError` 来通知调用者。
 ```
 
-
-
 ### Code Review
 
 运行命令
@@ -140,6 +130,7 @@ num2 is not equal to zero before performing the division.
 
 Here's the corrected code:
 ```
+
 def calculate(num1, num2, op):
     if op == "+":
         return num1 + num2
@@ -151,10 +142,10 @@ def calculate(num1, num2, op):
         return num1 / num2
     else:
         raise ValueError("Invalid operator")
-```
+
 ```
 
-
+```
 
 ### 编写单元测试
 
@@ -181,14 +172,15 @@ def calculate(num1, num2, op):
 > 可以准确给出单元测代码
 
 ```
-```
 def test_calculate():
-    assert calculate(3, 4, "+") == 7
-    assert calculate(5, 2, "-") == 3
-    assert calculate(6, 3, "*") == 18
-    assert calculate(10, 2, "/") == 5
-    with pytest.raises(ValueError):
-        calculate(10, 0, "/")
+ assert calculate(3, 4, "+") == 7
+ assert calculate(5, 2, "-") == 3
+ assert calculate(6, 3, "*") == 18
+ assert calculate(10, 2, "/") == 5
+ with pytest.raises(ValueError):
+ calculate(10, 0, "/")
+```
+
 ```
 This unit test covers all the possible cases for the `calculate` function:
 
@@ -255,8 +247,6 @@ ollama run codellama:7b '<PRE> def max_val(x, y): <SUF>return result <MID>'
 
 > `<EOT>` 是一个结束标记，与 `<PRE>` `<SUF>` `<MID>` 类似
 
-
-
 ### Java & Spring
 
 运行命令
@@ -276,6 +266,136 @@ public String helloworld() {
 }
 ```
 
+## 
+
+## 工具包
+
+### python
+
+```
+pip install ollama
+```
+
+```python
+# 简单问答
+import ollama
+response = ollama.chat(model='llama2', messages=[
+  {
+    'role': 'user',
+    'content': 'Why is the sky blue?',
+  },
+])
+print(response['message']['content'])
+```
+
+
+
+```python
+# 获取生成的内容流
+for chunk in chat('mistral', messages=messages, stream=True):
+  print(chunk['message']['content'], end='', flush=True)
+```
+
+
+
+```python
+# 文本生成
+result = ollama.generate(
+  model='stable-code',
+  prompt='// A c function to reverse a string\n',
+)
+print(result['response'])
+```
+
+
+
+```python
+# Multi-modal 图片识别
+with open('image.png', 'rb') as file:
+  response = ollama.chat(
+    model='llava',
+    messages=[
+      {
+        'role': 'user',
+        'content': 'What is strange about this image?',
+        'images': [file.read()],
+      },
+    ],
+  )
+print(response['message']['content'])
+```
+
+
+
+```python
+# 自定义模型
+modelfile='''
+FROM llama2
+SYSTEM You are mario from super mario bros.
+'''
+
+ollama.create(model='example', modelfile=modelfile)
+```
+
+
+
+```python
+# client
+ollama = Client(host='my.ollama.host')
+```
+
+
+
+### JavaScript
+
+```
+npm install ollama
+```
+
+```javascript
+import ollama from 'ollama'
+
+const response = await ollama.chat({
+  model: 'llama2',
+  messages: [{ role: 'user', content: 'Why is the sky blue?' }],
+})
+console.log(response.message.content)
+```
+
+
+
+### HTTP API
+
+API文档：https://github.com/ollama/ollama/blob/main/docs/api.md
+
+```
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama2",
+  "prompt":"Why is the sky blue?"
+}'
+```
+
+
+
+### LangChain
+
+参考文档：https://python.langchain.com/docs/integrations/llms/ollama
+
+```python
+from langchain_community.llms import Ollama
+
+llm = Ollama(model="llama2")
+
+llm.invoke("Tell me a joke")
+```
+
+```python
+query = "Tell me a joke"
+
+for chunks in llm.stream(query):
+    print(chunks)
+```
+
 
 
 ## 可视化工具
@@ -283,8 +403,6 @@ public String helloworld() {
 ### Ollamac
 
 地址：[GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models](https://github.com/kevinhermawan/Ollamac)
-
-
 
 **安装命令**
 
@@ -296,13 +414,9 @@ brew install --cask ollamac
 
 <img src="https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221000724.png" title="" alt="" width="767">
 
-
-
 ### Open WebUI
 
 地址：[GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)](https://github.com/open-webui/open-webui)
-
-
 
 **安装命令**
 
@@ -310,20 +424,22 @@ brew install --cask ollamac
 docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
-
-
 **演示Demo**
 
 浏览器打开 `http://127.0.0.1:3000/`
 
-
-
 <img src="https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221002641.png" title="" alt="" width="694">
-
-
 
 ## 参考资料
 
 - [Blog · Ollama](https://ollama.com/blog)
 
 - [[译][论文] LLaMA：开放和高效的基础语言模型集（Meta/Facebook，2022）](https://arthurchiao.art/blog/llama-paper-zh/)
+
+- https://python.langchain.com/docs/integrations/llms/ollama
+
+- [Ollama: Easily run LLMs locally — Klu](https://klu.ai/glossary/ollama)
+
+- [Python &amp; JavaScript Libraries · Ollama Blog](https://ollama.com/blog/python-javascript-libraries)
+
+- [OpenAI compatibility · Ollama Blog](https://ollama.com/blog/openai-compatibility)
