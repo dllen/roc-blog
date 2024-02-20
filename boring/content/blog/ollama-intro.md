@@ -33,28 +33,26 @@ ollama list
 ollama run codellama:7b '使用 java 写一个 hello world 程序'
 
 # 测试结果 下面是 AI 生成的内容
-
 Here is an example of a "Hello World" program in Java:
 ```
 
+```java
 public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
+ public static void main(String[] args) {
+ System.out.println("Hello, World!");
+ }
 }
+```
 
 ```
 This program will print the string "Hello, World!" to the console when it is run.
 
 To compile and run this program, you can use the following commands:
-```
-
 $ javac HelloWorld.java
 $ java HelloWorld
-
-```
 The first command compiles the Java code into a class file named `HelloWorld.class`. The second command runs the `main` method of the
 `HelloWorld` class, which prints the string "Hello, World!" to the console.
+
 ```
 
 ## 辅助编程 Demo
@@ -131,20 +129,18 @@ num2 is not equal to zero before performing the division.
 Here's the corrected code:
 ```
 
+```python
 def calculate(num1, num2, op):
-    if op == "+":
-        return num1 + num2
-    elif op == "-":
-        return num1 - num2
-    elif op == "*":
-        return num1 * num2
-    elif op == "/" and num2 != 0:
-        return num1 / num2
-    else:
-        raise ValueError("Invalid operator")
-
-```
-
+ if op == "+":
+ return num1 + num2
+ elif op == "-":
+ return num1 - num2
+ elif op == "*":
+ return num1 * num2
+ elif op == "/" and num2 != 0:
+ return num1 / num2
+ else:
+ raise ValueError("Invalid operator")
 ```
 
 ### 编写单元测试
@@ -171,7 +167,7 @@ def calculate(num1, num2, op):
 
 > 可以准确给出单元测代码
 
-```
+```python
 def test_calculate():
  assert calculate(3, 4, "+") == 7
  assert calculate(5, 2, "-") == 3
