@@ -1,0 +1,3 @@
+[submodule "solar-theme-zola"]
+	path = solar-theme-zola
+	url = https://github.com/hullocsillag/solar-theme-zola.git
