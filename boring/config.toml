@@ -8,14 +8,14 @@ description = "语法 语义 语用"
 # When set to "true", the generated HTML files are minified.
 minify_html = true
 
-# When set to "true", a feed is automatically generated.
-generate_feed = true
+# When set to "true", a sitemap is automatically generated.
+generate_sitemap = true
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = false
 
 # Whether to build a search index to be used later on by a JavaScript library
-build_search_index = false
+build_search_index = true
 
 [markdown]
 # Whether to do syntax highlighting Theme can be customised by setting the

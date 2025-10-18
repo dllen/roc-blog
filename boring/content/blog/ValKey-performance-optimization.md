@@ -1,9 +1,9 @@
-```yaml
+---
 title: "关于Valkey高性能优化的博客文章总结"
 date: 2025-05-27T12:13:32+05:30
 description: "分析这两篇关于Valkey高性能优化的博客文章，并用中文总结内容，然后编写C语言实验程序验证结论"
 tags: [ValKey]
-```
+---
 
 - [原文地址-1](https://valkey.io/blog/unlock-one-million-rps/)
 

@@ -1,9 +1,9 @@
-```yaml
+---
 title: "1brc CalculateAverage_thomaswue 代码解读"
 date: 2025-09-01T12:13:32+05:30
 description: "这段代码是一个高性能的 Java 程序，用于计算一个大型文件（measurements.txt）中温度数据的统计信息（最小值、平均值、最大值）。它通过多线程、内存映射文件和优化算法实现了极高的性能（0.31 秒 vs 参考实现 120.37 秒）。"
 tags: [Java]
-```
+---
 
 这是一个高性能的Java程序，用于解决"1 Billion Row Challenge"（十亿行挑战）问题。该程序专门用于快速处理大量温度测量数据。详细解读：
 
