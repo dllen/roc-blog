@@ -31,12 +31,10 @@ roc-blog/
 
 1. 安装 [Zola](https://www.getzola.org/documentation/getting-started/installation/)
 
-2. 克隆此仓库并初始化子模块
+2. 克隆此仓库
    ```bash
    git clone https://github.com/yourusername/roc-blog.git
    cd roc-blog
-   git submodule init
-   git submodule update
    ```
 
 3. 启动本地开发服务器
