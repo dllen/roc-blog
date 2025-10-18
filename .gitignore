@@ -2,7 +2,6 @@
 .DS_Store
 **/.DS_Store
 
-
 # 编辑器和IDE文件
 .idea/
 .vscode/
@@ -11,13 +10,6 @@
 
 # 依赖目录
 node_modules/
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
 
 # 日志文件
 *.log
