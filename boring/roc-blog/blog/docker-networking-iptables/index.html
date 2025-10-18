@@ -1,0 +1,205 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>容器不同网络模式下iptables配置 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-01-14</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">容器不同网络模式下iptables配置</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=rong-qi-de-wang-luo-mo-shi>容器的网络模式</h2><table><thead><tr><th>Driver<th>Description<tbody><tr><td><code>bridge</code><td>The default network driver.<tr><td><code>host</code><td>Remove network isolation between the container and the Docker host.<tr><td><code>none</code><td>Completely isolate a container from the host and other containers.<tr><td><code>overlay</code><td>Overlay networks connect multiple Docker daemons together.<tr><td><code>ipvlan</code><td>IPvlan networks provide full control over both IPv4 and IPv6 addressing.<tr><td><code>macvlan</code><td>Assign a MAC address to a container.</table><h2 id=hostwang-luo-mo-shi>Host网络模式</h2><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># Create a new cgroup and assign it a classid
+</span><span>mkdir /sys/fs/cgroup/net_cls/my_cgroup
+</span><span>echo 0x100001 > /sys/fs/cgroup/net_cls/my_cgroup/net_cls.classid
+</span><span>
+</span><span># Run a Docker container and move its process to the newly created cgroup
+</span><span>docker run -d --name my_container my_image
+</span><span>echo $(docker inspect -f '{{.State.Pid}}' my_container) > /sys/fs/cgroup/net_cls/my_cgroup/cgroup.procs
+</span><span>
+</span><span># Use iptables to mark the packets based on the classid
+</span><span>iptables -t mangle -A OUTPUT -m cgroup --cgroup 0x100001 -j MARK --set-mark 1
+</span><span>
+</span><span># Use tc
+</span><span># configuring tc
+</span><span>tc qdisc add dev eth0 root handle 10: htb
+</span><span>tc class add dev eth0 parent 10: classid 10:1 htb rate 40mbit
+</span><span># creating traffic class 10:1
+</span><span>tc filter add dev eth0 parent 10: protocol ip prio 10 handle 1: cgroup
+</span></code></pre><p>说明：<blockquote><p><strong>Host模式，容器与主机的网络配置没有隔离</strong>，需要通过设置 net_cls.classid 标记流量<p>参考文档：<a href=https://www.kernel.org/doc/html/v5.3/admin-guide/cgroup-v1/net_cls.html>Network classifier cgroup</a></blockquote><blockquote><p>net_cls.classid 数据格式：0xAAAABBBB， AAAA is the major handle number and BBBB is the minor handle number，eg： 0x100001 => 10:1</blockquote><h2 id=fei-hostwang-luo-mo-shi>非Host网络模式</h2><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># Get the PID of the container's network namespace
+</span><span>PID=$(docker inspect -f '{{.State.Pid}}' &lt;container_name_or_id>)
+</span><span>
+</span><span># Enter the network namespace using nsenter
+</span><span>nsenter --net=/proc/$PID/ns/net iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+</span></code></pre><p>说明：<blockquote><p><strong>非Host模式，容器与主机网络配置通过 <a href=https://lwn.net/Articles/580893/>Network namespaces</a> 隔离</strong>，需要切换 network namespace 进行配置</blockquote><blockquote><p>network_namespaces手册：<a href=https://man7.org/linux/man-pages/man7/network_namespaces.7.html>network_namespaces(7) - Linux manual page</a></blockquote><p><strong>namespace 执行小工具</strong>，<code>nsexec.c</code> <a href=https://github.com/chaosblade-io/chaosblade/blob/master/nsexec.c>nsexec.c</a><pre class=language-c data-lang=c style=color:#f8f8f2;background-color:#272822><code class=language-c data-lang=c><span style=color:#f92672>#define </span><span>_GNU_SOURCE
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;stdio.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;unistd.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;errno.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sched.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;stdio.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;stdlib.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;string.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;fcntl.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;getopt.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/types.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/wait.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/prctl.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/stat.h>
+</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/syscall.h>
+</span><span>
+</span><span style=color:#f92672>extern </span><span style=color:#66d9ef;font-style:italic>char</span><span style=color:#f92672>**</span><span> environ;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#a6e22e>enter_ns</span><span>(</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#fd971f;font-style:italic>pid</span><span>, </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>char</span><span style=color:#f92672>* </span><span style=color:#fd971f;font-style:italic>type</span><span>) {
+</span><span style=color:#f92672>#ifdef</span><span> __NR_setns
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>char</span><span> path[</span><span style=color:#ae81ff>64</span><span>], selfpath[</span><span style=color:#ae81ff>64</span><span>];
+</span><span>    </span><span style=color:#66d9ef>snprintf</span><span>(path, </span><span style=color:#f92672>sizeof</span><span>(path), </span><span style=color:#e6db74>"/proc/</span><span style=color:#ae81ff>%d</span><span style=color:#e6db74>/ns/</span><span style=color:#ae81ff>%s</span><span style=color:#e6db74>"</span><span>, pid, type);
+</span><span>    </span><span style=color:#66d9ef>snprintf</span><span>(selfpath, </span><span style=color:#f92672>sizeof</span><span>(selfpath), </span><span style=color:#e6db74>"/proc/self/ns/</span><span style=color:#ae81ff>%s</span><span style=color:#e6db74>"</span><span>, type);
+</span><span>
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>struct</span><span> stat oldns_stat, newns_stat;
+</span><span>    </span><span style=color:#f92672>if </span><span>(stat(selfpath, </span><span style=color:#f92672>&</span><span>oldns_stat) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0 </span><span style=color:#f92672>&& </span><span>stat(path, </span><span style=color:#f92672>&</span><span>newns_stat) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0</span><span>) {
+</span><span>        </span><span style=color:#75715e>// Don't try to call setns() if we're in the same namespace already
+</span><span>        </span><span style=color:#f92672>if </span><span>(oldns_stat.st_ino </span><span style=color:#f92672>!=</span><span> newns_stat.st_ino) {
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>int</span><span> newns </span><span style=color:#f92672>= </span><span>open(path, O_RDONLY);
+</span><span>            </span><span style=color:#f92672>if </span><span>(newns </span><span style=color:#f92672>&lt; </span><span style=color:#ae81ff>0</span><span>) {
+</span><span>                </span><span style=color:#f92672>return -</span><span style=color:#ae81ff>1</span><span>;
+</span><span>            }
+</span><span>
+</span><span>            </span><span style=color:#75715e>// Some ancient Linux distributions do not have setns() function
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>int</span><span> result </span><span style=color:#f92672>= </span><span>syscall(__NR_setns, newns, </span><span style=color:#ae81ff>0</span><span>);
+</span><span>            close(newns);
+</span><span>            </span><span style=color:#f92672>return</span><span> result </span><span style=color:#f92672>&lt; </span><span style=color:#ae81ff>0 </span><span style=color:#f92672>? -</span><span style=color:#ae81ff>1 </span><span style=color:#f92672>: </span><span style=color:#ae81ff>1</span><span>;
+</span><span>        }
+</span><span>    }
+</span><span style=color:#f92672>#endif </span><span style=color:#75715e>// __NR_setns
+</span><span>    </span><span style=color:#f92672>return </span><span style=color:#ae81ff>0</span><span>;
+</span><span>}
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>sig</span><span>(</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#fd971f;font-style:italic>signum</span><span>){}
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#a6e22e>main</span><span>(</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#fd971f;font-style:italic>argc</span><span>, </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>argv</span><span>[]) {
+</span><span>
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> target </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>cmd;
+</span><span>
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> stop </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> opt;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> option_index </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>string </span><span style=color:#f92672>= </span><span style=color:#e6db74>"st:mpuni"</span><span>;
+</span><span>
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> ipcns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> utsns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> netns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> pidns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> mntns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span>    </span><span style=color:#f92672>while</span><span>((opt </span><span style=color:#f92672>=</span><span>getopt(argc, argv, string))</span><span style=color:#f92672>!= -</span><span style=color:#ae81ff>1</span><span>) {
+</span><span>        </span><span style=color:#f92672>switch </span><span>(opt) {
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'s'</span><span>:
+</span><span>                stop </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'t'</span><span>:
+</span><span>                target </span><span style=color:#f92672>= </span><span style=color:#66d9ef>atoi</span><span>(optarg);
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'m'</span><span>:
+</span><span>                mntns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'p'</span><span>:
+</span><span>                pidns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'u'</span><span>:
+</span><span>                utsns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'n'</span><span>:
+</span><span>                netns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>case </span><span style=color:#e6db74>'i'</span><span>:
+</span><span>                ipcns </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            </span><span style=color:#f92672>default</span><span>:
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#75715e>// check target pid
+</span><span>    </span><span style=color:#f92672>if </span><span>(target </span><span style=color:#f92672>&lt;= </span><span style=color:#ae81ff>0</span><span>) {
+</span><span>        </span><span style=color:#66d9ef>fprintf</span><span>(stderr, </span><span style=color:#e6db74>"</span><span style=color:#ae81ff>%s</span><span style=color:#e6db74> is not a valid process ID</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, target);
+</span><span>        </span><span style=color:#f92672>return </span><span style=color:#ae81ff>1</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#75715e>// pause
+</span><span>    </span><span style=color:#f92672>if</span><span>(stop) {
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>pe </span><span style=color:#f92672>= </span><span style=color:#e6db74>"pause"</span><span>;
+</span><span>            prctl(PR_SET_NAME, pe);
+</span><span>            </span><span style=color:#66d9ef>signal</span><span>(SIGCONT,sig);
+</span><span>            pause();
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>nc </span><span style=color:#f92672>= </span><span style=color:#e6db74>"nsexec"</span><span>;
+</span><span>            prctl(PR_SET_NAME, nc);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#75715e>// enter namespace
+</span><span>    </span><span style=color:#f92672>if</span><span>(ipcns) {
+</span><span>        enter_ns(target, </span><span style=color:#e6db74>"ipc"</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#f92672>if</span><span>(utsns) {
+</span><span>        enter_ns(target, </span><span style=color:#e6db74>"uts"</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#f92672>if</span><span>(netns) {
+</span><span>        enter_ns(target, </span><span style=color:#e6db74>"net"</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#f92672>if</span><span>(pidns) {
+</span><span>        enter_ns(target, </span><span style=color:#e6db74>"pid"</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#f92672>if</span><span>(mntns) {
+</span><span>        enter_ns(target, </span><span style=color:#e6db74>"mnt"</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#75715e>// fork exec
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>pid_t</span><span> pid;
+</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> status;
+</span><span>
+</span><span>    </span><span style=color:#f92672>if</span><span>((pid </span><span style=color:#f92672>= </span><span>fork())</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span><span>) {
+</span><span>        status </span><span style=color:#f92672>= -</span><span style=color:#ae81ff>1</span><span>;
+</span><span>    } </span><span style=color:#f92672>else if</span><span>(pid </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0</span><span>){
+</span><span>        </span><span style=color:#75715e>// args
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>int</span><span> i,j</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span><span>;
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>args[</span><span style=color:#ae81ff>256</span><span>] </span><span style=color:#f92672>= </span><span>{</span><span style=color:#ae81ff>NULL</span><span>};
+</span><span>        </span><span style=color:#f92672>for</span><span>(i </span><span style=color:#f92672>=</span><span> optind; i </span><span style=color:#f92672>&lt;</span><span> argc; i</span><span style=color:#f92672>++</span><span>, j</span><span style=color:#f92672>++</span><span>) {
+</span><span>            args[j] </span><span style=color:#f92672>=</span><span> argv[i];
+</span><span>        }
+</span><span>        execvp(argv[optind], args);
+</span><span>        _exit(</span><span style=color:#ae81ff>127</span><span>);
+</span><span>    } </span><span style=color:#f92672>else </span><span>{
+</span><span>        </span><span style=color:#f92672>while</span><span>(waitpid(pid, </span><span style=color:#f92672>&</span><span>status, </span><span style=color:#ae81ff>0</span><span>) </span><span style=color:#f92672>&lt; </span><span style=color:#ae81ff>0</span><span>){
+</span><span>            </span><span style=color:#f92672>if</span><span>(errno </span><span style=color:#f92672>!=</span><span> EINTR){
+</span><span>                status </span><span style=color:#f92672>= -</span><span style=color:#ae81ff>1</span><span>;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            }
+</span><span>        }
+</span><span>        </span><span style=color:#f92672>if</span><span>(WIFEXITED(status)){
+</span><span>            </span><span style=color:#66d9ef>exit</span><span>(WEXITSTATUS(status));
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style=color:#f92672>return </span><span style=color:#ae81ff>0</span><span>;
+</span><span>}
+</span><span>
+</span></code></pre><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 测试
+</span><span>
+</span><span># compile
+</span><span>gcc nsexec.c -o nsexec
+</span><span>
+</span><span># Get the PID of the container's network namespace
+</span><span>PID=$(docker inspect -f '{{.State.Pid}}' &lt;container_name_or_id>)
+</span><span>
+</span><span># exec
+</span><span>./nsexec -n -t PID -- /bin/sh -c 'iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080'
+</span><span>
+</span><span># check
+</span><span>./nsexec -n -t PID -- /bin/sh -c 'iptables -t nat -L'
+</span><span>
+</span><span>
+</span><span>Chain PREROUTING (policy ACCEPT)
+</span><span>target     prot opt source               destination
+</span><span>REDIRECT   tcp  --  anywhere             anywhere             tcp dpt:http redir ports 8080
+</span><span>
+</span><span>Chain INPUT (policy ACCEPT)
+</span><span>target     prot opt source               destination
+</span><span>
+</span><span>Chain POSTROUTING (policy ACCEPT)
+</span><span>target     prot opt source               destination
+</span><span>
+</span><span>Chain OUTPUT (policy ACCEPT)
+</span><span>target     prot opt source               destination
+</span></code></pre></div></div></section>

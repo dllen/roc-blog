@@ -1,0 +1,321 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>How to Write a Javaagent | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2021-03-18</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">How to Write a Javaagent</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=shen-me-shi-java-agentji-shu>什么是Java Agent技术</h2><p>Java Agent本质上可以理解为一个插件，该插件就是一个精心提供的Jar包，这个Jar包通过JVMTI（JVM Tool Interface）完成加载，最终借助<a href=https://github.com/openjdk/jdk/blob/master/src/java.instrument/share/native/libinstrument/JPLISAgent.c>JPLISAgent</a>（Java Programming Language Instrumentation Services Agent）完成对目标代码的修改。<p><strong>Java agent的功能</strong><ul><li>可以在加载Java文件之前做拦截把字节码做修改<li>可以在运行期将已经加载的类的字节码做变更<li>………..</ul><p>使用场景<ul><li><p>APM 工具：如 Pinpoint、SkyWalking 等</p><li><p>动态调试和诊断：比较流行的 btrace、arthas 等</p><li><p>热部署：jrebel</p><li><p>混沌工程：jvm-sandbox 等</p></ul><p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png><h4 id=shi-xian-agentqi-dong-fang-fa>实现Agent启动方法</h4><p>Java Agent支持目标JVM启动时加载，也支持在目标JVM运行时加载，这两种不同的加载模式会使用不同的入口函数，如果需要在目标JVM启动的同时加载Agent，那么可以选择实现下面的方法：<pre style=color:#f8f8f2;background-color:#272822><code><span>[1] public static void premain(String agentArgs, Instrumentation inst);
+</span><span>[2] public static void premain(String agentArgs);
+</span></code></pre><p>JVM将首先寻找[1]，如果没有发现[1]，再寻找[2]。如果希望在目标JVM运行时加载Agent，则需要实现下面的方法：<pre style=color:#f8f8f2;background-color:#272822><code><span>[1] public static void agentmain(String agentArgs, Instrumentation inst);
+</span><span>[2] public static void agentmain(String agentArgs);
+</span></code></pre><p>这两组方法的第一个参数AgentArgs是随同 <code>–javaagent</code> 一起传入的程序参数，如果这个字符串代表了多个参数，就需要自己解析这些参数。inst是<code>Instrumentation</code>类型的对象，是JVM自动传入的，我们可以拿这个参数进行类增强等操作。<h4 id=zhi-ding-main-class>指定Main-Class</h4><p>Agent需要打包成一个jar包，在ManiFest属性中指定<code>Premain-Class</code>或者<code>Agent-Class</code>：<pre style=color:#f8f8f2;background-color:#272822><code><span>Premain-Class: class
+</span><span>Agent-Class: class
+</span></code></pre><h4 id=gua-zai-dao-mu-biao-jvm>挂载到目标JVM</h4><p>将编写的Agent打成jar包后，就可以挂载到目标JVM上去了。如果选择在目标JVM启动时加载Agent，则可以使用<code>-javaagent:[=]</code>，具体的使用方法可以使用<code>Java -Help</code>来查看。<p>如果想要在运行时挂载Agent到目标JVM，就需要做一些额外的开发了。<p>``com.sun.tools.attach.VirtualMachine 这个类代表一个JVM抽象，可以通过这个类找到目标JVM，并且将Agent挂载到目标JVM上。<p>下面是使用<code>com.sun.tools.attach.VirtualMachine</code>进行动态挂载Agent的一般实现：<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span>    </span><span style=color:#f92672>private</span><span> void attachAgentToTargetJVM() throws </span><span style=color:#66d9ef;font-style:italic>Exception </span><span>{
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>List</span><span>&lt;</span><span style=color:#66d9ef;font-style:italic>VirtualMachineDescriptor</span><span>> virtualMachineDescriptors </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span>.list();
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>VirtualMachineDescriptor</span><span> targetVM </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>        </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>VirtualMachineDescriptor</span><span> descriptor </span><span style=color:#f92672>:</span><span> virtualMachineDescriptors) {
+</span><span>            </span><span style=color:#f92672>if </span><span>(descriptor.id().equals(configure.getPid())) {
+</span><span>                targetVM </span><span style=color:#f92672>=</span><span> descriptor;
+</span><span>                </span><span style=color:#f92672>break</span><span>;
+</span><span>            }
+</span><span>        }
+</span><span>        </span><span style=color:#f92672>if </span><span>(targetVM </span><span style=color:#f92672>== </span><span style=color:#ae81ff>null</span><span>) {
+</span><span>            </span><span style=color:#f92672>throw new </span><span style=color:#66d9ef;font-style:italic>IllegalArgumentException</span><span>(</span><span style=color:#e6db74>"could not find the target jvm by process id:" </span><span style=color:#f92672>+</span><span> configure.getPid());
+</span><span>        }
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span> virtualMachine </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>        </span><span style=color:#f92672>try </span><span>{
+</span><span>            virtualMachine </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span>.attach(targetVM);
+</span><span>            virtualMachine.loadAgent(</span><span style=color:#e6db74>"{agent}"</span><span>, </span><span style=color:#e6db74>"{params}"</span><span>);
+</span><span>        } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>Exception </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>            </span><span style=color:#f92672>if </span><span>(virtualMachine </span><span style=color:#f92672>!= </span><span style=color:#ae81ff>null</span><span>) {
+</span><span>                virtualMachine.detach();
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span></code></pre><p>首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。<p><strong><a href=https://docs.oracle.com/javase/8/docs/api/java/lang/instrument/Instrumentation.html>Instrumentation (Java Platform SE 8 )</a></strong> 类提供检测 Java 编程语言代码所需的服务。Instrumentation 是在方法中添加字节码，以收集工具使用的数据。由于更改纯粹是附加的，因此这些工具不会修改应用程序状态或行为。这种良性工具的示例包括监控代理、分析器、覆盖分析器和事件记录器。<ul><li><code>addTransformer</code>: 添加一个类转换器<li><code>removeTransformer</code>: 删除一个类转换器<li><code>isRetransformClassesSupported</code>: 判断是否支持类的重新转换<li><code>retransformClasses</code>: 在类加载后，重新定义该类<li><code>isRedefineClassesSupported</code>: 判断是否支持重新定义类<li><code>redefineClasses</code>: 重新进行类的定义<li><code>isModifiableClass</code>: 确定一个类是否可以通过重新转换或重新定义来修改<li><code>getAllLoadedClasses</code>: 返回 JVM 当前加载的所有类的数组<li><code>getInitiatedClasses</code>: 返回 loader 为其初始加载器的所有类的数组。如果提供的加载器为空，则返回由引导类加载器启动的类<li>……</ul><h3 id=premain-jing-tai-fang-shi>premain 静态方式</h3><blockquote><p>大多数中间件/工具的使用方式<p>使用方法：java -javaagent:xxx.jar MyApp</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-premain>application-premain</a><p>编译和测试：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 编译打包
+</span><span>mvn clean package
+</span><span># 执行
+</span><span>java -javaagent:target/application-premain-jar-with-dependencies.jar  -cp target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
+</span><span>
+</span><span># 执行结果（方法执行前后添加代码）
+</span><span>=====start=====
+</span><span>Hello World!
+</span><span>=====end=====
+</span><span>=====start=====
+</span><span>Hello World!
+</span><span>=====end=====
+</span></code></pre><h4 id=he-xin-dai-ma>核心代码</h4><p><code>MyTransformer.java</code> 类是具体实现字节码植入的实现类<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassFileTransformer</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>security</span><span>.</span><span style=color:#66d9ef;font-style:italic>ProtectionDomain</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>util</span><span>.</span><span style=color:#66d9ef;font-style:italic>Objects</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>CtClass</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span>;
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>MyTransformer </span><span style=color:#f92672>implements </span><span style=color:#a6e22e;font-style:italic;text-decoration:underline>ClassFileTransformer </span><span>{
+</span><span>
+</span><span>
+</span><span>    </span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>byte</span><span style=color:#f92672>[] </span><span style=color:#a6e22e>transform</span><span>(</span><span style=color:#66d9ef;font-style:italic>ClassLoader </span><span style=color:#fd971f;font-style:italic>loader</span><span>, </span><span style=color:#66d9ef;font-style:italic>String </span><span style=color:#fd971f;font-style:italic>className</span><span>, </span><span style=color:#66d9ef;font-style:italic>Class</span><span>&lt;</span><span style=color:#f92672>?</span><span>> </span><span style=color:#fd971f;font-style:italic>classBeingRedefined</span><span>, </span><span style=color:#66d9ef;font-style:italic>ProtectionDomain </span><span style=color:#fd971f;font-style:italic>protectionDomain</span><span>, </span><span style=color:#66d9ef;font-style:italic>byte</span><span style=color:#f92672>[] </span><span style=color:#fd971f;font-style:italic>classfileBuffer</span><span>) </span><span style=color:#f92672>throws </span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException </span><span>{
+</span><span>
+</span><span>        </span><span style=color:#75715e>//跳过java自带方法
+</span><span>        </span><span style=color:#f92672>if </span><span>(className.startsWith(</span><span style=color:#e6db74>"java"</span><span>) </span><span style=color:#f92672>||</span><span> className.startsWith(</span><span style=color:#e6db74>"sun"</span><span>)) {
+</span><span>            </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#75715e>//好像使用premain这个className是没问题的，但使用attach时className的.变成了/，所以如果是attach，那么这里需要替换
+</span><span>        className </span><span style=color:#f92672>=</span><span> className.replace(</span><span style=color:#e6db74>"/"</span><span>, </span><span style=color:#e6db74>"."</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#75715e>//只处理MyApp类
+</span><span>        </span><span style=color:#f92672>if </span><span>(</span><span style=color:#f92672>!</span><span>className.endsWith(</span><span style=color:#e6db74>"MyApp"</span><span>)) {
+</span><span>            </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>        }
+</span><span>        </span><span style=color:#75715e>//使用javassist类库对字节码修改
+</span><span>        </span><span style=color:#f92672>try </span><span>{
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span> classPool </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span>.getDefault();
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>CtClass</span><span> ctClass </span><span style=color:#f92672>=</span><span> classPool.get(className);
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span style=color:#f92672>[]</span><span> declaredMethods </span><span style=color:#f92672>=</span><span> ctClass.getDeclaredMethods();
+</span><span>
+</span><span>            </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span> declaredMethod </span><span style=color:#f92672>:</span><span> declaredMethods) {
+</span><span>                </span><span style=color:#75715e>//只处理printSth方法
+</span><span>                </span><span style=color:#f92672>if </span><span>(</span><span style=color:#66d9ef;font-style:italic>Objects</span><span>.equals(</span><span style=color:#e6db74>"printHello"</span><span>, declaredMethod.getName())) {
+</span><span>                    </span><span style=color:#75715e>//在方法执行前插入打印语句
+</span><span>                    declaredMethod.insertBefore(</span><span style=color:#e6db74>"System.out.println(</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>=====start=====</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>);"</span><span>);
+</span><span>                    </span><span style=color:#75715e>//在方法执行后插入打印语句
+</span><span>                    declaredMethod.insertAfter(</span><span style=color:#e6db74>"System.out.println(</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>=====end=====</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>);"</span><span>);
+</span><span>
+</span><span>                    </span><span style=color:#f92672>break</span><span>;
+</span><span>                }
+</span><span>            }
+</span><span>
+</span><span>            </span><span style=color:#f92672>return</span><span> ctClass.toBytecode();
+</span><span>
+</span><span>        } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>Exception </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>            e.printStackTrace();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>    }
+</span><span>}
+</span></code></pre><p><code>PremainMain.java</code> Java Agent内部约定的 <code>premain</code> 实现：<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>Instrumentation</span><span>;
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>PremainMain </span><span>{
+</span><span>
+</span><span>    </span><span style=color:#75715e>/*
+</span><span style=color:#75715e>     * 注意，这个premain方法签名是Java Agent约定的，不要随意修改
+</span><span style=color:#75715e>     * @param agentArgs
+</span><span style=color:#75715e>     * @param instrumentation
+</span><span style=color:#75715e>     */
+</span><span>    </span><span style=color:#f92672>public static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>premain</span><span>(</span><span style=color:#66d9ef;font-style:italic>String </span><span style=color:#fd971f;font-style:italic>agentArgs</span><span>, </span><span style=color:#66d9ef;font-style:italic>Instrumentation </span><span style=color:#fd971f;font-style:italic>instrumentation</span><span>) {
+</span><span>        instrumentation.addTransformer(</span><span style=color:#f92672>new </span><span style=color:#66d9ef;font-style:italic>MyTransformer</span><span>());
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#75715e>//PremainMain#premain的方法签名是Java Agent内部约定的，不能随意修改。
+</span><span>
+</span><span>}
+</span></code></pre><p><code>resouces/META-INF/MANIFEST.MF</code>通过 <code>MANIFEST.MF</code> 文件找到 <code>premain</code> 的实现类<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#66d9ef;font-style:italic>Manifest</span><span style=color:#f92672>-</span><span style=color:#66d9ef;font-style:italic>Version</span><span style=color:#f92672>: </span><span style=color:#ae81ff>1.0
+</span><span style=color:#66d9ef;font-style:italic>Created</span><span style=color:#f92672>-</span><span style=color:#66d9ef;font-style:italic>By</span><span style=color:#f92672>:</span><span> dllen
+</span><span style=color:#66d9ef;font-style:italic>Premain</span><span style=color:#f92672>-</span><span style=color:#66d9ef;font-style:italic>Class</span><span style=color:#f92672>: </span><span style=color:#66d9ef;font-style:italic>com</span><span>.</span><span style=color:#66d9ef;font-style:italic>ks</span><span>.</span><span style=color:#66d9ef;font-style:italic>test</span><span>.</span><span style=color:#66d9ef;font-style:italic>app</span><span>.</span><span style=color:#66d9ef;font-style:italic>PremainMain
+</span></code></pre><blockquote><p>注意：最后一行需要留一个空行</blockquote><p><code>MyApp.java</code> 测试应用<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>util</span><span>.</span><span style=color:#66d9ef;font-style:italic>concurrent</span><span>.</span><span style=color:#66d9ef;font-style:italic>TimeUnit</span><span>;
+</span><span>
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>MyApp </span><span>{
+</span><span>
+</span><span>    </span><span style=color:#f92672>public static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>main</span><span>(</span><span style=color:#66d9ef;font-style:italic>String</span><span style=color:#f92672>[] </span><span style=color:#fd971f;font-style:italic>args</span><span>) {
+</span><span>        </span><span style=color:#f92672>while </span><span>(</span><span style=color:#ae81ff>true</span><span>) {
+</span><span>            printHello();
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>
+</span><span>    </span><span style=color:#f92672>private static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>printHello</span><span>() {
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"Hello World!"</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#f92672>try </span><span>{
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>TimeUnit</span><span>.</span><span style=color:#ae81ff>SECONDS</span><span>.sleep(</span><span style=color:#ae81ff>5</span><span>);
+</span><span>        } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>InterruptedException </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>            e.printStackTrace();
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre><h3 id=attach-dong-tai-fang-shi>attach 动态方式</h3><blockquote><p>混沌工程-故障注入，应用调试和诊断的实现方式</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-attach>application-attach</a><p>编译和测试：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 编译打包
+</span><span>mvn clean package
+</span><span>
+</span><span># 终端 1
+</span><span>java -cp target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
+</span><span>
+</span><span># 终端 2
+</span><span># 使用 ps 找到 进程id
+</span><span>java -cp ./target/application-premain-jar-with-dependencies.jar com.ks.test.app.AttachMain ${pid} ./target/application-premain-jar-with-dependencies.jar
+</span><span># attach success!
+</span><span>
+</span><span>
+</span><span># 终端 1 结果
+</span><span>
+</span><span>Hello World!
+</span><span>Hello World!
+</span><span>Hello World!
+</span><span>Hello World!
+</span><span>Hello World!
+</span><span>come in agentmain
+</span><span>clazz = com.ks.test.app.AttachAgent
+</span><span>clazz = com.ks.test.app.MyApp
+</span><span>=====start=====
+</span><span>Hello World!
+</span><span>=====end=====
+</span><span>=====start=====
+</span><span>Hello World!
+</span><span>=====end=====
+</span></code></pre><h4 id=he-xin-dai-ma-1>核心代码</h4><p><code>MyAttachTransformer.java</code> 代码植入类<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassFileTransformer</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>security</span><span>.</span><span style=color:#66d9ef;font-style:italic>ProtectionDomain</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>util</span><span>.</span><span style=color:#66d9ef;font-style:italic>Objects</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>CtClass</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>javassist</span><span>.</span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span>;
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>MyAttachTransformer </span><span style=color:#f92672>implements </span><span style=color:#a6e22e;font-style:italic;text-decoration:underline>ClassFileTransformer </span><span>{
+</span><span>
+</span><span>
+</span><span>    </span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>byte</span><span style=color:#f92672>[] </span><span style=color:#a6e22e>transform</span><span>(</span><span style=color:#66d9ef;font-style:italic>ClassLoader </span><span style=color:#fd971f;font-style:italic>loader</span><span>, </span><span style=color:#66d9ef;font-style:italic>String </span><span style=color:#fd971f;font-style:italic>className</span><span>, </span><span style=color:#66d9ef;font-style:italic>Class</span><span>&lt;</span><span style=color:#f92672>?</span><span>> </span><span style=color:#fd971f;font-style:italic>classBeingRedefined</span><span>, </span><span style=color:#66d9ef;font-style:italic>ProtectionDomain </span><span style=color:#fd971f;font-style:italic>protectionDomain</span><span>, </span><span style=color:#66d9ef;font-style:italic>byte</span><span style=color:#f92672>[] </span><span style=color:#fd971f;font-style:italic>classfileBuffer</span><span>) </span><span style=color:#f92672>throws </span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException </span><span>{
+</span><span>        </span><span style=color:#75715e>//跳过java自带方法
+</span><span>        </span><span style=color:#f92672>if </span><span>(className.startsWith(</span><span style=color:#e6db74>"java"</span><span>) </span><span style=color:#f92672>||</span><span> className.startsWith(</span><span style=color:#e6db74>"sun"</span><span>)) {
+</span><span>            </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#75715e>//好像使用premain这个className是没问题的，但使用attach时className的.变成了/，所以如果是attach，那么这里需要替换
+</span><span>        className </span><span style=color:#f92672>=</span><span> className.replace(</span><span style=color:#e6db74>"/"</span><span>, </span><span style=color:#e6db74>"."</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#75715e>//只处理MyApp类
+</span><span>        </span><span style=color:#f92672>if </span><span>(</span><span style=color:#f92672>!</span><span>className.endsWith(</span><span style=color:#e6db74>"MyApp"</span><span>)) {
+</span><span>            </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#f92672>try </span><span>{
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span> classPool </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>ClassPool</span><span>.getDefault();
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>CtClass</span><span> ctClass </span><span style=color:#f92672>=</span><span> classPool.get(className);
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span style=color:#f92672>[]</span><span> declaredMethods </span><span style=color:#f92672>=</span><span> ctClass.getDeclaredMethods();
+</span><span>
+</span><span>            </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>CtMethod</span><span> declaredMethod </span><span style=color:#f92672>:</span><span> declaredMethods) {
+</span><span>                </span><span style=color:#75715e>//只处理printSth方法
+</span><span>                </span><span style=color:#f92672>if </span><span>(</span><span style=color:#66d9ef;font-style:italic>Objects</span><span>.equals(</span><span style=color:#e6db74>"printHello"</span><span>, declaredMethod.getName())) {
+</span><span>                    </span><span style=color:#75715e>//在方法执行前插入打印语句
+</span><span>                    declaredMethod.insertBefore(</span><span style=color:#e6db74>"System.out.println(</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>=====start=====</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>);"</span><span>);
+</span><span>                    </span><span style=color:#75715e>//在方法执行后插入打印语句
+</span><span>                    declaredMethod.insertAfter(</span><span style=color:#e6db74>"System.out.println(</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>=====end=====</span><span style=color:#ae81ff>\"</span><span style=color:#e6db74>);"</span><span>);
+</span><span>
+</span><span>                    </span><span style=color:#f92672>break</span><span>;
+</span><span>                }
+</span><span>            }
+</span><span>
+</span><span>            </span><span style=color:#f92672>return</span><span> ctClass.toBytecode();
+</span><span>
+</span><span>        } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>Exception </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>            e.printStackTrace();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#f92672>return</span><span> classfileBuffer;
+</span><span>    }
+</span><span>}
+</span></code></pre><p><code>AttachAgent.java</code>实现 <code>agentmain</code> 方法<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>Instrumentation</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>UnmodifiableClassException</span><span>;
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>AttachAgent </span><span>{
+</span><span>
+</span><span>    </span><span style=color:#75715e>/*
+</span><span style=color:#75715e>     * 注意：agentmain的方法签名也是约定好的，不能随意修改
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * 其实如果要支持premain和attach两种方式的话，可以把premain和agentmain两个方法写在一个类里，这里为了方便演示，写成了两个
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param agentArgs
+</span><span style=color:#75715e>     * @param instrumentation
+</span><span style=color:#75715e>     */
+</span><span>    </span><span style=color:#f92672>public static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>agentmain</span><span>(</span><span style=color:#66d9ef;font-style:italic>String </span><span style=color:#fd971f;font-style:italic>agentArgs</span><span>, </span><span style=color:#66d9ef;font-style:italic>Instrumentation </span><span style=color:#fd971f;font-style:italic>instrumentation</span><span>) {
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>String</span><span> targetClassPath </span><span style=color:#f92672>= </span><span style=color:#e6db74>"com.ks.test.app.MyApp"</span><span>;
+</span><span>
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"come in agentmain"</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>Class</span><span>&lt;</span><span style=color:#f92672>?</span><span>> clazz </span><span style=color:#f92672>:</span><span> instrumentation.getAllLoadedClasses()) {
+</span><span>
+</span><span>            </span><span style=color:#75715e>// 过滤掉不能修改的类
+</span><span>            </span><span style=color:#f92672>if </span><span>(</span><span style=color:#f92672>!</span><span>instrumentation.isModifiableClass(clazz)) {
+</span><span>                </span><span style=color:#f92672>continue</span><span>;
+</span><span>            }
+</span><span>
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"clazz = " </span><span style=color:#f92672>+</span><span> clazz.getName());
+</span><span>
+</span><span>            </span><span style=color:#75715e>// 只修改我们关心的类
+</span><span>            </span><span style=color:#f92672>if </span><span>(clazz.getName().equals(targetClassPath)) {
+</span><span>                </span><span style=color:#75715e>// 最根本的目的还是把MyTransformer添加到instrumentation中
+</span><span>                instrumentation.addTransformer(</span><span style=color:#f92672>new </span><span style=color:#66d9ef;font-style:italic>MyAttachTransformer</span><span>(), </span><span style=color:#ae81ff>true</span><span>);
+</span><span>                </span><span style=color:#f92672>try </span><span>{
+</span><span>                    instrumentation.retransformClasses(clazz);
+</span><span>                } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>UnmodifiableClassException </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>                    e.printStackTrace();
+</span><span>                }
+</span><span>
+</span><span>                </span><span style=color:#f92672>return</span><span>;
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre><p><code>resouces/META-INF/MANIFEST.MF</code>通过 <code>MANIFEST.MF</code> 文件找到 <code>agentmain</code> 的实现类<pre style=color:#f8f8f2;background-color:#272822><code><span>Manifest-Version: 1.0
+</span><span>Created-By: dllen
+</span><span>Agent-Class: com.ks.test.app.AttachAgent
+</span><span>Can-Redefine-Classes: true
+</span><span>Can-Retransform-Classes: true
+</span></code></pre><p><code>AttachMain.java</code> 在运行时挂载Agent到目标JVM<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>com</span><span>.</span><span style=color:#66d9ef;font-style:italic>sun</span><span>.</span><span style=color:#66d9ef;font-style:italic>tools</span><span>.</span><span style=color:#66d9ef;font-style:italic>attach</span><span>.</span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>io</span><span>.</span><span style=color:#66d9ef;font-style:italic>File</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>reflect</span><span>.</span><span style=color:#66d9ef;font-style:italic>InvocationTargetException</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>reflect</span><span>.</span><span style=color:#66d9ef;font-style:italic>Method</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>net</span><span>.</span><span style=color:#66d9ef;font-style:italic>MalformedURLException</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>net</span><span>.</span><span style=color:#66d9ef;font-style:italic>URL</span><span>;
+</span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>net</span><span>.</span><span style=color:#66d9ef;font-style:italic>URLClassLoader</span><span>;
+</span><span>
+</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>AttachMain </span><span>{
+</span><span>
+</span><span>    </span><span style=color:#75715e>/*
+</span><span style=color:#75715e>     * 加载 tools.jar
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @throws NoSuchMethodException
+</span><span style=color:#75715e>     * @throws MalformedURLException
+</span><span style=color:#75715e>     * @throws InvocationTargetException
+</span><span style=color:#75715e>     * @throws IllegalAccessException
+</span><span style=color:#75715e>     */
+</span><span>    </span><span style=color:#f92672>private static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>prepareAttach</span><span>() </span><span style=color:#f92672>throws </span><span style=color:#66d9ef;font-style:italic>NoSuchMethodException</span><span>, </span><span style=color:#66d9ef;font-style:italic>MalformedURLException</span><span>, </span><span style=color:#66d9ef;font-style:italic>InvocationTargetException</span><span>, </span><span style=color:#66d9ef;font-style:italic>IllegalAccessException </span><span>{
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>String</span><span> binPath </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>System</span><span>.getProperty(</span><span style=color:#e6db74>"sun.boot.library.path"</span><span>);
+</span><span>        </span><span style=color:#75715e>// remove jre/bin, replace with lib
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>String</span><span> libPath </span><span style=color:#f92672>=</span><span> binPath.substring(</span><span style=color:#ae81ff>0</span><span>, binPath.length() </span><span style=color:#f92672>- </span><span style=color:#ae81ff>7</span><span>) </span><span style=color:#f92672>+ </span><span style=color:#e6db74>"lib"</span><span>;
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>URLClassLoader</span><span> loader </span><span style=color:#f92672>= </span><span>(</span><span style=color:#66d9ef;font-style:italic>URLClassLoader</span><span>) </span><span style=color:#66d9ef;font-style:italic>AttachMain</span><span>.class.getClassLoader();
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>Method</span><span> addURLMethod </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>URLClassLoader</span><span>.class.getDeclaredMethod(</span><span style=color:#e6db74>"addURL"</span><span>, </span><span style=color:#66d9ef;font-style:italic>URL</span><span>.class);
+</span><span>        addURLMethod.setAccessible(</span><span style=color:#ae81ff>true</span><span>);
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>File</span><span> toolsJar </span><span style=color:#f92672>= new </span><span style=color:#66d9ef;font-style:italic>File</span><span>(libPath </span><span style=color:#f92672>+ </span><span style=color:#e6db74>"/tools.jar"</span><span>);
+</span><span>        </span><span style=color:#f92672>if </span><span>(</span><span style=color:#f92672>!</span><span>toolsJar.exists()) {
+</span><span>            </span><span style=color:#f92672>throw new </span><span style=color:#66d9ef;font-style:italic>RuntimeException</span><span>(toolsJar.getAbsolutePath() </span><span style=color:#f92672>+ </span><span style=color:#e6db74>" does not exist"</span><span>);
+</span><span>        }
+</span><span>        addURLMethod.invoke(loader, </span><span style=color:#f92672>new </span><span style=color:#66d9ef;font-style:italic>File</span><span>(libPath </span><span style=color:#f92672>+ </span><span style=color:#e6db74>"/tools.jar"</span><span>).toURI().toURL());
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#f92672>public static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>main</span><span>(</span><span style=color:#66d9ef;font-style:italic>String</span><span style=color:#f92672>[] </span><span style=color:#fd971f;font-style:italic>args</span><span>) {
+</span><span>
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>String</span><span> pid </span><span style=color:#f92672>=</span><span> args[</span><span style=color:#ae81ff>0</span><span>];
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>String</span><span> agentPath </span><span style=color:#f92672>=</span><span> args[</span><span style=color:#ae81ff>1</span><span>];
+</span><span>
+</span><span>        </span><span style=color:#66d9ef;font-style:italic>File</span><span> agentFile </span><span style=color:#f92672>= new </span><span style=color:#66d9ef;font-style:italic>File</span><span>(agentPath);
+</span><span>
+</span><span>        </span><span style=color:#f92672>if </span><span>(</span><span style=color:#f92672>!</span><span>agentFile.exists()) {
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"Agent not exist!"</span><span>);
+</span><span>            </span><span style=color:#f92672>return</span><span>;
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#f92672>try </span><span>{
+</span><span>
+</span><span>            prepareAttach();
+</span><span>
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span> virtualMachine </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>VirtualMachine</span><span>.attach(pid);
+</span><span>            virtualMachine.loadAgent(agentFile.getAbsolutePath());
+</span><span>
+</span><span>            virtualMachine.detach();
+</span><span>
+</span><span>            </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"attach success!"</span><span>);
+</span><span>        } </span><span style=color:#f92672>catch </span><span>(</span><span style=color:#66d9ef;font-style:italic>Exception </span><span style=color:#fd971f;font-style:italic>e</span><span>) {
+</span><span>            e.printStackTrace();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#75715e>// attach ok
+</span><span>    }
+</span><span>}
+</span></code></pre><blockquote><p>需要传递2个参数<p>    目标Java进程ID<p>    Agent的路径</blockquote><h3 id=can-kao-zi-liao>参考资料</h3><ul><li><p><a href=http://www.taoxuefeng.com/JAVA/jdk/agent.html>java agent · GitBook</a></p><li><p><a href=https://zhengw-tech.com/2023/05/27/java-agent/>JavaAgent使用及原理 | 个人网页</a></p><li><p><a href=https://tech.meituan.com/2019/11/07/java-dynamic-debugging-technology.html>Java 动态调试技术原理及实践 - 美团技术团队</a></p><li><p><a href=https://www.cnblogs.com/rickiyang/p/11368932.html>javaagent使用指南 - rickiyang - 博客园</a></p><li><p><a href=https://www.kancloud.cn/alex_wsc/javajvm/1844993>第21讲：深入剖析：如何使用 Java Agent 技术对字节码进行修改 · 深入浅出Java虚拟机 · 看云</a></p><li><p><a href=https://cloud.tencent.com/developer/article/2161810>谈谈Java Agent技术的实现-腾讯云开发者社区-腾讯云</a></p><li><p>https://segmentfault.com/a/1190000039731381</p><li><p><a href=https://veryjj.github.io/2021/01/01/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0Java%E5%AD%97%E8%8A%82%E7%A0%81Demo/>手把手教你Java字节码Demo</a></p><li><p><a href=https://www.hollischuang.com/archives/592>深入探索 Java 热部署</a></p></ul><h3 id=zi-jie-ma-cao-zuo-ku>字节码操作库</h3><ul><li><p>https://asm.ow2.io/</p><li><p><a href=https://github.com/cglib/cglib>GitHub - cglib/cglib</a></p><li><p>https://www.javassist.org/</p><li><p><a href=https://bytebuddy.net/#/>Byte Buddy - runtime code generation for the Java virtual machine</a></p></ul><h3 id=kai-yuan-xiang-mu>开源项目</h3><ul><li><p><a href=https://github.com/alibaba/jvm-sandbox>GitHub - alibaba/jvm-sandbox: Real - time non-invasive AOP framework container based on JVM</a></p><li><p><a href=https://github.com/btraceio/btrace>GitHub - btraceio/btrace: BTrace - a safe, dynamic tracing tool for the Java platform</a></p><li><p><a href=https://github.com/alibaba/arthas>GitHub - alibaba/arthas: Alibaba Java Diagnostic Tool Arthas/Alibaba Java诊断利器Arthas</a></p><li><p><a href=https://github.com/pinpoint-apm/pinpoint>GitHub - pinpoint-apm/pinpoint: APM, (Application Performance Management) tool for large-scale distributed systems.</a></p><li><p><a href=https://github.com/apache/skywalking>GitHub - apache/skywalking: APM, Application Performance Monitoring System</a></p><li><p><a href=https://github.com/pandening/Java-debug-tool>GitHub - pandening/Java-debug-tool: Java dynamic debug tool</a></p></ul></div></div></section>

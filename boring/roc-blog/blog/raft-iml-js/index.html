@@ -1,0 +1,267 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Raft 共识算法详解与 JavaScript 实现 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-12-15</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Raft 共识算法详解与 JavaScript 实现</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>Raft 是一种为了易于理解而设计的共识算法，由 Diego Ongaro 和 John Ousterhout 在 2014 年提出。相比于 Paxos 算法，Raft 更加直观和易于实现，同时保持了相同的功能和性能。<h2 id=mu-lu>目录</h2><ol><li><p>Raft 算法概述</p><li><p>Raft 的核心机制</p><li><p>JavaScript 实现分析</p><li><p>实践演示</p><li><p>总结与思考</p></ol><h2 id=1-raft-suan-fa-gai-shu>1. Raft 算法概述</h2><p>Raft 是一种用于管理复制日志的共识算法。它的主要目标是提供一种更容易理解的方式来构建实用的分布式系统。Raft 将共识问题分解为三个相对独立的子问题：<ul><li><p><strong>领导人选举</strong>：当现有领导人失效时必须选出一个新的领导人</p><li><p><strong>日志复制</strong>：领导人必须从客户端接收日志条目，并将它们复制到集群中的其他服务器</p><li><p><strong>安全性</strong>：如果任何服务器已经应用了一个特定的日志条目到它的状态机中，那么其他服务器不能在同一个日志索引位置应用不同的命令</p></ul><h2 id=2-raft-de-he-xin-ji-zhi>2. Raft 的核心机制</h2><h3 id=2-1-fu-wu-qi-zhuang-tai>2.1 服务器状态</h3><p>在 Raft 中，服务器可以处于三种状态之一：<ul><li><p><strong>Follower（跟随者）</strong>：被动接收来自领导人或候选人的请求</p><li><p><strong>Candidate（候选人）</strong>：用于选举新的领导人</p><li><p><strong>Leader（领导人）</strong>：处理所有客户端请求，如果客户端联系跟随者，跟随者会将请求重定向给领导人</p></ul><h3 id=2-2-ren-qi-term>2.2 任期（Term）</h3><p>Raft 将时间划分为任意长度的任期（term）。每个任期都由一个选举开始，如果一个候选人赢得选举，它将在该任期的剩余时间担任领导人。任期在 Raft 中充当逻辑时钟的角色，帮助服务器检测过时的信息。<h3 id=2-3-ling-dao-ren-xuan-ju>2.3 领导人选举</h3><p>当跟随者在一段时间内没有收到来自领导人的消息时，它会转变为候选人并开始一次选举：<ol><li><p>增加当前任期号</p><li><p>给自己投票</p><li><p>向其他服务器发送请求投票的 RPC</p><li><p>如果收到大多数服务器的投票，成为领导人</p><li><p>如果收到来自新领导人的消息，转变为跟随者</p><li><p>如果选举超时，开始新一轮选举</p></ol><h3 id=2-4-ri-zhi-fu-zhi>2.4 日志复制</h3><p>领导人负责管理客户端请求和日志复制：<ol><li><p>领导人接收客户端命令，将其作为新条目添加到自己的日志中</p><li><p>并行向其他服务器发送 AppendEntries RPC 来复制条目</p><li><p>当条目被安全复制后，领导人将其应用到自己的状态机并向客户端返回结果</p><li><p>如果跟随者崩溃或运行缓慢，领导人会不断重试 AppendEntries RPC</p></ol><h2 id=3-javascript-shi-xian-fen-xi>3. JavaScript 实现分析</h2><p>让我们分析一下 <code>raft-node.js</code> 中的关键部分，看看它们是如何实现 Raft 算法的核心机制的。<h3 id=3-1-jie-dian-zhuang-tai-guan-li>3.1 节点状态管理</h3><pre class=language-javascript data-lang=javascript style=color:#f8f8f2;background-color:#272822><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>constructor</span><span>(id, nodes </span><span style=color:#f92672>= </span><span>[]) {
+</span><span>
+</span><span style=color:#75715e>// 服务器标识
+</span><span>
+</span><span>this.id </span><span style=color:#f92672>= </span><span>id;
+</span><span>
+</span><span>this.nodes </span><span style=color:#f92672>= </span><span>nodes;
+</span><span>
+</span><span style=color:#75715e>// 所有服务器上的持久性状态
+</span><span>
+</span><span>this.currentTerm </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span>this.votedFor </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>
+</span><span>this.log </span><span style=color:#f92672>= </span><span>[];
+</span><span>
+</span><span style=color:#75715e>// 所有服务器上的易失性状态
+</span><span>
+</span><span>this.commitIndex </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span>this.lastApplied </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span style=color:#75715e>// 领导人上的易失性状态
+</span><span>
+</span><span>this.nextIndex </span><span style=color:#f92672>= </span><span>{};
+</span><span>
+</span><span>this.matchIndex </span><span style=color:#f92672>= </span><span>{};
+</span><span>
+</span><span style=color:#75715e>// 额外的实现状态
+</span><span>
+</span><span>this.state </span><span style=color:#f92672>= </span><span style=color:#e6db74>'follower'</span><span>;
+</span><span>
+</span><span>this.leaderId </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>
+</span><span>this.votes </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span style=color:#75715e>// 定时器
+</span><span>
+</span><span>this.electionTimeout </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>
+</span><span>this.heartbeatInterval </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>
+</span><span style=color:#75715e>// 初始化
+</span><span>
+</span><span>this.</span><span style=color:#a6e22e>resetElectionTimeout</span><span>();
+</span><span>
+</span><span>}
+</span></code></pre><p>这段代码定义了 Raft 节点的基本状态，包括持久性状态（currentTerm、votedFor、log）和易失性状态（commitIndex、lastApplied、nextIndex、matchIndex）。<h3 id=3-2-ling-dao-ren-xuan-ju>3.2 领导人选举</h3><pre class=language-javascript data-lang=javascript style=color:#f8f8f2;background-color:#272822><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>startElection</span><span>() {
+</span><span>
+</span><span style=color:#f92672>if </span><span>(this.state </span><span style=color:#f92672>=== </span><span style=color:#e6db74>'leader'</span><span>) </span><span style=color:#f92672>return</span><span>;
+</span><span>
+</span><span style=color:#75715e>// 成为候选人
+</span><span>
+</span><span>this.state </span><span style=color:#f92672>= </span><span style=color:#e6db74>'candidate'</span><span>;
+</span><span>
+</span><span>this.currentTerm </span><span style=color:#f92672>+= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>
+</span><span>this.votedFor </span><span style=color:#f92672>= </span><span>this.id;
+</span><span>
+</span><span>this.votes </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>; </span><span style=color:#75715e>// 给自己投票
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>console</span><span>.</span><span style=color:#66d9ef>log</span><span>(</span><span style=color:#e6db74>`Node ${this.id} starting election for term ${this.currentTerm}`</span><span>);
+</span><span>
+</span><span style=color:#75715e>// 向所有其他节点请求投票
+</span><span>
+</span><span>this.nodes.</span><span style=color:#66d9ef>forEach</span><span>(</span><span style=color:#fd971f;font-style:italic>node </span><span style=color:#66d9ef;font-style:italic>=> </span><span>{
+</span><span>
+</span><span style=color:#f92672>if </span><span>(node.id </span><span style=color:#f92672>!== </span><span>this.id) {
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>voteGranted </span><span style=color:#f92672>= </span><span>this.</span><span style=color:#a6e22e>requestVote</span><span>(node);
+</span><span>
+</span><span style=color:#f92672>if </span><span>(voteGranted) {
+</span><span>
+</span><span>this.votes </span><span style=color:#f92672>+= </span><span style=color:#ae81ff>1</span><span>;
+</span><span>
+</span><span style=color:#75715e>// 检查是否获得多数票
+</span><span>
+</span><span style=color:#f92672>if </span><span>(this.votes </span><span style=color:#f92672>> </span><span>this.nodes.length </span><span style=color:#f92672>/ </span><span style=color:#ae81ff>2</span><span>) {
+</span><span>
+</span><span>this.</span><span style=color:#a6e22e>becomeLeader</span><span>();
+</span><span>
+</span><span>}
+</span><span>
+</span><span>}
+</span><span>
+</span><span>}
+</span><span>
+</span><span>});
+</span><span>
+</span><span style=color:#75715e>// 重置选举超时
+</span><span>
+</span><span>this.</span><span style=color:#a6e22e>resetElectionTimeout</span><span>();
+</span><span>
+</span><span>}
+</span></code></pre><p>这段代码实现了选举过程：节点成为候选人，增加任期号，给自己投票，然后向其他节点请求投票。如果获得多数票，则成为领导人。<h3 id=3-3-ri-zhi-fu-zhi>3.3 日志复制</h3><pre class=language-javascript data-lang=javascript style=color:#f8f8f2;background-color:#272822><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>appendEntries</span><span>(node) {
+</span><span>
+</span><span style=color:#75715e>// 在实际实现中，这将是一个 RPC
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>term </span><span style=color:#f92672>= </span><span>this.currentTerm;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>leaderId </span><span style=color:#f92672>= </span><span>this.id;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>prevLogIndex </span><span style=color:#f92672>= </span><span>this.nextIndex[node.id] </span><span style=color:#f92672>- </span><span style=color:#ae81ff>1</span><span>;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>prevLogTerm </span><span style=color:#f92672>= </span><span>prevLogIndex </span><span style=color:#f92672>>= </span><span style=color:#ae81ff>0 </span><span style=color:#f92672>? </span><span>this.log[prevLogIndex].term </span><span style=color:#f92672>: </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>entries </span><span style=color:#f92672>= </span><span>this.log.</span><span style=color:#66d9ef>slice</span><span>(this.nextIndex[node.id]);
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>leaderCommit </span><span style=color:#f92672>= </span><span>this.commitIndex;
+</span><span>
+</span><span style=color:#f92672>return </span><span>node.</span><span style=color:#a6e22e>handleAppendEntries</span><span>(term, leaderId, prevLogIndex, prevLogTerm, entries, leaderCommit);
+</span><span>
+</span><span>}
+</span><span>
+</span><span>
+</span><span>
+</span><span style=color:#a6e22e>handleAppendEntries</span><span>(term, leaderId, prevLogIndex, prevLogTerm, entries, leaderCommit) {
+</span><span>
+</span><span style=color:#75715e>// 如果任期过时，拒绝
+</span><span>
+</span><span style=color:#f92672>if </span><span>(term </span><span style=color:#f92672>&lt; </span><span>this.currentTerm) {
+</span><span>
+</span><span style=color:#f92672>return </span><span style=color:#ae81ff>false</span><span>;
+</span><span>
+</span><span>}
+</span><span>
+</span><span style=color:#75715e>// 重置选举超时，因为我们收到了领导人的消息
+</span><span>
+</span><span>this.</span><span style=color:#a6e22e>resetElectionTimeout</span><span>();
+</span><span>
+</span><span style=color:#75715e>// 如果看到更高的任期，更新我们的任期
+</span><span>
+</span><span style=color:#f92672>if </span><span>(term </span><span style=color:#f92672>> </span><span>this.currentTerm) {
+</span><span>
+</span><span>this.currentTerm </span><span style=color:#f92672>= </span><span>term;
+</span><span>
+</span><span>this.state </span><span style=color:#f92672>= </span><span style=color:#e6db74>'follower'</span><span>;
+</span><span>
+</span><span>this.votedFor </span><span style=color:#f92672>= </span><span style=color:#ae81ff>null</span><span>;
+</span><span>
+</span><span>}
+</span><span>
+</span><span style=color:#75715e>// 更新领导人 ID
+</span><span>
+</span><span>this.leaderId </span><span style=color:#f92672>= </span><span>leaderId;
+</span><span>
+</span><span style=color:#75715e>// 检查日志是否包含 prevLogIndex 处的条目，且任期为 prevLogTerm
+</span><span>
+</span><span style=color:#f92672>if </span><span>(prevLogIndex </span><span style=color:#f92672>>= </span><span style=color:#ae81ff>0 </span><span style=color:#f92672>&&
+</span><span>
+</span><span>(prevLogIndex </span><span style=color:#f92672>>= </span><span>this.log.length </span><span style=color:#f92672>||
+</span><span>
+</span><span>this.log[prevLogIndex].term </span><span style=color:#f92672>!== </span><span>prevLogTerm)) {
+</span><span>
+</span><span style=color:#f92672>return </span><span style=color:#ae81ff>false</span><span>;
+</span><span>
+</span><span>}
+</span><span>
+</span><span style=color:#75715e>// 如果现有条目与新条目冲突，删除它和之后的所有条目
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>let </span><span>newEntries </span><span style=color:#f92672>= </span><span>[</span><span style=color:#f92672>...</span><span>entries];
+</span><span>
+</span><span style=color:#f92672>if </span><span>(entries.length </span><span style=color:#f92672>> </span><span style=color:#ae81ff>0</span><span>) {
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>let </span><span>logIndex </span><span style=color:#f92672>= </span><span>prevLogIndex </span><span style=color:#f92672>+ </span><span style=color:#ae81ff>1</span><span>;
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>let </span><span>entryIndex </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
+</span><span>
+</span><span style=color:#f92672>while </span><span>(entryIndex </span><span style=color:#f92672>&lt; </span><span>entries.length) {
+</span><span>
+</span><span style=color:#f92672>if </span><span>(logIndex </span><span style=color:#f92672>>= </span><span>this.log.length </span><span style=color:#f92672>||
+</span><span>
+</span><span>this.log[logIndex].term </span><span style=color:#f92672>!== </span><span>entries[entryIndex].term) {
+</span><span>
+</span><span style=color:#75715e>// 删除从这一点开始的所有条目
+</span><span>
+</span><span>this.log </span><span style=color:#f92672>= </span><span>this.log.</span><span style=color:#66d9ef>slice</span><span>(</span><span style=color:#ae81ff>0</span><span>, logIndex);
+</span><span>
+</span><span style=color:#75715e>// 并附加所有剩余条目
+</span><span>
+</span><span>this.log </span><span style=color:#f92672>= </span><span>[</span><span style=color:#f92672>...</span><span>this.log, </span><span style=color:#f92672>...</span><span>entries.</span><span style=color:#66d9ef>slice</span><span>(entryIndex)];
+</span><span>
+</span><span style=color:#f92672>break</span><span>;
+</span><span>
+</span><span>}
+</span><span>
+</span><span>logIndex</span><span style=color:#f92672>++</span><span>;
+</span><span>
+</span><span>entryIndex</span><span style=color:#f92672>++</span><span>;
+</span><span>
+</span><span>}
+</span><span>
+</span><span>}
+</span><span>
+</span><span style=color:#75715e>// 如果领导人的提交索引更高，更新提交索引
+</span><span>
+</span><span style=color:#f92672>if </span><span>(leaderCommit </span><span style=color:#f92672>> </span><span>this.commitIndex) {
+</span><span>
+</span><span>this.commitIndex </span><span style=color:#f92672>= </span><span style=color:#66d9ef>Math</span><span>.</span><span style=color:#66d9ef>min</span><span>(leaderCommit, this.log.length </span><span style=color:#f92672>- </span><span style=color:#ae81ff>1</span><span>);
+</span><span>
+</span><span>this.</span><span style=color:#a6e22e>applyCommittedEntries</span><span>();
+</span><span>
+</span><span>}
+</span><span>
+</span><span style=color:#f92672>return </span><span style=color:#ae81ff>true</span><span>;
+</span><span>
+</span><span>}
+</span></code></pre><p>这段代码实现了日志复制机制：领导人向跟随者发送 AppendEntries RPC，包含要复制的日志条目。跟随者验证请求的有效性，然后更新自己的日志。<h2 id=4-shi-jian-yan-shi>4. 实践演示</h2><p><code>raft-test.js</code> 文件展示了如何创建一个 Raft 集群并测试其功能：<pre class=language-javascript data-lang=javascript style=color:#f8f8f2;background-color:#272822><code class=language-javascript data-lang=javascript><span style=color:#66d9ef;font-style:italic>const </span><span>RaftNode </span><span style=color:#f92672>= </span><span style=color:#66d9ef>require</span><span>(</span><span style=color:#e6db74>'./raft-node'</span><span>);
+</span><span>
+</span><span>
+</span><span>
+</span><span style=color:#75715e>// 创建一个包含 5 个节点的集群
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>nodes </span><span style=color:#f92672>= </span><span>[];
+</span><span>
+</span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>let </span><span>i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>; i </span><span style=color:#f92672>&lt;= </span><span style=color:#ae81ff>5</span><span>; i</span><span style=color:#f92672>++</span><span>) {
+</span><span>
+</span><span>nodes.</span><span style=color:#66d9ef>push</span><span>(</span><span style=color:#f92672>new </span><span>RaftNode(i));
+</span><span>
+</span><span>}
+</span><span>
+</span><span>
+</span><span>
+</span><span style=color:#75715e>// 将节点相互连接
+</span><span>
+</span><span>nodes.</span><span style=color:#66d9ef>forEach</span><span>(</span><span style=color:#fd971f;font-style:italic>node </span><span style=color:#66d9ef;font-style:italic>=> </span><span>{
+</span><span>
+</span><span>node.nodes </span><span style=color:#f92672>= </span><span>nodes;
+</span><span>
+</span><span>});
+</span><span>
+</span><span>
+</span><span>
+</span><span style=color:#75715e>// 等待领导人被选举出来
+</span><span>
+</span><span style=color:#66d9ef>setTimeout</span><span>(() </span><span style=color:#66d9ef;font-style:italic>=> </span><span>{
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>const </span><span>leader </span><span style=color:#f92672>= </span><span>nodes.</span><span style=color:#66d9ef>find</span><span>(</span><span style=color:#fd971f;font-style:italic>node </span><span style=color:#66d9ef;font-style:italic>=> </span><span>node.state </span><span style=color:#f92672>=== </span><span style=color:#e6db74>'leader'</span><span>);
+</span><span>
+</span><span style=color:#f92672>if </span><span>(leader) {
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>console</span><span>.</span><span style=color:#66d9ef>log</span><span>(</span><span style=color:#e6db74>`Node ${leader.id} is the leader`</span><span>);
+</span><span>
+</span><span style=color:#75715e>// 向领导人发送客户端请求
+</span><span>
+</span><span>leader.</span><span style=color:#a6e22e>clientRequest</span><span>({ type: </span><span style=color:#e6db74>'set'</span><span>, key: </span><span style=color:#e6db74>'foo'</span><span>, value: </span><span style=color:#e6db74>'bar' </span><span>});
+</span><span>
+</span><span style=color:#75715e>// 一段时间后检查日志
+</span><span>
+</span><span style=color:#66d9ef>setTimeout</span><span>(() </span><span style=color:#66d9ef;font-style:italic>=> </span><span>{
+</span><span>
+</span><span>nodes.</span><span style=color:#66d9ef>forEach</span><span>(</span><span style=color:#fd971f;font-style:italic>node </span><span style=color:#66d9ef;font-style:italic>=> </span><span>{
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>console</span><span>.</span><span style=color:#66d9ef>log</span><span>(</span><span style=color:#e6db74>`Node ${node.id} log:`</span><span>, node.log);
+</span><span>
+</span><span>});
+</span><span>
+</span><span>}, </span><span style=color:#ae81ff>500</span><span>);
+</span><span>
+</span><span>} </span><span style=color:#f92672>else </span><span>{
+</span><span>
+</span><span style=color:#66d9ef;font-style:italic>console</span><span>.</span><span style=color:#66d9ef>log</span><span>(</span><span style=color:#e6db74>'No leader elected yet'</span><span>);
+</span><span>
+</span><span>}
+</span><span>
+</span><span>}, </span><span style=color:#ae81ff>1000</span><span>);
+</span></code></pre><p>这段代码创建了 5 个 Raft 节点，让它们相互连接，然后等待领导人选举完成。一旦选出领导人，它会向领导人发送一个客户端请求，然后检查所有节点的日志是否一致。<h2 id=5-zong-jie-yu-si-kao>5. 总结与思考</h2><p>通过对 Raft 算法的学习和 JavaScript 实现的分析，我们可以看到 Raft 算法的几个关键优势：<ol><li><p><strong>可理解性</strong>：Raft 将共识问题分解为选举、日志复制和安全性三个子问题，使其更容易理解和实现。</p><li><p><strong>领导人机制</strong>：Raft 使用强领导人模式，所有日志条目都从领导人流向其他服务器，简化了日志复制的管理。</p><li><p><strong>成员变更</strong>：Raft 提供了一种安全的方式来改变集群中的服务器集合。</p><li><p><strong>日志压缩</strong>：Raft 支持日志压缩，防止日志无限增长。</p></ol><p>然而，我们的 JavaScript 实现还有一些局限性和可改进之处：<ol><li><p><strong>网络通信</strong>：实际实现中需要使用真正的 RPC 机制，而不是直接函数调用。</p><li><p><strong>持久化</strong>：需要将持久性状态（currentTerm、votedFor、log）写入持久存储。</p><li><p><strong>错误处理</strong>：需要处理网络分区、节点崩溃等故障情况。</p><li><p><strong>日志压缩</strong>：实现日志压缩机制，防止日志无限增长。</p><li><p><strong>成员变更</strong>：实现安全的集群成员变更机制。</p></ol><p>Raft 算法的设计理念是“易于理解“，这使得它成为分布式系统中实现共识的流行选择。通过本文的学习，希望读者能够对 Raft 算法有更深入的理解，并能够在实际项目中应用这些知识。<p>完整实现代码：<a href=https://gitee.com/dllen/dllen-demos/tree/master/raft-js>gitee</a><h2 id=can-kao-zi-liao>参考资料</h2><ol><li><p><a href=https://github.com/maemual/raft-zh_cn>GitHub - maemual/raft-zh_cn: Raft一致性算法论文的中文翻译</a></p><li><p>Raft 官方网站：https://raft.github.io/</p><li><p>Raft 可视化：http://thesecretlivesofdata.com/raft/</p><li><p><a href=https://www.codedump.info/post/20180921-raft/>Raft算法原理 - codedump的网络日志</a></p></ol></div></div></section>

@@ -2,9 +2,6 @@
 .DS_Store
 **/.DS_Store
 
-# Zola生成的文件
-boring/public/
-boring/roc-blog/
 
 # 编辑器和IDE文件
 .idea/
