@@ -12,7 +12,7 @@ Paxos 协议是一种分布式一致性算法，用于在多个节点上达成�
 1. Proposer 节点向 Acceptor 节点发送编号为 n 的提案，Acceptor 节点接收提案并判断编号是否大于已经接受的提案编号，如果大于则将该提案编号保存并发送一个 promise 消息给 Proposer 节点，否则拒绝提案。
 
 2. 如果 Proposer 节点收到大多数 Acceptor 节点发送的 promise 消息，则进入第 2a 步，否则进入第 2b 步。
-
+   
     2a. Proposer 节点向 Acceptor 节点发送一个编号为 n 的 accept 请求，Acceptor 节点接收请求并判断编号是否大于已经接受的提案编号，如果大于则将该提案编号保存并发送一个 accepted 消息给 Proposer 节点，否则拒绝提案。
    
     2b. Proposer 节点重新提出一个新的提案，重复步骤 1 和 2。
