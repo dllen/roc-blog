@@ -1,0 +1,71 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Elasticsearch 磁盘使用优化实践 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-09-19</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Elasticsearch 磁盘使用优化实践</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=bei-jing-yu-mu-biao>背景与目标</h2><ul><li>背景：随着数据规模增长与保留期延长，Elasticsearch 的段文件、复制、存储字段与快照会快速膨胀。<li>目标：在保证查询能力与可靠性的前提下，系统性降低磁盘使用成本，并明确权衡与风险。</ul><p>参考：<ul><li>Tune for disk usage（Elasticsearch 6.8 指南）：https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html<li>Optimize disk usage（Elastic Docs）：https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage</ul><h2 id=yi-ye-qing-dan-quick-wins>一页清单（Quick Wins）</h2><ul><li>将索引设置为 <code>index.codec: best_compression</code>，仅在只读或写入压力可接受场景使用。<li>只对需要排序/聚合的字段启用 <code>doc_values</code>（默认），避免在 <code>text</code> 字段开启 <code>fielddata</code>。<li>为不需要短语/位置查询的 <code>text</code> 字段设置 <code>index_options: docs</code> 并关闭 <code>norms</code>。<li>依赖 <code>_source</code> 返回，谨慎使用 <code>store: true</code>；必要时做 <code>_source</code> 过滤而非禁用。<li>控制每索引的分片数量和大小，减少小分片；副本数按可靠性需求设置。<li>对只读索引执行 <code>forcemerge</code> 到较少段；通过 ILM 编排 rollover/shrink/forcemerge/delete。<li>采用快照与（版本支持下的）searchable snapshots，将冷数据转移到对象存储。</ul><h2 id=suo-yin-ji-ya-suo-best-compression>索引级压缩：<code>best_compression</code></h2><ul><li>原理与权衡：将存储字段等改为更高压缩率（如 DEFLATE），降低磁盘占用但增加 CPU 与写入延迟。<li>仅影响新段：更改后只对新生成的段生效；老段需 <code>forcemerge</code> 才能受益。<li>设置示例：</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>PUT my-index/_settings
+</span><span>{
+</span><span>  </span><span style=color:#e6db74>"index"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"codec"</span><span>: </span><span style=color:#e6db74>"best_compression"
+</span><span>  }
+</span><span>}
+</span></code></pre><ul><li>对只读历史索引，在 ILM 的 warm/cold 阶段配合 <code>forcemerge</code> 使用更合适。</ul><h2 id=ying-she-you-hua-zi-duan-ji-jian-fu>映射优化：字段级减负</h2><ul><li>文本字段（不需要短语/位置时）：</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>PUT my-index
+</span><span>{
+</span><span>  </span><span style=color:#e6db74>"settings"</span><span>: { </span><span style=color:#e6db74>"index.codec"</span><span>: </span><span style=color:#e6db74>"best_compression" </span><span>},
+</span><span>  </span><span style=color:#e6db74>"mappings"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"properties"</span><span>: {
+</span><span>      </span><span style=color:#e6db74>"message"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"text"</span><span>,
+</span><span>        </span><span style=color:#e6db74>"index_options"</span><span>: </span><span style=color:#e6db74>"docs"</span><span>,
+</span><span>        </span><span style=color:#e6db74>"norms"</span><span>: </span><span style=color:#ae81ff>false
+</span><span>      },
+</span><span>      </span><span style=color:#e6db74>"status"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"keyword"</span><span>,
+</span><span>        </span><span style=color:#e6db74>"doc_values"</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      },
+</span><span>      </span><span style=color:#e6db74>"ts"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"date"</span><span>,
+</span><span>        </span><span style=color:#e6db74>"doc_values"</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      }
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span></code></pre><ul><li><p>说明：</p> <ul><li><code>index_options: docs</code> 仅索引文档号，减少位置信息存储；不适用于短语查询与高亮。<li><code>norms: false</code> 关闭字段归一化元数据，缩减磁盘与内存。<li>对需要聚合/排序的字段保留 <code>doc_values</code>；在 <code>text</code> 上避免开启 <code>fielddata</code>。</ul><li><p>存储策略：</p> <ul><li>默认不 <code>store</code> 字段，依赖 <code>_source</code> 返回；对超大文档可做 <code>_source</code> 过滤（<code>_source.includes/excludes</code>）。<li>禁用 <code>_source</code> 会影响重建与更新；仅在有严格外部存储与明确不需重建时考虑。</ul></ul><h2 id=fen-pian-yu-fu-ben-jie-gou-cheng-ben-kong-zhi>分片与副本：结构成本控制</h2><ul><li>分片数量与大小：每分片都有元数据与段开销；避免大量小分片。结合数据规模设置 <code>number_of_shards</code>，通过 ILM 的 <code>shrink</code> 合并到更少分片。<li>副本数（<code>number_of_replicas</code>）：降低副本可节省磁盘，但会降低容错能力；生产通常至少 1 副本。<li>示例：小型索引可用：</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>PUT small-index
+</span><span>{
+</span><span>  </span><span style=color:#e6db74>"settings"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"number_of_shards"</span><span>: </span><span style=color:#ae81ff>1</span><span>,
+</span><span>    </span><span style=color:#e6db74>"number_of_replicas"</span><span>: </span><span style=color:#ae81ff>1
+</span><span>  }
+</span><span>}
+</span></code></pre><h2 id=sheng-ming-zhou-qi-ilm-zi-dong-hua-bian-pai>生命周期（ILM）：自动化编排</h2><ul><li>策略示例（按规模调整）：</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>PUT _ilm/policy/logs-policy
+</span><span>{
+</span><span>  </span><span style=color:#e6db74>"policy"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"phases"</span><span>: {
+</span><span>      </span><span style=color:#e6db74>"hot"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"actions"</span><span>: {
+</span><span>          </span><span style=color:#e6db74>"rollover"</span><span>: { </span><span style=color:#e6db74>"max_size"</span><span>: </span><span style=color:#e6db74>"50gb"</span><span>, </span><span style=color:#e6db74>"max_age"</span><span>: </span><span style=color:#e6db74>"7d" </span><span>}
+</span><span>        }
+</span><span>      },
+</span><span>      </span><span style=color:#e6db74>"warm"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"actions"</span><span>: {
+</span><span>          </span><span style=color:#e6db74>"forcemerge"</span><span>: { </span><span style=color:#e6db74>"max_num_segments"</span><span>: </span><span style=color:#ae81ff>1 </span><span>},
+</span><span>          </span><span style=color:#e6db74>"shrink"</span><span>: { </span><span style=color:#e6db74>"number_of_shards"</span><span>: </span><span style=color:#ae81ff>1 </span><span>}
+</span><span>        }
+</span><span>      },
+</span><span>      </span><span style=color:#e6db74>"cold"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"actions"</span><span>: {
+</span><span>          </span><span style=color:#e6db74>"freeze"</span><span>: {}
+</span><span>        }
+</span><span>      },
+</span><span>      </span><span style=color:#e6db74>"delete"</span><span>: {
+</span><span>        </span><span style=color:#e6db74>"min_age"</span><span>: </span><span style=color:#e6db74>"30d"</span><span>,
+</span><span>        </span><span style=color:#e6db74>"actions"</span><span>: { </span><span style=color:#e6db74>"delete"</span><span>: {} }
+</span><span>      }
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span></code></pre><ul><li>注意：<code>freeze</code> 在新版本中已有替代方案（如 searchable snapshot/frozen tier），按版本文档选择对应能力。</ul><h2 id=duan-he-bing-zhi-du-suo-yin-shang-de-forcemerge>段合并：只读索引上的 <code>forcemerge</code></h2><ul><li>仅对只读索引使用，避免影响写入与查询；可显著减少段文件和开销。</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>POST my-index/_forcemerge?max_num_segments=</span><span style=color:#ae81ff>1
+</span></code></pre><h2 id=kuai-zhao-yu-gui-dang-an-ban-ben-neng-li>快照与归档（按版本能力）</h2><ul><li>使用快照（S3/HDFS/自建对象存储）降低本地磁盘占用；在支持的版本上启用可检索快照，将冷数据转移到低成本存储。</ul><h2 id=jian-kong-yu-shui-wei-fang-zhi-ci-pan-da-man>监控与水位（防止磁盘打满）</h2><ul><li>使用默认或更严格的磁盘水位防护（按需调整）：</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>PUT _cluster/settings
+</span><span>{
+</span><span>  </span><span style=color:#e6db74>"persistent"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"cluster.routing.allocation.disk.watermark.low"</span><span>: </span><span style=color:#e6db74>"85%"</span><span>,
+</span><span>    </span><span style=color:#e6db74>"cluster.routing.allocation.disk.watermark.high"</span><span>: </span><span style=color:#e6db74>"90%"</span><span>,
+</span><span>    </span><span style=color:#e6db74>"cluster.routing.allocation.disk.watermark.flood_stage"</span><span>: </span><span style=color:#e6db74>"95%"
+</span><span>  }
+</span><span>}
+</span></code></pre><ul><li>搭配监控告警（如 Prometheus/Elastic Monitoring）对索引大小、段数、合并耗时、快照失败率等关键指标设置阈值。</ul><h2 id=feng-xian-yu-quan-heng>风险与权衡</h2><ul><li><code>best_compression</code>：写入与合并更耗 CPU；在写重负载场景谨慎使用。<li>关闭 <code>norms</code> 与降低 <code>index_options</code>：会影响打分、短语查询与高亮；按查询需求评估。<li>减少副本：降低磁盘但降低容错；需结合可靠性与恢复目标（RPO/RTO）。<li><code>forcemerge</code>：仅对只读索引执行；过程耗时且资源占用高，建议窗口期执行。<li>禁用 <code>_source</code>：几乎阻断重建与更新能力；一般不推荐。</ul><h2 id=can-kao>参考</h2><ul><li>Elasticsearch 6.8：Tune for disk usage <ul><li>https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html</ul><li>Elastic Docs：Optimize disk usage <ul><li>https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage</ul></ul></div></div></section>

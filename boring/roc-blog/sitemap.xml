@@ -20,15 +20,19 @@
     </url>
     <url>
         <loc>https://scp.net.cn/blog/chaos-build/</loc>
-        <lastmod>2019-03-18T12:13:32+05:30</lastmod>
+        <lastmod>2024-08-18T12:13:32+05:30</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/cosid-intro/</loc>
         <lastmod>2023-03-18T12:13:38+05:30</lastmod>
     </url>
     <url>
-        <loc>https://scp.net.cn/blog/distributed-lock/</loc>
-        <lastmod>2018-03-18T12:13:38+05:30</lastmod>
+        <loc>https://scp.net.cn/blog/disk-usage/</loc>
+        <lastmod>2024-09-19T12:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/distributed-locks/</loc>
+        <lastmod>2025-10-19T12:35:00+08:00</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/docker-networking-iptables/</loc>
@@ -37,6 +41,10 @@
     <url>
         <loc>https://scp.net.cn/blog/docker-networking/</loc>
         <lastmod>2024-01-21T12:13:30+05:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/es-index-speed/</loc>
+        <lastmod>2025-10-19T12:20:00+08:00</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/extra/</loc>
