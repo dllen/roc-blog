@@ -1,0 +1,55 @@
+name: Build Site
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: 'boring/yarn.lock'
+
+      - name: Install frontend dependencies
+        working-directory: boring
+        run: |
+          corepack enable
+          yarn install --immutable || yarn install
+
+      - name: Build CSS with PostCSS (yarn build)
+        working-directory: boring
+        run: yarn build
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Zola
+        run: cargo install zola
+
+      - name: Build site with Zola
+        working-directory: boring
+        run: zola build -o roc-blog --force
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: boring/roc-blog
+
+      - name: Deploy to release branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: release
+          publish_dir: boring/roc-blog
+          force_orphan: true
