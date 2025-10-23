@@ -1,5 +1,4 @@
 node_modules/
 public/
 *.log
-static/css/
 boring/roc-blog/
