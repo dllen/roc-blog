@@ -36,7 +36,7 @@ Ingress 限速只能对整个网卡入流量限速，无队列之分。
 
 Ingress 流量的限速示例：
 
-```shell
+```bash
 tc qdisc add dev eth0 ingress
 tc filter add dev eth0 parent ffff: protocol ip prio 10 u32 match ipsrc 0.0.0.0/0 police rate 2048kbps burst 1m drop flowid :1
 ```
@@ -79,7 +79,7 @@ TC模块实现流量控制功能使用的队列规定分为两类，一类是无
 
 ***不可分类QDISC配置：*** 如果没有可分类QDISC，不可分类QDISC只能附属于设备的根。它们的用法如下：
 
-```shell
+```bash
 # 添加一个不可分类的 qdisc
 tc qdisc add dev DEV root QDISC QDISC-PARAMETERS
 # 删除一个不可分类 qdisc
@@ -192,13 +192,13 @@ eg:
 
     常用的有ip选择器和tcp选择器。特殊选择器简化了一些常用字段的设置，可以匹配包头中的各种字段，比如：
 
-```shell
+```bash
 # 匹配ip源地址在192.168.8.0/24子网的包
 tc filter add dev eth0 protocol ip parent 1:0 prio 10 u32 \
     match ip src 192.168.8.0/24 flowid 1:4
 ```
 
-```shell
+```bash
 # 匹配TCP协议（0x6）、且目的端口为53的包。
 tc filter add dev eth0 protocol ip parent 1:0 prio 10 u32 \
         match ip protocol 0x6 0xff \
@@ -210,7 +210,7 @@ tc filter add dev eth0 protocol ip parent 1:0 prio 10 u32 \
 
     特殊选择器总是可以改写成对应的通用选择器，通用选择器可以匹配 IP（或上层）头中的几乎任何位，不过相比特殊选择器较难编写和阅读。其语法如下：
 
-```shell
+```bash
 match [ u32 | u16 | u8 ] PATTERN MASK at [OFFSET | nexthdr+OFFSET]
 ```
 
@@ -218,7 +218,7 @@ match [ u32 | u16 | u8 ] PATTERN MASK at [OFFSET | nexthdr+OFFSET]
 
 来看一个例子：
 
-```shell
+```bash
 tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
     match u32 00100000 00ff0000 at 0 flowid 1:10
 ```
@@ -227,7 +227,7 @@ tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
 
 再来看另一个例子：
 
-```shell
+```bash
 tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
     match u32 00000016 0000ffff at nexthdr+0 flowid 1:10
 ```
@@ -238,7 +238,7 @@ tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
 
 ### 示例一
 
-```shell
+```bash
 sudo tc qdisc add dev eth0 root handle 1: prio bands 4
 sudo tc qdisc add dev eth0 parent 1:4 handle 40: netem loss 10% delay 40ms
 sudo tc filter add dev eth0 protocol ip parent 1:0 prio 4 u32 match ip dst 192.168.190.7 match ip dport 36000 0xffff flowid 1:4
@@ -272,7 +272,7 @@ band  0    1    2    3
 
 ### 示例二
 
-```shell
+```bash
 # tc 查看包 drop 情况
 tc -s -d qd
 
@@ -309,7 +309,7 @@ tc class add dev enp0s5 parent 1: classid 1:1 htb rate 100kbps ceil 100kbps
 
 ### Network Delay
 
-```shell
+```bash
 tc qdisc add dev eth0 root netem delay 200ms
 ```
 
@@ -327,7 +327,7 @@ tc qdisc add dev eth0 root netem delay 200ms
 
 - 200ms: introduce delay of 200 ms
 
-```shell
+```bash
 # delete all rules
 tc qdisc del dev eth0 root
 
@@ -337,7 +337,7 @@ tc qdisc show  dev eth0
 
 > Note that if you have an existing rule you can change it by using “`tc qdisc change`” and if you don’t have any rules you add rules with “`tc qdisc add`”. Here are some other examples:
 
-```shell
+```bash
 # Delay of 100ms and random +/- 10ms uniform distribution:
 tc qdisc change dev eth0 root netem delay 100ms 10ms
 
@@ -350,7 +350,7 @@ tc qdisc add dev eth0 root netem delay 100ms 20ms distribution normal
 
 ### Packet Loss and Packet Corruption
 
-```shell
+```bash
 # packet loss of 10%
 tc qdisc add dev eth0 root netem loss 10%
 
@@ -363,7 +363,7 @@ tc qdisc change dev eth0 root netem duplicate 1%
 
 ### Bandwidth limit
 
-```shell
+```bash
 # limit the egress bandwidth
 tc qdisc add dev eth0 root tbf rate 1mbit burst 32kbit latency 400ms
 ```
@@ -380,14 +380,14 @@ tc qdisc add dev eth0 root tbf rate 1mbit burst 32kbit latency 400ms
 
 **服务端**
 
-```shell
+```bash
 # 作为服务端运行，报告回显间隔时间1s
 iperf -s -i 1
 ```
 
 **客户端**
 
-```shell
+```bash
 The best way to demonstrate this is with an iPerf test. In my lab I get 95 Mbps of performance before applying any bandwidth rules:
 
 # 限速前

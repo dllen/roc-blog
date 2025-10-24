@@ -17,7 +17,7 @@ tags: [linux, iptables, docker]
 
 ## Host网络模式
 
-```shell
+```bash
 # Create a new cgroup and assign it a classid
 mkdir /sys/fs/cgroup/net_cls/my_cgroup
 echo 0x100001 > /sys/fs/cgroup/net_cls/my_cgroup/net_cls.classid
@@ -47,7 +47,7 @@ tc filter add dev eth0 parent 10: protocol ip prio 10 handle 1: cgroup
 
 ## 非Host网络模式
 
-```shell
+```bash
 # Get the PID of the container's network namespace
 PID=$(docker inspect -f '{{.State.Pid}}' <container_name_or_id>)
 
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
 
 ```
 
-```shell
+```bash
 # 测试
 
 # compile

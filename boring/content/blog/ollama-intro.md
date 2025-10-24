@@ -21,7 +21,7 @@ GitHub 地址：[GitHub - ollama/ollama](https://github.com/ollama/ollama)
 
 安装完后执行以下命令
 
-```shell
+```bash
 # 下载模型
 ollama pull llama2
 ollama pull codellama:7b
@@ -61,7 +61,7 @@ The first command compiles the Java code into a class file named `HelloWorld.cla
 
 运行命令
 
-```shell
+```bash
 ollama run codellama:7b '你是一个 python 专家，给我写一个 简单 计算器 代码'
 ```
 
@@ -99,7 +99,7 @@ num2`，否则将引发一个 `ValueError`。
 
 运行命令
 
-```shell
+```bash
 ollama run codellama '
 Where is the bug in this code?
 
@@ -147,7 +147,7 @@ def calculate(num1, num2, op):
 
 运行命令
 
-```shell
+```bash
 ollama run codellama 'write a unit test for this function: 
 def calculate(num1, num2, op):
     if op == "+":
@@ -194,7 +194,7 @@ expected result for each operation. The `with pytest.raises(ValueError):` block 
 
 运行命令
 
-```shell
+```bash
 ollama run codellama:7b '# 提供一个函数反转数组元素:'
 ```
 
@@ -225,7 +225,7 @@ assert reverse([1, 2, 3, 4, 5]) == [5, 4, 3, 2, 1]
 > <PRE> {prefix} <SUF>{suffix} <MID>
 > ```
 
-```shell
+```bash
 ollama run codellama:7b '<PRE> def max_val(x, y): <SUF>return result <MID>'
 ```
 
@@ -247,7 +247,7 @@ ollama run codellama:7b '<PRE> def max_val(x, y): <SUF>return result <MID>'
 
 运行命令
 
-```shell
+```bash
 ollama run codellama:7b '
 # Java Spring MVC 输出 hello world
 public String helloworld():'
@@ -400,7 +400,7 @@ for chunks in llm.stream(query):
 
 **安装命令**
 
-```shell
+```bash
 brew install --cask ollamac
 ```
 
@@ -414,7 +414,7 @@ brew install --cask ollamac
 
 **安装命令**
 
-```shell
+```bash
 docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 

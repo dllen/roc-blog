@@ -140,7 +140,7 @@ Docker 使用 命名空间 和 iptables 规则实现网络隔离，而VM通常�
 
 执行以下命令：
 
-```shell
+```bash
 docker network create demo-network -d bridge
 
 docker network ls
@@ -149,7 +149,7 @@ NETWORK ID    NAME          VERSION     PLUGINS
 e2f4e124c378  demo-network  0.4.0       bridge,portmap,firewall,tuning
 ```
 
-```shell
+```bash
 docker network inspect demo-network
 
 
@@ -188,7 +188,7 @@ docker network inspect demo-network
 
 执行以下命令:
 
-```shell
+```bash
 # 创建桥接网络
 docker network create --driver bridge alpine-net
 
@@ -208,14 +208,14 @@ docker run -dit --name alpine3 alpine ash
 
 > 备注：如果通过 container name 不能被解析，可以手工添加hosts或者直接使用容器IP通信；
 
-```shell
+```bash
 docker container attach alpine1
 
 # in alpine1
 / # ping -c 2 alpine2
 ```
 
-```shell
+```bash
 
 docker container attach alpine1
 
@@ -230,7 +230,7 @@ ping: bad address 'alpine3'
 
 将`container2`连接到网络:
 
-```shell
+```bash
 docker network connect alpine-net alpine3
 ```
 
@@ -238,7 +238,7 @@ docker network connect alpine-net alpine3
 
 
 
-```shell
+```bash
 
 docker container attach alpine1
 
@@ -262,7 +262,7 @@ PING container2 (172.22.0.3): 56 data bytes
 
 执行下面命令：
 
-```shell
+```bash
 docker run -d --name nginx --network host nginx:latest
 ```
 
@@ -270,7 +270,7 @@ docker run -d --name nginx --network host nginx:latest
 
 NGINX默认侦听端口80。因为容器使用的是主机网络，所以可以访问主机本地主机上的 NGINX服务器: 80，即使没有显式绑定端口:
 
-```shell
+```bash
 curl localhost:80
 <!DOCTYPE html>
 <html>
@@ -284,7 +284,7 @@ curl localhost:80
 
 使用none配置容器网络时，容器将没有可用的连接——无论是到其他容器，还是到其他网络。通过将容器网络配置为`none`禁用网络:
 
-```shell
+```bash
 docker run -it --rm --network none busybox:latest
 / # ping baidu.com
 ping: bad address 'baidu.com'
@@ -302,7 +302,7 @@ Docker允许在不重新启动容器的情况下自由地管理网络连接。
 
 还可以从不再需要的网络中删除容器:
 
-```shell
+```bash
 docker network disconnect demo-network container2
 ```
 
@@ -314,7 +314,7 @@ docker network disconnect demo-network container2
 
 **列出网络配置**
 
-```shell
+```bash
 docker network ls
 ```
 
@@ -326,7 +326,7 @@ docker network rm demo-network
 
 **删除没有使用的网络配置**
 
-```shell
+```bash
 docker network prune
 ```
 

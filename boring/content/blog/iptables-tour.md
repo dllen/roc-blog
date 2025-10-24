@@ -169,7 +169,7 @@ Iptables采用“表”和“链”的分层结构。在REHL4中是三张表五�
 
 #### 常见实用案例
 
-```shell
+```bash
 
 # 删除INPUT链的第一条规则
 iptables -D INPUT 1
@@ -391,21 +391,21 @@ iptables -A LOGGING -j DROP
 
 1. 首先，我们需要定义两个路由表，比如 10 和 20，并且分别添加默认路由到不同的网关。假设我们有两个网卡 eth1 和 eth2，分别连接到网关 202.106.x.x 和 211.108.x.x，我们可以使用 ip 命令来添加路由表
    
-   ```shell
+   ```bash
    ip route add default via 202.106.x.x dev eth1 table 10
    ip route add default via 211.108.x.x dev eth2 table 20
    ```
 
 2. 然后，我们需要使用 mangle 表来给不同端口的数据包打上标记，比如我们想要让 80 和 443 端口的数据包走 eth1 网卡，而 20 和 21 端口的数据包走 eth2 网卡，我们可以使用 iptables 命令来设置 mangle 表
    
-   ```shell
+   ```bash
    iptables -t mangle -A PREROUTING -i eth0 -p tcp --dport 80:443 -j MARK --set-mark 1
    iptables -t mangle -A PREROUTING -i eth0 -p tcp --dport 20:21 -j MARK --set-mark 2
    ```
 
 3. 最后，我们需要使用 ip 命令来添加规则，让打上标记的数据包按照对应的路由表进行转发
    
-   ```shell
+   ```bash
    ip rule add from all fwmark 1 table 10
    ip rule add from all fwmark 2 table 20
    ```
@@ -426,7 +426,7 @@ iptables -A LOGGING -j DROP
 
 2. 然后，我们需要使用 raw 表来设置规则，让该主机发出或者发往的 ICMP 数据包跳过连接跟踪，并且直接丢弃。我们可以使用 iptables 命令来设置 raw 表
    
-   ```shell
+   ```bash
    iptables -t raw -A PREROUTING -s 192.168.1.100 -p icmp -j DROP
    iptables -t raw -A OUTPUT -d 192.168.1.100 -p icmp -j DROP
    ```
@@ -439,7 +439,7 @@ iptables -A LOGGING -j DROP
    > 
    > 一般来说，我们可以使用 filter 表来禁止 ping，只需要在 INPUT 链和 OUTPUT 链上添加规则，让 ICMP 数据包被 DROP 或者 REJECT 即可。例如，如果我们想要禁止 192.168.1.100 这个主机 ping 我们或者被我们 ping，我们可以使用以下命令：
    > 
-   > ```shell
+   > ```bash
    > iptables -A INPUT -s 192.168.1.100 -p icmp -j DROP
    > iptables -A OUTPUT -d 192.168.1.100 -p icmp -j DROP
    > ```
@@ -448,7 +448,7 @@ iptables -A LOGGING -j DROP
    > 
    > 为了避免这种浪费，我们可以使用 raw 表来禁止 ping，只需要在 PREROUTING 链和 OUTPUT 链上添加规则，让 ICMP 数据包跳过连接跟踪，并且直接丢弃即可。例如，如果我们想要禁止 192.168.1.100 这个主机 ping 我们或者被我们 ping，我们可以使用以下命令：
    > 
-   > ```shell
+   > ```bash
    > iptables -t raw -A PREROUTING -s 192.168.1.100 -p icmp -j DROP
    > iptables -t raw -A OUTPUT -d 192.168.1.100 -p icmp -j DROP
    > ```

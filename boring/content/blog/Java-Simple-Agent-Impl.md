@@ -112,7 +112,7 @@ Agent-Class: class
 
 编译和测试：
 
-```shell
+```bash
 # 编译打包
 mvn clean package
 # 执行
@@ -252,7 +252,7 @@ public class MyApp {
 
 编译和测试：
 
-```shell
+```bash
 # 编译打包
 mvn clean package
 

@@ -111,7 +111,7 @@ Centos `sudo yum install libcgroup` `sudo yum install libcgroup-tools`
 
 **示例**
 
-```shell
+```bash
 # 创建 memory cgroup
 sudo cgcreate -g memory:test-memory-limiter
 ls -la /sys/fs/cgroup/memory/test-memory-limiter/

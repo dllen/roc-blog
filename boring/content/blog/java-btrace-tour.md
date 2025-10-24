@@ -15,7 +15,7 @@ tags: [java, btrace]
 > 
 > A：手动将 BTrace bin 文件夹下的 jar 安装到本地 Maven 仓库。
 > 
-> ```shell
+> ```bash
 > export BTRACE_HOME=
 > 
 > mvn install:install-file -Dfile=${BTRACE_HOME}/libs/btrace-agent.jar -DgroupId=org.openjdk.btrace -DartifactId=btrace-agent -Dversion=2.1.1 -Dpackaging=jar

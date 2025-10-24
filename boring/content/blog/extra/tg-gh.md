@@ -22,25 +22,25 @@ tldr: Making GitHub Actions with Js Code
 - **Node**, You can download node from their [website](https://nodejs.org/en/download/)
 - NPM comes with node, so you don't have to worry about it.
 - Initialize the Project
-```shell
+```bash
 $ git init ## initialize a new git repository for version management
 ---
 $ npm init
 ```
 - **dotenv**, Dotenv can be downloaded via
-```shell
+```bash
 $ npm i dotenv
 ---
 $ yarn add dotenv
 ```
 - **node-telegram-bot-api**, node-telegram-bot-api is a simple wrapper for building telegram bots. You can download it via
-```shell
+```bash
 $ npm i node-telegram-bot-api
 ---
 $ yarn add node-telegram-bot-api
 ```
 - **@zeit/ncc**, NCC is a Simple CLI for compiling a Node.js module into a single file, together with all its dependencies, GCC-style. It's a dev dependency and can be downloaded
-```shell
+```bash
 yarn add --dev @zeit/ncc
 ---
 npm i -D @zeit/ncc
@@ -95,7 +95,7 @@ This will be needed for further use and We need to add it to the repo secrets wh
 
 ### Writing the Action and Building the Bot
 Fire up the terminal/cmd and make a new folder. Install the dependencies. Run the following command
-```shell
+```bash
 $ touch index.js action.yml
 ```
 Open your favourite text editor within the folder or with the file. We'll define the bot in `index.js`
@@ -193,7 +193,7 @@ const output = evresp(ghevent)
 bot.sendMessage(chatid,output,{parse_mode : "Markdown"})
 ## Compiling and Minifying the Js code 
 Since we have installed `@zeit/ncc` and this is used for the making the whole program with all the APIs to a single file and we need to use NCC for that. We just need to run
-```shell 
+```bash 
 yarn run ncc build index.js -C -m -o dist
 ``` 
 or you might wanna add the following to you `package.json` file, and run `npm run test` to compile and minify the code.

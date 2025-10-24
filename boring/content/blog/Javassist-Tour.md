@@ -58,7 +58,7 @@ public class Point {
 
 编译java文件并查看字节码
 
-```shell
+```bash
 mvn clean compile
 
 javap -c target.classes.com.ks.test.app.Point
