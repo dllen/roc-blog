@@ -3,8 +3,6 @@ title: "JVM 问题定位与性能调优实战经验"
 date: "2025-10-25T10:00:00+08:00"
 description: "面向生产的 JVM 调优：内存泄漏、GC 停顿、线程阻塞，覆盖 JDK8/11 差异与 Spring 特例。"
 tags: [JVM, 性能调优, GC, 诊断, Spring]
-[extra]
-reading_time: 18
 ---
 
 # 引言
