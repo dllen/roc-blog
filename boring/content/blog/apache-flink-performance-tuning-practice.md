@@ -177,9 +177,6 @@ env.setParallelism(4);
 | CPU 使用率（TaskManagers 平均） | 80% | 70% |
 | 网络缓冲利用率 | 高位抖动 | 稳定中位 |
 
-- Flink Web UI 指标截图（示意）
-![Flink Web UI Metrics](/index-image.png)
-
 # 资源配置优化
 
 - 并行度规划
