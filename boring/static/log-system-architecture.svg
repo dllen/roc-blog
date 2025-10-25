@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .box{fill:#f7f9fc;stroke:#2d3e50;stroke-width:2px;}
+      .title{font-family:Arial, Helvetica, sans-serif;font-size:18px;font-weight:bold;fill:#2d3e50;}
+      .label{font-family:Arial, Helvetica, sans-serif;font-size:14px;fill:#2d3e50;}
+      .arrow{stroke:#2d3e50;stroke-width:2px;marker-end:url(#arrowHead);} 
+    </style>
+    <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2d3e50" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="640" y="40" text-anchor="middle" class="title">日志系统总体架构（Filebeat → Kafka → Flink → ES/ClickHouse/HBase）</text>
+
+  <!-- Ingest Layer: Filebeat -->
+  <rect x="80" y="120" width="200" height="100" rx="8" class="box"/>
+  <text x="180" y="155" text-anchor="middle" class="title">Filebeat</text>
+  <text x="180" y="180" text-anchor="middle" class="label">采集/聚合/缓冲</text>
+  <text x="180" y="200" text-anchor="middle" class="label">spool + 重试</text>
+
+  <!-- Kafka -->
+  <rect x="360" y="120" width="220" height="120" rx="8" class="box"/>
+  <text x="470" y="155" text-anchor="middle" class="title">Kafka</text>
+  <text x="470" y="180" text-anchor="middle" class="label">Topic/Partition</text>
+  <text x="470" y="200" text-anchor="middle" class="label">副本 + ISR</text>
+
+  <!-- Flink -->
+  <rect x="640" y="120" width="220" height="120" rx="8" class="box"/>
+  <text x="750" y="155" text-anchor="middle" class="title">Flink</text>
+  <text x="750" y="180" text-anchor="middle" class="label">解析/路由/聚合</text>
+  <text x="750" y="200" text-anchor="middle" class="label">Checkpoint + Exactly-Once</text>
+
+  <!-- ES -->
+  <rect x="940" y="80" width="260" height="120" rx="8" class="box"/>
+  <text x="1070" y="115" text-anchor="middle" class="title">Elasticsearch</text>
+  <text x="1070" y="140" text-anchor="middle" class="label">索引/检索/可视化</text>
+  <text x="1070" y="160" text-anchor="middle" class="label">副本 + ILM</text>
+
+  <!-- ClickHouse -->
+  <rect x="940" y="240" width="260" height="120" rx="8" class="box"/>
+  <text x="1070" y="275" text-anchor="middle" class="title">ClickHouse</text>
+  <text x="1070" y="300" text-anchor="middle" class="label">OLAP 聚合/报表</text>
+  <text x="1070" y="320" text-anchor="middle" class="label">分片 + 副本</text>
+
+  <!-- HBase -->
+  <rect x="940" y="400" width="260" height="120" rx="8" class="box"/>
+  <text x="1070" y="435" text-anchor="middle" class="title">HBase</text>
+  <text x="1070" y="460" text-anchor="middle" class="label">明细长期存储</text>
+  <text x="1070" y="480" text-anchor="middle" class="label">Region + HDFS</text>
+
+  <!-- Arrows: Flow -->
+  <line x1="280" y1="170" x2="360" y2="170" class="arrow"/>
+  <text x="320" y="160" text-anchor="middle" class="label">Kafka Producer</text>
+
+  <line x1="580" y1="170" x2="640" y2="170" class="arrow"/>
+  <text x="610" y="160" text-anchor="middle" class="label">Kafka Consumer</text>
+
+  <line x1="860" y1="170" x2="940" y2="140" class="arrow"/>
+  <text x="900" y="130" text-anchor="middle" class="label">ES Sink</text>
+
+  <line x1="860" y1="210" x2="940" y2="300" class="arrow"/>
+  <text x="900" y="260" text-anchor="middle" class="label">CH Sink</text>
+
+  <line x1="860" y1="230" x2="940" y2="460" class="arrow"/>
+  <text x="900" y="360" text-anchor="middle" class="label">HBase Sink</text>
+
+  <!-- HA & Fault Tolerance Notes -->
+  <text x="180" y="250" text-anchor="middle" class="label">持久队列</text>
+  <text x="470" y="255" text-anchor="middle" class="label">副本/ISR/事务</text>
+  <text x="750" y="255" text-anchor="middle" class="label">Checkpoint/恢复</text>
+  <text x="1070" y="540" text-anchor="middle" class="label">跨存储冗余与容灾</text>
+</svg>
