@@ -1,6 +1,7 @@
 ---
 title: "Javassist tutorial"
 date: 2019-12-01T12:13:38+05:30
+update_date: 2019-12-01T12:13:38+05:30
 ---
 
 [GitHub - jboss-javassist/javassist: Java bytecode engineering toolkit](https://github.com/jboss-javassist/javassist)

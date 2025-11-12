@@ -1,6 +1,7 @@
 ---
 title: podcasts weekly
 date: "2022-04-01"
+update_date: "2022-04-01"
 description: 榜单只是一种维度，愿你找到喜欢的节目
 tldr: 榜单只是一种维度，愿你找到喜欢的节目的周刊
 ---

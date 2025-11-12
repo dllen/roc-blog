@@ -1,6 +1,7 @@
 ---
 title: "Elasticsearch 磁盘使用优化实践"
 date: 2024-09-19T12:00:00+08:00
+update_date: 2024-09-19T12:00:00+08:00
 description: "从索引、映射、生命周期与归档等方面系统化降低磁盘占用，兼顾性能与可靠性。"
 tags: [Elasticsearch, 性能优化, 存储]
 ---

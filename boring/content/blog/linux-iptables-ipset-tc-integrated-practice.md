@@ -1,6 +1,7 @@
 ---
 title: "Linux iptables、ipset 与 tc 的综合应用实践"
 date: "2025-10-25T10:00:00+08:00"
+update_date: "2025-10-25T10:00:00+08:00"
 description: "以可操作的完整案例讲解防火墙过滤与带宽控制的组合方案，覆盖命令参数、验证与最佳实践。"
 tags: ["Linux", "网络", "iptables", "ipset", "tc", "流量控制", "防火墙"]
 ---

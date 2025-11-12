@@ -1,6 +1,7 @@
 ---
 title: "Kafka 调优十招：原理、实践与取舍"
 date: 2025-10-23T10:00:00+08:00
+update_date: 2025-10-23T10:00:00+08:00
 description: "围绕分区、复制滞后、线程、压缩、确认、消费者抓取、Socket缓冲、KRaft超时、日志目录和复制因子十项关键调优，给出配置示例与工程化取舍。"
 tags: [kafka, performance, tuning]
 ---

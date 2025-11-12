@@ -1,6 +1,7 @@
 ---
 title: "How to Write a Javaagent"
 date: 2021-03-18T12:13:38+05:30
+update_date: 2021-03-18T12:13:38+05:30
 ---
 
 ## 什么是Java Agent技术

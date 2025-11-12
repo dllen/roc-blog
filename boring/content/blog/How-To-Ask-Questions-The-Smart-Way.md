@@ -1,6 +1,7 @@
 ---
 title: "How To Ask Questions The Smart Way"
 date: 2023-11-11T09:01:58+05:30
+update_date: 2023-11-11T09:01:58+05:30
 description: "How To Ask Questions The Smart Way 《提问的智慧》中文版"
 tags: [认知升级]
 ---

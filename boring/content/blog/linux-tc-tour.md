@@ -1,6 +1,7 @@
 ---
 title: "Linux TC 命令材料收集和整理"
 date: 2024-01-15T12:13:32+05:30
+update_date: 2024-01-15T12:13:32+05:30
 description: "The art of letting go."
 tags: [liunx, tc]
 ---

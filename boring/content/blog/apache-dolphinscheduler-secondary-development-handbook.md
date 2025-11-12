@@ -1,6 +1,7 @@
 ---
 title: "Apache DolphinScheduler 二次开发技术手册"
 date: "2025-10-25"
+update_date: "2025-10-25"
 description: "面向工程实践的 DolphinScheduler 二次开发指南：环境搭建、扩展点、示例、测试部署与最佳实践。"
 tags: [DolphinScheduler, 二次开发]
 ---

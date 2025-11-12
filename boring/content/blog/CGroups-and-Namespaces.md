@@ -1,6 +1,7 @@
 ---
 title: "Linux CGroups and Namespaces"
 date: 2024-01-11T22:01:58+05:30
+update_date: 2024-01-11T22:01:58+05:30
 description: "Namespaces 用来做资源隔离，CGroups 用来做资源限制，Namespaces、CGroups、Chroot 是 Docker 核心基础技术。"
 tags: [docker, container]
 

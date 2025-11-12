@@ -1,4 +1,4 @@
-<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>How to Write a Javaagent | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2021-03-18</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">How to Write a Javaagent</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=shen-me-shi-java-agentji-shu>什么是Java Agent技术</h2><p>Java Agent本质上可以理解为一个插件，该插件就是一个精心提供的Jar包，这个Jar包通过JVMTI（JVM Tool Interface）完成加载，最终借助<a href=https://github.com/openjdk/jdk/blob/master/src/java.instrument/share/native/libinstrument/JPLISAgent.c>JPLISAgent</a>（Java Programming Language Instrumentation Services Agent）完成对目标代码的修改。<p><strong>Java agent的功能</strong><ul><li>可以在加载Java文件之前做拦截把字节码做修改<li>可以在运行期将已经加载的类的字节码做变更<li>………..</ul><p>使用场景<ul><li><p>APM 工具：如 Pinpoint、SkyWalking 等</p><li><p>动态调试和诊断：比较流行的 btrace、arthas 等</p><li><p>热部署：jrebel</p><li><p>混沌工程：jvm-sandbox 等</p></ul><p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png><h4 id=shi-xian-agentqi-dong-fang-fa>实现Agent启动方法</h4><p>Java Agent支持目标JVM启动时加载，也支持在目标JVM运行时加载，这两种不同的加载模式会使用不同的入口函数，如果需要在目标JVM启动的同时加载Agent，那么可以选择实现下面的方法：<pre style=color:#f8f8f2;background-color:#272822><code><span>[1] public static void premain(String agentArgs, Instrumentation inst);
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>How to Write a Javaagent | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2021-03-18</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">How to Write a Javaagent</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=shen-me-shi-java-agentji-shu>什么是Java Agent技术</h2><p>Java Agent本质上可以理解为一个插件，该插件就是一个精心提供的Jar包，这个Jar包通过JVMTI（JVM Tool Interface）完成加载，最终借助<a href=https://github.com/openjdk/jdk/blob/master/src/java.instrument/share/native/libinstrument/JPLISAgent.c>JPLISAgent</a>（Java Programming Language Instrumentation Services Agent）完成对目标代码的修改。<p><strong>Java agent的功能</strong><ul><li>可以在加载Java文件之前做拦截把字节码做修改<li>可以在运行期将已经加载的类的字节码做变更<li>………..</ul><p>使用场景<ul><li><p>APM 工具：如 Pinpoint、SkyWalking 等</p><li><p>动态调试和诊断：比较流行的 btrace、arthas 等</p><li><p>热部署：jrebel</p><li><p>混沌工程：jvm-sandbox 等</p></ul><p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png><h4 id=shi-xian-agentqi-dong-fang-fa>实现Agent启动方法</h4><p>Java Agent支持目标JVM启动时加载，也支持在目标JVM运行时加载，这两种不同的加载模式会使用不同的入口函数，如果需要在目标JVM启动的同时加载Agent，那么可以选择实现下面的方法：<pre style=color:#f8f8f2;background-color:#272822><code><span>[1] public static void premain(String agentArgs, Instrumentation inst);
 </span><span>[2] public static void premain(String agentArgs);
 </span></code></pre><p>JVM将首先寻找[1]，如果没有发现[1]，再寻找[2]。如果希望在目标JVM运行时加载Agent，则需要实现下面的方法：<pre style=color:#f8f8f2;background-color:#272822><code><span>[1] public static void agentmain(String agentArgs, Instrumentation inst);
 </span><span>[2] public static void agentmain(String agentArgs);
@@ -26,18 +26,18 @@
 </span><span>            }
 </span><span>        }
 </span><span>    }
-</span></code></pre><p>首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。<p><strong><a href=https://docs.oracle.com/javase/8/docs/api/java/lang/instrument/Instrumentation.html>Instrumentation (Java Platform SE 8 )</a></strong> 类提供检测 Java 编程语言代码所需的服务。Instrumentation 是在方法中添加字节码，以收集工具使用的数据。由于更改纯粹是附加的，因此这些工具不会修改应用程序状态或行为。这种良性工具的示例包括监控代理、分析器、覆盖分析器和事件记录器。<ul><li><code>addTransformer</code>: 添加一个类转换器<li><code>removeTransformer</code>: 删除一个类转换器<li><code>isRetransformClassesSupported</code>: 判断是否支持类的重新转换<li><code>retransformClasses</code>: 在类加载后，重新定义该类<li><code>isRedefineClassesSupported</code>: 判断是否支持重新定义类<li><code>redefineClasses</code>: 重新进行类的定义<li><code>isModifiableClass</code>: 确定一个类是否可以通过重新转换或重新定义来修改<li><code>getAllLoadedClasses</code>: 返回 JVM 当前加载的所有类的数组<li><code>getInitiatedClasses</code>: 返回 loader 为其初始加载器的所有类的数组。如果提供的加载器为空，则返回由引导类加载器启动的类<li>……</ul><h3 id=premain-jing-tai-fang-shi>premain 静态方式</h3><blockquote><p>大多数中间件/工具的使用方式<p>使用方法：java -javaagent:xxx.jar MyApp</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-premain>application-premain</a><p>编译和测试：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 编译打包
+</span></code></pre><p>首先通过指定的进程ID找到目标JVM，然后通过Attach挂载到目标JVM上，执行加载Agent操作。VirtualMachine的Attach方法就是用来将Agent挂载到目标JVM上去的，而Detach则是将Agent从目标JVM卸载。<p><strong><a href=https://docs.oracle.com/javase/8/docs/api/java/lang/instrument/Instrumentation.html>Instrumentation (Java Platform SE 8 )</a></strong> 类提供检测 Java 编程语言代码所需的服务。Instrumentation 是在方法中添加字节码，以收集工具使用的数据。由于更改纯粹是附加的，因此这些工具不会修改应用程序状态或行为。这种良性工具的示例包括监控代理、分析器、覆盖分析器和事件记录器。<ul><li><code>addTransformer</code>: 添加一个类转换器<li><code>removeTransformer</code>: 删除一个类转换器<li><code>isRetransformClassesSupported</code>: 判断是否支持类的重新转换<li><code>retransformClasses</code>: 在类加载后，重新定义该类<li><code>isRedefineClassesSupported</code>: 判断是否支持重新定义类<li><code>redefineClasses</code>: 重新进行类的定义<li><code>isModifiableClass</code>: 确定一个类是否可以通过重新转换或重新定义来修改<li><code>getAllLoadedClasses</code>: 返回 JVM 当前加载的所有类的数组<li><code>getInitiatedClasses</code>: 返回 loader 为其初始加载器的所有类的数组。如果提供的加载器为空，则返回由引导类加载器启动的类<li>……</ul><h3 id=premain-jing-tai-fang-shi>premain 静态方式</h3><blockquote><p>大多数中间件/工具的使用方式<p>使用方法：java -javaagent:xxx.jar MyApp</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-premain>application-premain</a><p>编译和测试：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 编译打包
 </span><span>mvn clean package
-</span><span># 执行
-</span><span>java -javaagent:target/application-premain-jar-with-dependencies.jar  -cp target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
+</span><span style=color:#75715e># 执行
+</span><span>java</span><span style=color:#fd971f;font-style:italic> -javaagent</span><span>:target/application-premain-jar-with-dependencies.jar</span><span style=color:#fd971f;font-style:italic>  -cp</span><span> target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
 </span><span>
-</span><span># 执行结果（方法执行前后添加代码）
-</span><span>=====start=====
+</span><span style=color:#75715e># 执行结果（方法执行前后添加代码）
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====start=====
 </span><span>Hello World!
-</span><span>=====end=====
-</span><span>=====start=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====end=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====start=====
 </span><span>Hello World!
-</span><span>=====end=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====end=====
 </span></code></pre><h4 id=he-xin-dai-ma>核心代码</h4><p><code>MyTransformer.java</code> 类是具体实现字节码植入的实现类<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassFileTransformer</span><span>;
 </span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException</span><span>;
 </span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>security</span><span>.</span><span style=color:#66d9ef;font-style:italic>ProtectionDomain</span><span>;
@@ -131,19 +131,19 @@
 </span><span>        }
 </span><span>    }
 </span><span>}
-</span></code></pre><h3 id=attach-dong-tai-fang-shi>attach 动态方式</h3><blockquote><p>混沌工程-故障注入，应用调试和诊断的实现方式</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-attach>application-attach</a><p>编译和测试：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 编译打包
+</span></code></pre><h3 id=attach-dong-tai-fang-shi>attach 动态方式</h3><blockquote><p>混沌工程-故障注入，应用调试和诊断的实现方式</blockquote><p>代码地址：<a href=https://gitee.com/dllen/dllen-demos/tree/master/application-attach>application-attach</a><p>编译和测试：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 编译打包
 </span><span>mvn clean package
 </span><span>
-</span><span># 终端 1
-</span><span>java -cp target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
+</span><span style=color:#75715e># 终端 1
+</span><span>java</span><span style=color:#fd971f;font-style:italic> -cp</span><span> target/application-premain-jar-with-dependencies.jar com.ks.test.app.MyApp
 </span><span>
-</span><span># 终端 2
-</span><span># 使用 ps 找到 进程id
-</span><span>java -cp ./target/application-premain-jar-with-dependencies.jar com.ks.test.app.AttachMain ${pid} ./target/application-premain-jar-with-dependencies.jar
-</span><span># attach success!
+</span><span style=color:#75715e># 终端 2
+</span><span style=color:#75715e># 使用 ps 找到 进程id
+</span><span>java</span><span style=color:#fd971f;font-style:italic> -cp</span><span> ./target/application-premain-jar-with-dependencies.jar com.ks.test.app.AttachMain ${pid} ./target/application-premain-jar-with-dependencies.jar
+</span><span style=color:#75715e># attach success!
 </span><span>
 </span><span>
-</span><span># 终端 1 结果
+</span><span style=color:#75715e># 终端 1 结果
 </span><span>
 </span><span>Hello World!
 </span><span>Hello World!
@@ -153,12 +153,12 @@
 </span><span>come in agentmain
 </span><span>clazz = com.ks.test.app.AttachAgent
 </span><span>clazz = com.ks.test.app.MyApp
-</span><span>=====start=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====start=====
 </span><span>Hello World!
-</span><span>=====end=====
-</span><span>=====start=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====end=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====start=====
 </span><span>Hello World!
-</span><span>=====end=====
+</span><span style=color:#f92672>=</span><span style=color:#e6db74>====end=====
 </span></code></pre><h4 id=he-xin-dai-ma-1>核心代码</h4><p><code>MyAttachTransformer.java</code> 代码植入类<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>ClassFileTransformer</span><span>;
 </span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>lang</span><span>.</span><span style=color:#66d9ef;font-style:italic>instrument</span><span>.</span><span style=color:#66d9ef;font-style:italic>IllegalClassFormatException</span><span>;
 </span><span style=color:#f92672>import </span><span style=color:#66d9ef;font-style:italic>java</span><span>.</span><span style=color:#66d9ef;font-style:italic>security</span><span>.</span><span style=color:#66d9ef;font-style:italic>ProtectionDomain</span><span>;

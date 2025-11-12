@@ -1,6 +1,7 @@
 ---
 title: "Elasticsearch 索引性能优化实践"
 date: 2025-10-19T12:20:00+08:00
+update_date: 2025-10-19T12:20:00+08:00
 description: "系统梳理索引速度优化的策略与权衡，覆盖批量写入、刷新、并发、存储与缓存设置。"
 tags: [Elasticsearch, 性能优化, 索引]
 ---

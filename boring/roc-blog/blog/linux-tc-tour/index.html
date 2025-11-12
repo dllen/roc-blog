@@ -1,8 +1,8 @@
-<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Linux TC 命令材料收集和整理 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-01-15</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Linux TC 命令材料收集和整理</h1><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/tc.png><h2 id=jie-shao>介绍</h2><p>    tc 用于在 Linux 内核中配置流量控制。tc 是 Linux 自带的模块，一般情况下不需要另行安装，可以用 man tc 查看 tc 相关命令细节，要求内核 2.4.18 以上。<p>    流量控制(tc)是一个非常有用的 Linux 实用程序，它使您能够配置内核数据包调度程序。如果您正在寻找扰乱内核调度器的原因，或者仅仅是测试数据包丢失对应用程序的影响，以下就是其中的一些原因。首先，使用不同的选项并熟悉 Linux 的所有特性是很有趣的。此外，您可以利用 Linux 的有用工具来模拟 UDP 或 TCP 应用程序的数据包延迟和丢失，或者限制特定服务的带宽使用来模拟 Internet 连接(DSL、 Cable、 T1等)。<h2 id=yuan-li>原理</h2><p>    Linux操作系统中的流量控制器TC（Traffic Control）用于Linux内核的流量控制，主要是通过在输出端口处建立一个队列来实现流量控制。 接收包从输入接口进来后，经过流量限制丢弃不符合规定的数据包，由输入多路分配器进行判断选择：<ul><li>如果接收包的目的主机是本主机，那么将该包送给上层处理，否则需要进行转发，将接收包交到转发块（Forwarding Block）处理。<li>转发块同时也接收本主机上层(TCP、UDP等)产生的包，通过查看路由表，决定所处理包的下一跳。<li>然后，对包进行排列以便将它们送到输出接口。</ul><blockquote><p>一般只能限制网卡发送的数据包，不能限制网卡接收的数据包，所以可以通过改变发送次序来控制传输速率。<p>Linux流量控制主要是在输出接口排列时进行处理和实现的。</blockquote><p>    Linux 中的 QoS 分为入口 (Ingress) 部分和出口 (Egress) 部分，入口部分主要用于进行入口流量限速 (Policing)，出口部分主要用于队列调度 (Queuing Scheduling)。大多数排队规则 (qdisc) 都是用于输出方向的，输入方向只有一个排队规则，即 Ingress qdisc。<p>Ingress qdisc 本身的功能很有限，输入方向只有一个排队规则，即 Ingress qdisc（因为没有缓存只能实现流量的 Drop）但可用于重定向 Incoming packets。通过 Ingress qdisc 把输入方向的数据包重定向到虚拟设备ifb，而ifb的输出方向可以配置多种 qdisc，就可以达到对输入方向的流量做队列调度的目的。<h3 id=ingress>Ingress</h3><p>Ingress 限速只能对整个网卡入流量限速，无队列之分。<p>Ingress 流量的限速示例：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>tc qdisc add dev eth0 ingress
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Linux TC 命令材料收集和整理 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-01-15</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Linux TC 命令材料收集和整理</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/tc.png><h2 id=jie-shao>介绍</h2><p>    tc 用于在 Linux 内核中配置流量控制。tc 是 Linux 自带的模块，一般情况下不需要另行安装，可以用 man tc 查看 tc 相关命令细节，要求内核 2.4.18 以上。<p>    流量控制(tc)是一个非常有用的 Linux 实用程序，它使您能够配置内核数据包调度程序。如果您正在寻找扰乱内核调度器的原因，或者仅仅是测试数据包丢失对应用程序的影响，以下就是其中的一些原因。首先，使用不同的选项并熟悉 Linux 的所有特性是很有趣的。此外，您可以利用 Linux 的有用工具来模拟 UDP 或 TCP 应用程序的数据包延迟和丢失，或者限制特定服务的带宽使用来模拟 Internet 连接(DSL、 Cable、 T1等)。<h2 id=yuan-li>原理</h2><p>    Linux操作系统中的流量控制器TC（Traffic Control）用于Linux内核的流量控制，主要是通过在输出端口处建立一个队列来实现流量控制。 接收包从输入接口进来后，经过流量限制丢弃不符合规定的数据包，由输入多路分配器进行判断选择：<ul><li>如果接收包的目的主机是本主机，那么将该包送给上层处理，否则需要进行转发，将接收包交到转发块（Forwarding Block）处理。<li>转发块同时也接收本主机上层(TCP、UDP等)产生的包，通过查看路由表，决定所处理包的下一跳。<li>然后，对包进行排列以便将它们送到输出接口。</ul><blockquote><p>一般只能限制网卡发送的数据包，不能限制网卡接收的数据包，所以可以通过改变发送次序来控制传输速率。<p>Linux流量控制主要是在输出接口排列时进行处理和实现的。</blockquote><p>    Linux 中的 QoS 分为入口 (Ingress) 部分和出口 (Egress) 部分，入口部分主要用于进行入口流量限速 (Policing)，出口部分主要用于队列调度 (Queuing Scheduling)。大多数排队规则 (qdisc) 都是用于输出方向的，输入方向只有一个排队规则，即 Ingress qdisc。<p>Ingress qdisc 本身的功能很有限，输入方向只有一个排队规则，即 Ingress qdisc（因为没有缓存只能实现流量的 Drop）但可用于重定向 Incoming packets。通过 Ingress qdisc 把输入方向的数据包重定向到虚拟设备ifb，而ifb的输出方向可以配置多种 qdisc，就可以达到对输入方向的流量做队列调度的目的。<h3 id=ingress>Ingress</h3><p>Ingress 限速只能对整个网卡入流量限速，无队列之分。<p>Ingress 流量的限速示例：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>tc qdisc add dev eth0 ingress
 </span><span>tc filter add dev eth0 parent ffff: protocol ip prio 10 u32 match ipsrc 0.0.0.0/0 police rate 2048kbps burst 1m drop flowid :1
-</span></code></pre><h3 id=egress>Egress</h3><p>TC模块利用队列规定建立处理数据包的队列，并定义队列中的数据包被发送的方式，实现对流量的控制。<p>TC模块实现流量控制功能使用的队列规定分为两类，一类是无类队列规定，另一类是分类队列规定。无类队列规定相对简单，而分类队列规定则引出了分类和过滤器等概念，使其流量控制功能增强。<p><strong>无类队列：</strong> 规定是对进入网络设备（网卡）的数据流不加区分统一对待的队列规定。使用无类队列规定形成的队列能够接收数据包以及重新编排、延迟或丢弃数据包。这类队列规定形成的队列可以对整个网络设备（网卡）的流量进行整形，但不能细分各种情况。常用的无类队列规定主要有 pfifo_fast（先进先出）、TBF（令牌桶过滤器）、SFQ（随机公平队列）、ID（前向随机丢包）等等。这类队列规定使用的流量整形手段主要是排序、限速和丢包。<p><strong>分类队列：</strong> 规定是对进入网络设备的数据包根据不同的需求以分类的方式区分对待的队列规定。数据包进入一个分类的队列后，它就需要被送到某一个类中，也就是说需要对数据包做分类处理。对数据包进行分类的工具是过滤器，过滤器会返回一个决定，队列规定就根据这个决定把数据包送入相应的类进行排队。每个子类都可以再次使用它们的过滤器进行进一步的分类。直到不需要进一步分类时，数据包才进入该类包含的队列排队。除了能够包含其他队列规定之外，绝大多数分类的队列规定还能够对流量进行整形。这对于需要同时进行调度（如使用SFQ）和流量控制的场合非常有用。<p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/QP43c.png><h2 id=ji-ben-gai-nian>基本概念</h2><h3 id=qdisc-pai-dui-gui-ze>QDISC（排队规则）</h3><p>    全称是queueing discipline，我们姑且称其为排队规则吧。它是协议栈和网络接口之间的一个缓冲层。你可以在qdisc上对数据包做一些你想做的操作，比如分类、整形、调度等。<p>    qdisc分为无类（classless）qdisc和有类（classful）qdisc。无类qdisc不再内部细分类，有类qdisc可进一步包含多个分类，每个class上可以进一步包含子qdisc，子qdisc也可以是有类qdisc，这样就形成了树状的分层结构。<p>    最简单的QDisc是pfifo它不对进入的数据包做任何的处理，数据包采用先入先出的方式通过队列。不过，它会保存网络接口一时无法处理的数据包。<p><strong>CLASSLESS QDISC(不可分类QDISC)</strong>**<ul><li><p>[p|b]fifo: 使用最简单的qdisc，纯粹的先进先出。只有一个参数：limit，用来设置队列的长度,pfifo是以数据包的个数为单位；bfifo是以字节数为单位。</p><li><p>pfifo_fast: 在编译内核时，如果打开了高级路由器(Advanced Router)编译选项，pfifo_fast就是系统的标准QDISC。它的队列包括三个波段(band)。在每个波段里面，使用先进先出规则。而三个波段(band)的优先级也不相同，band 0的优先级最高，band 2的最低。如果band0里面有数据包，系统就不会处理band 1里面的数据包，band 1和band 2之间也是一样。数据包是按照服务类型(Type of Service,TOS)被分配多三个波段(band)里面的。</p> <p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__d566EGgUEX52WNdIpSf__AQ.png></p><li><p>red: Random Early Detection(随机早期探测)的简写。如果使用这种QDISC，当带宽的占用接近于规定的带宽时，系统会随机地丢弃一些数据包。它非常适合高带宽应用。</p><li><p>sfq: Stochastic Fairness Queueing的简写。它按照会话(session–对应于每个TCP连接或者UDP流)为流量进行排序，然后循环发送每个会话的数据包。</p><li><p>tbf: Token Bucket Filter的简写，适合于把流速降低到某个值。</p></ul><p><em><strong>不可分类QDISC配置：</strong></em> 如果没有可分类QDISC，不可分类QDISC只能附属于设备的根。它们的用法如下：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 添加一个不可分类的 qdisc
+</span></code></pre><h3 id=egress>Egress</h3><p>TC模块利用队列规定建立处理数据包的队列，并定义队列中的数据包被发送的方式，实现对流量的控制。<p>TC模块实现流量控制功能使用的队列规定分为两类，一类是无类队列规定，另一类是分类队列规定。无类队列规定相对简单，而分类队列规定则引出了分类和过滤器等概念，使其流量控制功能增强。<p><strong>无类队列：</strong> 规定是对进入网络设备（网卡）的数据流不加区分统一对待的队列规定。使用无类队列规定形成的队列能够接收数据包以及重新编排、延迟或丢弃数据包。这类队列规定形成的队列可以对整个网络设备（网卡）的流量进行整形，但不能细分各种情况。常用的无类队列规定主要有 pfifo_fast（先进先出）、TBF（令牌桶过滤器）、SFQ（随机公平队列）、ID（前向随机丢包）等等。这类队列规定使用的流量整形手段主要是排序、限速和丢包。<p><strong>分类队列：</strong> 规定是对进入网络设备的数据包根据不同的需求以分类的方式区分对待的队列规定。数据包进入一个分类的队列后，它就需要被送到某一个类中，也就是说需要对数据包做分类处理。对数据包进行分类的工具是过滤器，过滤器会返回一个决定，队列规定就根据这个决定把数据包送入相应的类进行排队。每个子类都可以再次使用它们的过滤器进行进一步的分类。直到不需要进一步分类时，数据包才进入该类包含的队列排队。除了能够包含其他队列规定之外，绝大多数分类的队列规定还能够对流量进行整形。这对于需要同时进行调度（如使用SFQ）和流量控制的场合非常有用。<p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/QP43c.png><h2 id=ji-ben-gai-nian>基本概念</h2><h3 id=qdisc-pai-dui-gui-ze>QDISC（排队规则）</h3><p>    全称是queueing discipline，我们姑且称其为排队规则吧。它是协议栈和网络接口之间的一个缓冲层。你可以在qdisc上对数据包做一些你想做的操作，比如分类、整形、调度等。<p>    qdisc分为无类（classless）qdisc和有类（classful）qdisc。无类qdisc不再内部细分类，有类qdisc可进一步包含多个分类，每个class上可以进一步包含子qdisc，子qdisc也可以是有类qdisc，这样就形成了树状的分层结构。<p>    最简单的QDisc是pfifo它不对进入的数据包做任何的处理，数据包采用先入先出的方式通过队列。不过，它会保存网络接口一时无法处理的数据包。<p><strong>CLASSLESS QDISC(不可分类QDISC)</strong>**<ul><li><p>[p|b]fifo: 使用最简单的qdisc，纯粹的先进先出。只有一个参数：limit，用来设置队列的长度,pfifo是以数据包的个数为单位；bfifo是以字节数为单位。</p><li><p>pfifo_fast: 在编译内核时，如果打开了高级路由器(Advanced Router)编译选项，pfifo_fast就是系统的标准QDISC。它的队列包括三个波段(band)。在每个波段里面，使用先进先出规则。而三个波段(band)的优先级也不相同，band 0的优先级最高，band 2的最低。如果band0里面有数据包，系统就不会处理band 1里面的数据包，band 1和band 2之间也是一样。数据包是按照服务类型(Type of Service,TOS)被分配多三个波段(band)里面的。</p> <p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__d566EGgUEX52WNdIpSf__AQ.png></p><li><p>red: Random Early Detection(随机早期探测)的简写。如果使用这种QDISC，当带宽的占用接近于规定的带宽时，系统会随机地丢弃一些数据包。它非常适合高带宽应用。</p><li><p>sfq: Stochastic Fairness Queueing的简写。它按照会话(session–对应于每个TCP连接或者UDP流)为流量进行排序，然后循环发送每个会话的数据包。</p><li><p>tbf: Token Bucket Filter的简写，适合于把流速降低到某个值。</p></ul><p><em><strong>不可分类QDISC配置：</strong></em> 如果没有可分类QDISC，不可分类QDISC只能附属于设备的根。它们的用法如下：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 添加一个不可分类的 qdisc
 </span><span>tc qdisc add dev DEV root QDISC QDISC-PARAMETERS
-</span><span># 删除一个不可分类 qdisc
+</span><span style=color:#75715e># 删除一个不可分类 qdisc
 </span><span>tc qdisc del dev DEV root
 </span></code></pre><blockquote><p>一个网络接口上如果没有设置QDISC，pfifo_fast就作为缺省的QDISC。</blockquote><p><strong>CLASSFUL QDISC(分类QDISC)</strong><ul><li><p>CBQ： CBQ是Class Based Queueing(基于类别排队)的缩写。它实现了一个丰富的连接共享类别结构，既有限制(shaping)带宽的能力，也具有带宽优先级管理的能力。带宽限制是通过计算连接的空闲时间完成的。空闲时间的计算标准是数据包离队事件的频率和下层连接(数据链路层)的带宽。</p><li><p>HTB： HTB是Hierarchy Token Bucket的缩写。通过在实践基础上的改进，它实现了一个丰富的连接共享类别体系。使用HTB可以很容易地保证每个类别的带宽，它也允许特定的类可以突破带宽上限，占用别的类的带宽。HTB可以通过TBF(Token Bucket Filter)实现带宽限制，也能够划分类别的优先级。</p> <p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__yxleicti2yy9F2K0UrpmHA.png></p><li><p>PRIO： PRIO QDISC不能限制带宽，因为属于不同类别的数据包是顺序离队的。使用PRIO QDISC可以很容易对流量进行优先级管理，只有属于高优先级类别的数据包全部发送完毕，才会发送属于低优先级类别的数据包。为了方便管理，需要使用iptables或者ipchains处理数据包的服务类型(Type Of Service,ToS)。</p></ul><h3 id=class-lei-bie>CLASS（类别）</h3><p>    有类qdisc可以有多个子类（class），有些qdisc预定义了子类（如prio），有些则需要用户添加类。一个类上又可以附加其他类。最末端没有子类的类称为叶子类，它上面附加了一个qdisc。当创建一个class的时候，默认会附加一个fifo qdisc，它只是一个简单的队列，不对数据包进行任何的操作。当在这个类上增加子类的时候，这个默认的qdisc被移除。你可以将这个默认的fifo qdisc替换成其他任意你想用的qdisc。<p>eg:<pre style=color:#f8f8f2;background-color:#272822><code><span>  .-------------------------------------------------------.
 </span><span>  |                                                       |
@@ -38,20 +38,20 @@
 </span><span>    10:         12:   qdisc
 </span><span>   /   \       /   \
 </span><span>10:1  10:2   12:1  12:2   leaf classes
-</span></code></pre><p>内核只跟root qdisc进行通信，每当包需要入队或者出队的时候，都需要从root节点开始，最终到达叶子节点，从而决定入队到哪里，或者从哪里出队。<p>比如当一个包入队时，它可能会经过如下路径：<code>1: -> 1:1 -> 1:12 -> 12: -> 12:2</code><p>当然也可能直接走如下路径：<code>1: -> 12:2</code><blockquote><p>这种情况，就是root qdisc上的过滤器决定把包直接送到<code>12:2</code>。</blockquote><blockquote><p>注意：入队和出队时虽然节点的拓扑图是一样的，但是每个节点表示的含义却有所不同*(<a href=https://blog.csdn.net/dog250/article/details/40681809>数据包的分类和调度-Linux TC的另一种解释_可编程数据包调度</a>)*。入队时是根据过滤器和包的特征决定走哪条路径，而出队时则取决于qdisc本身的调度算法，比如FIFO、优先级队列、SFQ的顺序调度等。</blockquote><h3 id=filter-guo-lu-qi>FILTER（过滤器）</h3><p>    过滤器，用于有类qdisc中，决定将包入队到哪个类中。每当一个包到达有子类的类时，就需要进行分类。其中一种分类的方法就是使用过滤器（另外两个是ToS和skb->priority）。所有附加到类上的过滤器会被依次调用，直到其中一个返回裁决。一个filter包含了一些条件，当一个包到达该节点时，会根据包的特征判断是否匹配。<p>    前面已经提到了过滤器用于将包分类到子类，那么具体是如何对包进行分类的呢？tc支持很多类型的分类器，它们根据数据包相关的不同信息来作出决策。其中最常用的就是<strong>u32分类器</strong>，它根据数据包中的字段做出决策（例如源IP地址等）。还有比如<strong>fw分类器</strong>，根据防火墙如何标记数据包来做出决策，你可以使用iptables标记目标数据包，然后通过fw分类器进行过滤。另外还有诸如<strong>route分类器</strong>、<strong>cgroup分类器</strong>、<strong>bpf分类器</strong>等，篇幅原因不再赘述。下面仅介绍最常见的u32分类器。<p><strong>公共参数</strong><p>分类器一般接收以下几个公共的参数：<ul><li><p>protocol：分类器接受的协议，通常你只接受IP流量。必须。</p><li><p>parent：分类器附加到哪个handle上。这个handle必须是一个已经存在的类。必须。</p><li><p>prio|perf：分类器的优先级。<strong>数字越小</strong>的越先进行匹配尝试。</p><li><p>handle：这个handle对于不同的过滤器表示不同的含义。</p> <p><strong>u32分离器</strong> <a href=https://man7.org/linux/man-pages/man8/tc-u32.8.html>tc-u32(8) - Linux manual page</a></p></ul><p>    u32过滤器最简单的格式是设置一组选择器对包进行匹配，匹配的包分到特定的子类中，或者执行一个action。u32分类器提供了多种不同的选择器，可以大致分成特殊选择器和通用选择器两类。<p><strong>特殊选择器</strong><p>    常用的有ip选择器和tcp选择器。特殊选择器简化了一些常用字段的设置，可以匹配包头中的各种字段，比如：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 匹配ip源地址在192.168.8.0/24子网的包
+</span></code></pre><p>内核只跟root qdisc进行通信，每当包需要入队或者出队的时候，都需要从root节点开始，最终到达叶子节点，从而决定入队到哪里，或者从哪里出队。<p>比如当一个包入队时，它可能会经过如下路径：<code>1: -> 1:1 -> 1:12 -> 12: -> 12:2</code><p>当然也可能直接走如下路径：<code>1: -> 12:2</code><blockquote><p>这种情况，就是root qdisc上的过滤器决定把包直接送到<code>12:2</code>。</blockquote><blockquote><p>注意：入队和出队时虽然节点的拓扑图是一样的，但是每个节点表示的含义却有所不同*(<a href=https://blog.csdn.net/dog250/article/details/40681809>数据包的分类和调度-Linux TC的另一种解释_可编程数据包调度</a>)*。入队时是根据过滤器和包的特征决定走哪条路径，而出队时则取决于qdisc本身的调度算法，比如FIFO、优先级队列、SFQ的顺序调度等。</blockquote><h3 id=filter-guo-lu-qi>FILTER（过滤器）</h3><p>    过滤器，用于有类qdisc中，决定将包入队到哪个类中。每当一个包到达有子类的类时，就需要进行分类。其中一种分类的方法就是使用过滤器（另外两个是ToS和skb->priority）。所有附加到类上的过滤器会被依次调用，直到其中一个返回裁决。一个filter包含了一些条件，当一个包到达该节点时，会根据包的特征判断是否匹配。<p>    前面已经提到了过滤器用于将包分类到子类，那么具体是如何对包进行分类的呢？tc支持很多类型的分类器，它们根据数据包相关的不同信息来作出决策。其中最常用的就是<strong>u32分类器</strong>，它根据数据包中的字段做出决策（例如源IP地址等）。还有比如<strong>fw分类器</strong>，根据防火墙如何标记数据包来做出决策，你可以使用iptables标记目标数据包，然后通过fw分类器进行过滤。另外还有诸如<strong>route分类器</strong>、<strong>cgroup分类器</strong>、<strong>bpf分类器</strong>等，篇幅原因不再赘述。下面仅介绍最常见的u32分类器。<p><strong>公共参数</strong><p>分类器一般接收以下几个公共的参数：<ul><li><p>protocol：分类器接受的协议，通常你只接受IP流量。必须。</p><li><p>parent：分类器附加到哪个handle上。这个handle必须是一个已经存在的类。必须。</p><li><p>prio|perf：分类器的优先级。<strong>数字越小</strong>的越先进行匹配尝试。</p><li><p>handle：这个handle对于不同的过滤器表示不同的含义。</p> <p><strong>u32分离器</strong> <a href=https://man7.org/linux/man-pages/man8/tc-u32.8.html>tc-u32(8) - Linux manual page</a></p></ul><p>    u32过滤器最简单的格式是设置一组选择器对包进行匹配，匹配的包分到特定的子类中，或者执行一个action。u32分类器提供了多种不同的选择器，可以大致分成特殊选择器和通用选择器两类。<p><strong>特殊选择器</strong><p>    常用的有ip选择器和tcp选择器。特殊选择器简化了一些常用字段的设置，可以匹配包头中的各种字段，比如：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 匹配ip源地址在192.168.8.0/24子网的包
 </span><span>tc filter add dev eth0 protocol ip parent 1:0 prio 10 u32 \
 </span><span>    match ip src 192.168.8.0/24 flowid 1:4
-</span></code></pre><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 匹配TCP协议（0x6）、且目的端口为53的包。
+</span></code></pre><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 匹配TCP协议（0x6）、且目的端口为53的包。
 </span><span>tc filter add dev eth0 protocol ip parent 1:0 prio 10 u32 \
 </span><span>        match ip protocol 0x6 0xff \
 </span><span>        match tcp dport 53 0xffff \
 </span><span>        flowid 1:2
-</span></code></pre><p><strong>通用选择器</strong><p>    特殊选择器总是可以改写成对应的通用选择器，通用选择器可以匹配 IP（或上层）头中的几乎任何位，不过相比特殊选择器较难编写和阅读。其语法如下：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>match [ u32 | u16 | u8 ] PATTERN MASK at [OFFSET | nexthdr+OFFSET]
-</span></code></pre><p>其中u32|u16|u8指定pattern的长度，分别为4个字节、2个字节、1个字节。PATTERN表示匹配的包的pattern，MASK告诉过滤器匹配哪些位，at表示从包的指定偏移处开始匹配。<p>来看一个例子：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
+</span></code></pre><p><strong>通用选择器</strong><p>    特殊选择器总是可以改写成对应的通用选择器，通用选择器可以匹配 IP（或上层）头中的几乎任何位，不过相比特殊选择器较难编写和阅读。其语法如下：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>match </span><span style=color:#f92672>[</span><span> u32 | u16 | u8 </span><span style=color:#f92672>]</span><span> PATTERN MASK at </span><span style=color:#f92672>[</span><span>OFFSET | nexthdr+OFFSET</span><span style=color:#f92672>]
+</span></code></pre><p>其中u32|u16|u8指定pattern的长度，分别为4个字节、2个字节、1个字节。PATTERN表示匹配的包的pattern，MASK告诉过滤器匹配哪些位，at表示从包的指定偏移处开始匹配。<p>来看一个例子：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
 </span><span>    match u32 00100000 00ff0000 at 0 flowid 1:10
-</span></code></pre><p>选择器会匹配IP头第二个字节为0x10的包，<code>at 0</code>表示从头开始匹配，mask为<code>00ff0000</code>所以只匹配第二个字节，pattern为<code>00100000</code>即第二个字节为0x10。<p>再来看另一个例子：<pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
+</span></code></pre><p>选择器会匹配IP头第二个字节为0x10的包，<code>at 0</code>表示从头开始匹配，mask为<code>00ff0000</code>所以只匹配第二个字节，pattern为<code>00100000</code>即第二个字节为0x10。<p>再来看另一个例子：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>tc filter add dev eth0 protocol ip parent 1:0 pref 10 u32 \
 </span><span>    match u32 00000016 0000ffff at nexthdr+0 flowid 1:10
-</span></code></pre><p><code>nexthdr</code>选项表示封装在IP包里的下一个头，即上层协议的头。<code>at nexthdr+0</code>表示从下一个头第一个字节开始匹配。因为mask为<code>0000ffff</code>，所以匹配发生在头的第三和第四个字节。在TCP和UDP协议中这两个字节是包的目的端口。数字是由大段格式给出的，所以pattern <code>00000016</code>转换成十进制是22。即该选择器会匹配目的端口为22的包。<h2 id=shi-li>示例</h2><h3 id=shi-li-yi>示例一</h3><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>sudo tc qdisc add dev eth0 root handle 1: prio bands 4
+</span></code></pre><p><code>nexthdr</code>选项表示封装在IP包里的下一个头，即上层协议的头。<code>at nexthdr+0</code>表示从下一个头第一个字节开始匹配。因为mask为<code>0000ffff</code>，所以匹配发生在头的第三和第四个字节。在TCP和UDP协议中这两个字节是包的目的端口。数字是由大段格式给出的，所以pattern <code>00000016</code>转换成十进制是22。即该选择器会匹配目的端口为22的包。<h2 id=shi-li>示例</h2><h3 id=shi-li-yi>示例一</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>sudo tc qdisc add dev eth0 root handle 1: prio bands 4
 </span><span>sudo tc qdisc add dev eth0 parent 1:4 handle 40: netem loss 10% delay 40ms
 </span><span>sudo tc filter add dev eth0 protocol ip parent 1:0 prio 4 u32 match ip dst 192.168.190.7 match ip dport 36000 0xffff flowid 1:4
 </span></code></pre><blockquote><p>我们一行行来看，第一行在设备eth0上添加了一个root qdisc，句柄为1:，qdisc类型为prio，bands数为4。<p>prio是一个有类的qdisc。它的作用跟默认的qdisc pfifo_fast类似。pfifo_fast有三个所谓的band，不同band的流量具有不同的优先级。每个band内，则应用FIFO规则。<p>prio qdisc，默认会创建3个子类，包含纯FIFO qdisc，默认根据ToS位进行分类。你可以使用过滤器来对流量进行分类，你也可以在子类上附加其他qdisc替换默认的FIFO。<p>接下来看第二个命令，<code>parent 1:4</code>表示在子类1:4上，<code>handle 40:</code>表示句柄为40:，<code>netem</code>表示添加一个netem qdisc，<code>loss 10% delay 40ms</code>则是netem的参数，表示丢包10%、延迟40ms。<a href=https://wiki.linuxfoundation.org/networking/netem>networking:netem</a>是一个用于提供网络仿真功能的无类qdisc，可以模拟延迟、丢包、包重复、包失序等各种情况。<p>第三个命令则是添加了一个过滤器，<code>parent 1:0</code>表示在根节点上添加该过滤器，<code>prio 4</code>是过滤器的优先级，如果有很多过滤器会根据优先级的值按顺序进行尝试。<code>u32</code>表示使用u32分类器。<code>match ip dst 192.168.190.7</code>表示匹配ip地址为192.168.190.7的包，<code>match ip dport 36000 0xffff</code>表示匹配目的端口为36000的包，多个选择器之间是“与”的关系，<code>flowid 1:4</code>表示将匹配的包分类到<code>1:4</code>子类中。<p>所以最终的效果是，发往192.168.190.7且目的端口为36000的包，会分类到1:4子类，添加40ms的延迟，且有10%的丢包率。其他包则还是默认的行为，即根据ToS字段分类到1:1、1:2或1:3子类中，然后根据优先级依次发送。</blockquote><p>画出该例子的分层结构图，大致如下：<pre style=color:#f8f8f2;background-color:#272822><code><span>          1:     root qdisc (prio)
@@ -63,110 +63,110 @@
 </span><span>                     40:     qdiscs
 </span><span>   pfifo pfifo pfifo netem
 </span><span>band  0    1    2    3
-</span></code></pre><h3 id=shi-li-er>示例二</h3><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># tc 查看包 drop 情况
-</span><span>tc -s -d qd
+</span></code></pre><h3 id=shi-li-er>示例二</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># tc 查看包 drop 情况
+</span><span>tc</span><span style=color:#fd971f;font-style:italic> -s -d</span><span> qd
 </span><span>
-</span><span># tc 列出目前所有的 Network Interface 的设定
+</span><span style=color:#75715e># tc 列出目前所有的 Network Interface 的设定
 </span><span>tc qdisc ls
 </span><span>
-</span><span># tc 预设将所有的流量导向 band 2，为了避免其他封包被影响，先将所有的封包都走band 2(指令计数从0开始)
-</span><span># handle 1: 指的是绑定到qdisc 的root
-</span><span># bands 10: 可以创建10组band
+</span><span style=color:#75715e># tc 预设将所有的流量导向 band 2，为了避免其他封包被影响，先将所有的封包都走band 2(指令计数从0开始)
+</span><span style=color:#75715e># handle 1: 指的是绑定到qdisc 的root
+</span><span style=color:#75715e># bands 10: 可以创建10组band
 </span><span>tc qdisc add dev enp0s5 root handle 1: prio bands 10 priomap 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 </span><span>
 </span><span>
-</span><span># tc 设定封包延迟
-</span><span># 1. netem 是 tc 的工具之一，可用来增加延迟、掉封包、重复封包等模拟工具，netem delay 100ms 10ms表示每个封包延迟100ms(+- 10ms)
-</span><span># 2. parent 1:1 表示在class id 1 底下，建立一个id 为1的子节点，因为当前的队列没有多层次的class设计，所以1:1 就对应到band 0
-</span><span># 3. handle 10: 表示创建一个class id 为10 的节点
+</span><span style=color:#75715e># tc 设定封包延迟
+</span><span style=color:#75715e># 1. netem 是 tc 的工具之一，可用来增加延迟、掉封包、重复封包等模拟工具，netem delay 100ms 10ms表示每个封包延迟100ms(+- 10ms)
+</span><span style=color:#75715e># 2. parent 1:1 表示在class id 1 底下，建立一个id 为1的子节点，因为当前的队列没有多层次的class设计，所以1:1 就对应到band 0
+</span><span style=color:#75715e># 3. handle 10: 表示创建一个class id 为10 的节点
 </span><span>tc qdisc add dev enp0s5 parent 1:1 handle 10: netem delay 100ms 10ms
 </span><span>
-</span><span># 删除旧的qdisc 设定
+</span><span style=color:#75715e># 删除旧的qdisc 设定
 </span><span>tc qdisc del dev enp0s5 root
 </span><span>
 </span><span>
-</span><span># 建立 htb
+</span><span style=color:#75715e># 建立 htb
 </span><span>tc qdisc add dev enp0s5 root handle 1:0 htb
 </span><span>
-</span><span># 加入bandwidth 限制，限速 100 kbps，
-</span><span># 如果单纯想要限制上传速度，也可以用 tc-tbf，但 htb 优点是用层状架构限速，leaf 会受到 root 的限制，例如分配一条带宽 10 Mbps，可以在之下分配 4 Mbps 给某网域 6 Mbps 给其他网域等。
+</span><span style=color:#75715e># 加入bandwidth 限制，限速 100 kbps，
+</span><span style=color:#75715e># 如果单纯想要限制上传速度，也可以用 tc-tbf，但 htb 优点是用层状架构限速，leaf 会受到 root 的限制，例如分配一条带宽 10 Mbps，可以在之下分配 4 Mbps 给某网域 6 Mbps 给其他网域等。
 </span><span>tc class add dev enp0s5 parent 1: classid 1:1 htb rate 100kbps ceil 100kbps
-</span></code></pre><blockquote><p>NOTE: enp0s5 为网卡名，真实实验需要替换为自己的网卡名；</blockquote><h3 id=shi-li-san>示例三</h3><h3 id=network-delay>Network Delay</h3><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>tc qdisc add dev eth0 root netem delay 200ms
-</span></code></pre><ul><li><p>qdisc: modify the scheduler (aka queuing discipline)</p><li><p>add: add a new rule</p><li><p>dev eth0: rules will be applied on device eth0</p><li><p>root: modify the outbound traffic scheduler (aka known as the egress qdisc)</p><li><p>netem: use the <a href=https://wiki.linuxfoundation.org/networking/netem>network emulator</a> to emulate a WAN property</p><li><p>delay: the network property that is modified</p><li><p>200ms: introduce delay of 200 ms</p></ul><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># delete all rules
+</span></code></pre><blockquote><p>NOTE: enp0s5 为网卡名，真实实验需要替换为自己的网卡名；</blockquote><h3 id=shi-li-san>示例三</h3><h3 id=network-delay>Network Delay</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>tc qdisc add dev eth0 root netem delay 200ms
+</span></code></pre><ul><li><p>qdisc: modify the scheduler (aka queuing discipline)</p><li><p>add: add a new rule</p><li><p>dev eth0: rules will be applied on device eth0</p><li><p>root: modify the outbound traffic scheduler (aka known as the egress qdisc)</p><li><p>netem: use the <a href=https://wiki.linuxfoundation.org/networking/netem>network emulator</a> to emulate a WAN property</p><li><p>delay: the network property that is modified</p><li><p>200ms: introduce delay of 200 ms</p></ul><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># delete all rules
 </span><span>tc qdisc del dev eth0 root
 </span><span>
-</span><span># displays the configuration of the network interface eth0
+</span><span style=color:#75715e># displays the configuration of the network interface eth0
 </span><span>tc qdisc show  dev eth0
-</span></code></pre><blockquote><p>Note that if you have an existing rule you can change it by using “<code>tc qdisc change</code>” and if you don’t have any rules you add rules with “<code>tc qdisc add</code>”. Here are some other examples:</blockquote><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># Delay of 100ms and random +/- 10ms uniform distribution:
+</span></code></pre><blockquote><p>Note that if you have an existing rule you can change it by using “<code>tc qdisc change</code>” and if you don’t have any rules you add rules with “<code>tc qdisc add</code>”. Here are some other examples:</blockquote><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># Delay of 100ms and random +/- 10ms uniform distribution:
 </span><span>tc qdisc change dev eth0 root netem delay 100ms 10ms
 </span><span>
-</span><span># Delay of 100ms and random 10ms uniform variation with correlation value 25% (since network delays are not completely random):
+</span><span style=color:#75715e># Delay of 100ms and random 10ms uniform variation with correlation value 25% (since network delays are not completely random):
 </span><span>tc qdisc change dev eth0 root netem delay 100ms 10ms 25%
 </span><span>
-</span><span># Delay of 100ms and random +/- 10ms normal distribution (other distribution options are pareto, and paretonormal):
+</span><span style=color:#75715e># Delay of 100ms and random +/- 10ms normal distribution (other distribution options are pareto, and paretonormal):
 </span><span>tc qdisc add dev eth0 root netem delay 100ms 20ms distribution normal
-</span></code></pre><h3 id=packet-loss-and-packet-corruption>Packet Loss and Packet Corruption</h3><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># packet loss of 10%
+</span></code></pre><h3 id=packet-loss-and-packet-corruption>Packet Loss and Packet Corruption</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># packet loss of 10%
 </span><span>tc qdisc add dev eth0 root netem loss 10%
 </span><span>
-</span><span># corrupts 5% of the packets
+</span><span style=color:#75715e># corrupts 5% of the packets
 </span><span>tc qdisc change dev eth0 root netem corrupt 5%
 </span><span>
-</span><span># duplicates 1% of the sent packets
+</span><span style=color:#75715e># duplicates 1% of the sent packets
 </span><span>tc qdisc change dev eth0 root netem duplicate 1%
-</span></code></pre><h3 id=bandwidth-limit>Bandwidth limit</h3><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># limit the egress bandwidth
+</span></code></pre><h3 id=bandwidth-limit>Bandwidth limit</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># limit the egress bandwidth
 </span><span>tc qdisc add dev eth0 root tbf rate 1mbit burst 32kbit latency 400ms
-</span></code></pre><ul><li><p>tbf: <em>use</em> the <em>token buffer filter to manipulate traffic rates</em></p><li><p>rate: <em>sustained maximum rate</em></p><li><p>burst: <em>maximum allowed burst</em></p><li><p>latency: <em>packets with higher latency get dropped</em></p></ul><p><strong>使用iperf测试</strong><p><strong>服务端</strong><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span># 作为服务端运行，报告回显间隔时间1s
-</span><span>iperf -s -i 1
-</span></code></pre><p><strong>客户端</strong><pre class=language-shell data-lang=shell style=color:#f8f8f2;background-color:#272822><code class=language-shell data-lang=shell><span>The best way to demonstrate this is with an iPerf test. In my lab I get 95 Mbps of performance before applying any bandwidth rules:
+</span></code></pre><ul><li><p>tbf: <em>use</em> the <em>token buffer filter to manipulate traffic rates</em></p><li><p>rate: <em>sustained maximum rate</em></p><li><p>burst: <em>maximum allowed burst</em></p><li><p>latency: <em>packets with higher latency get dropped</em></p></ul><p><strong>使用iperf测试</strong><p><strong>服务端</strong><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 作为服务端运行，报告回显间隔时间1s
+</span><span>iperf</span><span style=color:#fd971f;font-style:italic> -s -i</span><span> 1
+</span></code></pre><p><strong>客户端</strong><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>The best way to demonstrate this is with an iPerf test. In my lab I get 95 Mbps of performance before applying any bandwidth rules:
 </span><span>
-</span><span># 限速前
-</span><span>iperf3 -c 172.16.106.51
+</span><span style=color:#75715e># 限速前
+</span><span>iperf3</span><span style=color:#fd971f;font-style:italic> -c</span><span> 172.16.106.51
 </span><span>
 </span><span>Connecting to host 172.16.106.51, port 5201
-</span><span>[  5] local 172.28.206.105 port 49560 connected to 172.16.106.51 port 5201
-</span><span>[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-</span><span>[  5]   0.00-1.00   sec  27.2 MBytes   228 Mbits/sec    0   1.17 MBytes
-</span><span>[  5]   1.00-2.00   sec  30.0 MBytes   252 Mbits/sec    0   2.65 MBytes
-</span><span>[  5]   2.00-3.00   sec  31.2 MBytes   262 Mbits/sec    1   3.81 MBytes
-</span><span>[  5]   3.00-4.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
-</span><span>[  5]   4.00-5.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
-</span><span>[  5]   5.00-6.00   sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
-</span><span>[  5]   6.00-7.00   sec  30.0 MBytes   252 Mbits/sec    1   3.81 MBytes
-</span><span>[  5]   7.00-8.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
-</span><span>[  5]   8.00-9.00   sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
-</span><span>[  5]   9.00-10.00  sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5] local 172.28.206.105 port 49560 connected to 172.16.106.51 port 5201
+</span><span style=color:#66d9ef>[</span><span> ID] Interval           Transfer     Bitrate         Retr  Cwnd
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-1.00   sec  27.2 MBytes   228 Mbits/sec    0   1.17 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   1.00-2.00   sec  30.0 MBytes   252 Mbits/sec    0   2.65 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   2.00-3.00   sec  31.2 MBytes   262 Mbits/sec    1   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   3.00-4.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   4.00-5.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   5.00-6.00   sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   6.00-7.00   sec  30.0 MBytes   252 Mbits/sec    1   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   7.00-8.00   sec  26.2 MBytes   220 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   8.00-9.00   sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   9.00-10.00  sec  27.5 MBytes   231 Mbits/sec    0   3.81 MBytes
 </span><span>- - - - - - - - - - - - - - - - - - - - - - - - -
-</span><span>[ ID] Interval           Transfer     Bitrate         Retr
-</span><span>[  5]   0.00-10.00  sec   280 MBytes   235 Mbits/sec    2             sender
-</span><span>[  5]   0.00-10.13  sec   280 MBytes   232 Mbits/sec                  receiver
+</span><span style=color:#66d9ef>[</span><span> ID] Interval           Transfer     Bitrate         Retr
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-10.00  sec   280 MBytes   235 Mbits/sec    2             sender
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-10.13  sec   280 MBytes   232 Mbits/sec                  receiver
 </span><span>
 </span><span>iperf Done.
 </span><span>
-</span><span># 执行限速
+</span><span style=color:#75715e># 执行限速
 </span><span>
 </span><span>
 </span><span>
-</span><span># 限速后
-</span><span>iperf3 -c 172.16.106.51
+</span><span style=color:#75715e># 限速后
+</span><span>iperf3</span><span style=color:#fd971f;font-style:italic> -c</span><span> 172.16.106.51
 </span><span>
 </span><span>
 </span><span>Connecting to host 172.16.106.51, port 5201
-</span><span>[  5] local 172.28.206.105 port 48008 connected to 172.16.106.51 port 5201
-</span><span>[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-</span><span>[  5]   0.00-1.00   sec   251 KBytes  2.06 Mbits/sec    0   24.2 KBytes
-</span><span>[  5]   1.00-2.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   2.00-3.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   3.00-4.00   sec  87.2 KBytes   715 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   4.00-5.00   sec   174 KBytes  1.43 Mbits/sec    0   24.2 KBytes
-</span><span>[  5]   5.00-6.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   6.00-7.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   7.00-8.00   sec   177 KBytes  1.45 Mbits/sec    0   24.2 KBytes
-</span><span>[  5]   8.00-9.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
-</span><span>[  5]   9.00-10.00  sec  87.2 KBytes   715 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5] local 172.28.206.105 port 48008 connected to 172.16.106.51 port 5201
+</span><span style=color:#66d9ef>[</span><span> ID] Interval           Transfer     Bitrate         Retr  Cwnd
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-1.00   sec   251 KBytes  2.06 Mbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   1.00-2.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   2.00-3.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   3.00-4.00   sec  87.2 KBytes   715 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   4.00-5.00   sec   174 KBytes  1.43 Mbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   5.00-6.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   6.00-7.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   7.00-8.00   sec   177 KBytes  1.45 Mbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   8.00-9.00   sec  87.2 KBytes   714 Kbits/sec    0   24.2 KBytes
+</span><span style=color:#66d9ef>[</span><span>  5]   9.00-10.00  sec  87.2 KBytes   715 Kbits/sec    0   24.2 KBytes
 </span><span>- - - - - - - - - - - - - - - - - - - - - - - - -
-</span><span>[ ID] Interval           Transfer     Bitrate         Retr
-</span><span>[  5]   0.00-10.00  sec  1.18 MBytes   994 Kbits/sec    0             sender
-</span><span>[  5]   0.00-10.08  sec  1.13 MBytes   941 Kbits/sec                  receiver
+</span><span style=color:#66d9ef>[</span><span> ID] Interval           Transfer     Bitrate         Retr
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-10.00  sec  1.18 MBytes   994 Kbits/sec    0             sender
+</span><span style=color:#66d9ef>[</span><span>  5]   0.00-10.08  sec  1.13 MBytes   941 Kbits/sec                  receiver
 </span><span>
 </span><span>iperf Done.
 </span></code></pre><h2 id=can-kao-zi-liao>参考资料</h2><ul><li><p>https://catbro666.github.io/posts/357ad3ec/</p><li><p><a href=https://www.linux.com/training-tutorials/qos-linux-tc-and-filters/>QoS in Linux with TC and Filters - Linux.com</a></p><li><p>https://github.com/spook/tc-easy</p><li><p>https://github.com/liucimin/Learning/tree/master/linux%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3</p><li><p>https://www.thegeekdiary.com/tc-command-examples-in-linux/</p><li><p><a href=https://man7.org/linux/man-pages/man8/tc.8.html>tc(8) - Linux manual page</a></p><li><p><a href=http://linux-ip.net/pages/diagrams.html>Diagrams | http://linux-ip.net/</a></p><li><p>https://cloud.tencent.com/developer/article/1409664</p><li><p>https://lartc.org/howto/</p><li><p><a href=https://man7.org/linux/man-pages/man8/tc-u32.8.html>tc-u32(8) - Linux manual page</a></p><li><p><a href=https://blog.csdn.net/dog250/article/details/40681809>数据包的分类和调度-Linux TC的另一种解释_可编程数据包调度-CSDN博客</a></p><li><p><a href=https://wiki.linuxfoundation.org/networking/netem>networking:netem [Wiki]</a></p><li><p><a href=https://wiki.linuxfoundation.org/networking/ifb>networking:ifb [Wiki]</a></p><li><p><a href=https://commandnotfound.cn/linux/1/620/tc-%E5%91%BD%E4%BB%A4>Linux tc 命令</a></p><li><p>https://netbeez.net/blog/how-to-use-the-linux-traffic-control/</p><li><p><a href=https://ggaaooppeenngg.github.io/zh-CN/2017/05/19/cgroup-%E5%AD%90%E7%B3%BB%E7%BB%9F%E4%B9%8B-net-cls-%E5%92%8C-net-prio/>cgroup 子系统之 net_cls 和 net_prio</a></p><li><p><a href=https://cloud.tencent.com/developer/article/2166027>网络测试工具——iperf3详细使用说明</a></p><li><p>https://github.com/magnific0/wondershaper</p><li><p><a href=https://github.com/sivel/speedtest-cli>GitHub - sivel/speedtest-cli: Command line interface for testing internet bandwidth using speedtest.net</a></p></ul></div></div></section>

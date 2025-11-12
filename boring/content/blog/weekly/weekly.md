@@ -1,6 +1,7 @@
 ---
 title: programmer weekly
 date: "2020-04-01"
+update_date: "2020-04-01"
 description: 大佬们的周刊
 tldr: 大佬们的周刊
 ---

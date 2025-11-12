@@ -1,6 +1,7 @@
 ---
 title: "Raft 共识算法详解与 JavaScript 实现"
 date: 2024-12-15T12:13:32+05:30
+update_date: 2024-12-15T12:13:32+05:30
 description: "结合 Raft 论文和 JavaScript 实现，详细介绍 Raft 算法的核心概念和工作原理。"
 tags: [raft,JavaScript]
 

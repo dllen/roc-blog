@@ -1,6 +1,7 @@
 ---
 title: "Apache Kafka, Purgatory, and Hierarchical Timing Wheels"
 date: 2023-11-12T23:01:58+05:30
+update_date: 2023-11-12T23:01:58+05:30
 description: "How can we efficiently keep track of tens of thousands of requests that are being asynchronously satisfied by other activity in the cluster?"
 tags: [kafka, TimeingWheel]
 ---
