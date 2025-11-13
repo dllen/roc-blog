@@ -122,6 +122,10 @@
         <lastmod>2024-01-15T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/linyuan-30years-investment-handbook/</loc>
+        <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/log-system-filebeat-kafka-flink-es-clickhouse-hbase/</loc>
         <lastmod>2025-10-25</lastmod>
     </url>
@@ -136,6 +140,14 @@
     <url>
         <loc>https://scp.net.cn/blog/paxos-in-action/</loc>
         <lastmod>2023-08-04T15:00:00+20:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/prompt/tiwen-jiaolian/</loc>
+        <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/prompt/yuedu-banyou-ruhe-yuedu-yiben-shu/</loc>
+        <lastmod>2025-11-13</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/raft-iml-js/</loc>
@@ -189,5 +201,9 @@
     <url>
         <loc>https://scp.net.cn/blog/weekly/weekly/</loc>
         <lastmod>2020-04-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/wireshark-macos-deep-dive/</loc>
+        <lastmod>2025-11-13</lastmod>
     </url>
 </urlset>

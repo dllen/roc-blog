@@ -1,0 +1,106 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>提问教练：用结构化提问打造强韧决策力 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/prompt/> /prompt </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-11-13</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">提问教练：用结构化提问打造强韧决策力</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=she-ji-yuan-li>设计原理</h2><ul><li>方法论基底：来自 12 步批判性提问框架，涵盖问题澄清、论证分析、证据评估、 数据与完整性、结论与决策五大层次。<li>价值观约束：好奇心、开放性、证据导向、谦逊态度，避免立场先行、情绪主导与过度自信。<li>结构化产出：以“问题 → 理由 → 假设 → 证据 → 替代 → 结论 → 行动”为主线，形成可复用模板与团队交付物标准。</ul><h2 id=kuang-jia-jie-gou>框架结构</h2><ul><li>第一层（澄清）：识别论题类型、明确核心结论、梳理支持理由。<li>第二层（分析）：统一术语定义、挖掘价值观与事实假设、识别常见谬误。<li>第三层（证据）：评估来源可靠性、方法与结论匹配度、替代解释的竞争力。<li>第四层（完整性）：数据质量、信息遗漏、风险与负面效应的对称呈现。<li>第五层（决策）：条件化/情境化结论、采纳规则、行动方案与复盘机制。</ul><h2 id=shi-yong-chang-jing>使用场景</h2><ul><li>商业决策：产品立项/定价/上线窗口、渠道选择与资源配置。<li>研究评估：论文与报告的方法质量、样本代表性与结论边界。<li>项目复盘：偏差来源识别、过程指标与结果指标的对照分析。<li>争议话题：公共政策、行业趋势、舆论事件的证据与逻辑审查。</ul><h2 id=tong-yong-prompt-fu-zhi-ji-yong>通用 Prompt（复制即用）</h2><h3 id=mo-ban-jie-gou-shuo-ming>模板结构说明</h3><ul><li>问题定义：明确论题类型、核心结论与评估目标。<li>上下文说明：背景、涉众、约束（时间/风险/资源）、已有证据。<li>输出要求：结论形态、决策条件、行动方案、监控与复盘要点。</ul><h3 id=tong-yong-mo-ban>通用模板</h3><pre class=language-txt data-lang=txt style=color:#f8f8f2;background-color:#272822><code class=language-txt data-lang=txt><span>[目标]
+</span><span>- 论题类型：{{topic_type}}
+</span><span>- 评估目标：{{assessment_goal}}
+</span><span>- 结论期待：{{expected_conclusion}}
+</span><span>
+</span><span>[上下文]
+</span><span>- 背景：{{background}}
+</span><span>- 涉众与影响：{{stakeholders}}
+</span><span>- 约束（时间/风险/资源）：{{constraints}}
+</span><span>- 现有证据与数据口径：{{evidence}}
+</span><span>
+</span><span>[分析要求]
+</span><span>- 术语定义与关键假设清单
+</span><span>- 谬误检查与替代解释对比
+</span><span>- 证据质量评估（来源/方法/匹配度）
+</span><span>
+</span><span>[输出要求]
+</span><span>- 条件化/情境化结论与采纳规则
+</span><span>- 行动方案（负责人/里程碑/时间线）
+</span><span>- 监控指标与回滚预案
+</span><span>- 风险与负面效应的对称呈现
+</span></code></pre><h3 id=bian-liang-yu-shi-yong-shuo-ming>变量与使用说明</h3><ul><li><code>{{topic_type}}</code>：论题类型，如“是否上线”/“因果关系评估”。<li><code>{{assessment_goal}}</code>：衡量目标，如“提升 D30 ≥ 5%”。<li><code>{{expected_conclusion}}</code>：期望输出的结论形态，如“条件化采纳规则”。<li><code>{{background}}</code>：业务/研究背景与触发原因。<li><code>{{stakeholders}}</code>：涉众及影响范围（用户/客户/团队/监管）。<li><code>{{constraints}}</code>：时间/预算/合规/技术等约束与边界。<li><code>{{evidence}}</code>：已有数据与来源、统计口径与有效期。</ul><h3 id=cuo-wu-chu-li-yu-shi-yong-xian-zhi>错误处理与使用限制</h3><ul><li>避免以相关性替代因果；补充替代解释并进行竞争性比较。<li>明确统计口径与样本代表性；不足时标注不确定性并降级结论强度。<li>输出必须以“条件化陈述”呈现，并给出可执行的采纳/回滚规则。<li>人工复核关键假设与高影响风险；模型结论不得直接用于生产决策。</ul><h3 id=shi-li-1-chan-pin-gong-neng-shang-xian-ping-gu>示例 1：产品功能上线评估</h3><pre class=language-txt data-lang=txt style=color:#f8f8f2;background-color:#272822><code class=language-txt data-lang=txt><span>[目标]
+</span><span>- 论题类型：是否在下季度上线“智能推荐”功能（规范性 + 行动性）
+</span><span>- 评估目标：在不提升投诉率的前提下，D30 ≥ 5%，ARPU ≥ 3%
+</span><span>- 结论期待：给出条件化结论与采纳/回滚规则
+</span><span>
+</span><span>[上下文]
+</span><span>- 背景：核心留存承压；竞品近期上线相似功能并有正向反馈
+</span><span>- 涉众与影响：现有用户、新用户、内容团队、风控与客服
+</span><span>- 约束（时间/风险/资源）：两周埋点校验，四周 A/B 测试；人力有限
+</span><span>- 现有证据与数据口径：访谈与原型实验，ARPU 按自然周口径
+</span><span>
+</span><span>[分析要求]
+</span><span>- 术语与假设：D30 定义；用户对个性化敏感；推荐准确率 ≥ 60%
+</span><span>- 谬误与替代：相关性≠因果；节日/渠道活动可能导致指标提升
+</span><span>- 证据评估：竞品案例存在情境差异；专家意见需结合本域数据
+</span><span>
+</span><span>[输出要求]
+</span><span>- 结论：当 D30 ≥ 5%、ARPU ≥ 3%、投诉率不增时采纳，否则回滚
+</span><span>- 行动：两周埋点校验 → 四周 A/B → 结果复盘；负责人与时间线明确
+</span><span>- 监控与回滚：异常告警阈值与撤回流程预设；记录影响面与复盘要点
+</span><span>- 风险：算法偏见与信息茧房；用户信任受损的缓释方案
+</span></code></pre><h3 id=shi-li-2-lun-wen-yan-jiu-bao-gao-ping-gu>示例 2：论文/研究报告评估</h3><pre class=language-txt data-lang=txt style=color:#f8f8f2;background-color:#272822><code class=language-txt data-lang=txt><span>[目标]
+</span><span>- 论题类型：研究结论可信度与可迁移性评估
+</span><span>- 评估目标：判断方法与结论匹配度、样本代表性与外部有效性
+</span><span>- 结论期待：给出采纳条件、限制边界与后续验证计划
+</span><span>
+</span><span>[上下文]
+</span><span>- 背景：拟采用某论文的算法作为生产基线
+</span><span>- 涉众与影响：产品团队、数据平台、合规与隐私监管
+</span><span>- 约束：数据脱敏与最小化原则；算力预算受限
+</span><span>- 现有证据：论文公开数据集与实验代码；评测指标为 AUC/F1
+</span><span>
+</span><span>[分析要求]
+</span><span>- 术语与假设：样本独立同分布；训练/测试不泄漏
+</span><span>- 谬误与替代：过拟合风险；数据集偏差导致的伪相关
+</span><span>- 证据评估：来源可信度、复现结果与统计显著性
+</span><span>
+</span><span>[输出要求]
+</span><span>- 结论：当在自有数据上复现实验且差异 ≤ 3% 时方可采纳
+</span><span>- 行动：数据映射与口径统一 → 复现实验 → 迁移评估 → 安全检查
+</span><span>- 监控与回滚：线上灰度与异常阈值；影响评估与撤回机制
+</span><span>- 风险：隐私泄露与合规风险；黑盒难解释的缓解与审计方案
+</span></code></pre><h3 id=shi-li-3-gong-gong-zheng-ce-zheng-yi-hua-ti-fen-xi>示例 3：公共政策争议话题分析</h3><pre class=language-txt data-lang=txt style=color:#f8f8f2;background-color:#272822><code class=language-txt data-lang=txt><span>[目标]
+</span><span>- 论题类型：政策利弊与证据强度评估
+</span><span>- 评估目标：识别受益/受损人群与短中长期影响
+</span><span>- 结论期待：在不同情境下的条件化建议与监测指标
+</span><span>
+</span><span>[上下文]
+</span><span>- 背景：某城市拟推行差异化交通收费政策
+</span><span>- 涉众与影响：居民、通勤者、商户、环保组织、财政部门
+</span><span>- 约束：财政预算、法规与社会接受度
+</span><span>- 现有证据：试点数据与第三方研究报告
+</span><span>
+</span><span>[分析要求]
+</span><span>- 术语与假设：拥堵定义与测度；价格弹性与替代交通工具
+</span><span>- 谬误与替代：选择性统计与忽略负外部性；“后此因彼”错误
+</span><span>- 证据评估：来源中立性、方法适用性与结论边界
+</span><span>
+</span><span>[输出要求]
+</span><span>- 结论：在拥堵指数 ≥ X 且公共交通承载能力 ≥ Y 时实施为宜
+</span><span>- 行动：分阶段试点与利益相关方沟通；定期评估与调整机制
+</span><span>- 监控与回滚：拥堵/排放/民意指标的阈值与回滚条件
+</span><span>- 风险：行业结构性冲击与弱势群体受损的补偿方案
+</span></code></pre><h3 id=shi-li-4-xiang-mu-fu-pan-yu-gai-jin-ji-hua>示例 4：项目复盘与改进计划</h3><pre class=language-txt data-lang=txt style=color:#f8f8f2;background-color:#272822><code class=language-txt data-lang=txt><span>[目标]
+</span><span>- 论题类型：失败原因识别与改进优先级排序
+</span><span>- 评估目标：构建可执行的改进路线图与监控指标
+</span><span>- 结论期待：提出 2–3 项高杠杆改进与验证计划
+</span><span>
+</span><span>[上下文]
+</span><span>- 背景：版本发布延期且用户反馈不佳
+</span><span>- 涉众与影响：研发、产品、运营、合作方
+</span><span>- 约束：人力与预算有限；上线窗口固定
+</span><span>- 现有证据：需求变更记录、缺陷统计、性能监测数据
+</span><span>
+</span><span>[分析要求]
+</span><span>- 术语与假设：缺陷密度与优先级定义；瓶颈定位方法
+</span><span>- 谬误与替代：以个案替代总体；忽略上下游依赖的影响
+</span><span>- 证据评估：数据质量与覆盖度；因果链条的可验证性
+</span><span>
+</span><span>[输出要求]
+</span><span>- 结论：以“交付节拍稳定性”为首要目标，制定分期改进计划
+</span><span>- 行动：需求冻结机制 → 回归测试完善 → 性能瓶颈整改
+</span><span>- 监控与回滚：节拍/缺陷/性能三类核心指标，异常触发回滚或延期
+</span><span>- 风险：变更管理失败与技术债积累；设定缓冲与熔断规则
+</span></code></pre><h2 id=shi-ji-ying-yong-an-li>实际应用案例</h2><p>场景：是否在下季度上线“智能推荐”功能。<ul><li><p>问题澄清：</p> <ul><li>论题类型：应不应该上线（规范性 + 行动性）。<li>核心结论：上线可提升留存与 ARPU；以 A/B 测试验证。<li>支持理由：相似产品数据、用户访谈、原型实验。</ul><li><p>论证分析：</p> <ul><li>概念：何为“留存提升”？按 D30 留存衡量；“ARPU”按自然周口径。<li>假设：用户对个性化敏感；推荐准确率 ≥ X%；无显著反弹。<li>谬误检查：用相关性替代因果；以个案替代总体；忽略反作用。</ul><li><p>证据评估：</p> <ul><li>来源：竞品案例可参考但存在情境差异；专家意见需结合本域数据。<li>研究：样本是否覆盖主力人群？测试长度是否足够？<li>替代原因：节日、渠道、营销活动亦可能导致指标提升。</ul><li><p>完整性审查：</p> <ul><li>数据质量：埋点是否更新？统计口径是否一致？<li>遗漏信息：小样本长期效应未评估；对新用户与低活用户影响未知。<li>风险：“算法偏见”“信息茧房”与用户信任问题。</ul><li><p>决策与行动：</p> <ul><li>条件化结论：当 D30 提升 ≥ Y%、ARPU 提升 ≥ Z%、投诉率不增时采纳。<li>行动方案：两周埋点校验 → 四周 A/B 测试 → 结果复盘；负责人与时间线明确。<li>监控与回滚：异常告警阈值与撤回流程预设。</ul></ul><h2 id=xiao-guo-ping-gu-fang-fa>效果评估方法</h2><ul><li><p>过程指标：</p> <ul><li>问题清晰度评分（论题类型、结论表述、术语定义）。<li>假设识别率（列出关键假设的覆盖度与正确性）。<li>证据质量评分（来源可信度、方法与结论匹配度）。<li>替代解释评估（列举与比较的充分性）。<li>谬误检出率（逻辑漏洞识别与修正情况）。</ul><li><p>结果指标：</p> <ul><li>决策稳健度（事后偏差与风险事件）。<li>复盘质量（结论与假设对照、学习点沉淀）。<li>迁移效果（在其他问题的复用与改进）。</ul><li><p>评分 Rubric（示例，0–5 分）：</p> <ul><li>清晰度 ≥ 4、假设识别 ≥ 4、证据质量 ≥ 4、替代解释 ≥ 3、谬误检出 ≥ 3，视为“可采纳级”。</ul></ul><h2 id=luo-di-jian-yi>落地建议</h2><ul><li>建立团队共用模板与知识库，版本化积累典型问题与高质量案例。<li>将结论改写为“条件化陈述”，搭配监控指标与回滚预案提升稳健性。<li>用时间盒与主持人角色保障讨论效率与结论质量。</ul><h2 id=zi-yuan-yu-can-kao>资源与参考</h2><ul><li><code>.trae/documents/critical_thinking_prompt.md</code>（12 步批判性提问框架与提问技巧）。<li>本项目的 Prompt 文件：<code>prompt/提问教练_20251113.md</code>。</ul></div></div></section>
