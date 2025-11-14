@@ -2,7 +2,7 @@
 base_url = "https://scp.net.cn"
 
 # The site title and description; used in feeds by default.
-title = "Roc's Blog"
+title = "码农的自留地"
 description = "语法 语义 语用"
 
 # When set to "true", the generated HTML files are minified.
@@ -38,7 +38,7 @@ smart_punctuation = true
 internal_level = "warn"
 
 [extra]
-homepage_title = "Roc's Blog"
+homepage_title = 码农的自留地"
 homepage_subtitle = "Less is more!"
 # homepage_img_url = "/homepage-img.jpg"
 homepage_img_url = "/index-image.png"
