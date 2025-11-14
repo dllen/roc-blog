@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <style>
+    .title { font: bold 28px sans-serif; fill: #1f2d3d; }
+    .label { font: 18px sans-serif; fill: #1f2d3d; }
+    .box { fill: #eaf3ff; stroke: #2f6fbb; stroke-width: 2; }
+    .meta { fill: #fff5e6; stroke: #cc7a00; stroke-width: 2; }
+  </style>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"/>
+  <text x="40" y="50" class="title">JVM Memory Model Overview</text>
+
+  <!-- Young Generation -->
+  <rect x="60" y="100" width="540" height="480" class="box"/>
+  <text x="70" y="130" class="label">Young Gen</text>
+  <rect x="80" y="160" width="300" height="380" class="box"/>
+  <text x="90" y="190" class="label">Eden</text>
+  <rect x="400" y="160" width="180" height="180" class="box"/>
+  <text x="410" y="190" class="label">Survivor S0</text>
+  <rect x="400" y="360" width="180" height="180" class="box"/>
+  <text x="410" y="390" class="label">Survivor S1</text>
+
+  <!-- Old Generation -->
+  <rect x="640" y="100" width="580" height="480" class="box"/>
+  <text x="650" y="130" class="label">Old Gen</text>
+  <text x="650" y="160" class="label">Long-lived objects, promotion from Young Gen</text>
+
+  <!-- Metaspace -->
+  <rect x="60" y="600" width="1160" height="80" class="meta"/>
+  <text x="70" y="630" class="label">Metaspace (JDK8+): Class metadata, replaces PermGen</text>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f6fbb" />
+    </marker>
+  </defs>
+  <line x1="380" y1="350" x2="640" y2="350" stroke="#2f6fbb" stroke-width="3" marker-end="url(#arrow)" />
+  <text x="420" y="330" class="label">Promotion</text>
+</svg>
