@@ -38,7 +38,7 @@ smart_punctuation = true
 internal_level = "warn"
 
 [extra]
-homepage_title = 码农的自留地"
+homepage_title = "码农的自留地"
 homepage_subtitle = "Less is more!"
 # homepage_img_url = "/homepage-img.jpg"
 homepage_img_url = "/index-image.png"
