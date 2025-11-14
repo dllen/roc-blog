@@ -32,6 +32,7 @@ python boring/scripts/x_prompt_scraper.py --cookies cookies.json --incremental
 - `--user-url`: 用户页面URL (默认: https://x.com/lijigang_com)
 - `--outdir`: 输出目录 (默认: /Users/shichaopeng/Work/self-dir/roc-blog/boring/content/blog/prompt/)
 - `--cookies`: cookies文件路径
+- `--user-data-dir`: 指定 Chrome 用户数据目录以复用登录态
 - `--max-posts`: 最大抓取数量 (默认: 100)
 - `--headless/--no-headless`: 是否无头模式
 - `--incremental`: 增量抓取模式
@@ -58,3 +59,24 @@ python boring/scripts/x_prompt_scraper.py --cookies cookies.json --incremental
 ## 备份
 
 所有抓取的数据会自动保存为 JSON 备份文件在 `backup/` 目录下。
+
+## 使用用户数据目录复用登录态
+
+在 macOS 上，Chrome 用户数据目录通常位于：
+
+- 根目录：`~/Library/Application Support/Google/Chrome`
+- 常见 Profile：`Default`、`Profile 1` 等
+
+示例：
+
+```bash
+python boring/scripts/x_prompt_scraper.py --user-url https://x.com/lijigang_com --no-headless \
+  --user-data-dir "~/Library/Application Support/Google/Chrome/Default"
+```
+
+同样适用于全页面抓取：
+
+```bash
+python boring/scripts/x_prompt_scraper.py --page-url https://x.com/lijigang_com --no-headless \
+  --user-data-dir "~/Library/Application Support/Google/Chrome"
+```

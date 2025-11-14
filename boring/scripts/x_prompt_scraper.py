@@ -131,9 +131,163 @@ def unique_filepath(base_dir: Path, date_str: str, title: str) -> Path:
             return p2
         i += 1
 
+def wait_full_render(driver, timeout: int = 30):
+    start = time.time()
+    last_h = 0
+    stable = 0
+    while time.time() - start < timeout:
+        try:
+            rs = driver.execute_script('return document.readyState')
+        except Exception:
+            rs = 'loading'
+        driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+        time.sleep(0.5)
+        try:
+            h = driver.execute_script('return document.body.scrollHeight')
+        except Exception:
+            h = last_h
+        if h == last_h and rs == 'complete':
+            stable += 1
+        else:
+            stable = 0
+        last_h = h
+        if stable >= 3:
+            break
+
+def pick_main_element(driver):
+    candidates = []
+    sels = ['main', 'article', '[role="main"]', '#content', '.post', '.article']
+    for s in sels:
+        try:
+            els = driver.find_elements(By.CSS_SELECTOR, s)
+            for el in els:
+                txt = el.text or ''
+                candidates.append((len(txt), el))
+        except Exception:
+            pass
+    if candidates:
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        return candidates[0][1]
+    try:
+        return driver.find_element(By.TAG_NAME, 'body')
+    except Exception:
+        return None
+
+def scrape_full_page(page_url: str, cookies_file: Optional[Path], headless: bool, user_data_dir: Optional[str] = None) -> Dict:
+    opts = ChromeOptions()
+    if headless:
+        opts.add_argument('--headless=new')
+    opts.add_argument('--disable-gpu')
+    opts.add_argument('--no-sandbox')
+    opts.add_argument('--window-size=1400,2400')
+    opts.add_argument('--lang=zh-CN')
+    if user_data_dir:
+        opts.add_argument(f'--user-data-dir={user_data_dir}')
+    if ChromeDriverManager:
+        from selenium.webdriver.chrome.service import Service
+        driver_path = ChromeDriverManager().install()
+        service = Service(driver_path)
+        driver = webdriver.Chrome(service=service, options=opts)
+    else:
+        driver = webdriver.Chrome(options=opts)
+    tries = 0
+    while tries < 3:
+        try:
+            driver.get(page_url)
+            wait_full_render(driver, timeout=40)
+            root = pick_main_element(driver)
+            title = ''
+            try:
+                t_el = driver.find_element(By.TAG_NAME, 'h1')
+                title = t_el.text.strip()
+            except Exception:
+                title = (driver.title or '').strip()
+            text = ''
+            if root:
+                text = root.text.strip()
+            imgs = []
+            try:
+                img_els = root.find_elements(By.TAG_NAME, 'img') if root else driver.find_elements(By.TAG_NAME, 'img')
+                for im in img_els:
+                    src = im.get_attribute('src') or ''
+                    alt = im.get_attribute('alt') or ''
+                    if src:
+                        imgs.append({'src': src, 'alt': alt})
+            except Exception:
+                pass
+            meta = {}
+            try:
+                metas = driver.find_elements(By.CSS_SELECTOR, 'meta[name], meta[property]')
+                for m in metas:
+                    name = m.get_attribute('name') or m.get_attribute('property')
+                    content = m.get_attribute('content')
+                    if name and content:
+                        meta[name] = content
+            except Exception:
+                pass
+            driver.quit()
+            return {
+                'url': page_url,
+                'title': title or '未命名',
+                'text': text,
+                'images': imgs,
+                'meta': meta,
+                'date': datetime.utcnow().strftime('%Y-%m-%d')
+            }
+        except Exception:
+            tries += 1
+            time.sleep(2)
+    try:
+        driver.quit()
+    except Exception:
+        pass
+    return {}
+
+def compose_fullpage_markdown(data: Dict) -> str:
+    title = data.get('title') or '未命名'
+    date_str = data.get('date') or datetime.utcnow().strftime('%Y-%m-%d')
+    desc = data.get('meta', {}).get('description') or '网页抓取'
+    slug = sanitize_title(title.lower())
+    fm = [
+        '---',
+        f'title: "{title}"',
+        f'date: "{date_str}"',
+        f'description: "{desc}"',
+        'tags: [Scrape]',
+        'categories: [Prompt]',
+        f'slug: "{slug}"',
+        '---',
+        ''
+    ]
+    lines = []
+    lines.extend(fm)
+    lines.append('## 正文')
+    lines.append((data.get('text') or '').strip())
+    lines.append('')
+    imgs = data.get('images') or []
+    if imgs:
+        lines.append('## 图片')
+        for im in imgs:
+            src = im.get('src')
+            alt = im.get('alt') or ''
+            lines.append(f'![{alt}]({src})')
+        lines.append('')
+    meta = data.get('meta') or {}
+    if meta:
+        lines.append('## 元数据')
+        for k, v in meta.items():
+            lines.append(f'- {k}: {v}')
+        lines.append('')
+    lines.append(f'- 原始链接：{data.get("url", "")}')
+    lines.append('')
+    return '\n'.join(lines)
+
+def blog_filename_underscore(date_str: str, title: str) -> str:
+    return f'{date_str.replace("-", "")}_{sanitize_title(title)}.md'
+
 # ---------- selenium scraper ----------
 
-def scrape_with_selenium(user_url: str, cookies_file: Optional[Path], max_posts: int, headless: bool) -> List[Dict]:
+def scrape_with_selenium(user_url: str, cookies_file: Optional[Path], max_posts: int, headless: bool, user_data_dir: Optional[str] = None) -> List[Dict]:
     """Scrape user timeline using Selenium."""
     opts = ChromeOptions()
     if headless:
@@ -143,6 +297,8 @@ def scrape_with_selenium(user_url: str, cookies_file: Optional[Path], max_posts:
     opts.add_argument('--window-size=1280,2000')
     opts.add_argument('--lang=zh-CN')
     opts.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36')
+    if user_data_dir:
+        opts.add_argument(f'--user-data-dir={user_data_dir}')
 
     if ChromeDriverManager:
         from selenium.webdriver.chrome.service import Service
@@ -288,10 +444,12 @@ def save_posts(posts: List[Dict], out_dir: Path, backup_dir: Path, index_path: P
 # ---------- main ----------
 
 def main():
-    parser = argparse.ArgumentParser(description='Scrape X (Twitter) prompt posts from user timeline')
+    parser = argparse.ArgumentParser(description='Scrape X (Twitter) prompt posts or full page content')
     parser.add_argument('--user-url', default='https://x.com/lijigang_com', help='User profile URL')
+    parser.add_argument('--page-url', default=None, help='Full page URL to scrape')
     parser.add_argument('--outdir', default='/Users/shichaopeng/Work/self-dir/roc-blog/boring/content/blog/prompt/', help='Output directory')
     parser.add_argument('--cookies', default=None, help='Path to cookies JSON file')
+    parser.add_argument('--user-data-dir', default=None, help='Chrome user data directory to reuse login state')
     parser.add_argument('--max-posts', type=int, default=100, help='Max posts to scrape')
     parser.add_argument('--headless', action='store_true', help='Run browser headless')
     parser.add_argument('--no-headless', action='store_true', help='Run browser visible')
@@ -312,9 +470,27 @@ def main():
     index_path = out_dir / '.x_prompt_index.json'
 
     cookies_file = Path(args.cookies).expanduser() if args.cookies else None
+    user_data_dir = args.user_data_dir
 
+    if args.page_url:
+        logging.info('Start full page scrape %s', args.page_url)
+        data = scrape_full_page(args.page_url, cookies_file, headless, user_data_dir)
+        if not data:
+            logging.info('Full page scrape failed')
+            return
+        out_dir.mkdir(parents=True, exist_ok=True)
+        md = compose_fullpage_markdown(data)
+        fname = blog_filename_underscore(data.get('date'), data.get('title'))
+        fp = out_dir / fname
+        i = 2
+        while fp.exists():
+            fp = out_dir / blog_filename_underscore(data.get('date'), f"{data.get('title')}-{i}")
+            i += 1
+        fp.write_text(md, encoding='utf-8')
+        logging.info('Saved %s', fp)
+        return
     logging.info('Start scraping %s', args.user_url)
-    posts = scrape_with_selenium(args.user_url, cookies_file, args.max_posts, headless)
+    posts = scrape_with_selenium(args.user_url, cookies_file, args.max_posts, headless, user_data_dir)
     logging.info('Scraped %d posts', len(posts))
 
     if args.incremental:
