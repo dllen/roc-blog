@@ -11,6 +11,14 @@
         <lastmod>2025-09-01T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/apache-dolphinscheduler-secondary-development-handbook/</loc>
+        <lastmod>2025-10-25</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/apache-flink-performance-tuning-practice/</loc>
+        <lastmod>2025-10-25</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/box/</loc>
         <lastmod>2024-01-15T12:13:32+05:30</lastmod>
     </url>
@@ -43,6 +51,10 @@
         <lastmod>2024-01-21T12:13:30+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/duan-buffett-first-principles-wisdom-2025/</loc>
+        <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/es-index-speed/</loc>
         <lastmod>2025-10-19T12:20:00+08:00</lastmod>
     </url>
@@ -52,6 +64,14 @@
     <url>
         <loc>https://scp.net.cn/blog/extra/tg-gh/</loc>
         <lastmod>2020-04-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/finops-construction-comprehensive-guide/</loc>
+        <lastmod>2025-10-25</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/golang-ecommerce-inventory-middle-platform/</loc>
+        <lastmod>2025-10-25</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/how-to-ask-questions-the-smart-way/</loc>
@@ -66,12 +86,20 @@
         <lastmod>2020-03-18T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/java-double-list-outlier-removal/</loc>
+        <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/java-simple-agent-impl/</loc>
         <lastmod>2021-03-18T12:13:38+05:30</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/javassist-tour/</loc>
         <lastmod>2019-12-01T12:13:38+05:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/jvm-troubleshooting-and-performance-tuning-practices/</loc>
+        <lastmod>2025-10-25T10:00:00+08:00</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/kafka-nic-buff/</loc>
@@ -86,8 +114,20 @@
         <lastmod>2025-10-23T10:00:00+08:00</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/linux-iptables-ipset-tc-integrated-practice/</loc>
+        <lastmod>2025-10-25T10:00:00+08:00</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/linux-tc-tour/</loc>
         <lastmod>2024-01-15T12:13:32+05:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/linyuan-30years-investment-handbook/</loc>
+        <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/log-system-filebeat-kafka-flink-es-clickhouse-hbase/</loc>
+        <lastmod>2025-10-25</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/ollama-intro/</loc>
@@ -100,6 +140,14 @@
     <url>
         <loc>https://scp.net.cn/blog/paxos-in-action/</loc>
         <lastmod>2023-08-04T15:00:00+20:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/prompt/tiwen-jiaolian/</loc>
+        <lastmod>2025-11-13</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/prompt/yuedu-banyou-ruhe-yuedu-yiben-shu/</loc>
+        <lastmod>2025-11-13</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/raft-iml-js/</loc>
@@ -153,5 +201,9 @@
     <url>
         <loc>https://scp.net.cn/blog/weekly/weekly/</loc>
         <lastmod>2020-04-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/wireshark-macos-deep-dive/</loc>
+        <lastmod>2025-11-13</lastmod>
     </url>
 </urlset>

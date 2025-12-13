@@ -1,0 +1,234 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>基于 Filebeat、Kafka、Flink、ES、ClickHouse、HBase 的日志系统建设 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-10-25</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">基于 Filebeat、Kafka、Flink、ES、ClickHouse、HBase 的日志系统建设</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=gai-lan>概览</h1><ul><li>目标：构建可扩展、低延迟、可检索与可分析的日志平台，支持实时处理与历史归档。<li>数据流：<code>Filebeat → Kafka → Flink → {Elasticsearch | ClickHouse | HBase}</code>。<li>架构图： <img alt=系统架构 src=/log-system-architecture.svg></ul><h1 id=1-xi-tong-jia-gou-she-ji>1. 系统架构设计</h1><ul><li>角色定位 <ul><li>Filebeat：轻量采集器，支持多源文件、容器日志，提供行聚合、过滤与缓冲，向 Kafka 可靠投递。<li>Kafka：日志总线与缓冲层，解耦生产与消费，提供分区并行与持久化，作为 Flink Source。<li>Flink：实时计算引擎，做清洗、解析、路由与指标聚合，Exactly-Once 输出至各存储。<li>Elasticsearch：面向检索与可视化（Kibana），适合结构化/半结构化日志快速查询。<li>ClickHouse：面向多维分析与聚合（OLAP），高吞吐写入与秒级分析，适合报表与趋势洞察。<li>HBase：长周期明细存储与宽表查询，支撑低频但深度明细回溯。</ul><li>高可用与容错 <ul><li>Filebeat：内置重试与持久队列（spool）；Kafka 端启用 <code>acks=all</code> 与幂等写。<li>Kafka：Broker 多副本+ISR，控制器自动选举；跨机房可启用 MirrorMaker2。<li>Flink：Checkpoint+Savepoint，RocksDB 状态后端，事务性 Sink（两阶段提交）。<li>Elasticsearch：索引副本与 ILM 滚动；跨集群搜索可做容灾；<li>ClickHouse：分片+副本，ReplicatedMergeTree，失败节点自动恢复；<li>HBase：HDFS 冗余、RegionServer 自动迁移，ZK 保证一致性。</ul></ul><h1 id=2-ji-shu-xuan-xing-fen-xi>2. 技术选型分析</h1><ul><li>选择考量与对比 <ul><li>Filebeat vs Fluent Bit：生态与可维护性、配置一致性；FB 多模块成熟，FB→Kafka 链路稳定。<li>Kafka vs Pulsar：Kafka 在日志生态与 Flink Source 上成熟；事务性写与生态工具完备。<li>Flink vs Spark Streaming：更低延迟与原生事件时间，Exactly-Once 更易实现。<li>ES vs OpenSearch：社区与商业支持综合评估；选 ES 8.x 以简化部署与安全集成。<li>ClickHouse vs Druid：写入吞吐与查询延迟综合更优，维护成本低；<li>HBase vs Cassandra：基于 HDFS 的生态整合与线性扩展、适合明细长保留。</ul><li>版本建议与兼容性 <ul><li>Kafka 3.x（带 KRaft 或 ZK）、Flink ≥1.17、ES 8.x、ClickHouse ≥23.x、HBase 2.x、JDK 17。<li>序列化：JSON 起步，推荐 Avro/Protobuf+Schema Registry，便于演进与兼容。</ul><li>性能基准（示例环境：8C32G+NVMe，千兆网） <ul><li>Kafka 单 Broker 吞吐（LZ4 压缩，批量写）：≥150k msg/s（1KB）；<li>Flink 端到端延迟（解析+路由）：p95 ≤ 300ms；<li>ES 索引速率：单节点 ≥20k doc/s（bulk 5k，刷新 5s）；<li>ClickHouse 插入：≥150MB/s（HTTP batch）；<li>HBase Put：≥50k row/s（批量 1k，Async 客户端）。</ul></ul><h1 id=3-he-xin-shi-xian-xi-jie>3. 核心实现细节</h1><ul><li>Filebeat 配置</ul><pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.inputs</span><span>:
+</span><span>  - </span><span style=color:#f92672>type</span><span>: </span><span style=color:#e6db74>log
+</span><span>    </span><span style=color:#f92672>paths</span><span>: [</span><span style=color:#e6db74>"/var/log/app/*.log"</span><span>]
+</span><span>    </span><span style=color:#f92672>multiline.pattern</span><span>: </span><span style=color:#e6db74>'^\['
+</span><span>    </span><span style=color:#f92672>multiline.negate</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>multiline.match</span><span>: </span><span style=color:#e6db74>after
+</span><span>    </span><span style=color:#f92672>fields</span><span>: {</span><span style=color:#f92672>app</span><span>: </span><span style=color:#e6db74>myapp</span><span>, </span><span style=color:#f92672>env</span><span>: </span><span style=color:#e6db74>prod</span><span>}
+</span><span>    </span><span style=color:#f92672>processors</span><span>:
+</span><span>      - </span><span style=color:#f92672>drop_event</span><span>:
+</span><span>          </span><span style=color:#f92672>when</span><span>:
+</span><span>            </span><span style=color:#f92672>equals</span><span>: {</span><span style=color:#f92672>log.level</span><span>: </span><span style=color:#e6db74>"debug"</span><span>}
+</span><span style=color:#f92672>output.kafka</span><span>:
+</span><span>  </span><span style=color:#f92672>hosts</span><span>: [</span><span style=color:#e6db74>"kafka1:9092"</span><span>,</span><span style=color:#e6db74>"kafka2:9092"</span><span>]
+</span><span>  </span><span style=color:#f92672>topic</span><span>: </span><span style=color:#e6db74>"logs.raw"
+</span><span>  </span><span style=color:#f92672>compression</span><span>: </span><span style=color:#e6db74>lz4
+</span><span>  </span><span style=color:#f92672>partition.round_robin</span><span>:
+</span><span>    </span><span style=color:#f92672>reachable_only</span><span>: </span><span style=color:#ae81ff>true
+</span><span>  </span><span style=color:#f92672>required_acks</span><span>: </span><span style=color:#ae81ff>-1
+</span><span>  </span><span style=color:#f92672>bulk_max_size</span><span>: </span><span style=color:#ae81ff>2048
+</span></code></pre><ul><li>Kafka 主题规划 <ul><li>命名：<code>logs.{env}.{app}.{type}</code>；分区数按峰值吞吐与消费者并行度估算；RF≥3。<li>Producer：<code>acks=all</code>、<code>enable.idempotence=true</code>、<code>linger.ms=5-20</code>、<code>batch.size=64-256KB</code>。<li>保留：热数据 7-14 天，冷归档转对象存储或 CH/HBase。</ul><li>Flink 处理主线（Java 示例）</ul><pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#66d9ef;font-style:italic>StreamExecutionEnvironment</span><span> env </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>StreamExecutionEnvironment</span><span>.getExecutionEnvironment();
+</span><span>env.enableCheckpointing(</span><span style=color:#ae81ff>30000</span><span>);
+</span><span style=color:#66d9ef;font-style:italic>Properties</span><span> props </span><span style=color:#f92672>= new </span><span style=color:#66d9ef;font-style:italic>Properties</span><span>();
+</span><span>props.put(</span><span style=color:#e6db74>"bootstrap.servers"</span><span>, </span><span style=color:#e6db74>"kafka1:9092"</span><span>);
+</span><span style=color:#66d9ef;font-style:italic>FlinkKafkaConsumer</span><span>&lt;</span><span style=color:#66d9ef;font-style:italic>String</span><span>> source </span><span style=color:#f92672>= new </span><span style=color:#66d9ef;font-style:italic>FlinkKafkaConsumer</span><span>&lt;>(</span><span style=color:#e6db74>"logs.raw"</span><span>, </span><span style=color:#f92672>new </span><span style=color:#66d9ef;font-style:italic>SimpleStringSchema</span><span>(), props);
+</span><span style=color:#66d9ef;font-style:italic>DataStream</span><span>&lt;</span><span style=color:#66d9ef;font-style:italic>String</span><span>> raw </span><span style=color:#f92672>=</span><span> env.addSource(source);
+</span><span style=color:#66d9ef;font-style:italic>DataStream</span><span>&lt;</span><span style=color:#66d9ef;font-style:italic>LogEvent</span><span>> parsed </span><span style=color:#f92672>=</span><span> raw.map(</span><span style=color:#66d9ef;font-style:italic>Json</span><span>::parse).assignTimestampsAndWatermarks(...);
+</span><span style=color:#75715e>// 分流：检索类 → ES，分析类 → CH，明细长保留 → HBase
+</span><span style=color:#66d9ef;font-style:italic>SideOutput</span><span> esOut </span><span style=color:#f92672>= </span><span>...; </span><span style=color:#66d9ef;font-style:italic>SideOutput</span><span> chOut </span><span style=color:#f92672>= </span><span>...; </span><span style=color:#66d9ef;font-style:italic>SideOutput</span><span> hbaseOut </span><span style=color:#f92672>= </span><span>...;
+</span><span>parsed.process(</span><span style=color:#f92672>new </span><span style=color:#66d9ef;font-style:italic>RouterFn</span><span>(esOut, chOut, hbaseOut));
+</span><span style=color:#75715e>// Elasticsearch sink（bulk，低刷新）
+</span><span>parsed.getSideOutput(esOut).addSink(</span><span style=color:#66d9ef;font-style:italic>EsSink</span><span>.bulk(</span><span style=color:#e6db74>"http://es:9200"</span><span>, </span><span style=color:#e6db74>"logs-idx"</span><span>));
+</span><span style=color:#75715e>// ClickHouse sink（HTTP insert）
+</span><span>parsed.getSideOutput(chOut).addSink(</span><span style=color:#66d9ef;font-style:italic>ClickHouseSink</span><span>.http(</span><span style=color:#e6db74>"http://ch:8123"</span><span>, </span><span style=color:#e6db74>"INSERT INTO logs VALUES (?, ?, ?)"</span><span>));
+</span><span style=color:#75715e>// HBase sink（Async Put）
+</span><span>parsed.getSideOutput(hbaseOut).addSink(</span><span style=color:#66d9ef;font-style:italic>HBaseSink</span><span>.async(</span><span style=color:#e6db74>"zookeeper:2181"</span><span>, </span><span style=color:#e6db74>"logs:evt"</span><span>));
+</span><span>env.execute(</span><span style=color:#e6db74>"log-pipeline"</span><span>);
+</span></code></pre><ul><li>Elasticsearch 索引与分片</ul><pre class=language-json data-lang=json style=color:#f8f8f2;background-color:#272822><code class=language-json data-lang=json><span>{
+</span><span>  </span><span style=color:#e6db74>"settings"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"number_of_shards"</span><span>: </span><span style=color:#ae81ff>3</span><span>,
+</span><span>    </span><span style=color:#e6db74>"number_of_replicas"</span><span>: </span><span style=color:#ae81ff>1</span><span>,
+</span><span>    </span><span style=color:#e6db74>"refresh_interval"</span><span>: </span><span style=color:#e6db74>"5s"</span><span>,
+</span><span>    </span><span style=color:#e6db74>"index.translog.durability"</span><span>: </span><span style=color:#e6db74>"async"
+</span><span>  },
+</span><span>  </span><span style=color:#e6db74>"mappings"</span><span>: {
+</span><span>    </span><span style=color:#e6db74>"properties"</span><span>: {
+</span><span>      </span><span style=color:#e6db74>"@timestamp"</span><span>: {</span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"date"</span><span>},
+</span><span>      </span><span style=color:#e6db74>"app"</span><span>: {</span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"keyword"</span><span>},
+</span><span>      </span><span style=color:#e6db74>"level"</span><span>: {</span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"keyword"</span><span>},
+</span><span>      </span><span style=color:#e6db74>"message"</span><span>: {</span><span style=color:#e6db74>"type"</span><span>: </span><span style=color:#e6db74>"text"</span><span>}
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span></code></pre><ul><li>ClickHouse 表设计</ul><pre class=language-sql data-lang=sql style=color:#f8f8f2;background-color:#272822><code class=language-sql data-lang=sql><span style=color:#f92672>CREATE TABLE </span><span style=color:#a6e22e>logs</span><span> (
+</span><span>  ts </span><span style=color:#66d9ef;font-style:italic>DateTime</span><span>,
+</span><span>  app String,
+</span><span>  level LowCardinality(String),
+</span><span>  message String
+</span><span>) ENGINE </span><span style=color:#f92672>=</span><span> MergeTree
+</span><span>PARTITION BY toDate(ts)
+</span><span style=color:#f92672>ORDER BY</span><span> (ts, app)
+</span><span>SETTINGS index_granularity </span><span style=color:#f92672>= </span><span style=color:#ae81ff>8192</span><span>;
+</span></code></pre><ul><li>HBase RowKey 与列族</ul><pre style=color:#f8f8f2;background-color:#272822><code><span>RowKey: &lt;rev_ts>&lt;tenant>&lt;app>&lt;hash>
+</span><span>CF: d (detail), m (meta)
+</span><span>预分区：按时间与租户做 split；避免热点。
+</span></code></pre><h2 id=ri-zhi-cai-ji-mo-kuai-pei-zhi-rong-qi-yu-zhu-ji>日志采集模块配置（容器与主机）</h2><h3 id=rong-qi-huan-jing-ri-zhi-cai-ji>容器环境日志采集</h3><ul><li>采集 Docker 标准输出（stdout/stderr） <ul><li>方法 A（文件采集）：Docker 默认 <code>json-file</code> 驱动将容器日志写入 <code>/var/lib/docker/containers/&lt;cid>/&lt;cid>-json.log</code>。<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.inputs</span><span>:
+</span><span>  - </span><span style=color:#f92672>type</span><span>: </span><span style=color:#e6db74>log
+</span><span>    </span><span style=color:#f92672>enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>paths</span><span>:
+</span><span>      - </span><span style=color:#e6db74>/var/lib/docker/containers/*/*-json.log
+</span><span>    </span><span style=color:#f92672>processors</span><span>:
+</span><span>      - </span><span style=color:#f92672>add_docker_metadata</span><span>:
+</span><span>          </span><span style=color:#f92672>host</span><span>: </span><span style=color:#e6db74>"unix:///var/run/docker.sock"  </span><span style=color:#75715e># 通过 Docker API 增强容器元数据
+</span><span>      - </span><span style=color:#f92672>decode_json_fields</span><span>:
+</span><span>          </span><span style=color:#f92672>fields</span><span>: [</span><span style=color:#e6db74>"message"</span><span>]
+</span><span>          </span><span style=color:#f92672>target</span><span>: </span><span style=color:#e6db74>"json"
+</span><span>          </span><span style=color:#f92672>overwrite_keys</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>multiline.pattern</span><span>: </span><span style=color:#e6db74>'^{"log":"'   </span><span style=color:#75715e># 若应用以多行日志写入一条 JSON，可按需开启
+</span><span>    </span><span style=color:#f92672>multiline.negate</span><span>: </span><span style=color:#ae81ff>false
+</span><span>    </span><span style=color:#f92672>multiline.match</span><span>: </span><span style=color:#e6db74>after
+</span></code></pre><li>方法 B（容器输入）：使用 <code>type: container</code> 读取容器运行时日志（支持 Docker/Containerd CRI），适合 K8s。<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.inputs</span><span>:
+</span><span>  - </span><span style=color:#f92672>type</span><span>: </span><span style=color:#e6db74>container
+</span><span>    </span><span style=color:#f92672>enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>paths</span><span>:
+</span><span>      - </span><span style=color:#e6db74>/var/log/containers/*.log  </span><span style=color:#75715e># Kubernetes CRI 标准路径
+</span><span>    </span><span style=color:#f92672>processors</span><span>:
+</span><span>      - </span><span style=color:#f92672>add_kubernetes_metadata</span><span>:
+</span><span>          </span><span style=color:#f92672>host</span><span>: </span><span style=color:#e6db74>${NODE_NAME}
+</span><span>          </span><span style=color:#f92672>matchers</span><span>:
+</span><span>            - </span><span style=color:#f92672>logs_path</span><span>:
+</span><span>                </span><span style=color:#f92672>logs_path</span><span>: </span><span style=color:#e6db74>"/var/log/containers/"  </span><span style=color:#75715e># 基于路径匹配 Pod/容器元数据
+</span><span>      - </span><span style=color:#f92672>drop_event</span><span>:
+</span><span>          </span><span style=color:#f92672>when</span><span>:
+</span><span>            </span><span style=color:#f92672>equals</span><span>:
+</span><span>              </span><span style=color:#f92672>kubernetes.labels.log_level</span><span>: </span><span style=color:#e6db74>"debug"  </span><span style=color:#75715e># 示例：按标签过滤低价值日志
+</span></code></pre></ul><li>容器日志文件挂载采集 <ul><li>为 Filebeat 容器挂载主机日志目录与 Docker/K8s 元数据接口： <ul><li>Docker：挂载 <code>/var/lib/docker/containers</code> 与 <code>/var/run/docker.sock</code><li>K8s：挂载 <code>/var/log/containers</code>、<code>/var/log/pods</code>、<code>/var/lib/docker/containers</code>（取决于运行时）</ul></ul><li>Kubernetes DaemonSet 部署示例<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span><span>: </span><span style=color:#e6db74>apps/v1
+</span><span style=color:#f92672>kind</span><span>: </span><span style=color:#e6db74>DaemonSet
+</span><span style=color:#f92672>metadata</span><span>:
+</span><span>  </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>filebeat
+</span><span>  </span><span style=color:#f92672>namespace</span><span>: </span><span style=color:#e6db74>logging
+</span><span style=color:#f92672>spec</span><span>:
+</span><span>  </span><span style=color:#f92672>selector</span><span>:
+</span><span>    </span><span style=color:#f92672>matchLabels</span><span>: {</span><span style=color:#f92672>app</span><span>: </span><span style=color:#e6db74>filebeat</span><span>}
+</span><span>  </span><span style=color:#f92672>template</span><span>:
+</span><span>    </span><span style=color:#f92672>metadata</span><span>:
+</span><span>      </span><span style=color:#f92672>labels</span><span>: {</span><span style=color:#f92672>app</span><span>: </span><span style=color:#e6db74>filebeat</span><span>}
+</span><span>    </span><span style=color:#f92672>spec</span><span>:
+</span><span>      </span><span style=color:#f92672>serviceAccountName</span><span>: </span><span style=color:#e6db74>filebeat
+</span><span>      </span><span style=color:#f92672>hostNetwork</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      </span><span style=color:#f92672>dnsPolicy</span><span>: </span><span style=color:#e6db74>ClusterFirstWithHostNet
+</span><span>      </span><span style=color:#f92672>containers</span><span>:
+</span><span>        - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>filebeat
+</span><span>          </span><span style=color:#f92672>image</span><span>: </span><span style=color:#e6db74>docker.elastic.co/beats/filebeat:8.12.0
+</span><span>          </span><span style=color:#f92672>args</span><span>: [</span><span style=color:#e6db74>"-c"</span><span>, </span><span style=color:#e6db74>"/etc/filebeat.yml"</span><span>, </span><span style=color:#e6db74>"-e"</span><span>]
+</span><span>          </span><span style=color:#f92672>env</span><span>:
+</span><span>            - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>NODE_NAME
+</span><span>              </span><span style=color:#f92672>valueFrom</span><span>: {</span><span style=color:#f92672>fieldRef</span><span>: {</span><span style=color:#f92672>fieldPath</span><span>: </span><span style=color:#e6db74>spec.nodeName</span><span>}}
+</span><span>          </span><span style=color:#f92672>volumeMounts</span><span>:
+</span><span>            - {</span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>config</span><span>, </span><span style=color:#f92672>mountPath</span><span>: </span><span style=color:#e6db74>/etc/filebeat.yml</span><span>, </span><span style=color:#f92672>subPath</span><span>: </span><span style=color:#e6db74>filebeat.yml</span><span>}
+</span><span>            - {</span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>varlog</span><span>, </span><span style=color:#f92672>mountPath</span><span>: </span><span style=color:#e6db74>/var/log</span><span>}
+</span><span>            - {</span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>containers</span><span>, </span><span style=color:#f92672>mountPath</span><span>: </span><span style=color:#e6db74>/var/lib/docker/containers</span><span>, </span><span style=color:#f92672>readOnly</span><span>: </span><span style=color:#ae81ff>true</span><span>}
+</span><span>            - {</span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>dockersock</span><span>, </span><span style=color:#f92672>mountPath</span><span>: </span><span style=color:#e6db74>/var/run/docker.sock</span><span>}
+</span><span>          </span><span style=color:#f92672>securityContext</span><span>:
+</span><span>            </span><span style=color:#f92672>runAsUser</span><span>: </span><span style=color:#ae81ff>0
+</span><span>      </span><span style=color:#f92672>volumes</span><span>:
+</span><span>        - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>config
+</span><span>          </span><span style=color:#f92672>configMap</span><span>: {</span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>filebeat-config</span><span>}
+</span><span>        - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>varlog
+</span><span>          </span><span style=color:#f92672>hostPath</span><span>: {</span><span style=color:#f92672>path</span><span>: </span><span style=color:#e6db74>/var/log</span><span>}
+</span><span>        - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>containers
+</span><span>          </span><span style=color:#f92672>hostPath</span><span>: {</span><span style=color:#f92672>path</span><span>: </span><span style=color:#e6db74>/var/lib/docker/containers</span><span>}
+</span><span>        - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>dockersock
+</span><span>          </span><span style=color:#f92672>hostPath</span><span>: {</span><span style=color:#f92672>path</span><span>: </span><span style=color:#e6db74>/var/run/docker.sock</span><span>}
+</span><span>---
+</span><span style=color:#f92672>apiVersion</span><span>: </span><span style=color:#e6db74>v1
+</span><span style=color:#f92672>kind</span><span>: </span><span style=color:#e6db74>ConfigMap
+</span><span style=color:#f92672>metadata</span><span>:
+</span><span>  </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>filebeat-config
+</span><span>  </span><span style=color:#f92672>namespace</span><span>: </span><span style=color:#e6db74>logging
+</span><span style=color:#f92672>data</span><span>:
+</span><span>  </span><span style=color:#f92672>filebeat.yml</span><span>: </span><span style=color:#f92672>|
+</span><span style=color:#e6db74>    filebeat.inputs:
+</span><span style=color:#e6db74>      - type: container
+</span><span style=color:#e6db74>        enabled: true
+</span><span style=color:#e6db74>        paths:
+</span><span style=color:#e6db74>          - /var/log/containers/*.log
+</span><span style=color:#e6db74>        processors:
+</span><span style=color:#e6db74>          - add_kubernetes_metadata:
+</span><span style=color:#e6db74>              host: ${NODE_NAME}
+</span><span style=color:#e6db74>              matchers:
+</span><span style=color:#e6db74>                - logs_path:
+</span><span style=color:#e6db74>                    logs_path: "/var/log/containers/"
+</span><span style=color:#e6db74>    output.kafka:
+</span><span style=color:#e6db74>      hosts: ["kafka1:9092","kafka2:9092"]
+</span><span style=color:#e6db74>      topic: "logs.raw"
+</span><span style=color:#e6db74>      partition.round_robin.reachable_only: true
+</span><span style=color:#e6db74>      compression: lz4
+</span><span style=color:#e6db74>      required_acks: -1
+</span></code></pre><li>容器元数据增强 <ul><li>Docker：<code>add_docker_metadata</code> 通过 Docker API 提取容器名、镜像、标签等；<li>Kubernetes：<code>add_kubernetes_metadata</code> 注入 Pod/Namespace/Labels/Annotations；可用 <code>drop_event</code>/<code>drop_fields</code> 做过滤与瘦身。</ul></ul><h3 id=zhu-ji-huan-jing-ri-zhi-cai-ji>主机环境日志采集</h3><ul><li>采集系统日志（syslog/auth/journald） <ul><li>使用系统模块（推荐）：<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.modules</span><span>:
+</span><span>  - </span><span style=color:#f92672>module</span><span>: </span><span style=color:#e6db74>system
+</span><span>    </span><span style=color:#f92672>syslog</span><span>:
+</span><span>      </span><span style=color:#f92672>enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      </span><span style=color:#f92672>var.paths</span><span>: [</span><span style=color:#e6db74>"/var/log/syslog"</span><span>, </span><span style=color:#e6db74>"/var/log/messages"</span><span>]
+</span><span>    </span><span style=color:#f92672>auth</span><span>:
+</span><span>      </span><span style=color:#f92672>enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      </span><span style=color:#f92672>var.paths</span><span>: [</span><span style=color:#e6db74>"/var/log/auth.log"</span><span>, </span><span style=color:#e6db74>"/var/log/secure"</span><span>]
+</span></code></pre><li>或文件输入（通用）：<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.inputs</span><span>:
+</span><span>  - </span><span style=color:#f92672>type</span><span>: </span><span style=color:#e6db74>log
+</span><span>    </span><span style=color:#f92672>paths</span><span>:
+</span><span>      - </span><span style=color:#e6db74>/var/log/*.log
+</span><span>      - </span><span style=color:#e6db74>/var/log/nginx/*.log
+</span><span>    </span><span style=color:#f92672>multiline.pattern</span><span>: </span><span style=color:#e6db74>'^\\['  </span><span style=color:#75715e># 以时间/方括号开始的堆栈等多行
+</span><span>    </span><span style=color:#f92672>multiline.negate</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>multiline.match</span><span>: </span><span style=color:#e6db74>after
+</span><span>    </span><span style=color:#f92672>fields_under_root</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>fields</span><span>:
+</span><span>      </span><span style=color:#f92672>host.role</span><span>: </span><span style=color:#e6db74>"web"
+</span><span>      </span><span style=color:#f92672>env</span><span>: </span><span style=color:#e6db74>"prod"
+</span><span>    </span><span style=color:#f92672>processors</span><span>:
+</span><span>      - </span><span style=color:#f92672>drop_fields</span><span>: {</span><span style=color:#f92672>fields</span><span>: [</span><span style=color:#e6db74>"log.offset"</span><span>, </span><span style=color:#e6db74>"input.type"</span><span>]}
+</span><span>      - </span><span style=color:#f92672>rename</span><span>:
+</span><span>          </span><span style=color:#f92672>fields</span><span>:
+</span><span>            - </span><span style=color:#f92672>from</span><span>: </span><span style=color:#e6db74>"host.name"
+</span><span>              </span><span style=color:#f92672>to</span><span>: </span><span style=color:#e6db74>"hostname"
+</span></code></pre></ul><li>主机标签与自定义字段 <ul><li>使用 <code>fields</code> 与 <code>fields_under_root: true</code> 直接展开到事件根，提高检索友好性；配合 <code>tags: [prod, region-cn]</code> 标注环境。</ul><li>日志轮转与归档建议 <ul><li>应用侧启用 <code>logrotate</code> 或等效机制，控制单文件大小与保留周期；<li>Filebeat 相关参数： <ul><li><code>close_inactive: 5m</code>（无新数据关闭文件句柄）<li><code>clean_inactive: 168h</code>（长时间无活动的文件从注册表清理）<li><code>ignore_older: 24h</code>（忽略过久文件）<li><code>scan_frequency: 10s</code>（扫描新文件频率）</ul></ul></ul><h3 id=tong-yong-pei-zhi-yao-qiu>通用配置要求</h3><ul><li>完整的 <code>filebeat.yml</code> 示例（容器与主机通用骨架）</ul><pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>filebeat.inputs</span><span>:
+</span><span>  - </span><span style=color:#f92672>type</span><span>: </span><span style=color:#e6db74>log
+</span><span>    </span><span style=color:#f92672>enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>paths</span><span>: [</span><span style=color:#e6db74>"/var/log/app/*.log"</span><span>]
+</span><span>    </span><span style=color:#f92672>multiline.pattern</span><span>: </span><span style=color:#e6db74>'^\\['
+</span><span>    </span><span style=color:#f92672>multiline.negate</span><span>: </span><span style=color:#ae81ff>true
+</span><span>    </span><span style=color:#f92672>multiline.match</span><span>: </span><span style=color:#e6db74>after
+</span><span>    </span><span style=color:#f92672>processors</span><span>:
+</span><span>      - </span><span style=color:#f92672>drop_event</span><span>:
+</span><span>          </span><span style=color:#f92672>when</span><span>:
+</span><span>            </span><span style=color:#f92672>equals</span><span>: {</span><span style=color:#f92672>log.level</span><span>: </span><span style=color:#e6db74>"debug"</span><span>}
+</span><span>      - </span><span style=color:#f92672>decode_json_fields</span><span>:
+</span><span>          </span><span style=color:#f92672>fields</span><span>: [</span><span style=color:#e6db74>"message"</span><span>]
+</span><span>          </span><span style=color:#f92672>target</span><span>: </span><span style=color:#e6db74>"json"
+</span><span>          </span><span style=color:#f92672>overwrite_keys</span><span>: </span><span style=color:#ae81ff>true
+</span><span>      - </span><span style=color:#f92672>add_docker_metadata</span><span>:
+</span><span>          </span><span style=color:#f92672>host</span><span>: </span><span style=color:#e6db74>"unix:///var/run/docker.sock"
+</span><span>      - </span><span style=color:#f92672>add_kubernetes_metadata</span><span>:
+</span><span>          </span><span style=color:#f92672>host</span><span>: </span><span style=color:#e6db74>${NODE_NAME}
+</span><span style=color:#f92672>output.kafka</span><span>:
+</span><span>  </span><span style=color:#f92672>hosts</span><span>: [</span><span style=color:#e6db74>"kafka1:9092"</span><span>,</span><span style=color:#e6db74>"kafka2:9092"</span><span>]
+</span><span>  </span><span style=color:#f92672>topic</span><span>: </span><span style=color:#e6db74>"logs.raw"
+</span><span>  </span><span style=color:#f92672>compression</span><span>: </span><span style=color:#e6db74>lz4
+</span><span>  </span><span style=color:#f92672>partition.round_robin.reachable_only</span><span>: </span><span style=color:#ae81ff>true
+</span><span>  </span><span style=color:#f92672>required_acks</span><span>: </span><span style=color:#ae81ff>-1
+</span><span>  </span><span style=color:#f92672>client_id</span><span>: </span><span style=color:#e6db74>"filebeat-prod"
+</span><span>  </span><span style=color:#f92672>max_message_bytes</span><span>: </span><span style=color:#ae81ff>1000000
+</span><span style=color:#75715e># 安全（示例，按需启用）
+</span><span style=color:#75715e># ssl.certificate_authorities: ["/etc/ssl/ca.pem"]
+</span><span style=color:#75715e># sasl.mechanism: scram-sha-512
+</span><span style=color:#75715e># username: "beat_user"
+</span><span style=color:#75715e># password: "secret"
+</span><span style=color:#75715e># 监控接口
+</span><span style=color:#f92672>http.enabled</span><span>: </span><span style=color:#ae81ff>true
+</span><span style=color:#f92672>http.host</span><span>: </span><span style=color:#ae81ff>0.0.0.0
+</span><span style=color:#f92672>http.port</span><span>: </span><span style=color:#ae81ff>5066
+</span><span style=color:#f92672>logging.level</span><span>: </span><span style=color:#e6db74>info
+</span><span style=color:#f92672>logging.selectors</span><span>: [</span><span style=color:#e6db74>"publish"</span><span>, </span><span style=color:#e6db74>"processors"</span><span>]
+</span></code></pre><ul><li>过滤与字段处理 <ul><li>首选在采集侧做降噪：<code>drop_event</code>、<code>drop_fields</code>、<code>dissect</code>/<code>decode_json_fields</code>、<code>rename</code>；<li>统一时间戳：<code>timestamp</code> 处理器将自定义时间字段映射到 <code>@timestamp</code>。</ul><li>Kafka 输出参数说明 <ul><li><code>required_acks=-1</code>（all ISR 确认）、<code>compression=lz4</code>、<code>max_message_bytes</code> 控制单消息大小；<li><code>partition.round_robin.reachable_only=true</code> 避免不可达分区；<code>client_id</code> 标识采集实例；<li>安全：SASL SCRAM 与 SSL 证书链；生产环境建议启用加密与认证。</ul><li>性能与安全建议 <ul><li>控制输入文件数量与 <code>harvester_limit</code>，避免句柄耗尽；<li>合理 <code>bulk_max_size</code> 与 Kafka 端 <code>linger.ms</code>/<code>batch.size</code> 匹配；<li>采集侧最小权限运行，限制可读取路径；容器中避免特权运行。</ul></ul><h3 id=yan-zheng-fang-an>验证方案</h3><ul><li>功能验证 <ul><li>本地：<code>filebeat test output</code> 检查与 Kafka 的连通；<code>filebeat -e -d "publish"</code> 观察事件发送；<li>端到端：使用 <code>kcat -C -b kafka1:9092 -t logs.raw -o -10</code> 拉取最新评论，校验字段；</ul><li>常见问题排查 <ul><li>容器元数据缺失：检查是否挂载 <code>/var/run/docker.sock</code> 或正确配置 <code>add_kubernetes_metadata</code>；<li>多行合并异常：确认 <code>multiline.pattern</code> 与日志格式匹配，适当调整 <code>timeout</code>；<li>无法读取文件：校验路径与权限，确认 Filebeat 运行用户与宿主机挂载；<li>Kafka 429/缓慢：检查 <code>required_acks</code>、网络与批量参数，监控 broker 队列与磁盘；</ul><li>性能监控配置建议 <ul><li>启用 <code>http.enabled: true</code> 暴露指标（<code>/stats</code>），采集 <code>beat.events</code>、<code>harvester.open_files</code>、<code>output.events</code> 成功/失败；<li>用 Prometheus 抓取并设置告警：采集速率低于预期、发送失败率升高、打开文件数异常增长。</ul></ul><h1 id=4-xing-neng-you-hua-jing-yan>4. 性能优化经验</h1><ul><li>Filebeat：<code>bulk_max_size</code> 调整批量；启用持久队列；过滤低价值日志降低链路压力。<li>Kafka：合适分区数与 RF；Broker <code>num.network.threads</code>/<code>socket.send.buffer.bytes</code>；启用 LZ4；控制批大小与 linger。<li>Flink：优化并行度与算子链；RocksDB state、增大 <code>write-buffer-size</code>；Checkpoint 间隔与超时合理化。<li>ES：降低刷新频率（5-10s）、增大 <code>indexing.buffer</code>、合理分片；使用 ILM 滚动与冷/温节点。<li>CH：控制 parts 数量，批量写入；<code>max_insert_block_size</code>、<code>max_threads</code> 调优；后台合并监控。<li>HBase：RowKey 防热点；<code>memstore</code>/<code>blockcache</code> 调整；Major/Minor compaction 节奏。<li>容量规划：按峰值吞吐与增长率规划分区/分片/Region 数量，留有 30% 余量。</ul><h1 id=5-yun-wei-jian-kong-fang-an>5. 运维监控方案</h1><ul><li>指标 <ul><li>Filebeat：harvesters、publish queue 使用率、掉包率。<li>Kafka：ISR、Under-Replicated Partitions、Consumer Lag、请求队列长度。<li>Flink：Backpressure、Checkpoint Time/Fail、Task Failures。<li>ES：JVM heap、GC、Indexing rate、Query p95/p99、Threadpool 队列。<li>CH：parts 数、后台 merges、replication lag、查询耗时分布。<li>HBase：RegionServer 负载、Compaction、读写延迟。</ul><li>告警阈值示例（PromQL）</ul><pre style=color:#f8f8f2;background-color:#272822><code><span>kafka_server_replica_manager_underreplicatedpartitions > 0
+</span><span>sum(rate(es_indexing_index_total[5m])) &lt; expected_rate * 0.7
+</span></code></pre><ul><li>运维清单：滚动升级、备份与快照、容量巡检、索引与表维护、Checkpoint 与 Savepoint 验证。</ul><h1 id=6-shi-ji-ying-yong-an-li-shi-li>6. 实际应用案例（示例）</h1><ul><li>规模：日均 2TB，峰值 250k events/s；端到端 p95 ≤ 500ms。<li>查询：ES 关键词检索 p95 ≤ 200ms；CH 1 亿行聚合 p95 ≤ 2s。<li>价值：统一日志入口、降低故障定位时间 ≥50%，支持审计与增长分析。</ul><h1 id=7-bu-shu-jiao-ben-shi-li-pian-duan>7. 部署脚本示例（片段）</h1><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e>#!/usr/bin/env bash
+</span><span style=color:#66d9ef>set</span><span> -euo pipefail
+</span><span style=color:#75715e># 安装并启动 Filebeat（示例）
+</span><span>apt-get update </span><span style=color:#f92672>&& </span><span>apt-get install</span><span style=color:#fd971f;font-style:italic> -y</span><span> filebeat
+</span><span>cp filebeat.yml /etc/filebeat/filebeat.yml
+</span><span>systemctl enable filebeat </span><span style=color:#f92672>&& </span><span>systemctl restart filebeat
+</span><span style=color:#75715e># Kafka Producer 依赖 JDK
+</span><span style=color:#f92672>export </span><span>JAVA_HOME</span><span style=color:#f92672>=</span><span style=color:#e6db74>/usr/lib/jvm/java-17-openjdk-amd64
+</span><span style=color:#75715e># Flink 提交示例
+</span><span>flink run</span><span style=color:#fd971f;font-style:italic> -c</span><span> com.example.LogPipeline ./log-pipeline.jar
+</span></code></pre><h1 id=8-dian-xing-wen-ti-yu-jie-jue>8. 典型问题与解决</h1><ul><li>Kafka 负载不均：分区键散列不均导致热点 → 优化 Key 与增加分区。<li>Flink Checkpoint 失败：外部存储带宽不足 → 升级存储与拉长间隔、压缩状态。<li>ES 写入 429：线程池队列满 → 降低刷新频率、调大 bulk、限流入口。<li>CH parts 过多：小批次写导致合并压力 → 增大批次与控制并发。<li>HBase 热点 Region：RowKey 顺序导致集中 → 前缀散列或反转时间戳。</ul><h1 id=9-dui-bi-chuan-tong-fang-an-de-gai-jin>9. 对比传统方案的改进</h1><ul><li>相比仅 ELK：引入 Kafka 与 Flink 实现解耦与实时计算；ClickHouse/HBase 提供高效分析与长期明细，整体可用性与扩展性更佳。</ul><h1 id=10-jia-gou-yan-jin-fang-xiang>10. 架构演进方向</h1><ul><li>Schema Registry+Avro/Protobuf；Kafka 分层存储；Flink Stateful Functions；ES 冷/温节点与 CCR；ClickHouse 对象存储分层；HBase 与 Data Lake（Iceberg/Hudi）打通。</ul><h1 id=hou-tai-kong-zhi-xi-tong-xiang-xi-she-ji>后台控制系统详细设计</h1><p>为支撑日志平台的可配置性、查询可扩展性与稳定告警能力，设计统一的后台控制系统，包含采集配置模块、查询分析模块与日志告警模块。每个模块提供架构图、技术选型、性能指标、接口定义与异常处理及一致性保障方案。<h2 id=1-cai-ji-pei-zhi-mo-kuai>1) 采集配置模块</h2><ul><li><p>架构设计图： <img alt=采集配置中心架构 src=/backend-control-config-architecture.svg></p><li><p>关键技术选型说明</p> <ul><li>配置中心：<code>PostgreSQL</code> 存储配置与审计，<code>Git</code> 作为版本库（拉取与回滚），<code>etcd/Consul</code> 用于轻量型在线 KV 与 Watch；通过 <code>OpenAPI</code> 提供读写接口。<li>变更分发：<code>Kafka</code> 主题 <code>config-updates</code> 广播配置变更；<code>Flink</code>/微服务消费后生成增量快照。<li>Agent 管理：Filebeat、Fluent Bit、自研采集代理统一通过 <code>HTTPS/gRPC</code> 拉取配置或被动订阅；支持多协议采集（HTTP/HTTPS/TCP/UDP）。<li>校验与灰度：配置 Schema（<code>JSON Schema</code>/<code>Protobuf</code>）校验，支持批次灰度与逐步扩散；失败自动回滚。</ul><li><p>配置项设计</p> <ul><li>采集频率：<code>scan_frequency</code>、<code>harvester_limit</code>、<code>ignore_older/close_inactive</code>；<li>数据格式：<code>json/line/custom</code>，字段映射与 <code>decode_json_fields/dissect</code>；<li>过滤规则：<code>drop_event/drop_fields/rename/timestamp</code>；<li>协议参数：HTTP/HTTPS（<code>headers/auth/timeout</code>）、TCP/UDP（<code>host/port/max_message_bytes</code>）。<li>版本控制：每次提交生成 <code>versionId</code>（Git commit），支持标签与回滚；所有变更留审计轨迹。</ul><li><p>性能指标要求</p> <ul><li>吞吐：配置读取 <code>p99 ≥ 2k rps</code>；写入 <code>p99 ≥ 200 rps</code>。<li>传播延迟：集群内 <code>p95 ≤ 5s</code> 到达所有在线 Agent。<li>可用性：<code>≥ 99.95%</code>（双活/主备部署）。</ul><li><p>与其他模块交互接口定义</p> <ul><li>REST/gRPC（示例）： <ul><li><code>POST /api/v1/configs</code>（创建配置，返回 <code>versionId</code>）<li><code>GET /api/v1/configs/{id}</code>（读取配置）<li><code>POST /api/v1/configs/{id}/deploy?strategy=canary</code>（灰度发布）<li><code>POST /api/v1/configs/{id}/rollback</code>（版本回滚）</ul><li>Kafka：<code>topic=config-updates</code>（key: <code>agentId/group</code>，value: <code>configVersion</code>）。</ul><li><p>异常处理与一致性保障</p> <ul><li>乐观并发控制（<code>version</code> 字段）；写前校验与写后审计。<li>分发失败重试与死信队列（DLQ）；Agent 端本地快照与超时回退策略。<li>事件顺序保障：<code>configVersion</code> 单调递增，Agent 只接受更高版本；幂等应用。<li>部署回滚与熔断：批次灰度监控异常触发自动回滚；对下游 Kafka/HTTP 超时启用熔断。</ul></ul><h2 id=2-cha-xun-fen-xi-mo-kuai>2) 查询分析模块</h2><ul><li><p>架构设计图： <img alt=查询分析引擎架构 src=/backend-control-query-architecture.svg></p><li><p>关键技术选型说明</p> <ul><li>分布式查询引擎：<code>Trino/Presto</code> 用于 SQL 跨源查询（ES/ClickHouse/HBase 适配器）；<li>DSL 引擎：<code>Lucene/KQL</code> 风格 DSL 转换为 ES 查询；复杂聚合落 CH 物化视图。<li>缓存与索引优化：<code>Redis</code> 查询结果缓存（Key=归一化查询+时间窗）；CH 物化视图与稀疏索引；ES 使用 <code>keyword</code> 与 <code>nested</code> 正确映射。<li>路由层：根据查询类型与代价估算路由至 ES（检索）或 CH（聚合），支持双写兜底。</ul><li><p>多维聚合功能</p> <ul><li>维度：<code>app/env/host/region/userId</code> 等，支持 <code>group by/rollup/cube</code>；<li>时间窗：<code>HOPPING/TUMBLING/SLIDING</code>；预聚合表加速报表查询。</ul><li><p>性能指标要求</p> <ul><li>吞吐：并发查询 <code>p99 ≥ 500 qps</code>（缓存命中场景）；<li>延迟：实时检索 <code>p95 ≤ 300ms</code>（ES）；重聚合 <code>p95 ≤ 2s</code>（CH）；<li>可用性：<code>≥ 99.9%</code>，路由层与引擎多副本。</ul><li><p>与其他模块交互接口定义</p> <ul><li>HTTP/WS： <ul><li><code>POST /api/v1/query/sql</code>（body: SQL，支持分页与超时）<li><code>POST /api/v1/query/dsl</code>（body: DSL，支持流式返回）<li><code>GET /api/v1/query/{id}/status</code>（异步查询状态）</ul><li>结果缓存：<code>GET /api/v1/query/cache/{hash}</code>；<code>DELETE /api/v1/query/cache/{hash}</code>。</ul><li><p>异常处理与一致性保障</p> <ul><li>超时与降级：超过 SLA 自动降级为预聚合与近似结果；<li>重试与幂等：幂等查询 ID；后端重试限制与指数退避；<li>数据一致性：跨源时间窗对齐；ES/CH 双写校验差异并标记结果版本；<li>背压控制：路由层限流与队列；防止查询风暴。</ul></ul><h2 id=3-ri-zhi-gao-jing-mo-kuai>3) 日志告警模块</h2><ul><li><p>架构设计图： <img alt=日志告警引擎架构 src=/backend-control-alert-architecture.svg></p><li><p>关键技术选型说明</p> <ul><li>规则引擎：<code>Flink</code> 流式评估（事件时间），支持多级告警（INFO/WARNING/ERROR/CRITICAL）；<li>时间窗口：<code>Sliding/Tumbling</code> 窗口，支持去重键与聚合阈值；<li>通知通道：<code>SMTP</code> 邮件、短信网关（<code>HTTP</code> SDK）、<code>Webhook</code>（签名校验与重试）；<li>抑制与降噪：重复告警抑制、合并策略、秒级阈值与指数退避；支持维护窗口与静默策略。</ul><li><p>性能指标要求</p> <ul><li>吞吐：规则评估 <code>≥ 1M events/min</code>；<li>延迟：端到端告警触发 <code>p95 ≤ 5s</code>；<li>可用性：<code>≥ 99.9%</code>，检查点与状态容灾。</ul><li><p>与其他模块交互接口定义</p> <ul><li>规则管理： <ul><li><code>POST /api/v1/alerts/rules</code>（创建/更新，返回 <code>ruleId/version</code>）<li><code>GET /api/v1/alerts/rules/{id}</code>（读取）<li><code>POST /api/v1/alerts/rules/{id}/disable</code>（禁用）</ul><li>告警事件： <ul><li><code>GET /api/v1/alerts/events?level=ERROR&window=1h</code>（查询告警事件）<li><code>POST /api/v1/alerts/notifications/test</code>（通道联通性测试）</ul><li>Kafka：<code>topic=alerts-input</code>（原始事件），<code>topic=alerts-output</code>（告警结果）。</ul><li><p>异常处理与一致性保障</p> <ul><li>Exactly-Once：Kafka + Flink 两阶段提交，通知端幂等；<li>顺序与乱序：事件时间窗口处理，迟到数据允许度 <code>allowedLateness</code>；<li>抑制策略：重复告警聚合与限流，按 <code>dedupKey</code> 与时间窗去重；<li>故障自愈：checkpoint 失败报警与自动重启；通道失败重试与 DLQ。</ul></ul></div></div></section>

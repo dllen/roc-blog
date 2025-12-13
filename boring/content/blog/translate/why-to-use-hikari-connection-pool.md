@@ -1,6 +1,7 @@
 ---
 title: "Why to use Hikari Connection Pool ?"
 date: 2019-12-18T12:13:38+05:30
+update_date: 2019-12-18T12:13:38+05:30
 ---
 
 [原文连接](https://www.linqz.io/2019/03/why-to-use-hikari-connection-pool.html)

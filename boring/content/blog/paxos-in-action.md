@@ -1,6 +1,7 @@
 ---
 title: "Paxos 协议"
 date: 2023-08-04T15:00:00+20:30
+update_date: 2023-08-04T15:00:00+20:30
 description: "分布式 paxos 协议和实现注意事项"
 tags: [分布式系统, Paxos]
 ---

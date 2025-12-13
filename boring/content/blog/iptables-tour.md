@@ -1,6 +1,7 @@
 ---
 title: "iptables相关资料收集和整理"
 date: 2024-01-27T12:13:35+05:30
+update_date: 2024-01-27T12:13:35+05:30
 description: "netfilter/iptables（简称为iptables）组成Linux平台下的包过滤防火墙，与大多数的Linux软件一样，这个包过滤防火墙是免费的，它可以代替昂贵的商业防火墙解决方案，完成封包过滤、封包重定向和网络地址转换（NAT）等功能"
 tag: [linux, iptables]
 ---

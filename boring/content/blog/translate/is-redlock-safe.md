@@ -1,6 +1,7 @@
 ---
 title: "Is Redlock safe?"
 date: 2020-03-18T12:13:38+05:30
+update_date: 2020-03-18T12:13:38+05:30
 ---
 
 原文链接: http://antirez.com/news/101

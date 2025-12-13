@@ -1,6 +1,7 @@
 ---
 title: "HikariCP: Down the Rabbit Hole"
 date: 2023-12-18T12:13:38+05:30
+update_date: 2023-12-18T12:13:38+05:30
 ---
 
 [原文连接](https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole)

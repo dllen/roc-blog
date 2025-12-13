@@ -1,6 +1,7 @@
 ---
 title: "Apache Flink 任务性能调优实践手册"
 date: "2025-10-25"
+update_date: "2025-10-25"
 description: "面向生产的 Flink 性能调优：资源配置、Checkpoint、状态后端、反压与数据倾斜。"
 tags: [Flink, 性能调优]
 extra:

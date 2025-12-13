@@ -1,6 +1,7 @@
 ---
 title: "Kafka & Nic Buffer"
 date: 2025-08-19T12:13:32+05:30
+update_date: 2025-08-19T12:13:32+05:30
 description: "Kafka 写入和读取数据时涉及多层缓存的复杂交互过程"
 tags: [kafka]
 ---

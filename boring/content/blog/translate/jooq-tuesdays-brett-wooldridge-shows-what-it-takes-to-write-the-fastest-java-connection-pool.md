@@ -1,6 +1,7 @@
 ---
 title: "Getting Started with Traveling Ultralight"
 date: 2020-03-18T12:13:35+05:30
+update_date: 2020-03-18T12:13:35+05:30
 description: "Start by getting a small backpack (less than 20 liters) and then just travel with what fits in that."
 ---
 

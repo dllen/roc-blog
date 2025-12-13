@@ -1,2 +1,8 @@
 @import './base.css';
 @import './fonts.css';
+
+/* Override typography plugin default max-width for content blocks */
+.prose {
+  max-width: 100% !important;
+  width: 100%;
+}

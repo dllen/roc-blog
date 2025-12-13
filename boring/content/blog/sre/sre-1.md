@@ -1,6 +1,7 @@
 ---
 title: "读《SRE：Google运维解密》一点思考"
 date: 2020-04-01T02:01:58+05:30
+update_date: 2020-04-01T02:01:58+05:30
 description: "读《SRE：Google运维解密》一点思考"
 tags: [sre]
 ---

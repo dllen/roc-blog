@@ -1,6 +1,7 @@
 ---
 title: "ollama 教程"
 date: 2024-02-20T02:01:58+05:30
+update_date: 2024-02-20T02:01:58+05:30
 description: "How to prompt Code Llama"
 tags: [ollama, ai]
 ---
