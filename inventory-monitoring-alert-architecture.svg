@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="480" viewBox="0 0 1080 480">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .box { fill: #F6F0FF; stroke: #7B61FF; stroke-width: 1.2; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">监控与报警架构</text>
+
+  <rect x="60" y="80" width="260" height="100" rx="8" class="box"/>
+  <text x="80" y="110" class="text">采集：指标/日志/事件</text>
+  <text x="80" y="130" class="text">库存准确度、锁等待、Outbox滞留、Lag、死锁</text>
+
+  <rect x="360" y="80" width="260" height="100" rx="8" class="box"/>
+  <text x="380" y="110" class="text">处理：聚合与异常检测</text>
+  <text x="380" y="130" class="text">阈值/MAD/抑制/分级</text>
+
+  <rect x="660" y="80" width="260" height="100" rx="8" class="box"/>
+  <text x="680" y="110" class="text">告警：IM/邮件/Webhook</text>
+  <text x="680" y="130" class="text">自动恢复与回滚</text>
+
+  <rect x="360" y="220" width="560" height="200" rx="10" class="box"/>
+  <text x="380" y="245" class="text">仪表盘与复盘</text>
+  <text x="380" y="265" class="text">看板：延迟/准确率/队列长度/错误率</text>
+  <text x="380" y="285" class="text">复盘：事件根因/处置/回归验证</text>
+
+  <line x1="320" y1="130" x2="360" y2="130" class="arrow"/>
+  <line x1="620" y1="130" x2="660" y2="130" class="arrow"/>
+  <line x1="660" y1="180" x2="660" y2="220" class="arrow"/>
+</svg>
