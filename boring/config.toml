@@ -49,8 +49,8 @@ icon = "lab la-github"
 
 [[extra.social]]
 url = "https://deepthink.global/"
-icon = "lar la-rss-square"
+icon = "las la-rss-square"
 
 [[extra.social]]
 url = "https://bb4bb.me/"
-icon = "lar la-tools"
+icon = "las la-tools"
