@@ -1,0 +1,80 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>大模型提示词工程：从入门到精通 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-11-13</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">大模型提示词工程：从入门到精通</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>大语言模型（LLM）已成为通用智能应用的核心能力。从软件开发到知识管理、从教育到企业流程自动化，LLM 的价值往往取决于人与模型的“对话界面”质量——<strong>提示词（Prompt）</strong>。<p>提示词工程（Prompt Engineering）就是围绕这一界面进行系统化设计、编排、优化与评估的技术与方法论。本文将以体系化的方式，带你从零开始掌握这项核心技能。<hr><h2 id=di-yi-bu-fen-he-xin-gai-nian-yu-ji-zhi>第一部分：核心概念与机制</h2><h3 id=shen-me-shi-ti-shi-ci>什么是提示词？</h3><p>提示词是<strong>赋予模型任务与边界的指令</strong>。它不仅是简单的问题，更是包含角色设定、目标描述、输入数据、约束条件、输出格式与评估标准的完整上下文。<h3 id=zuo-yong-ji-zhi>作用机制</h3><ul><li><strong>引导（Guidance）</strong>：明确任务目标、范围与风格，降低模型自由度，减少跑偏。<li><strong>结构化（Structuring）</strong>：通过分步骤或模块化描述任务，提升可解释性与稳定性。<li><strong>约束（Constraint）</strong>：通过输出格式、长度限制、成文风格等约束提升一致性。<li><strong>上下文供给（Context）</strong>：输入必要背景、术语定义、数据片段或检索知识，提高准确性。</ul><h3 id=tong-yong-ti-shi-ci-gu-jia-the-framework>通用提示词骨架 (The Framework)</h3><p>一个高质量的提示词通常包含以下要素（可按需裁剪）：<table><thead><tr><th style=text-align:left>要素<th style=text-align:left>说明<th style=text-align:left>示例<tbody><tr><td style=text-align:left><strong>Role (角色)</strong><td style=text-align:left>指定模型身份<td style=text-align:left>“你是资深 Java 架构师…”<tr><td style=text-align:left><strong>Goal (目标)</strong><td style=text-align:left>明确产出指标<td style=text-align:left>“审查代码并提出性能优化建议…”<tr><td style=text-align:left><strong>Context (背景)</strong><td style=text-align:left>提供必要信息<td style=text-align:left>“这段代码运行在高并发场景下…”<tr><td style=text-align:left><strong>Input (输入)</strong><td style=text-align:left>待处理的数据<td style=text-align:left>(代码片段 / 文本 / 问题)<tr><td style=text-align:left><strong>Steps (步骤)</strong><td style=text-align:left>过程与思维链<td style=text-align:left>“1. 分析复杂度; 2. 识别瓶颈; 3. 给出方案”<tr><td style=text-align:left><strong>Constraints (约束)</strong><td style=text-align:left>风格与边界<td style=text-align:left>“不改变原有逻辑，仅优化性能，使用中文回答”<tr><td style=text-align:left><strong>Output (输出)</strong><td style=text-align:left>格式协议<td style=text-align:left>“Markdown 列表” 或 <code>JSON</code></table><hr><h2 id=di-er-bu-fen-ru-men-ji-qiao-qing-xi-yu-gui-fan>第二部分：入门技巧 —— 清晰与规范</h2><p>入门阶段的核心是<strong>把话说明白</strong>。模糊的指令产生模糊的结果，清晰的指令产生高质量的结果。<h3 id=1-jie-gou-hua-biao-da>1. 结构化表达</h3><p>使用分隔符（如 <code>```</code>, <code>###</code>, <code>&lt;&lt;&lt; >>></code>）区分指令、上下文和用户输入，防止模型混淆。<h3 id=2-shu-chu-yue-shu>2. 输出约束</h3><p>明确指定输出的格式，便于后续处理（程序读取或人工阅读）。<h4 id=white-check-mark-shi-li-ji-chu-zhai-yao-sheng-cheng>✅ 示例：基础摘要生成</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Role</span></span>
+<span class=giallo-l><span>你是资深技术编辑，擅长将长文压缩为要点。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Goal</span></span>
+<span class=giallo-l><span>从输入文章中提取 5 条关键要点和 1 段摘要。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Constraints</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 要点每条不超过 20 字</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 摘要 120–180 字</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 风格客观、中性、严谨</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 输出为标准 JSON 格式</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Output Format</span></span>
+<span class=giallo-l><span>{</span></span>
+<span class=giallo-l><span>  "bullets": ["要点1", "要点2", ...],</span></span>
+<span class=giallo-l><span>  "summary": "摘要内容..."</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Input Text</span></span>
+<span class=giallo-l><span>&lt;&lt;</span><span style=color:#81a1c1>&lt;ARTICLE></span><span>>></span></span>
+<span class=giallo-l><span>(在此处粘贴文章原文...)</span></span>
+<span class=giallo-l><span>&lt;&lt;</span><span style=color:#81a1c1>&lt;ARTICLE_END></span><span>>></span></span></code></pre><hr><h2 id=di-san-bu-fen-jin-jie-ji-shu-tui-li-yu-you-dao>第三部分：进阶技术 —— 推理与诱导</h2><p>当任务复杂度提升，简单的指令往往不够用。我们需要引入更高级的策略来引导模型进行深层思考。<h3 id=1-si-wei-lian-chain-of-thought-cot>1. 思维链 (Chain-of-Thought, CoT)</h3><p>要求模型在给出最终答案前，先展示推理过程。这能显著提升数学计算、逻辑推理和复杂分析任务的准确率。<h4 id=white-check-mark-shi-li-luo-ji-tui-li>✅ 示例：逻辑推理</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Task</span></span>
+<span class=giallo-l><span>解决下面的逻辑问题。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Instructions</span></span>
+<span class=giallo-l><span>请逐步推理（Let's think step by step），先列出已知条件，推导中间结论，最后给出答案。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Question</span></span>
+<span class=giallo-l><span>甲乙丙三人，甲比乙大，丙比甲小。请问谁最小？</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Output Format</span></span>
+<span class=giallo-l><span>推理过程：...</span></span>
+<span class=giallo-l><span>最终答案：...</span></span></code></pre><h3 id=2-shao-yang-ben-xue-xi-few-shot-prompting>2. 少样本学习 (Few-Shot Prompting)</h3><p>通过提供 2-5 个高质量的“输入-输出”示例，让模型快速通过类比学习任务的模式、风格和边界。<h4 id=white-check-mark-shi-li-qing-gan-fen-xi-yu-gui-yin>✅ 示例：情感分析与归因</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Task</span></span>
+<span class=giallo-l><span>对用户评论进行情感分类，并提取原因。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Examples</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>输入：这家店服务很好，价格也合理。</span></span>
+<span class=giallo-l><span>输出：{"label": "positive", "reason": "服务好，价格合理"}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>输入：等了很久才上菜，味道一般，而且很咸。</span></span>
+<span class=giallo-l><span>输出：{"label": "negative", "reason": "上菜慢，口味差"}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Current Input</span></span>
+<span class=giallo-l><span>输入：虽然快递有点慢，但东西质量确实不错，超值。</span></span>
+<span class=giallo-l><span>输出：</span></span></code></pre><h3 id=3-zhi-ding-tui-li-lu-jing-structured-reasoning>3. 指定推理路径 (Structured Reasoning)</h3><p>不仅仅是让模型“思考”，而是规定它“如何思考”。<h4 id=white-check-mark-shi-li-chan-pin-xu-qiu-ping-shen>✅ 示例：产品需求评审</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Context</span></span>
+<span class=giallo-l><span>你是一名产品经理，正在评审新的需求文档。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Steps</span></span>
+<span class=giallo-l><span style=color:#eceff4>1.</span><span style=color:#eceff4;font-weight:700> **</span><span style=font-weight:700>完整性检查</span><span style=color:#eceff4;font-weight:700>**</span><span>：检查是否缺少用户角色、前置条件或异常流程。</span></span>
+<span class=giallo-l><span style=color:#eceff4>2.</span><span style=color:#eceff4;font-weight:700> **</span><span style=font-weight:700>风险评估</span><span style=color:#eceff4;font-weight:700>**</span><span>：指出可能得性能风险或安全隐患。</span></span>
+<span class=giallo-l><span style=color:#eceff4>3.</span><span style=color:#eceff4;font-weight:700> **</span><span style=font-weight:700>可测性分析</span><span style=color:#eceff4;font-weight:700>**</span><span>：判断需求是否具备明确的验收标准。</span></span>
+<span class=giallo-l><span style=color:#eceff4>4.</span><span style=color:#eceff4;font-weight:700> **</span><span style=font-weight:700>建议</span><span style=color:#eceff4;font-weight:700>**</span><span>：基于以上分析，给出修改建议。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Input</span></span>
+<span class=giallo-l><span>(需求文档内容...)</span></span></code></pre><hr><h2 id=di-si-bu-fen-jing-tong-zhi-nan-dai-li-yu-gong-cheng-hua>第四部分：精通指南 —— 代理与工程化</h2><p>在生产环境中，提示词往往不是孤立存在的，而是与代码、工具和数据流结合在一起。<h3 id=1-rag-jian-suo-zeng-qiang-sheng-cheng>1. RAG (检索增强生成)</h3><p>解决模型“幻觉”和知识过时的核心手段。 <strong>模式</strong>：Query -> Search -> Retrieve Context -> <strong>Prompt with Context</strong> -> Generation<h4 id=white-check-mark-shi-li-ji-yu-wen-dang-de-wen-da>✅ 示例：基于文档的问答</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Role</span></span>
+<span class=giallo-l><span>你是严谨的技术顾问。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Constraints</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 仅依据提供的[Document Chunks]回答问题。</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 如果文中未提及，直接回答“无法确定”，严禁编造。</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> 引用来源，格式为 </span><span style=color:#eceff4>[</span><span style=color:#88c0d0>doc_id</span><span style=color:#eceff4>]</span><span>。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Document Chunks</span></span>
+<span class=giallo-l><span style=color:#eceff4>[</span><span style=color:#88c0d0>doc1</span><span style=color:#eceff4>]</span><span> Kubernetes 是一个开源容器编排引擎...</span></span>
+<span class=giallo-l><span style=color:#eceff4>[</span><span style=color:#88c0d0>doc2</span><span style=color:#eceff4>]</span><span> Pod 是 Kubernetes 中最小的部署单元...</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Question</span></span>
+<span class=giallo-l><span>Pod 和 Node 有什么关系？</span></span></code></pre><h3 id=2-han-shu-diao-yong-tool-use-function-calling>2. 函数调用 (Tool Use / Function Calling)</h3><p>将大模型作为路由和参数提取器，连接外部世界（API、数据库）。<h4 id=white-check-mark-shi-li-hui-lu-cha-xun-yi-tu-shi-bie>✅ 示例：汇率查询意图识别</h4><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=markdown><span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Tools</span></span>
+<span class=giallo-l><span>你可以调用以下函数：</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span> get_exchange_rate(base_currency, target_currency)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Task</span></span>
+<span class=giallo-l><span>判断用户意图，如果涉及汇率查询，输出对应的函数调用 JSON；否则直接回答。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> User Input</span></span>
+<span class=giallo-l><span>现在 100 美元能换多少人民币？</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>#</span><span style=color:#88c0d0> Output</span></span>
+<span class=giallo-l><span>{"tool": "get_exchange_rate", "args": {"base_currency": "USD", "target_currency": "CNY"}}</span></span></code></pre><h3 id=3-die-dai-yu-zi-sheng-self-correction>3. 迭代与自省 (Self-Correction)</h3><p>让模型自己充当“评审员”，检查初稿并进行修正。<p><strong>模式</strong>：Draft -> Critique -> Refine<hr><h2 id=di-wu-bu-fen-ping-gu-yu-mo-xing-can-shu>第五部分：评估与模型参数</h2><p>提示词工程不仅仅是写 prompt，还包括评估和调优。<h3 id=1-ping-gu-wei-du>1. 评估维度</h3><ul><li><strong>正确性</strong>：事实是否准确，逻辑是否闭环。<li><strong>一致性</strong>：相同输入下，输出格式和风格是否稳定。<li><strong>鲁棒性</strong>：面对恶意输入或噪声数据的表现。<li><strong>效率</strong>：Token 消耗与响应延迟。</ul><h3 id=2-guan-jian-tui-li-can-shu-inference-parameters>2. 关键推理参数 (Inference Parameters)</h3><p>这些参数决定了模型的“性格”。<table><thead><tr><th style=text-align:left>参数<th style=text-align:left>推荐值<th style=text-align:left>说明<tbody><tr><td style=text-align:left><code>temperature</code><td style=text-align:left><code>0.0 - 0.3</code><td style=text-align:left><strong>严谨任务</strong>（代码、抽取）。输出确定性高。<tr><td style=text-align:left><td style=text-align:left><code>0.7 - 1.0</code><td style=text-align:left><strong>创意任务</strong>（写作、聊天）。输出多样性高。<tr><td style=text-align:left><code>top_p</code><td style=text-align:left><code>1.0</code><td style=text-align:left>通常与 Temperature 二选一调节。<tr><td style=text-align:left><code>max_tokens</code><td style=text-align:left>按需<td style=text-align:left>防止输出过长或死循环，控制成本。<tr><td style=text-align:left><code>stop</code><td style=text-align:left><code>["\n\n", "```"]</code><td style=text-align:left><strong>结构化输出神器</strong>。遇到指定字符强制停止。</table><hr><h2 id=fu-lu-mo-xing-xun-lian-yu-wei-diao-ji-chu-context>附录：模型训练与微调基础 (Context)</h2><p><em>注：本节适用于需要进行模型微调（Fine-tuning）的进阶读者，普通提示词工程可跳过。</em><p>如果你发现 Prompt 无法满足需求，可能需要考虑微调。以下是关键概念：<ul><li><strong>Learning Rate (学习率)</strong>: 决定模型学习的步伐。微调时通常比预训练小得多（如 <code>1e-5</code>）。<li><strong>Epochs (轮次)</strong>: 数据集训练的遍数。微调通常只需 3-5 轮，过多会导致过拟合（遗忘通用能力）。<li><strong>Batch Size (批次大小)</strong>: 影响显存占用和收敛稳定性。<li><strong>Optimizer</strong>: 推荐 <code>AdamW</code>，搭配 <code>Cosine</code> 学习率调度。</ul><hr><h2 id=zong-jie>总结</h2><p>提示词工程是从“自然语言”到“机器指令”的翻译艺术。<ol><li><strong>入门</strong>：掌握结构化骨架，把任务说清楚。<li><strong>进阶</strong>：用 CoT 和 Few-Shot 激发模型潜能。<li><strong>精通</strong>：结合 RAG、工具调用和自动化评估，构建鲁棒的 AI 应用。</ol><p><em>参考资源：<a href=https://www.promptingguide.ai/ rel=external>Prompt Engineering Guide (dair-ai)</a></em></div></div></section>

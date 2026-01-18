@@ -243,24 +243,686 @@ Postgres 在这里确实稍微慢一点，但：
 
 ---
 
-## 小结
+### 实战示例：实时日志 Live Tail
 
-到目前为止，我们已经看到：
+在我的日志管理应用里，有一个需求是：**实时推送日志（live tail）**。
 
-- 用 **UNLOGGED 表 + JSONB** 可以在 PostgreSQL 里构建一个「够快」的缓存层
-- 用 **LISTEN/NOTIFY** 可以覆盖 Redis 的绝大多数 Pub/Sub 场景
-- 所有这些能力都运行在同一个数据库里，可以天然享受事务带来的一致性
+**用 Redis 时的做法：**
 
-原文在后续部分还继续介绍了：
+```js
+// When new log arrives
+await db.query('INSERT INTO logs ...');
+await redis.publish('logs:new', JSON.stringify(log));
 
-- 用 `SKIP LOCKED` 实现任务队列
-- 基于 PostgreSQL 的限流实现
-- 会话（Session）存储与 JSONB 的组合
-- 一些真实的性能基准测试和迁移策略
+// Frontend listens
+redis.subscribe('logs:new');
+```
 
-鉴于抓取接口的长度限制，这里就不逐段翻译后半部分了。对于完整细节、数字和代码示例，可以直接阅读原文：
+问题很明显：这是两个操作。如果 `publish` 失败了怎么办？如果 Redis 掉线了怎么办？插入成功但消息没发出去，前端就会错过这一条日志。
 
-<https://dev.to/polliog/i-replaced-redis-with-postgresql-and-its-faster-4942>
+**换成 PostgreSQL 之后：**
 
-如果你现在的系统已经在使用 PostgreSQL，而 Redis 只承担缓存、Pub/Sub 或轻量队列这类职责，那么认真评估一下：**是否真的需要再多养一套 Redis 基础设施？** 很多时候，PostgreSQL 这套「一站式方案」已经足够，并且会让你的系统在一致性、可运维性方面更容易掌控。
+```sql
+CREATE FUNCTION notify_new_log() RETURNS TRIGGER AS $$
+BEGIN
+  PERFORM pg_notify('logs_new', row_to_json(NEW)::text);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE TRIGGER log_inserted
+AFTER INSERT ON logs
+FOR EACH ROW EXECUTE FUNCTION notify_new_log();
+```
+
+现在插入和通知**要么一起成功，要么一起失败**，是原子性的。
+
+前端可以通过 SSE（Server-Sent Events）来订阅：
+
+```js
+app.get('/logs/stream', async (req, res) => {
+  const client = await pool.connect();
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+  });
+
+  await client.query('LISTEN logs_new');
+
+  client.on('notification', (msg) => {
+    res.write(`data: ${msg.payload}\n\n`);
+  });
+});
+```
+
+**结果：** 完整的实时日志流，只依赖 PostgreSQL，不再需要 Redis。
+
+---
+
+## PostgreSQL 特性三：用 SKIP LOCKED 做任务队列
+
+先看 Redis（以 Bull/BullMQ 为例）：
+
+```js
+queue.add('send-email', { to, subject, body });
+
+queue.process('send-email', async (job) => {
+  await sendEmail(job.data);
+});
+```
+
+在 PostgreSQL 里，我们可以这样建一张任务表：
+
+```sql
+CREATE TABLE jobs (
+  id BIGSERIAL PRIMARY KEY,
+  queue TEXT NOT NULL,
+  payload JSONB NOT NULL,
+  attempts INT DEFAULT 0,
+  max_attempts INT DEFAULT 3,
+  scheduled_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_jobs_queue ON jobs(queue, scheduled_at)
+WHERE attempts < max_attempts;
+```
+
+入队：
+
+```sql
+INSERT INTO jobs (queue, payload)
+VALUES ('send-email', '{\"to\": \"[email protected]\", \"subject\": \"Hi\"}');
+```
+
+Worker 取任务（出队）：
+
+```sql
+WITH next_job AS (
+  SELECT id FROM jobs
+  WHERE queue = $1
+    AND attempts < max_attempts
+    AND scheduled_at <= NOW()
+  ORDER BY scheduled_at
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED
+)
+UPDATE jobs
+SET attempts = attempts + 1
+FROM next_job
+WHERE jobs.id = next_job.id
+RETURNING *;
+```
+
+这里的关键在于：`FOR UPDATE SKIP LOCKED`。
+
+它让 PostgreSQL 自然变成一个**无锁队列（对使用方来说）**：
+
+- 多个 worker 可以并发取任务
+- 不会有同一个任务被处理两次
+- 如果 worker 崩溃了，事务回滚，任务会再次变为可见
+
+**性能对比：**
+
+```text
+Redis BRPOP: 0.1ms
+Postgres SKIP LOCKED: 0.3ms
+```
+
+对于大多数队列型工作负载，这点差距几乎可以忽略。
+
+---
+
+## PostgreSQL 特性四：限流（Rate Limiting）
+
+先看经典的 Redis 实现：
+
+```js
+const key = `ratelimit:${userId}`;
+const count = await redis.incr(key);
+if (count === 1) {
+  await redis.expire(key, 60); // 60 seconds
+}
+
+if (count > 100) {
+  throw new Error('Rate limit exceeded');
+}
+```
+
+PostgreSQL 版本可以有好几种写法。
+
+一种是专门建一张限流表：
+
+```sql
+CREATE TABLE rate_limits (
+  user_id INT PRIMARY KEY,
+  request_count INT DEFAULT 0,
+  window_start TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Check and increment
+WITH current AS (
+  SELECT
+    request_count,
+    CASE
+      WHEN window_start < NOW() - INTERVAL '1 minute'
+      THEN 1 -- Reset counter
+      ELSE request_count + 1
+    END AS new_count
+  FROM rate_limits
+  WHERE user_id = $1
+  FOR UPDATE
+)
+UPDATE rate_limits
+SET
+  request_count = (SELECT new_count FROM current),
+  window_start = CASE
+    WHEN window_start < NOW() - INTERVAL '1 minute'
+    THEN NOW()
+    ELSE window_start
+  END
+WHERE user_id = $1
+RETURNING request_count;
+```
+
+另一种更直接的做法是记录请求明细，用窗口查询：
+
+```sql
+CREATE TABLE api_requests (
+  user_id INT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Check rate limit
+SELECT COUNT(*) FROM api_requests
+WHERE user_id = $1
+  AND created_at > NOW() - INTERVAL '1 minute';
+
+-- If under limit, insert
+INSERT INTO api_requests (user_id) VALUES ($1);
+
+-- Cleanup old requests periodically
+DELETE FROM api_requests WHERE created_at < NOW() - INTERVAL '5 minutes';
+```
+
+**什么时候 Postgres 的实现更有优势？**
+
+- 你的限流逻辑比较复杂，不只是简单计数（例如按用户+IP+路径组合）
+- 希望限流检查和业务数据读写处在同一个事务里
+
+**什么时候仍然应该用 Redis？**
+
+- 你需要亚毫秒级的极端低延迟
+- 吞吐非常大（百万级请求每秒）
+
+---
+
+## PostgreSQL 特性五：用 JSONB 存储会话
+
+Redis 的写法通常像这样：
+
+```js
+await redis.set(`session:${sessionId}`, JSON.stringify(sessionData), 'EX', 86400);
+```
+
+在 PostgreSQL 里，我们可以：
+
+```sql
+CREATE TABLE sessions (
+  id TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_sessions_expires ON sessions(expires_at);
+
+-- Insert/Update
+INSERT INTO sessions (id, data, expires_at)
+VALUES ($1, $2, NOW() + INTERVAL '24 hours')
+ON CONFLICT (id) DO UPDATE
+  SET data = EXCLUDED.data,
+      expires_at = EXCLUDED.expires_at;
+
+-- Read
+SELECT data FROM sessions
+WHERE id = $1 AND expires_at > NOW();
+```
+
+因为是 JSONB，我们还可以直接在会话数据上做查询：
+
+```sql
+-- Find all sessions for a specific user
+SELECT * FROM sessions
+WHERE data->>'userId' = '123';
+
+-- Find sessions with specific role
+SELECT * FROM sessions
+WHERE data->'user'->>'role' = 'admin';
+```
+
+这些能力在 Redis 里是做不到的。
+
+---
+
+## 真实基准测试
+
+我在生产数据上跑了一轮基准测试，配置大致如下：
+
+- 硬件：AWS RDS db.t3.medium（2 vCPU，4GB 内存）
+- 数据集：100 万条缓存记录，1 万条会话
+- 工具：pgbench（自定义脚本）
+
+结果大概是这样：
+
+| 操作           | Redis | PostgreSQL | 差异        |
+|----------------|-------|-----------|-------------|
+| Cache SET      | 0.05ms | 0.08ms    | 慢约 60%    |
+| Cache GET      | 0.04ms | 0.06ms    | 慢约 50%    |
+| Pub/Sub        | 1.2ms  | 3.1ms     | 慢约 158%   |
+| Queue push     | 0.08ms | 0.15ms    | 慢约 87%    |
+| Queue pop      | 0.12ms | 0.31ms    | 慢约 158%   |
+
+看起来 PostgreSQL 各项都更慢，但注意几个细节：
+
+- 所有操作仍然都在 1ms 以内
+- 不再有到 Redis 的那一跳网络延迟
+- 架构上少了一整块基础设施
+
+### 组合操作才是关键
+
+真正有意思的是把操作组合起来看。
+
+**场景：插入一篇帖子 + 失效缓存 + 通知订阅者**
+
+用 Redis：
+
+```js
+await db.query('INSERT INTO posts ...'); // 2ms
+await redis.del('posts:latest');        // 1ms (network hop)
+await redis.publish('posts:new', data); // 1ms (network hop)
+// Total: ~4ms
+```
+
+用 PostgreSQL：
+
+```sql
+BEGIN;
+INSERT INTO posts ...;                         -- ~2ms
+DELETE FROM cache WHERE key = 'posts:latest'; -- ~0.1ms（同一连接）
+NOTIFY posts_new, '...';                      -- ~0.1ms（同一连接）
+COMMIT;
+-- Total: ~2.2ms
+```
+
+当你把「写入 + 缓存操作 + 事件通知」这些动作**放到同一个事务里**时，PostgreSQL 反而整体更快，而且一致性也更好。
+
+---
+
+## 什么时候应该保留 Redis？
+
+虽然这篇文章在讲「用 PostgreSQL 替换 Redis」，但并不是说 Redis 一无是处，恰恰相反，**Redis 在很多场景仍然是非常优秀的工具**。
+
+以下几种情况，我会选择继续用 Redis：
+
+### 1. 你需要极致性能
+
+```text
+Redis: 100,000+ ops/sec（单实例）
+Postgres: 10,000–50,000 ops/sec
+```
+
+如果你的业务真正在做每秒几十万甚至上百万次缓存读写，那 PostgreSQL 很难顶得住，Redis 依然是更合适的选择。
+
+### 2. 你依赖 Redis 特有的数据结构
+
+Redis 提供了很多很厉害的原语：
+
+- 有序集合（sorted set）做排行榜
+- HyperLogLog 做近似去重计数
+- 地理空间索引
+- Streams 做更高级的流式消费 / Pub/Sub
+
+在 PostgreSQL 里当然也能做类似的事情，但通常会更笨重一些：
+
+```sql
+-- Leaderboard in Postgres (slower)
+SELECT user_id, score
+FROM leaderboard
+ORDER BY score DESC
+LIMIT 10;
+
+-- vs Redis
+ZREVRANGE leaderboard 0 9 WITHSCORES
+```
+
+### 3. 架构层面强制要求独立缓存层
+
+例如严格的微服务架构、或者多个语言/系统要共享同一层缓存，这时候一个独立的 Redis 集群反而更清晰。
+
+---
+
+## 迁移策略：不要一夜之间把 Redis 拔掉
+
+我自己的迁移过程分成了几步。
+
+### Phase 1：双写（第 1 周）
+
+```js
+// 写入 Redis
+await redis.set(key, value);
+// 同时写入 Postgres
+await pg.query('INSERT INTO cache ...');
+
+// 读请求仍然优先走 Redis
+let data = await redis.get(key);
+```
+
+这一阶段主要是观察命中率、延迟等指标。
+
+### Phase 2：读走 Postgres，Redis 兜底（第 2 周）
+
+```js
+// 先查 Postgres
+let data = await pg.query(
+  'SELECT value FROM cache WHERE key = $1',
+  [key]
+);
+
+// 查不到再回退到 Redis
+if (!data) {
+  data = await redis.get(key);
+}
+```
+
+继续监控错误率和性能表现。
+
+### Phase 3：只写 PostgreSQL（第 3 周）
+
+```js
+await pg.query('INSERT INTO cache ...');
+```
+
+此时 Redis 只作为保险存在，一旦确认没有问题，就可以进入下一步。
+
+### Phase 4：下线 Redis（第 4 周）
+
+```bash
+# 关闭 Redis 服务
+# 观察日志和监控
+# 如果没有错误冒出来，那基本就迁移完成了
+```
+
+---
+
+## 完整代码示例
+
+下面是文章中给出的几个完整模块示例，都是基于 PostgreSQL 的实现。
+
+### 缓存模块
+
+```js
+// cache.js
+class PostgresCache {
+  constructor(pool) {
+    this.pool = pool;
+  }
+
+  async get(key) {
+    const result = await this.pool.query(
+      'SELECT value FROM cache WHERE key = $1 AND expires_at > NOW()',
+      [key]
+    );
+    return result.rows[0]?.value;
+  }
+
+  async set(key, value, ttlSeconds = 3600) {
+    await this.pool.query(
+      `INSERT INTO cache (key, value, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '${ttlSeconds} seconds')
+       ON CONFLICT (key) DO UPDATE
+         SET value = EXCLUDED.value,
+             expires_at = EXCLUDED.expires_at`,
+      [key, value]
+    );
+  }
+
+  async delete(key) {
+    await this.pool.query('DELETE FROM cache WHERE key = $1', [key]);
+  }
+
+  async cleanup() {
+    await this.pool.query('DELETE FROM cache WHERE expires_at < NOW()');
+  }
+}
+
+module.exports = PostgresCache;
+```
+
+### Pub/Sub 模块
+
+```js
+// pubsub.js
+class PostgresPubSub {
+  constructor(pool) {
+    this.pool = pool;
+    this.listeners = new Map();
+  }
+
+  async publish(channel, message) {
+    const payload = JSON.stringify(message);
+    await this.pool.query('SELECT pg_notify($1, $2)', [channel, payload]);
+  }
+
+  async subscribe(channel, callback) {
+    const client = await this.pool.connect();
+
+    await client.query(`LISTEN ${channel}`);
+
+    client.on('notification', (msg) => {
+      if (msg.channel === channel) {
+        callback(JSON.parse(msg.payload));
+      }
+    });
+
+    this.listeners.set(channel, client);
+  }
+
+  async unsubscribe(channel) {
+    const client = this.listeners.get(channel);
+    if (client) {
+      await client.query(`UNLISTEN ${channel}`);
+      client.release();
+      this.listeners.delete(channel);
+    }
+  }
+}
+
+module.exports = PostgresPubSub;
+```
+
+### 任务队列模块
+
+```js
+// queue.js
+class PostgresQueue {
+  constructor(pool) {
+    this.pool = pool;
+  }
+
+  async enqueue(queue, payload, scheduledAt = new Date()) {
+    await this.pool.query(
+      'INSERT INTO jobs (queue, payload, scheduled_at) VALUES ($1, $2, $3)',
+      [queue, payload, scheduledAt]
+    );
+  }
+
+  async dequeue(queue) {
+    const result = await this.pool.query(
+      `WITH next_job AS (
+         SELECT id FROM jobs
+         WHERE queue = $1
+           AND attempts < max_attempts
+           AND scheduled_at <= NOW()
+         ORDER BY scheduled_at
+         LIMIT 1
+         FOR UPDATE SKIP LOCKED
+       )
+       UPDATE jobs
+       SET attempts = attempts + 1
+       FROM next_job
+       WHERE jobs.id = next_job.id
+       RETURNING jobs.*`,
+      [queue]
+    );
+
+    return result.rows[0];
+  }
+
+  async complete(jobId) {
+    await this.pool.query('DELETE FROM jobs WHERE id = $1', [jobId]);
+  }
+
+  async fail(jobId, error) {
+    await this.pool.query(
+      `UPDATE jobs
+       SET attempts = max_attempts,
+           payload = payload || jsonb_build_object('error', $2)
+       WHERE id = $1`,
+      [jobId, error.message]
+    );
+  }
+}
+
+module.exports = PostgresQueue;
+```
+
+---
+
+## 性能调优小贴士
+
+如果你决定把 Redis 的一些职责搬到 PostgreSQL，上线前有几件事值得注意。
+
+### 1. 用好连接池
+
+```js
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  max: 20,                 // 最大连接数
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+```
+
+### 2. 建好索引
+
+```sql
+CREATE INDEX CONCURRENTLY idx_cache_key ON cache(key) WHERE expires_at > NOW();
+CREATE INDEX CONCURRENTLY idx_jobs_pending ON jobs(queue, scheduled_at)
+  WHERE attempts < max_attempts;
+```
+
+### 3. 调优 PostgreSQL 配置
+
+```text
+# postgresql.conf
+shared_buffers = 2GB             # 约占内存的 25%
+effective_cache_size = 6GB       # 约占内存的 75%
+work_mem = 50MB                  # 复杂查询的工作内存
+maintenance_work_mem = 512MB     # VACUUM 等维护操作
+```
+
+### 4. 做好日常维护
+
+```sql
+-- 每天跑一次
+VACUUM ANALYZE cache;
+VACUUM ANALYZE jobs;
+
+-- 或者细调 autovacuum（推荐）
+ALTER TABLE cache SET (autovacuum_vacuum_scale_factor = 0.1);
+```
+
+---
+
+## 三个月之后的结果
+
+迁移完成并稳定运行了三个月之后，我大概盘点了一下收获和代价。
+
+**得到的：**
+
+- ✅ 每月节省约 \$100（不再使用 ElastiCache）
+- ✅ 备份和恢复流程少了一整套
+- ✅ 监控和告警体系变简单
+- ✅ 部署链路上少了一个外部依赖
+
+**失去的：**
+
+- ❌ 缓存操作慢了大概 0.1–0.5ms
+- ❌ Redis 那些「花哨」的数据结构（不过我本来就没用上）
+
+如果是我当前这个应用场景，我会不会再做一次同样的选择？**会。**
+
+但我会不会对所有团队都说「赶紧把 Redis 换掉」？**不会。**
+
+---
+
+## 决策小抄
+
+可以把这篇文章最后浓缩成一个小小的决策矩阵。
+
+**适合考虑用 PostgreSQL 替换 Redis 的情况：**
+
+- ✅ 你只把 Redis 用在简单缓存 / 会话存储上
+- ✅ 缓存命中率一般，没有到 99% 这种极端情况
+- ✅ 你很看重数据的一致性，希望一切都在事务里完成
+- ✅ 接受操作慢 0.1–1ms 但换来更简单的运维
+- ✅ 团队规模不大，没有专职的 SRE / DBRE 团队
+
+**更应该保留 Redis 的情况：**
+
+- ❌ 你需要每秒 10 万级甚至更高的操作数
+- ❌ 依赖 Redis 的有序集合、HyperLogLog 等高级数据结构
+- ❌ 有专门的运维团队负责 Redis 集群
+- ❌ 亚毫秒级延迟是业务刚性指标
+- ❌ 做多地域部署，需要 Redis 的一些特性来配合
+
+---
+
+## 参考资料
+
+如果你想进一步深入，可以直接查看 PostgreSQL 官方文档和一些社区工具：
+
+- LISTEN/NOTIFY 官方文档：<https://www.postgresql.org/docs/current/sql-notify.html>
+- `SKIP LOCKED`：<https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE>
+- UNLOGGED 表：<https://www.postgresql.org/docs/current/sql-createtable.html>
+
+**工具：**
+
+- pgBouncer：连接池工具，适合高并发场景
+- `pg_stat_statements`：分析慢查询和热点 SQL
+
+**基于 PostgreSQL 的替代方案：**
+
+- Graphile Worker：基于 Postgres 的任务队列
+- pg-boss：另一个成熟的 Postgres 队列实现
+
+---
+
+## TL;DR
+
+这篇文章的核心其实可以用几句话概括：
+
+- 用 **UNLOGGED 表** 替代 Redis 缓存
+- 用 **LISTEN/NOTIFY** 替代 Redis Pub/Sub
+- 用 **`FOR UPDATE SKIP LOCKED`** 实现任务队列
+- 用 **JSONB 表** 存储会话
+
+**结果：**
+
+- 基础设施更少、部署和运维更简单
+- 所有东西都在 PostgreSQL 一处，事务一致性天然有保障
+- 单次操作确实慢了一点点（0.1–1ms），但整体延迟往往更低
+
+如果你的系统已经在用 PostgreSQL，而 Redis 只承担缓存、Pub/Sub 或轻量队列这类职责，那么非常值得认真评估：**是否真的需要再多养一套 Redis 基础设施？** 在很多场景下，PostgreSQL 这套「一站式方案」已经足够好，并且会让你的系统在一致性、可观测性和可维护性上都更容易掌控。

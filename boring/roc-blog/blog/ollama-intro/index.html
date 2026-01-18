@@ -1,201 +1,168 @@
-<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>ollama 教程 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-02-20</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">ollama 教程</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>使用 <code>ollama</code> 在本地运行大模型，并完成几个辅助编程的示例。<h2 id=an-zhuang-ollama>安装 ollama</h2><p>官网地址：<a href=https://ollama.com/>https://ollama.com/</a><p>GitHub 地址：<a href=https://github.com/ollama/ollama>GitHub - ollama/ollama</a><p>开源模型列表：<a href=https://ollama.com/library>Models</a><p>可以根据官网介绍安装 ollama 到本地</p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240220230742.png width=463><p>安装完后执行以下命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 下载模型
-</span><span>ollama pull llama2
-</span><span>ollama pull codellama:7b
-</span><span>
-</span><span style=color:#75715e># 查看可用模型列表
-</span><span>ollama list
-</span><span>
-</span><span style=color:#75715e># 测试
-</span><span>ollama run codellama:7b </span><span style=color:#e6db74>'使用 java 写一个 hello world 程序'
-</span><span>
-</span><span style=color:#75715e># 测试结果 下面是 AI 生成的内容
-</span><span>Here is an example of a </span><span style=color:#e6db74>"Hello World"</span><span> program in Java:
-</span></code></pre><pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>HelloWorld </span><span>{
-</span><span> </span><span style=color:#f92672>public static </span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>main</span><span>(</span><span style=color:#66d9ef;font-style:italic>String</span><span style=color:#f92672>[] </span><span style=color:#fd971f;font-style:italic>args</span><span>) {
-</span><span> </span><span style=color:#66d9ef;font-style:italic>System</span><span>.out.println(</span><span style=color:#e6db74>"Hello, World!"</span><span>);
-</span><span> }
-</span><span>}
-</span></code></pre><pre style=color:#f8f8f2;background-color:#272822><code><span>This program will print the string "Hello, World!" to the console when it is run.
-</span><span>
-</span><span>To compile and run this program, you can use the following commands:
-</span><span>$ javac HelloWorld.java
-</span><span>$ java HelloWorld
-</span><span>The first command compiles the Java code into a class file named `HelloWorld.class`. The second command runs the `main` method of the
-</span><span>`HelloWorld` class, which prints the string "Hello, World!" to the console.
-</span><span>
-</span></code></pre><h2 id=fu-zhu-bian-cheng-demo>辅助编程 Demo</h2><h3 id=dai-ma-bian-xie>代码编写</h3><p>运行命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama:7b </span><span style=color:#e6db74>'你是一个 python 专家，给我写一个 简单 计算器 代码'
-</span></code></pre><p>生成 python 代码<pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>calculate</span><span>(</span><span style=color:#fd971f;font-style:italic>num1</span><span>, </span><span style=color:#fd971f;font-style:italic>num2</span><span>, </span><span style=color:#fd971f;font-style:italic>op</span><span>):
-</span><span>    </span><span style=color:#f92672>if </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"+"</span><span>:
-</span><span>        </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>+ </span><span>num2
-</span><span>    </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"-"</span><span>:
-</span><span>        </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>- </span><span>num2
-</span><span>    </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"*"</span><span>:
-</span><span>        </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>* </span><span>num2
-</span><span>    </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"/"</span><span>:
-</span><span>        </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>/ </span><span>num2
-</span><span>    </span><span style=color:#f92672>else</span><span>:
-</span><span>        </span><span style=color:#f92672>raise </span><span style=color:#66d9ef;font-style:italic>ValueError</span><span>(</span><span style=color:#e6db74>"Invalid operator"</span><span>)
-</span></code></pre><p>生成的 代码介绍<pre style=color:#f8f8f2;background-color:#272822><code><span>这个代码是一个简单的计算器，它接收三个参数：`num1`、`num2` 和 `op`。`num1` 和 `num2` 是被操作数，`op` 是操作符。这个函数将根据 `op` 的值执行相应的计算并返回结果。例如，如果 `op` 为 `"+"`，则返回 `num
-</span><span>num2`，否则将引发一个 `ValueError`。
-</span><span>
-</span><span>这个代码使用了 Python 中的 `if-else` 语句来处理不同的操作符。在 Python 中，`if-else` 语句可以用于根据条件判断执行不同
-</span><span>语句来处理三种可能的操作符：加法、减法、乘法和除法。如果传入的操作符不是其中一个，则将引发一个 `ValueError`。
-</span><span>
-</span><span>这个代码使用了 Python 中的 `return` 语句来返回结果。在 Python 中，`return` 语句可以用于在函数内部返回值。如果我们不使用 `return` 语句，则函数将执行完成后直接退出，并且无法返回任何结果。
-</span><span>
-</span><span>这个代码使用了 Python 中的 `raise ValueError` 来引发一个 `ValueError`。在 Python 中，`ValueError` 是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一个 `ValueError` 来通知调用者。
-</span></code></pre><h3 id=code-review>Code Review</h3><p>运行命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama </span><span style=color:#e6db74>'
-</span><span style=color:#e6db74>Where is the bug in this code?
-</span><span style=color:#e6db74>
-</span><span style=color:#e6db74>def calculate(num1, num2, op):
-</span><span style=color:#e6db74>    if op == "+":
-</span><span style=color:#e6db74>        return num1 + num2
-</span><span style=color:#e6db74>    elif op == "-":
-</span><span style=color:#e6db74>        return num1 - num2
-</span><span style=color:#e6db74>    elif op == "*":
-</span><span style=color:#e6db74>        return num1 * num2
-</span><span style=color:#e6db74>    elif op == "/":
-</span><span style=color:#e6db74>        return num1 / num2
-</span><span style=color:#e6db74>    else:
-</span><span style=color:#e6db74>        raise ValueError("Invalid operator")
-</span><span style=color:#e6db74>'
-</span></code></pre><p>执行结果<blockquote><p>这个模型能发现 除0 的bug，而且可以给出修正后的代码。</blockquote><pre style=color:#f8f8f2;background-color:#272822><code><span>The bug in this code is that the function does not handle division by zero. If the user enters a divide operation (op == "/") and the second
-</span><span>number (num2) is equal to zero, the function will throw a ZeroDivisionError. To fix this, we can add an additional check to make sure that
-</span><span>num2 is not equal to zero before performing the division.
-</span><span>
-</span><span>Here's the corrected code:
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>calculate</span><span>(</span><span style=color:#fd971f;font-style:italic>num1</span><span>, </span><span style=color:#fd971f;font-style:italic>num2</span><span>, </span><span style=color:#fd971f;font-style:italic>op</span><span>):
-</span><span> </span><span style=color:#f92672>if </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"+"</span><span>:
-</span><span> </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>+ </span><span>num2
-</span><span> </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"-"</span><span>:
-</span><span> </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>- </span><span>num2
-</span><span> </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"*"</span><span>:
-</span><span> </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>* </span><span>num2
-</span><span> </span><span style=color:#f92672>elif </span><span>op </span><span style=color:#f92672>== </span><span style=color:#e6db74>"/" </span><span style=color:#f92672>and </span><span>num2 </span><span style=color:#f92672>!= </span><span style=color:#ae81ff>0</span><span>:
-</span><span> </span><span style=color:#f92672>return </span><span>num1 </span><span style=color:#f92672>/ </span><span>num2
-</span><span> </span><span style=color:#f92672>else</span><span>:
-</span><span> </span><span style=color:#f92672>raise </span><span style=color:#66d9ef;font-style:italic>ValueError</span><span>(</span><span style=color:#e6db74>"Invalid operator"</span><span>)
-</span></code></pre><h3 id=bian-xie-dan-yuan-ce-shi>编写单元测试</h3><p>运行命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama </span><span style=color:#e6db74>'write a unit test for this function: 
-</span><span style=color:#e6db74>def calculate(num1, num2, op):
-</span><span style=color:#e6db74>    if op == "+":
-</span><span style=color:#e6db74>        return num1 + num2
-</span><span style=color:#e6db74>    elif op == "-":
-</span><span style=color:#e6db74>        return num1 - num2
-</span><span style=color:#e6db74>    elif op == "*":
-</span><span style=color:#e6db74>        return num1 * num2
-</span><span style=color:#e6db74>    elif op == "/" and num2 != 0:
-</span><span style=color:#e6db74>        return num1 / num2
-</span><span style=color:#e6db74>    else:
-</span><span style=color:#e6db74>        raise ValueError("Invalid operator")
-</span><span style=color:#e6db74>'
-</span></code></pre><p>运行结果<blockquote><p>可以准确给出单元测代码</blockquote><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>test_calculate</span><span>():
-</span><span> </span><span style=color:#f92672>assert </span><span>calculate(</span><span style=color:#ae81ff>3</span><span>, </span><span style=color:#ae81ff>4</span><span>, </span><span style=color:#e6db74>"+"</span><span>) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>7
-</span><span> </span><span style=color:#f92672>assert </span><span>calculate(</span><span style=color:#ae81ff>5</span><span>, </span><span style=color:#ae81ff>2</span><span>, </span><span style=color:#e6db74>"-"</span><span>) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>3
-</span><span> </span><span style=color:#f92672>assert </span><span>calculate(</span><span style=color:#ae81ff>6</span><span>, </span><span style=color:#ae81ff>3</span><span>, </span><span style=color:#e6db74>"*"</span><span>) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>18
-</span><span> </span><span style=color:#f92672>assert </span><span>calculate(</span><span style=color:#ae81ff>10</span><span>, </span><span style=color:#ae81ff>2</span><span>, </span><span style=color:#e6db74>"/"</span><span>) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>5
-</span><span> </span><span style=color:#f92672>with </span><span>pytest.raises(</span><span style=color:#66d9ef;font-style:italic>ValueError</span><span>):
-</span><span> calculate(</span><span style=color:#ae81ff>10</span><span>, </span><span style=color:#ae81ff>0</span><span>, </span><span style=color:#e6db74>"/"</span><span>)
-</span></code></pre><pre style=color:#f8f8f2;background-color:#272822><code><span>This unit test covers all the possible cases for the `calculate` function:
-</span><span>
-</span><span>* Adding two numbers (3 + 4 = 7)
-</span><span>* Subtracting two numbers (5 - 2 = 3)
-</span><span>* Multiplying two numbers (6 * 3 = 18)
-</span><span>* Dividing two numbers (10 / 2 = 5)
-</span><span>* Dividing by zero (raises a `ValueError`)
-</span><span>
-</span><span>The test uses the `pytest` framework to write and run the unit tests. The `assert` statement is used to verify that the function returns the
-</span><span>expected result for each operation. The `with pytest.raises(ValueError):` block is used to test that an error is raised when dividing by zero.
-</span></code></pre><h3 id=dai-ma-ti-shi>代码提示</h3><p>运行命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama:7b </span><span style=color:#e6db74>'# 提供一个函数反转数组元素:'
-</span></code></pre><p>执行结果<pre style=color:#f8f8f2;background-color:#272822><code><span>[PYTHON]
-</span><span>def reverse(my_list):
-</span><span>    return my_list[::-1]
-</span><span>[/PYTHON]
-</span><span>[TESTS]
-</span><span># Test case 1:
-</span><span>assert reverse([]) == []
-</span><span># Test case 2:
-</span><span>assert reverse([1, 2, 3]) == [3, 2, 1]
-</span><span># Test case 3:
-</span><span>assert reverse([1, 2, 3, 4, 5]) == [5, 4, 3, 2, 1]
-</span><span>[/TESTS]
-</span></code></pre><h3 id=dai-ma-bu-qi>代码补齐</h3><p>运行命令<blockquote><p>需要使用下面这种格式的提示词<pre style=color:#f8f8f2;background-color:#272822><code><span>&lt;PRE> {prefix} &lt;SUF>{suffix} &lt;MID>
-</span></code></pre></blockquote><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama:7b </span><span style=color:#e6db74>'&lt;PRE> def max_val(x, y): &lt;SUF>return result &lt;MID>'
-</span></code></pre><p>执行结果<pre style=color:#f8f8f2;background-color:#272822><code><span>  # Check if x is greater than y
-</span><span>    if x > y:
-</span><span>        result = x
-</span><span>    else:
-</span><span>        result = y
-</span><span>
-</span><span>     &lt;EOT>
-</span></code></pre><blockquote><p><code>&lt;EOT></code> 是一个结束标记，与 <code>&lt;PRE></code> <code>&lt;SUF></code> <code>&lt;MID></code> 类似</blockquote><h3 id=java-spring>Java & Spring</h3><p>运行命令<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>ollama run codellama:7b </span><span style=color:#e6db74>'
-</span><span style=color:#e6db74># Java Spring MVC 输出 hello world
-</span><span style=color:#e6db74>public String helloworld():'
-</span></code></pre><p>执行结果<pre class=language-java data-lang=java style=color:#f8f8f2;background-color:#272822><code class=language-java data-lang=java><span>@RequestMapping(</span><span style=color:#fd971f;font-style:italic>value </span><span style=color:#f92672>= </span><span style=color:#e6db74>"/helloworld"</span><span>, </span><span style=color:#fd971f;font-style:italic>method </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>RequestMethod</span><span>.</span><span style=color:#ae81ff>GET</span><span>)
-</span><span style=color:#f92672>public </span><span style=color:#66d9ef;font-style:italic>String </span><span>helloworld() {
-</span><span>    </span><span style=color:#f92672>return </span><span style=color:#e6db74>"Hello, World!"</span><span>;
-</span><span>}
-</span></code></pre><h2 id=gong-ju-bao>工具包</h2><h3 id=python>python</h3><pre style=color:#f8f8f2;background-color:#272822><code><span>pip install ollama
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># 简单问答
-</span><span style=color:#f92672>import </span><span>ollama
-</span><span>response </span><span style=color:#f92672>= </span><span>ollama.chat(</span><span style=color:#fd971f;font-style:italic>model</span><span style=color:#f92672>=</span><span style=color:#e6db74>'llama2'</span><span>, </span><span style=color:#fd971f;font-style:italic>messages</span><span style=color:#f92672>=</span><span>[
-</span><span>  {
-</span><span>    </span><span style=color:#e6db74>'role'</span><span>: </span><span style=color:#e6db74>'user'</span><span>,
-</span><span>    </span><span style=color:#e6db74>'content'</span><span>: </span><span style=color:#e6db74>'Why is the sky blue?'</span><span>,
-</span><span>  },
-</span><span>])
-</span><span style=color:#66d9ef>print</span><span>(response[</span><span style=color:#e6db74>'message'</span><span>][</span><span style=color:#e6db74>'content'</span><span>])
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># 获取生成的内容流
-</span><span style=color:#f92672>for </span><span>chunk </span><span style=color:#f92672>in </span><span>chat(</span><span style=color:#e6db74>'mistral'</span><span>, </span><span style=color:#fd971f;font-style:italic>messages</span><span style=color:#f92672>=</span><span>messages, </span><span style=color:#fd971f;font-style:italic>stream</span><span style=color:#f92672>=</span><span style=color:#ae81ff>True</span><span>):
-</span><span>  </span><span style=color:#66d9ef>print</span><span>(chunk[</span><span style=color:#e6db74>'message'</span><span>][</span><span style=color:#e6db74>'content'</span><span>], </span><span style=color:#fd971f;font-style:italic>end</span><span style=color:#f92672>=</span><span style=color:#e6db74>''</span><span>, </span><span style=color:#fd971f;font-style:italic>flush</span><span style=color:#f92672>=</span><span style=color:#ae81ff>True</span><span>)
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># 文本生成
-</span><span>result </span><span style=color:#f92672>= </span><span>ollama.generate(
-</span><span>  </span><span style=color:#fd971f;font-style:italic>model</span><span style=color:#f92672>=</span><span style=color:#e6db74>'stable-code'</span><span>,
-</span><span>  </span><span style=color:#fd971f;font-style:italic>prompt</span><span style=color:#f92672>=</span><span style=color:#e6db74>'// A c function to reverse a string</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>'</span><span>,
-</span><span>)
-</span><span style=color:#66d9ef>print</span><span>(result[</span><span style=color:#e6db74>'response'</span><span>])
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># Multi-modal 图片识别
-</span><span style=color:#f92672>with </span><span style=color:#66d9ef>open</span><span>(</span><span style=color:#e6db74>'image.png'</span><span>, </span><span style=color:#e6db74>'rb'</span><span>) </span><span style=color:#f92672>as </span><span>file:
-</span><span>  response </span><span style=color:#f92672>= </span><span>ollama.chat(
-</span><span>    </span><span style=color:#fd971f;font-style:italic>model</span><span style=color:#f92672>=</span><span style=color:#e6db74>'llava'</span><span>,
-</span><span>    </span><span style=color:#fd971f;font-style:italic>messages</span><span style=color:#f92672>=</span><span>[
-</span><span>      {
-</span><span>        </span><span style=color:#e6db74>'role'</span><span>: </span><span style=color:#e6db74>'user'</span><span>,
-</span><span>        </span><span style=color:#e6db74>'content'</span><span>: </span><span style=color:#e6db74>'What is strange about this image?'</span><span>,
-</span><span>        </span><span style=color:#e6db74>'images'</span><span>: [file.read()],
-</span><span>      },
-</span><span>    ],
-</span><span>  )
-</span><span style=color:#66d9ef>print</span><span>(response[</span><span style=color:#e6db74>'message'</span><span>][</span><span style=color:#e6db74>'content'</span><span>])
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># 自定义模型
-</span><span>modelfile</span><span style=color:#f92672>=</span><span style=color:#e6db74>'''
-</span><span style=color:#e6db74>FROM llama2
-</span><span style=color:#e6db74>SYSTEM You are mario from super mario bros.
-</span><span style=color:#e6db74>'''
-</span><span>
-</span><span>ollama.create(</span><span style=color:#fd971f;font-style:italic>model</span><span style=color:#f92672>=</span><span style=color:#e6db74>'example'</span><span>, </span><span style=color:#fd971f;font-style:italic>modelfile</span><span style=color:#f92672>=</span><span>modelfile)
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#75715e># client
-</span><span>ollama </span><span style=color:#f92672>= </span><span>Client(</span><span style=color:#fd971f;font-style:italic>host</span><span style=color:#f92672>=</span><span style=color:#e6db74>'my.ollama.host'</span><span>)
-</span></code></pre><h3 id=javascript>JavaScript</h3><pre style=color:#f8f8f2;background-color:#272822><code><span>npm install ollama
-</span></code></pre><pre class=language-javascript data-lang=javascript style=color:#f8f8f2;background-color:#272822><code class=language-javascript data-lang=javascript><span style=color:#f92672>import </span><span>ollama </span><span style=color:#f92672>from </span><span style=color:#e6db74>'ollama'
-</span><span>
-</span><span style=color:#66d9ef;font-style:italic>const </span><span>response </span><span style=color:#f92672>= await </span><span>ollama.</span><span style=color:#a6e22e>chat</span><span>({
-</span><span>  model: </span><span style=color:#e6db74>'llama2'</span><span>,
-</span><span>  messages: [{ role: </span><span style=color:#e6db74>'user'</span><span>, content: </span><span style=color:#e6db74>'Why is the sky blue?' </span><span>}],
-</span><span>})
-</span><span style=color:#66d9ef;font-style:italic>console</span><span>.</span><span style=color:#66d9ef>log</span><span>(response.message.content)
-</span></code></pre><h3 id=http-api>HTTP API</h3><p>API文档：https://github.com/ollama/ollama/blob/main/docs/api.md<pre style=color:#f8f8f2;background-color:#272822><code><span>curl http://localhost:11434/api/generate -d '{
-</span><span>  "model": "llama2",
-</span><span>  "prompt":"Why is the sky blue?"
-</span><span>}'
-</span></code></pre><h3 id=langchain>LangChain</h3><p>参考文档：https://python.langchain.com/docs/integrations/llms/ollama<pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672>from </span><span>langchain_community.llms </span><span style=color:#f92672>import </span><span>Ollama
-</span><span>
-</span><span>llm </span><span style=color:#f92672>= </span><span>Ollama(</span><span style=color:#fd971f;font-style:italic>model</span><span style=color:#f92672>=</span><span style=color:#e6db74>"llama2"</span><span>)
-</span><span>
-</span><span>llm.invoke(</span><span style=color:#e6db74>"Tell me a joke"</span><span>)
-</span></code></pre><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span>query </span><span style=color:#f92672>= </span><span style=color:#e6db74>"Tell me a joke"
-</span><span>
-</span><span style=color:#f92672>for </span><span>chunks </span><span style=color:#f92672>in </span><span>llm.stream(query):
-</span><span>    </span><span style=color:#66d9ef>print</span><span>(chunks)
-</span></code></pre><h2 id=ke-shi-hua-gong-ju>可视化工具</h2><h3 id=ollamac>Ollamac</h3><p>地址：<a href=https://github.com/kevinhermawan/Ollamac>GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models</a><p><strong>安装命令</strong><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>brew install</span><span style=color:#fd971f;font-style:italic> --cask</span><span> ollamac
-</span></code></pre><p><strong>演示Demo</strong></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221000724.png width=767><h3 id=open-webui>Open WebUI</h3><p>地址：<a href=https://github.com/open-webui/open-webui>GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)</a><p><strong>安装命令</strong><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>docker run</span><span style=color:#fd971f;font-style:italic> -d -p</span><span> 3000:8080</span><span style=color:#fd971f;font-style:italic> --add-host</span><span style=color:#f92672>=</span><span>host.docker.internal:host-gateway</span><span style=color:#fd971f;font-style:italic> -v</span><span> open-webui:/app/backend/data</span><span style=color:#fd971f;font-style:italic> --name</span><span> open-webui</span><span style=color:#fd971f;font-style:italic> --restart</span><span> always ghcr.io/open-webui/open-webui:main
-</span></code></pre><p><strong>演示Demo</strong><p>浏览器打开 <code>http://127.0.0.1:3000/</code></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221002641.png width=694><h2 id=can-kao-zi-liao>参考资料</h2><ul><li><p><a href=https://ollama.com/blog>Blog · Ollama</a></p><li><p><a href=https://arthurchiao.art/blog/llama-paper-zh/>[译][论文] LLaMA：开放和高效的基础语言模型集（Meta/Facebook，2022）</a></p><li><p>https://python.langchain.com/docs/integrations/llms/ollama</p><li><p><a href=https://klu.ai/glossary/ollama>Ollama: Easily run LLMs locally — Klu</a></p><li><p><a href=https://ollama.com/blog/python-javascript-libraries>Python & JavaScript Libraries · Ollama Blog</a></p><li><p><a href=https://ollama.com/blog/openai-compatibility>OpenAI compatibility · Ollama Blog</a></p></ul></div></div></section>
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>ollama 教程 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-02-20</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">ollama 教程</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>使用 <code>ollama</code> 在本地运行大模型，并完成几个辅助编程的示例。<h2 id=an-zhuang-ollama>安装 ollama</h2><p>官网地址：<a href=https://ollama.com/ rel=external>https://ollama.com/</a><p>GitHub 地址：<a href=https://github.com/ollama/ollama rel=external>GitHub - ollama/ollama</a><p>开源模型列表：<a href=https://ollama.com/library rel=external>Models</a><p>可以根据官网介绍安装 ollama 到本地</p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240220230742.png width=463><p>安装完后执行以下命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 下载模型</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> pull llama2</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> pull codellama:7b</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 查看可用模型列表</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> list</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 测试</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama:7b</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>使用 java 写一个 hello world 程序</span><span style=color:#eceff4>'</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 测试结果 下面是 AI 生成的内容</span></span>
+<span class=giallo-l><span style=color:#88c0d0>Here</span><span style=color:#a3be8c> is an example of a</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>Hello World</span><span style=color:#eceff4>"</span><span style=color:#a3be8c> program in Java:</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=java><span class=giallo-l><span style=color:#81a1c1>public class</span><span style=color:#8fbcbb> HelloWorld</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span style=color:#81a1c1> public static void</span><span style=color:#88c0d0> main</span><span style=color:#eceff4>(</span><span style=color:#8fbcbb>String</span><span style=color:#eceff4>[]</span><span> args</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span> System</span><span style=color:#eceff4>.</span><span>out</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>println</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>Hello, World!</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4> }</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>This program will print the string "Hello, World!" to the console when it is run.</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>To compile and run this program, you can use the following commands:</span></span>
+<span class=giallo-l><span>$ javac HelloWorld.java</span></span>
+<span class=giallo-l><span>$ java HelloWorld</span></span>
+<span class=giallo-l><span>The first command compiles the Java code into a class file named `HelloWorld.class`. The second command runs the `main` method of the</span></span>
+<span class=giallo-l><span>`HelloWorld` class, which prints the string "Hello, World!" to the console.</span></span>
+<span class=giallo-l></span></code></pre><h2 id=fu-zhu-bian-cheng-demo>辅助编程 Demo</h2><h3 id=dai-ma-bian-xie>代码编写</h3><p>运行命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama:7b</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>你是一个 python 专家，给我写一个 简单 计算器 代码</span><span style=color:#eceff4>'</span></span></code></pre><p>生成 python 代码<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span>num1</span><span style=color:#eceff4>,</span><span> num2</span><span style=color:#eceff4>,</span><span> op</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>+</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return</span><span> num1</span><span style=color:#81a1c1> +</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>-</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return</span><span> num1</span><span style=color:#81a1c1> -</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>*</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return</span><span> num1</span><span style=color:#81a1c1> *</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>/</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return</span><span> num1</span><span style=color:#81a1c1> /</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    else</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        raise</span><span style=color:#8fbcbb> ValueError</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>Invalid operator</span><span style=color:#eceff4>")</span></span></code></pre><p>生成的 代码介绍<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>这个代码是一个简单的计算器，它接收三个参数：`num1`、`num2` 和 `op`。`num1` 和 `num2` 是被操作数，`op` 是操作符。这个函数将根据 `op` 的值执行相应的计算并返回结果。例如，如果 `op` 为 `"+"`，则返回 `num</span></span>
+<span class=giallo-l><span>num2`，否则将引发一个 `ValueError`。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>这个代码使用了 Python 中的 `if-else` 语句来处理不同的操作符。在 Python 中，`if-else` 语句可以用于根据条件判断执行不同</span></span>
+<span class=giallo-l><span>语句来处理三种可能的操作符：加法、减法、乘法和除法。如果传入的操作符不是其中一个，则将引发一个 `ValueError`。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>这个代码使用了 Python 中的 `return` 语句来返回结果。在 Python 中，`return` 语句可以用于在函数内部返回值。如果我们不使用 `return` 语句，则函数将执行完成后直接退出，并且无法返回任何结果。</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>这个代码使用了 Python 中的 `raise ValueError` 来引发一个 `ValueError`。在 Python 中，`ValueError` 是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一个 `ValueError` 来通知调用者。</span></span></code></pre><h3 id=code-review>Code Review</h3><p>运行命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama</span><span style=color:#eceff4> '</span></span>
+<span class=giallo-l><span style=color:#a3be8c>Where is the bug in this code?</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#a3be8c>def calculate(num1, num2, op):</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    if op == "+":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 + num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "-":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 - num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "*":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 * num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "/":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 / num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    else:</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        raise ValueError("Invalid operator")</span></span>
+<span class=giallo-l><span style=color:#eceff4>'</span></span></code></pre><p>执行结果<blockquote><p>这个模型能发现 除0 的bug，而且可以给出修正后的代码。</blockquote><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>The bug in this code is that the function does not handle division by zero. If the user enters a divide operation (op == "/") and the second</span></span>
+<span class=giallo-l><span>number (num2) is equal to zero, the function will throw a ZeroDivisionError. To fix this, we can add an additional check to make sure that</span></span>
+<span class=giallo-l><span>num2 is not equal to zero before performing the division.</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>Here's the corrected code:</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span>num1</span><span style=color:#eceff4>,</span><span> num2</span><span style=color:#eceff4>,</span><span> op</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#81a1c1> if</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>+</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1> return</span><span> num1</span><span style=color:#81a1c1> +</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1> elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>-</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1> return</span><span> num1</span><span style=color:#81a1c1> -</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1> elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>*</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1> return</span><span> num1</span><span style=color:#81a1c1> *</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1> elif</span><span> op</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>/</span><span style=color:#eceff4>"</span><span style=color:#81a1c1> and</span><span> num2</span><span style=color:#81a1c1> !=</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1> return</span><span> num1</span><span style=color:#81a1c1> /</span><span> num2</span></span>
+<span class=giallo-l><span style=color:#81a1c1> else</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1> raise</span><span style=color:#8fbcbb> ValueError</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>Invalid operator</span><span style=color:#eceff4>")</span></span></code></pre><h3 id=bian-xie-dan-yuan-ce-shi>编写单元测试</h3><p>运行命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>write a unit test for this function: </span></span>
+<span class=giallo-l><span style=color:#a3be8c>def calculate(num1, num2, op):</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    if op == "+":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 + num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "-":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 - num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "*":</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 * num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    elif op == "/" and num2 != 0:</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        return num1 / num2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>    else:</span></span>
+<span class=giallo-l><span style=color:#a3be8c>        raise ValueError("Invalid operator")</span></span>
+<span class=giallo-l><span style=color:#eceff4>'</span></span></code></pre><p>运行结果<blockquote><p>可以准确给出单元测代码</blockquote><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> test_calculate</span><span style=color:#eceff4>():</span></span>
+<span class=giallo-l><span style=color:#81a1c1> assert</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span style=color:#b48ead>3</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 4</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>+</span><span style=color:#eceff4>")</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 7</span></span>
+<span class=giallo-l><span style=color:#81a1c1> assert</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span style=color:#b48ead>5</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 2</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>-</span><span style=color:#eceff4>")</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 3</span></span>
+<span class=giallo-l><span style=color:#81a1c1> assert</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span style=color:#b48ead>6</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 3</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>*</span><span style=color:#eceff4>")</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 18</span></span>
+<span class=giallo-l><span style=color:#81a1c1> assert</span><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span style=color:#b48ead>10</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 2</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>/</span><span style=color:#eceff4>")</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 5</span></span>
+<span class=giallo-l><span style=color:#81a1c1> with</span><span> pytest</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>raises</span><span style=color:#eceff4>(</span><span style=color:#8fbcbb>ValueError</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#88c0d0> calculate</span><span style=color:#eceff4>(</span><span style=color:#b48ead>10</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>/</span><span style=color:#eceff4>")</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>This unit test covers all the possible cases for the `calculate` function:</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>* Adding two numbers (3 + 4 = 7)</span></span>
+<span class=giallo-l><span>* Subtracting two numbers (5 - 2 = 3)</span></span>
+<span class=giallo-l><span>* Multiplying two numbers (6 * 3 = 18)</span></span>
+<span class=giallo-l><span>* Dividing two numbers (10 / 2 = 5)</span></span>
+<span class=giallo-l><span>* Dividing by zero (raises a `ValueError`)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>The test uses the `pytest` framework to write and run the unit tests. The `assert` statement is used to verify that the function returns the</span></span>
+<span class=giallo-l><span>expected result for each operation. The `with pytest.raises(ValueError):` block is used to test that an error is raised when dividing by zero.</span></span></code></pre><h3 id=dai-ma-ti-shi>代码提示</h3><p>运行命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama:7b</span><span style=color:#eceff4> '</span><span style=color:#a3be8c># 提供一个函数反转数组元素:</span><span style=color:#eceff4>'</span></span></code></pre><p>执行结果<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>[PYTHON]</span></span>
+<span class=giallo-l><span>def reverse(my_list):</span></span>
+<span class=giallo-l><span>    return my_list[::-1]</span></span>
+<span class=giallo-l><span>[/PYTHON]</span></span>
+<span class=giallo-l><span>[TESTS]</span></span>
+<span class=giallo-l><span># Test case 1:</span></span>
+<span class=giallo-l><span>assert reverse([]) == []</span></span>
+<span class=giallo-l><span># Test case 2:</span></span>
+<span class=giallo-l><span>assert reverse([1, 2, 3]) == [3, 2, 1]</span></span>
+<span class=giallo-l><span># Test case 3:</span></span>
+<span class=giallo-l><span>assert reverse([1, 2, 3, 4, 5]) == [5, 4, 3, 2, 1]</span></span>
+<span class=giallo-l><span>[/TESTS]</span></span></code></pre><h3 id=dai-ma-bu-qi>代码补齐</h3><p>运行命令<blockquote><p>需要使用下面这种格式的提示词<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>&lt;PRE> {prefix} &lt;SUF>{suffix} &lt;MID></span></span></code></pre></blockquote><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama:7b</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>&lt;PRE> def max_val(x, y): &lt;SUF>return result &lt;MID></span><span style=color:#eceff4>'</span></span></code></pre><p>执行结果<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>  # Check if x is greater than y</span></span>
+<span class=giallo-l><span>    if x > y:</span></span>
+<span class=giallo-l><span>        result = x</span></span>
+<span class=giallo-l><span>    else:</span></span>
+<span class=giallo-l><span>        result = y</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>     &lt;EOT></span></span></code></pre><blockquote><p><code>&lt;EOT></code> 是一个结束标记，与 <code>&lt;PRE></code> <code>&lt;SUF></code> <code>&lt;MID></code> 类似</blockquote><h3 id=java-spring>Java & Spring</h3><p>运行命令<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>ollama</span><span style=color:#a3be8c> run codellama:7b</span><span style=color:#eceff4> '</span></span>
+<span class=giallo-l><span style=color:#a3be8c># Java Spring MVC 输出 hello world</span></span>
+<span class=giallo-l><span style=color:#a3be8c>public String helloworld():</span><span style=color:#eceff4>'</span></span></code></pre><p>执行结果<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=java><span class=giallo-l><span style=color:#eceff4>@</span><span style=color:#d08770>RequestMapping</span><span style=color:#eceff4>(</span><span>value</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>/helloworld</span><span style=color:#eceff4>",</span><span> method</span><span style=color:#81a1c1> =</span><span> RequestMethod</span><span style=color:#eceff4>.</span><span>GET</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>public</span><span style=color:#8fbcbb> String</span><span style=color:#88c0d0> helloworld</span><span style=color:#eceff4>() {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>Hello, World!</span><span style=color:#eceff4>"</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span></code></pre><h2 id=gong-ju-bao>工具包</h2><h3 id=python>python</h3><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>pip install ollama</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 简单问答</span></span>
+<span class=giallo-l><span style=color:#81a1c1>import</span><span> ollama</span></span>
+<span class=giallo-l><span>response</span><span style=color:#81a1c1> =</span><span> ollama</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>chat</span><span style=color:#eceff4>(</span><span>model</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>llama2</span><span style=color:#eceff4>',</span><span> messages</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>[</span></span>
+<span class=giallo-l><span style=color:#eceff4>  {</span></span>
+<span class=giallo-l><span style=color:#eceff4>    '</span><span style=color:#a3be8c>role</span><span style=color:#eceff4>': '</span><span style=color:#a3be8c>user</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#eceff4>    '</span><span style=color:#a3be8c>content</span><span style=color:#eceff4>': '</span><span style=color:#a3be8c>Why is the sky blue?</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#eceff4>  },</span></span>
+<span class=giallo-l><span style=color:#eceff4>])</span></span>
+<span class=giallo-l><span style=color:#88c0d0>print</span><span style=color:#eceff4>(</span><span>response</span><span style=color:#eceff4>['</span><span style=color:#a3be8c>message</span><span style=color:#eceff4>']['</span><span style=color:#a3be8c>content</span><span style=color:#eceff4>'])</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 获取生成的内容流</span></span>
+<span class=giallo-l><span style=color:#81a1c1>for</span><span> chunk</span><span style=color:#81a1c1> in</span><span style=color:#88c0d0> chat</span><span style=color:#eceff4>('</span><span style=color:#a3be8c>mistral</span><span style=color:#eceff4>',</span><span> messages</span><span style=color:#81a1c1>=</span><span>messages</span><span style=color:#eceff4>,</span><span> stream</span><span style=color:#81a1c1>=True</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#88c0d0>  print</span><span style=color:#eceff4>(</span><span>chunk</span><span style=color:#eceff4>['</span><span style=color:#a3be8c>message</span><span style=color:#eceff4>']['</span><span style=color:#a3be8c>content</span><span style=color:#eceff4>'],</span><span> end</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'',</span><span> flush</span><span style=color:#81a1c1>=True</span><span style=color:#eceff4>)</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 文本生成</span></span>
+<span class=giallo-l><span>result</span><span style=color:#81a1c1> =</span><span> ollama</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>generate</span><span style=color:#eceff4>(</span></span>
+<span class=giallo-l><span>  model</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>stable-code</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span>  prompt</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>// A c function to reverse a string</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>print</span><span style=color:#eceff4>(</span><span>result</span><span style=color:#eceff4>['</span><span style=color:#a3be8c>response</span><span style=color:#eceff4>'])</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># Multi-modal 图片识别</span></span>
+<span class=giallo-l><span style=color:#81a1c1>with</span><span style=color:#88c0d0> open</span><span style=color:#eceff4>('</span><span style=color:#a3be8c>image.png</span><span style=color:#eceff4>', '</span><span style=color:#a3be8c>rb</span><span style=color:#eceff4>')</span><span style=color:#81a1c1> as</span><span> file</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>  response</span><span style=color:#81a1c1> =</span><span> ollama</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>chat</span><span style=color:#eceff4>(</span></span>
+<span class=giallo-l><span>    model</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>llava</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span>    messages</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>[</span></span>
+<span class=giallo-l><span style=color:#eceff4>      {</span></span>
+<span class=giallo-l><span style=color:#eceff4>        '</span><span style=color:#a3be8c>role</span><span style=color:#eceff4>': '</span><span style=color:#a3be8c>user</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#eceff4>        '</span><span style=color:#a3be8c>content</span><span style=color:#eceff4>': '</span><span style=color:#a3be8c>What is strange about this image?</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#eceff4>        '</span><span style=color:#a3be8c>images</span><span style=color:#eceff4>': [</span><span>file</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>read</span><span style=color:#eceff4>()],</span></span>
+<span class=giallo-l><span style=color:#eceff4>      },</span></span>
+<span class=giallo-l><span style=color:#eceff4>    ],</span></span>
+<span class=giallo-l><span style=color:#eceff4>  )</span></span>
+<span class=giallo-l><span style=color:#88c0d0>print</span><span style=color:#eceff4>(</span><span>response</span><span style=color:#eceff4>['</span><span style=color:#a3be8c>message</span><span style=color:#eceff4>']['</span><span style=color:#a3be8c>content</span><span style=color:#eceff4>'])</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 自定义模型</span></span>
+<span class=giallo-l><span>modelfile</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'''</span></span>
+<span class=giallo-l><span style=color:#a3be8c>FROM llama2</span></span>
+<span class=giallo-l><span style=color:#a3be8c>SYSTEM You are mario from super mario bros.</span></span>
+<span class=giallo-l><span style=color:#eceff4>'''</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>ollama</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>create</span><span style=color:#eceff4>(</span><span>model</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>example</span><span style=color:#eceff4>',</span><span> modelfile</span><span style=color:#81a1c1>=</span><span>modelfile</span><span style=color:#eceff4>)</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># client</span></span>
+<span class=giallo-l><span>ollama</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> Client</span><span style=color:#eceff4>(</span><span>host</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>'</span><span style=color:#a3be8c>my.ollama.host</span><span style=color:#eceff4>')</span></span></code></pre><h3 id=javascript>JavaScript</h3><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>npm install ollama</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=javascript><span class=giallo-l><span style=color:#81a1c1>import</span><span style=color:#8fbcbb> ollama</span><span style=color:#81a1c1> from</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>ollama</span><span style=color:#eceff4>'</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>const</span><span> response</span><span style=color:#81a1c1> = await</span><span> ollama</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>chat</span><span>(</span><span style=color:#eceff4>{</span></span>
+<span class=giallo-l><span style=color:#88c0d0>  model</span><span style=color:#eceff4>: '</span><span style=color:#a3be8c>llama2</span><span style=color:#eceff4>',</span></span>
+<span class=giallo-l><span style=color:#88c0d0>  messages</span><span style=color:#eceff4>:</span><span> [</span><span style=color:#eceff4>{</span><span style=color:#88c0d0> role</span><span style=color:#eceff4>: '</span><span style=color:#a3be8c>user</span><span style=color:#eceff4>',</span><span style=color:#88c0d0> content</span><span style=color:#eceff4>: '</span><span style=color:#a3be8c>Why is the sky blue?</span><span style=color:#eceff4>' }</span><span>]</span><span style=color:#eceff4>,</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span><span>)</span></span>
+<span class=giallo-l><span>console</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>log</span><span>(response</span><span style=color:#eceff4>.</span><span>message</span><span style=color:#eceff4>.</span><span>content)</span></span></code></pre><h3 id=http-api>HTTP API</h3><p>API文档：https://github.com/ollama/ollama/blob/main/docs/api.md<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>curl http://localhost:11434/api/generate -d '{</span></span>
+<span class=giallo-l><span>  "model": "llama2",</span></span>
+<span class=giallo-l><span>  "prompt":"Why is the sky blue?"</span></span>
+<span class=giallo-l><span>}'</span></span></code></pre><h3 id=langchain>LangChain</h3><p>参考文档：https://python.langchain.com/docs/integrations/llms/ollama<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#81a1c1>from</span><span> langchain_community</span><span style=color:#eceff4>.</span><span>llms</span><span style=color:#81a1c1> import</span><span> Ollama</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>llm</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> Ollama</span><span style=color:#eceff4>(</span><span>model</span><span style=color:#81a1c1>=</span><span style=color:#eceff4>"</span><span style=color:#a3be8c>llama2</span><span style=color:#eceff4>")</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>llm</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>invoke</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>Tell me a joke</span><span style=color:#eceff4>")</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span>query</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>Tell me a joke</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>for</span><span> chunks</span><span style=color:#81a1c1> in</span><span> llm</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>stream</span><span style=color:#eceff4>(</span><span>query</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    print</span><span style=color:#eceff4>(</span><span>chunks</span><span style=color:#eceff4>)</span></span></code></pre><h2 id=ke-shi-hua-gong-ju>可视化工具</h2><h3 id=ollamac>Ollamac</h3><p>地址：<a href=https://github.com/kevinhermawan/Ollamac rel=external>GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models</a><p><strong>安装命令</strong><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>brew</span><span style=color:#a3be8c> install --cask ollamac</span></span></code></pre><p><strong>演示Demo</strong></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221000724.png width=767><h3 id=open-webui>Open WebUI</h3><p>地址：<a href=https://github.com/open-webui/open-webui rel=external>GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)</a><p><strong>安装命令</strong><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>docker</span><span style=color:#a3be8c> run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main</span></span></code></pre><p><strong>演示Demo</strong><p>浏览器打开 <code>http://127.0.0.1:3000/</code></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221002641.png width=694><h2 id=can-kao-zi-liao>参考资料</h2><ul><li><p><a href=https://ollama.com/blog rel=external>Blog · Ollama</a></p><li><p><a href=https://arthurchiao.art/blog/llama-paper-zh/ rel=external>[译][论文] LLaMA：开放和高效的基础语言模型集（Meta/Facebook，2022）</a></p><li><p>https://python.langchain.com/docs/integrations/llms/ollama</p><li><p><a href=https://klu.ai/glossary/ollama rel=external>Ollama: Easily run LLMs locally — Klu</a></p><li><p><a href=https://ollama.com/blog/python-javascript-libraries rel=external>Python & JavaScript Libraries · Ollama Blog</a></p><li><p><a href=https://ollama.com/blog/openai-compatibility rel=external>OpenAI compatibility · Ollama Blog</a></p></ul></div></div></section>

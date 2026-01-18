@@ -1,437 +1,434 @@
-<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>关于Valkey高性能优化的博客文章总结 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-05-27</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">关于Valkey高性能优化的博客文章总结</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><ul><li><p><a href=https://valkey.io/blog/unlock-one-million-rps/>原文地址-1</a></p><li><p><a href=https://valkey.io/blog/unlock-one-million-rps-part2/>原文地址-2</a></p></ul><p>相关内容：<blockquote><p>🔍 <em><strong>valkey unlock one million rps blog</strong></em></blockquote><blockquote><p>🔗 <a href=https://valkey.io/blog/unlock-one-million-rps/>Valkey · Unlock 1 Mi</a> 🔗 <a href=https://valkey.io/blog/unlock-one-million-rps-part2/>Valkey · Unlock 1 Mi</a> 🔗 <a href=https://www.gomomento.com/blog/valkey-turns-one-how-the-community-fork-left-redis-in-the-dust/>Valkey Turns One: Ho</a> 🔗 <a href=https://valkey.io/blog/>Valkey · List of blo</a> 🔗 <a href="https://news.ycombinator.com/item?id=41455072">Unlock 1M RPS: Exper</a> 🔗 <a href=https://www.phoronix.com/news/Valkey-8.0-Released>Valkey 8.0 Released </a> 🔗 <a href=https://aws.amazon.com/blogs/database/amazon-elasticache-version-8-0-for-valkey-brings-faster-scaling-and-improved-memory-efficiency/>Amazon ElastiCache v</a> 🔗 <a href=https://valkey.io/>Valkey</a> 🔗 <a href="https://news.ycombinator.com/item?id=41556751">Valkey 8.0 Released </a> 🔗 <a href=https://dev.to/viradiaharsh/unlocking-the-power-of-aws-elasticache-with-valkey-72-lower-costs-serverless-flexibility-and-performance-gains-5765>Unlocking the Power </a></blockquote><h2 id=wen-zhang-nei-rong-zong-jie>文章内容总结</h2><p>根据这两篇Valkey博客文章的分析，主要内容：<h3 id=di-yi-pian-valkeyxing-neng-you-hua-i-oduo-xian-cheng-jia-gou>第一篇：Valkey性能优化 - I/O多线程架构</h3><p><strong>核心优化思路：</strong><ol><li><strong>多线程I/O架构</strong>：将I/O操作（读取和解析命令、写入响应、轮询I/O事件）从主线程分离到专门的I/O线程，让主线程专注于命令执行<li><strong>性能提升</strong>：在8个I/O线程、300万键数据库、512字节值大小、650个客户端运行SET命令的测试中，吞吐量从360K提升到1.19M请求每秒，增长约230%，平均延迟从1.792ms降至0.542ms，下降69.8%<li><strong>设计原则</strong>：保持Valkey的简单性，命令执行仍在单线程中进行，避免复杂的同步机制和竞态条件</ol><h3 id=di-er-pian-nei-cun-fang-wen-you-hua-yu-qu-he-jiao-cuo-zhi-xing>第二篇：内存访问优化 - 预取和交错执行</h3><p><strong>核心优化思路：</strong><ol><li><strong>内存访问摊销</strong>：通过交错执行访问随机内存位置的操作，利用处理器的推测执行能力，实现显著性能提升<li><strong>实际应用</strong>：在Valkey的lookupKey函数中应用这一技术，该函数占用了主线程40%以上的时间，通过dictPrefetch函数交错执行字典查找序列，将lookupKey的时间减少了80%以上<li><strong>性能提升</strong>：内存访问摊销技术对Valkey性能的影响接近50%，将请求速率提升到超过119万RPS</ol><p><strong>技术原理：</strong><ul><li>链表示例显示交错遍历比顺序遍历快10倍（从20.8秒降至2秒）<li>处理器在顺序访问链表时无法推测未来的内存访问指令<li>交错执行允许处理器并行发出更多内存访问，通过摊销减少总体内存访问延迟</ul><p>现在我来编写C语言实验程序来验证这些结论：<pre class=language-c data-lang=c style=color:#f8f8f2;background-color:#272822><code class=language-c data-lang=c><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;stdio.h>
-</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;stdlib.h>
-</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;time.h>
-</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;string.h>
-</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;sys/time.h>
-</span><span style=color:#f92672>#include </span><span style=color:#e6db74>&lt;unistd.h>
-</span><span>
-</span><span style=color:#75715e>// 链表节点结构
-</span><span style=color:#66d9ef;font-style:italic>typedef struct</span><span> list_node {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> val;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>struct</span><span> list_node </span><span style=color:#f92672>*</span><span>next;
-</span><span>} list;
-</span><span>
-</span><span style=color:#75715e>// 创建链表
-</span><span>list</span><span style=color:#f92672>* </span><span style=color:#a6e22e>create_list</span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>size</span><span>) {
-</span><span>    </span><span style=color:#f92672>if </span><span>(size </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0</span><span>) </span><span style=color:#f92672>return </span><span style=color:#ae81ff>NULL</span><span>;
-</span><span>
-</span><span>    list </span><span style=color:#f92672>*</span><span>head </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(</span><span style=color:#f92672>sizeof</span><span>(list));
-</span><span>    list </span><span style=color:#f92672>*</span><span>current </span><span style=color:#f92672>=</span><span> head;
-</span><span>    head->val </span><span style=color:#f92672>= </span><span style=color:#66d9ef>rand</span><span>() </span><span style=color:#f92672>% </span><span style=color:#ae81ff>1000</span><span>;
-</span><span>
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1</span><span>; i </span><span style=color:#f92672>&lt;</span><span> size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        current->next </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(</span><span style=color:#f92672>sizeof</span><span>(list));
-</span><span>        current </span><span style=color:#f92672>=</span><span> current->next;
-</span><span>        current->val </span><span style=color:#f92672>= </span><span style=color:#66d9ef>rand</span><span>() </span><span style=color:#f92672>% </span><span style=color:#ae81ff>1000</span><span>;
-</span><span>    }
-</span><span>    current->next </span><span style=color:#f92672>= </span><span style=color:#ae81ff>NULL</span><span>;
-</span><span>
-</span><span>    </span><span style=color:#f92672>return</span><span> head;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 释放链表
-</span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>free_list</span><span>(list </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>head</span><span>) {
-</span><span>    </span><span style=color:#f92672>while </span><span>(head) {
-</span><span>        list </span><span style=color:#f92672>*</span><span>temp </span><span style=color:#f92672>=</span><span> head;
-</span><span>        head </span><span style=color:#f92672>=</span><span> head->next;
-</span><span>        </span><span style=color:#66d9ef>free</span><span>(temp);
-</span><span>    }
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 顺序遍历求和（原始方法）
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>sequential_sum</span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>arr_size</span><span>, list </span><span style=color:#f92672>**</span><span style=color:#fd971f;font-style:italic>la</span><span>) {
-</span><span>    list </span><span style=color:#f92672>*</span><span>lp;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> res </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
-</span><span>
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> arr_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        lp </span><span style=color:#f92672>=</span><span> la[i];
-</span><span>        </span><span style=color:#f92672>while </span><span>(lp) {
-</span><span>            res </span><span style=color:#f92672>+=</span><span> lp->val;
-</span><span>            lp </span><span style=color:#f92672>=</span><span> lp->next;
-</span><span>        }
-</span><span>    }
-</span><span>    </span><span style=color:#f92672>return</span><span> res;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 交错遍历求和（优化方法）
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>interleaved_sum</span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>arr_size</span><span>, list </span><span style=color:#f92672>**</span><span style=color:#fd971f;font-style:italic>la</span><span>) {
-</span><span>    list </span><span style=color:#f92672>**</span><span>lthreads </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(arr_size </span><span style=color:#f92672>* sizeof</span><span>(list </span><span style=color:#f92672>*</span><span>));
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> res </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> n </span><span style=color:#f92672>=</span><span> arr_size;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 初始化所有链表的遍历指针
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> arr_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        lthreads[i] </span><span style=color:#f92672>=</span><span> la[i];
-</span><span>        </span><span style=color:#f92672>if </span><span>(lthreads[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>)
-</span><span>            n</span><span style=color:#f92672>--</span><span>;
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 交错遍历所有链表
-</span><span>    </span><span style=color:#f92672>while</span><span>(n) {
-</span><span>        </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> arr_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>            </span><span style=color:#f92672>if </span><span>(lthreads[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>)
-</span><span>                </span><span style=color:#f92672>continue</span><span>;
-</span><span>
-</span><span>            res </span><span style=color:#f92672>+=</span><span> lthreads[i]->val;
-</span><span>            lthreads[i] </span><span style=color:#f92672>=</span><span> lthreads[i]->next;
-</span><span>
-</span><span>            </span><span style=color:#f92672>if </span><span>(lthreads[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>)
-</span><span>                n</span><span style=color:#f92672>--</span><span>;
-</span><span>        }
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(lthreads);
-</span><span>    </span><span style=color:#f92672>return</span><span> res;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 带预取指令的交错遍历求和（进一步优化）
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>interleaved_sum_with_prefetch</span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>arr_size</span><span>, list </span><span style=color:#f92672>**</span><span style=color:#fd971f;font-style:italic>la</span><span>) {
-</span><span>    list </span><span style=color:#f92672>**</span><span>lthreads </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(arr_size </span><span style=color:#f92672>* sizeof</span><span>(list </span><span style=color:#f92672>*</span><span>));
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> res </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> n </span><span style=color:#f92672>=</span><span> arr_size;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 初始化所有链表的遍历指针
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> arr_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        lthreads[i] </span><span style=color:#f92672>=</span><span> la[i];
-</span><span>        </span><span style=color:#f92672>if </span><span>(lthreads[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>)
-</span><span>            n</span><span style=color:#f92672>--</span><span>;
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 交错遍历所有链表，使用预取指令
-</span><span>    </span><span style=color:#f92672>while</span><span>(n) {
-</span><span>        </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> arr_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>            </span><span style=color:#f92672>if </span><span>(lthreads[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>)
-</span><span>                </span><span style=color:#f92672>continue</span><span>;
-</span><span>
-</span><span>            res </span><span style=color:#f92672>+=</span><span> lthreads[i]->val;
-</span><span>            lthreads[i] </span><span style=color:#f92672>=</span><span> lthreads[i]->next;
-</span><span>
-</span><span>            </span><span style=color:#f92672>if </span><span>(lthreads[i]) {
-</span><span>                </span><span style=color:#75715e>// 预取下一个节点到缓存
-</span><span>                __builtin_prefetch(lthreads[i], </span><span style=color:#ae81ff>0</span><span>, </span><span style=color:#ae81ff>1</span><span>);
-</span><span>            } </span><span style=color:#f92672>else </span><span>{
-</span><span>                n</span><span style=color:#f92672>--</span><span>;
-</span><span>            }
-</span><span>        }
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(lthreads);
-</span><span>    </span><span style=color:#f92672>return</span><span> res;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 获取当前时间（微秒）
-</span><span style=color:#66d9ef;font-style:italic>long long </span><span style=color:#a6e22e>get_time_us</span><span>() {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>struct</span><span> timeval tv;
-</span><span>    gettimeofday(</span><span style=color:#f92672>&</span><span>tv, </span><span style=color:#ae81ff>NULL</span><span>);
-</span><span>    </span><span style=color:#f92672>return</span><span> tv.tv_sec </span><span style=color:#f92672>* </span><span style=color:#ae81ff>1000000</span><span style=color:#66d9ef;font-style:italic>LL </span><span style=color:#f92672>+</span><span> tv.tv_usec;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 哈希表相关结构和函数（模拟Valkey的字典查找优化）
-</span><span style=color:#f92672>#define </span><span>HASH_SIZE </span><span style=color:#ae81ff>1000003
-</span><span>
-</span><span style=color:#66d9ef;font-style:italic>typedef struct</span><span> hash_entry {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span>key;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> value;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>struct</span><span> hash_entry </span><span style=color:#f92672>*</span><span>next;
-</span><span>} hash_entry;
-</span><span>
-</span><span style=color:#66d9ef;font-style:italic>typedef struct</span><span> hash_table {
-</span><span>    hash_entry </span><span style=color:#f92672>**</span><span>buckets;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>size_t</span><span> size;
-</span><span>} hash_table;
-</span><span>
-</span><span style=color:#75715e>// 简单哈希函数
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>hash_func</span><span>(</span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>key</span><span>) {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> hash </span><span style=color:#f92672>= </span><span style=color:#ae81ff>5381</span><span>;
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> c;
-</span><span>    </span><span style=color:#f92672>while </span><span>((c </span><span style=color:#f92672>= *</span><span>key</span><span style=color:#f92672>++</span><span>))
-</span><span>        hash </span><span style=color:#f92672>= </span><span>((hash </span><span style=color:#f92672>&lt;&lt; </span><span style=color:#ae81ff>5</span><span>) </span><span style=color:#f92672>+</span><span> hash) </span><span style=color:#f92672>+</span><span> c;
-</span><span>    </span><span style=color:#f92672>return</span><span> hash </span><span style=color:#f92672>%</span><span> HASH_SIZE;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 创建哈希表
-</span><span>hash_table</span><span style=color:#f92672>* </span><span style=color:#a6e22e>create_hash_table</span><span>() {
-</span><span>    hash_table </span><span style=color:#f92672>*</span><span>ht </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(</span><span style=color:#f92672>sizeof</span><span>(hash_table));
-</span><span>    ht->size </span><span style=color:#f92672>=</span><span> HASH_SIZE;
-</span><span>    ht->buckets </span><span style=color:#f92672>= </span><span style=color:#66d9ef>calloc</span><span>(HASH_SIZE, </span><span style=color:#f92672>sizeof</span><span>(hash_entry</span><span style=color:#f92672>*</span><span>));
-</span><span>    </span><span style=color:#f92672>return</span><span> ht;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 插入键值对
-</span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>hash_insert</span><span>(hash_table </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>ht</span><span>, </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>key</span><span>, </span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#fd971f;font-style:italic>value</span><span>) {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> index </span><span style=color:#f92672>= </span><span>hash_func(key);
-</span><span>    hash_entry </span><span style=color:#f92672>*</span><span>entry </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(</span><span style=color:#f92672>sizeof</span><span>(hash_entry));
-</span><span>    entry->key </span><span style=color:#f92672>= </span><span>strdup(key);
-</span><span>    entry->value </span><span style=color:#f92672>=</span><span> value;
-</span><span>    entry->next </span><span style=color:#f92672>=</span><span> ht->buckets[index];
-</span><span>    ht->buckets[index] </span><span style=color:#f92672>=</span><span> entry;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 顺序查找多个键
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>sequential_lookup</span><span>(hash_table </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>ht</span><span>, </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>**</span><span style=color:#fd971f;font-style:italic>keys</span><span>, </span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>num_keys</span><span>) {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> total </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
-</span><span>
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_keys; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> index </span><span style=color:#f92672>= </span><span>hash_func(keys[i]);
-</span><span>        hash_entry </span><span style=color:#f92672>*</span><span>entry </span><span style=color:#f92672>=</span><span> ht->buckets[index];
-</span><span>
-</span><span>        </span><span style=color:#f92672>while </span><span>(entry) {
-</span><span>            </span><span style=color:#f92672>if </span><span>(</span><span style=color:#66d9ef>strcmp</span><span>(entry->key, keys[i]) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0</span><span>) {
-</span><span>                total </span><span style=color:#f92672>+=</span><span> entry->value;
-</span><span>                </span><span style=color:#f92672>break</span><span>;
-</span><span>            }
-</span><span>            entry </span><span style=color:#f92672>=</span><span> entry->next;
-</span><span>        }
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#f92672>return</span><span> total;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 预取优化的批量查找
-</span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#a6e22e>prefetch_lookup</span><span>(hash_table </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>ht</span><span>, </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>**</span><span style=color:#fd971f;font-style:italic>keys</span><span>, </span><span style=color:#66d9ef;font-style:italic>size_t </span><span style=color:#fd971f;font-style:italic>num_keys</span><span>) {
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> total </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>;
-</span><span>    hash_entry </span><span style=color:#f92672>**</span><span>entries </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(num_keys </span><span style=color:#f92672>* sizeof</span><span>(hash_entry</span><span style=color:#f92672>*</span><span>));
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long </span><span style=color:#f92672>*</span><span>indices </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(num_keys </span><span style=color:#f92672>* sizeof</span><span>(</span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span>));
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 第一阶段：计算所有索引并预取
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_keys; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        indices[i] </span><span style=color:#f92672>= </span><span>hash_func(keys[i]);
-</span><span>        entries[i] </span><span style=color:#f92672>=</span><span> ht->buckets[indices[i]];
-</span><span>        </span><span style=color:#f92672>if </span><span>(entries[i]) {
-</span><span>            __builtin_prefetch(entries[i], </span><span style=color:#ae81ff>0</span><span>, </span><span style=color:#ae81ff>1</span><span>);
-</span><span>        }
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 第二阶段：交错查找
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>int</span><span> remaining </span><span style=color:#f92672>=</span><span> num_keys;
-</span><span>    </span><span style=color:#f92672>while </span><span>(remaining </span><span style=color:#f92672>> </span><span style=color:#ae81ff>0</span><span>) {
-</span><span>        </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_keys; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>            </span><span style=color:#f92672>if </span><span>(entries[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>) </span><span style=color:#f92672>continue</span><span>;
-</span><span>
-</span><span>            </span><span style=color:#f92672>if </span><span>(</span><span style=color:#66d9ef>strcmp</span><span>(entries[i]->key, keys[i]) </span><span style=color:#f92672>== </span><span style=color:#ae81ff>0</span><span>) {
-</span><span>                total </span><span style=color:#f92672>+=</span><span> entries[i]->value;
-</span><span>                entries[i] </span><span style=color:#f92672>= </span><span style=color:#ae81ff>NULL</span><span>;  </span><span style=color:#75715e>// 标记为已找到
-</span><span>                remaining</span><span style=color:#f92672>--</span><span>;
-</span><span>            } </span><span style=color:#f92672>else </span><span>{
-</span><span>                entries[i] </span><span style=color:#f92672>=</span><span> entries[i]->next;
-</span><span>                </span><span style=color:#f92672>if </span><span>(entries[i] </span><span style=color:#f92672>== </span><span style=color:#ae81ff>NULL</span><span>) {
-</span><span>                    remaining</span><span style=color:#f92672>--</span><span>;
-</span><span>                } </span><span style=color:#f92672>else </span><span>{
-</span><span>                    __builtin_prefetch(entries[i], </span><span style=color:#ae81ff>0</span><span>, </span><span style=color:#ae81ff>1</span><span>);
-</span><span>                }
-</span><span>            }
-</span><span>        }
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(entries);
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(indices);
-</span><span>    </span><span style=color:#f92672>return</span><span> total;
-</span><span>}
-</span><span>
-</span><span style=color:#75715e>// 释放哈希表
-</span><span style=color:#66d9ef;font-style:italic>void </span><span style=color:#a6e22e>free_hash_table</span><span>(hash_table </span><span style=color:#f92672>*</span><span style=color:#fd971f;font-style:italic>ht</span><span>) {
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> ht->size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        hash_entry </span><span style=color:#f92672>*</span><span>entry </span><span style=color:#f92672>=</span><span> ht->buckets[i];
-</span><span>        </span><span style=color:#f92672>while </span><span>(entry) {
-</span><span>            hash_entry </span><span style=color:#f92672>*</span><span>temp </span><span style=color:#f92672>=</span><span> entry;
-</span><span>            entry </span><span style=color:#f92672>=</span><span> entry->next;
-</span><span>            </span><span style=color:#66d9ef>free</span><span>(temp->key);
-</span><span>            </span><span style=color:#66d9ef>free</span><span>(temp);
-</span><span>        }
-</span><span>    }
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(ht->buckets);
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(ht);
-</span><span>}
-</span><span>
-</span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#a6e22e>main</span><span>() {
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"=== Valkey性能优化技术验证程序 ===</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试1：链表遍历优化验证
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"1. 链表遍历优化测试</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"创建测试数据...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>
-</span><span>    </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>size_t</span><span> num_lists </span><span style=color:#f92672>= </span><span style=color:#ae81ff>16</span><span>;
-</span><span>    </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>size_t</span><span> list_size </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1000000</span><span>;  </span><span style=color:#75715e>// 为了快速测试，使用100万而非1000万
-</span><span>
-</span><span>    list </span><span style=color:#f92672>**</span><span>lists </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(num_lists </span><span style=color:#f92672>* sizeof</span><span>(list</span><span style=color:#f92672>*</span><span>));
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 创建测试链表
-</span><span>    </span><span style=color:#66d9ef>srand</span><span>(</span><span style=color:#66d9ef>time</span><span>(</span><span style=color:#ae81ff>NULL</span><span>));
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_lists; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        lists[i] </span><span style=color:#f92672>= </span><span>create_list(list_size);
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"测试数据创建完成：</span><span style=color:#ae81ff>%zu</span><span style=color:#e6db74>个链表，每个包含</span><span style=color:#ae81ff>%zu</span><span style=color:#e6db74>个节点</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, num_lists, list_size);
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试顺序遍历
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> start_time </span><span style=color:#f92672>= </span><span>get_time_us();
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> result1 </span><span style=color:#f92672>= </span><span>sequential_sum(num_lists, lists);
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> sequential_time </span><span style=color:#f92672>= </span><span>get_time_us() </span><span style=color:#f92672>-</span><span> start_time;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试交错遍历
-</span><span>    start_time </span><span style=color:#f92672>= </span><span>get_time_us();
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> result2 </span><span style=color:#f92672>= </span><span>interleaved_sum(num_lists, lists);
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> interleaved_time </span><span style=color:#f92672>= </span><span>get_time_us() </span><span style=color:#f92672>-</span><span> start_time;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试带预取的交错遍历
-</span><span>    start_time </span><span style=color:#f92672>= </span><span>get_time_us();
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> result3 </span><span style=color:#f92672>= </span><span>interleaved_sum_with_prefetch(num_lists, lists);
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> prefetch_time </span><span style=color:#f92672>= </span><span>get_time_us() </span><span style=color:#f92672>-</span><span> start_time;
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>链表遍历测试结果：</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"顺序遍历：      </span><span style=color:#ae81ff>%lld</span><span style=color:#e6db74> 微秒，结果：</span><span style=color:#ae81ff>%lu\n</span><span style=color:#e6db74>"</span><span>, sequential_time, result1);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"交错遍历：      </span><span style=color:#ae81ff>%lld</span><span style=color:#e6db74> 微秒，结果：</span><span style=color:#ae81ff>%lu</span><span style=color:#e6db74> (提升：</span><span style=color:#ae81ff>%.2f</span><span style=color:#e6db74>x)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, 
-</span><span>           interleaved_time, result2, (</span><span style=color:#66d9ef;font-style:italic>double</span><span>)sequential_time </span><span style=color:#f92672>/</span><span> interleaved_time);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"预取+交错遍历： </span><span style=color:#ae81ff>%lld</span><span style=color:#e6db74> 微秒，结果：</span><span style=color:#ae81ff>%lu</span><span style=color:#e6db74> (提升：</span><span style=color:#ae81ff>%.2f</span><span style=color:#e6db74>x)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, 
-</span><span>           prefetch_time, result3, (</span><span style=color:#66d9ef;font-style:italic>double</span><span>)sequential_time </span><span style=color:#f92672>/</span><span> prefetch_time);
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 验证结果正确性
-</span><span>    </span><span style=color:#f92672>if </span><span>(result1 </span><span style=color:#f92672>==</span><span> result2 </span><span style=color:#f92672>&&</span><span> result2 </span><span style=color:#f92672>==</span><span> result3) {
-</span><span>        </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"✓ 所有算法结果一致，验证通过</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    } </span><span style=color:#f92672>else </span><span>{
-</span><span>        </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"✗ 结果不一致，可能存在错误</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 清理链表
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_lists; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        free_list(lists[i]);
-</span><span>    }
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(lists);
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试2：哈希表查找优化验证
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>2. 哈希表查找优化测试（模拟Valkey字典查找）</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>
-</span><span>    hash_table </span><span style=color:#f92672>*</span><span>ht </span><span style=color:#f92672>= </span><span>create_hash_table();
-</span><span>    </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>size_t</span><span> num_test_keys </span><span style=color:#f92672>= </span><span style=color:#ae81ff>100000</span><span>;
-</span><span>    </span><span style=color:#f92672>const </span><span style=color:#66d9ef;font-style:italic>size_t</span><span> lookup_batch_size </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1000</span><span>;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 插入测试数据
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"插入 </span><span style=color:#ae81ff>%zu</span><span style=color:#e6db74> 个键值对...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, num_test_keys);
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> num_test_keys; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        </span><span style=color:#66d9ef;font-style:italic>char</span><span> key[</span><span style=color:#ae81ff>32</span><span>];
-</span><span>        </span><span style=color:#66d9ef>snprintf</span><span>(key, </span><span style=color:#f92672>sizeof</span><span>(key), </span><span style=color:#e6db74>"key_</span><span style=color:#ae81ff>%zu</span><span style=color:#e6db74>"</span><span>, i);
-</span><span>        hash_insert(ht, key, i </span><span style=color:#f92672>* </span><span style=color:#ae81ff>2</span><span>);
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 准备查找的键
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>char </span><span style=color:#f92672>**</span><span>lookup_keys </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(lookup_batch_size </span><span style=color:#f92672>* sizeof</span><span>(</span><span style=color:#66d9ef;font-style:italic>char</span><span style=color:#f92672>*</span><span>));
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> lookup_batch_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        lookup_keys[i] </span><span style=color:#f92672>= </span><span style=color:#66d9ef>malloc</span><span>(</span><span style=color:#ae81ff>32</span><span>);
-</span><span>        </span><span style=color:#66d9ef>snprintf</span><span>(lookup_keys[i], </span><span style=color:#ae81ff>32</span><span>, </span><span style=color:#e6db74>"key_</span><span style=color:#ae81ff>%zu</span><span style=color:#e6db74>"</span><span>, </span><span style=color:#66d9ef>rand</span><span>() </span><span style=color:#f92672>%</span><span> num_test_keys);
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试顺序查找
-</span><span>    start_time </span><span style=color:#f92672>= </span><span>get_time_us();
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> hash_result1 </span><span style=color:#f92672>= </span><span>sequential_lookup(ht, lookup_keys, lookup_batch_size);
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> hash_sequential_time </span><span style=color:#f92672>= </span><span>get_time_us() </span><span style=color:#f92672>-</span><span> start_time;
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 测试预取优化查找
-</span><span>    start_time </span><span style=color:#f92672>= </span><span>get_time_us();
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>unsigned long</span><span> hash_result2 </span><span style=color:#f92672>= </span><span>prefetch_lookup(ht, lookup_keys, lookup_batch_size);
-</span><span>    </span><span style=color:#66d9ef;font-style:italic>long long</span><span> hash_prefetch_time </span><span style=color:#f92672>= </span><span>get_time_us() </span><span style=color:#f92672>-</span><span> start_time;
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>哈希表查找测试结果：</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"顺序查找：    </span><span style=color:#ae81ff>%lld</span><span style=color:#e6db74> 微秒，结果：</span><span style=color:#ae81ff>%lu\n</span><span style=color:#e6db74>"</span><span>, hash_sequential_time, hash_result1);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"预取优化查找：</span><span style=color:#ae81ff>%lld</span><span style=color:#e6db74> 微秒，结果：</span><span style=color:#ae81ff>%lu</span><span style=color:#e6db74> (提升：</span><span style=color:#ae81ff>%.2f</span><span style=color:#e6db74>x)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>, 
-</span><span>           hash_prefetch_time, hash_result2, (</span><span style=color:#66d9ef;font-style:italic>double</span><span>)hash_sequential_time </span><span style=color:#f92672>/</span><span> hash_prefetch_time);
-</span><span>
-</span><span>    </span><span style=color:#f92672>if </span><span>(hash_result1 </span><span style=color:#f92672>==</span><span> hash_result2) {
-</span><span>        </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"✓ 哈希表查找结果一致，验证通过</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    } </span><span style=color:#f92672>else </span><span>{
-</span><span>        </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"✗ 哈希表查找结果不一致</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    }
-</span><span>
-</span><span>    </span><span style=color:#75715e>// 清理资源
-</span><span>    </span><span style=color:#f92672>for </span><span>(</span><span style=color:#66d9ef;font-style:italic>size_t</span><span> i </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0</span><span>; i </span><span style=color:#f92672>&lt;</span><span> lookup_batch_size; i</span><span style=color:#f92672>++</span><span>) {
-</span><span>        </span><span style=color:#66d9ef>free</span><span>(lookup_keys[i]);
-</span><span>    }
-</span><span>    </span><span style=color:#66d9ef>free</span><span>(lookup_keys);
-</span><span>    free_hash_table(ht);
-</span><span>
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>=== 总结 ===</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"1. 链表交错遍历相比顺序遍历可以获得显著性能提升</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"2. 预取指令可以进一步提升性能</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"3. 这些优化技术通过改善内存访问模式，减少CPU等待时间</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"4. Valkey通过类似技术在lookupKey函数中获得了80</span><span style=color:#ae81ff>%%</span><span style=color:#e6db74>以上的性能提升</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>    </span><span style=color:#66d9ef>printf</span><span>(</span><span style=color:#e6db74>"5. 结合I/O多线程，Valkey 8.0实现了从360K到1.19M RPS的性能飞跃</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>"</span><span>);
-</span><span>
-</span><span>    </span><span style=color:#f92672>return </span><span style=color:#ae81ff>0</span><span>;
-</span><span>}
-</span></code></pre><p>我还需要创建一个Makefile来帮助编译和运行这个实验程序：<pre class=language-makefile data-lang=makefile style=color:#f8f8f2;background-color:#272822><code class=language-makefile data-lang=makefile><span>CC </span><span style=color:#f92672>= </span><span style=color:#e6db74>gcc
-</span><span>CFLAGS </span><span style=color:#f92672>= </span><span style=color:#e6db74>-O2 -Wall -Wextra -std=c99
-</span><span>TARGET </span><span style=color:#f92672>= </span><span style=color:#e6db74>valkey_test
-</span><span>SOURCE </span><span style=color:#f92672>= </span><span style=color:#e6db74>valkey_optimization_test.c
-</span><span>
-</span><span style=color:#75715e># 默认目标
-</span><span style=color:#a6e22e>all</span><span style=color:#f92672>: </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 编译目标
-</span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>)</span><span style=color:#f92672>: </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>SOURCE</span><span style=color:#f92672;font-style:italic>)
-</span><span>    </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>CC</span><span style=color:#f92672;font-style:italic>) $(</span><span style=color:#fd971f;font-style:italic>CFLAGS</span><span style=color:#f92672;font-style:italic>) </span><span>-o </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>) $(</span><span style=color:#fd971f;font-style:italic>SOURCE</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 运行测试
-</span><span style=color:#a6e22e>run</span><span style=color:#f92672>: </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>)
-</span><span>    ./</span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 优化编译（启用更多优化）
-</span><span style=color:#a6e22e>optimized</span><span style=color:#f92672>: 
-</span><span>    </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>CC</span><span style=color:#f92672;font-style:italic>) </span><span>-O3</span><span style=color:#fd971f;font-style:italic> -march</span><span style=color:#f92672>=</span><span>native</span><span style=color:#fd971f;font-style:italic> -mtune</span><span style=color:#f92672>=</span><span>native</span><span style=color:#fd971f;font-style:italic> -Wall -Wextra -std</span><span style=color:#f92672>=</span><span>c99</span><span style=color:#fd971f;font-style:italic> -o </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>) $(</span><span style=color:#fd971f;font-style:italic>SOURCE</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 调试编译
-</span><span style=color:#a6e22e>debug</span><span style=color:#f92672>:
-</span><span>    </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>CC</span><span style=color:#f92672;font-style:italic>) </span><span>-g</span><span style=color:#fd971f;font-style:italic> -O0 -Wall -Wextra -std</span><span style=color:#f92672>=</span><span>c99</span><span style=color:#fd971f;font-style:italic> -o </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>) $(</span><span style=color:#fd971f;font-style:italic>SOURCE</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 清理
-</span><span style=color:#a6e22e>clean</span><span style=color:#f92672>:
-</span><span>    rm</span><span style=color:#fd971f;font-style:italic> -f </span><span style=color:#f92672;font-style:italic>$(</span><span style=color:#fd971f;font-style:italic>TARGET</span><span style=color:#f92672;font-style:italic>)
-</span><span>
-</span><span style=color:#75715e># 显示帮助
-</span><span style=color:#a6e22e>help</span><span style=color:#f92672>:
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"可用目标："
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  all       - 编译程序（默认）"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  run       - 编译并运行程序"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  optimized - 使用最高优化级别编译"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  debug     - 编译调试版本"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  clean     - 清理编译产物"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  help      - 显示此帮助信息"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>""
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"使用示例："
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  make run          </span><span style=color:#75715e># 编译并运行测试"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  make optimized    </span><span style=color:#75715e># 高优化编译"
-</span><span>    </span><span style=color:#ae81ff>@</span><span style=color:#66d9ef>echo </span><span style=color:#e6db74>"  make clean        </span><span style=color:#75715e># 清理文件"
-</span><span>
-</span><span style=color:#a6e22e>.PHONY</span><span style=color:#f92672>: </span><span style=color:#e6db74>all run optimized debug clean help
-</span></code></pre><h2 id=zong-jie>总结</h2><p>我已经完成了对两篇Valkey博客文章的分析和实验程序的编写。以下是主要内容：<h3 id=wen-zhang-he-xin-ji-shu-yao-dian>文章核心技术要点：</h3><ol><li><p><strong>I/O多线程优化</strong>：</p> <ul><li>将I/O操作从主线程分离到专门的I/O线程<li>吞吐量提升230%（360K → 1.19M RPS）<li>平均延迟降低69.8%（1.792ms → 0.542ms）</ul><li><p><strong>内存访问摊销优化</strong>：</p> <ul><li>通过交错执行减少内存访问延迟<li>lookupKey函数性能提升80%+<li>整体性能再提升50%</ul></ol><h3 id=shi-yan-cheng-xu-yan-zheng>实验程序验证：</h3><p>我编写的C语言程序包含两个主要测试：<ol><li><p><strong>链表遍历优化测试</strong>：</p> <ul><li>验证顺序遍历vs交错遍历的性能差异<li>测试预取指令的额外优化效果<li>模拟文章中链表示例的10倍性能提升</ul><li><p><strong>哈希表查找优化测试</strong>：</p> <ul><li>模拟Valkey字典查找的优化场景<li>验证预取和批量处理的性能提升<li>对应文章中lookupKey函数的优化</ul></ol><h3 id=shi-yong-fang-fa>使用方法：</h3><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 编译并运行测试
-</span><span>make run
-</span><span>
-</span><span style=color:#75715e># 或者使用高优化编译
-</span><span>make optimized
-</span><span>./valkey_test
-</span><span>
-</span><span style=color:#f92672>=</span><span style=color:#e6db74>== </span><span>Valkey性能优化技术验证程序 ===
-</span><span>
-</span><span>1. 链表遍历优化测试
-</span><span>创建测试数据...
-</span><span>测试数据创建完成：16个链表，每个包含1000000个节点
-</span><span>
-</span><span>链表遍历测试结果：
-</span><span>顺序遍历：      91915 微秒，结果：7990951360
-</span><span>交错遍历：      57780 微秒，结果：7990951360 (提升：1.59x)
-</span><span>预取+交错遍历： 53289 微秒，结果：7990951360 (提升：1.72x)
-</span><span>✓ 所有算法结果一致，验证通过
-</span><span>
-</span><span>2. 哈希表查找优化测试（模拟Valkey字典查找）
-</span><span>插入 100000 个键值对...
-</span><span>
-</span><span>哈希表查找测试结果：
-</span><span>顺序查找：    228 微秒，结果：97528762
-</span><span>预取优化查找：53 微秒，结果：97528762 (提升：4.30x)
-</span><span>✓ 哈希表查找结果一致，验证通过
-</span><span>
-</span><span style=color:#f92672>=</span><span style=color:#e6db74>== </span><span>总结 ===
-</span><span>1. 链表交错遍历相比顺序遍历可以获得显著性能提升
-</span><span>2. 预取指令可以进一步提升性能
-</span><span>3. 这些优化技术通过改善内存访问模式，减少CPU等待时间
-</span><span>4. Valkey通过类似技术在lookupKey函数中获得了80%以上的性能提升
-</span><span>5. 结合I/O多线程，Valkey 8.0实现了从360K到1.19M RPS的性能飞跃
-</span></code></pre><p>这个实验程序能够验证Valkey文章中提到的核心优化技术，展示内存访问模式优化对性能的巨大影响。通过交错执行和预取指令，可以显著提升处理大量随机内存访问的性能，这正是Valkey实现百万级RPS的关键技术基础。</div></div></section>
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>关于Valkey高性能优化的博客文章总结 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-05-27</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">关于Valkey高性能优化的博客文章总结</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><ul><li><p><a href=https://valkey.io/blog/unlock-one-million-rps/ rel=external>原文地址-1</a></p><li><p><a href=https://valkey.io/blog/unlock-one-million-rps-part2/ rel=external>原文地址-2</a></p></ul><p>相关内容：<blockquote><p>🔍 <em><strong>valkey unlock one million rps blog</strong></em></blockquote><blockquote><p>🔗 <a href=https://valkey.io/blog/unlock-one-million-rps/ rel=external>Valkey · Unlock 1 Mi</a> 🔗 <a href=https://valkey.io/blog/unlock-one-million-rps-part2/ rel=external>Valkey · Unlock 1 Mi</a> 🔗 <a href=https://www.gomomento.com/blog/valkey-turns-one-how-the-community-fork-left-redis-in-the-dust/ rel=external>Valkey Turns One: Ho</a> 🔗 <a href=https://valkey.io/blog/ rel=external>Valkey · List of blo</a> 🔗 <a href="https://news.ycombinator.com/item?id=41455072" rel=external>Unlock 1M RPS: Exper</a> 🔗 <a href=https://www.phoronix.com/news/Valkey-8.0-Released rel=external>Valkey 8.0 Released </a> 🔗 <a href=https://aws.amazon.com/blogs/database/amazon-elasticache-version-8-0-for-valkey-brings-faster-scaling-and-improved-memory-efficiency/ rel=external>Amazon ElastiCache v</a> 🔗 <a href=https://valkey.io/ rel=external>Valkey</a> 🔗 <a href="https://news.ycombinator.com/item?id=41556751" rel=external>Valkey 8.0 Released </a> 🔗 <a href=https://dev.to/viradiaharsh/unlocking-the-power-of-aws-elasticache-with-valkey-72-lower-costs-serverless-flexibility-and-performance-gains-5765 rel=external>Unlocking the Power </a></blockquote><h2 id=wen-zhang-nei-rong-zong-jie>文章内容总结</h2><p>根据这两篇Valkey博客文章的分析，主要内容：<h3 id=di-yi-pian-valkeyxing-neng-you-hua-i-oduo-xian-cheng-jia-gou>第一篇：Valkey性能优化 - I/O多线程架构</h3><p><strong>核心优化思路：</strong><ol><li><strong>多线程I/O架构</strong>：将I/O操作（读取和解析命令、写入响应、轮询I/O事件）从主线程分离到专门的I/O线程，让主线程专注于命令执行<li><strong>性能提升</strong>：在8个I/O线程、300万键数据库、512字节值大小、650个客户端运行SET命令的测试中，吞吐量从360K提升到1.19M请求每秒，增长约230%，平均延迟从1.792ms降至0.542ms，下降69.8%<li><strong>设计原则</strong>：保持Valkey的简单性，命令执行仍在单线程中进行，避免复杂的同步机制和竞态条件</ol><h3 id=di-er-pian-nei-cun-fang-wen-you-hua-yu-qu-he-jiao-cuo-zhi-xing>第二篇：内存访问优化 - 预取和交错执行</h3><p><strong>核心优化思路：</strong><ol><li><strong>内存访问摊销</strong>：通过交错执行访问随机内存位置的操作，利用处理器的推测执行能力，实现显著性能提升<li><strong>实际应用</strong>：在Valkey的lookupKey函数中应用这一技术，该函数占用了主线程40%以上的时间，通过dictPrefetch函数交错执行字典查找序列，将lookupKey的时间减少了80%以上<li><strong>性能提升</strong>：内存访问摊销技术对Valkey性能的影响接近50%，将请求速率提升到超过119万RPS</ol><p><strong>技术原理：</strong><ul><li>链表示例显示交错遍历比顺序遍历快10倍（从20.8秒降至2秒）<li>处理器在顺序访问链表时无法推测未来的内存访问指令<li>交错执行允许处理器并行发出更多内存访问，通过摊销减少总体内存访问延迟</ul><p>现在我来编写C语言实验程序来验证这些结论：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=c><span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>stdio.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>stdlib.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>time.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>string.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>sys/time.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>include</span><span style=color:#eceff4> &lt;</span><span style=color:#8fbcbb>unistd.h</span><span style=color:#eceff4>></span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 链表节点结构</span></span>
+<span class=giallo-l><span style=color:#81a1c1>typedef struct</span><span> list_node </span><span style=color:#eceff4>{</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> val</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    struct</span><span> list_node </span><span style=color:#81a1c1>*</span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span><span> list</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 创建链表</span></span>
+<span class=giallo-l><span>list</span><span style=color:#81a1c1>*</span><span style=color:#88c0d0> create_list</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>size_t</span><span> size</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span style=color:#eceff4> (</span><span>size </span><span style=color:#81a1c1>==</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>)</span><span style=color:#81a1c1> return NULL;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>*</span><span>head </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>sizeof</span><span style=color:#eceff4>(</span><span>list</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>*</span><span>current </span><span style=color:#81a1c1>=</span><span> head</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    head</span><span style=color:#81a1c1>-></span><span>val</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> rand</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> %</span><span style=color:#b48ead> 1000</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 1</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        current</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>sizeof</span><span style=color:#eceff4>(</span><span>list</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>        current </span><span style=color:#81a1c1>=</span><span> current</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>        current</span><span style=color:#81a1c1>-></span><span>val</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> rand</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> %</span><span style=color:#b48ead> 1000</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span>    current</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1> = NULL;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> head</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 释放链表</span></span>
+<span class=giallo-l><span style=color:#81a1c1>void</span><span style=color:#88c0d0> free_list</span><span style=color:#eceff4>(</span><span>list </span><span style=color:#81a1c1>*</span><span>head</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span style=color:#eceff4> (</span><span>head</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        list </span><span style=color:#81a1c1>*</span><span>temp </span><span style=color:#81a1c1>=</span><span> head</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>        head </span><span style=color:#81a1c1>=</span><span> head</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        free</span><span style=color:#eceff4>(</span><span>temp</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 顺序遍历求和（原始方法）</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> sequential_sum</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>size_t</span><span> arr_size</span><span style=color:#eceff4>,</span><span> list </span><span style=color:#81a1c1>**</span><span>la</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>*</span><span>lp</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> res </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>int</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> arr_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        lp </span><span style=color:#81a1c1>=</span><span> la</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        while</span><span style=color:#eceff4> (</span><span>lp</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>            res </span><span style=color:#81a1c1>+=</span><span> lp</span><span style=color:#81a1c1>-></span><span>val</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>            lp </span><span style=color:#81a1c1>=</span><span> lp</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> res</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 交错遍历求和（优化方法）</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> interleaved_sum</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>size_t</span><span> arr_size</span><span style=color:#eceff4>,</span><span> list </span><span style=color:#81a1c1>**</span><span>la</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>**</span><span>lthreads </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>arr_size </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span>list </span><span style=color:#81a1c1>*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> res </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    int</span><span> n </span><span style=color:#81a1c1>=</span><span> arr_size</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 初始化所有链表的遍历指针</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>int</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> arr_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> la</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span>            n</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 交错遍历所有链表</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span style=color:#eceff4>(</span><span>n</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>int</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> arr_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                continue;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>            res </span><span style=color:#81a1c1>+=</span><span> lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>val</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>            lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span>                n</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>lthreads</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> res</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 带预取指令的交错遍历求和（进一步优化）</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> interleaved_sum_with_prefetch</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>size_t</span><span> arr_size</span><span style=color:#eceff4>,</span><span> list </span><span style=color:#81a1c1>**</span><span>la</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>**</span><span>lthreads </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>arr_size </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span>list </span><span style=color:#81a1c1>*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> res </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    int</span><span> n </span><span style=color:#81a1c1>=</span><span> arr_size</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 初始化所有链表的遍历指针</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>int</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> arr_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> la</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span>            n</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 交错遍历所有链表，使用预取指令</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span style=color:#eceff4>(</span><span>n</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>int</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> arr_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                continue;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>            res </span><span style=color:#81a1c1>+=</span><span> lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>val</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>            lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]) {</span></span>
+<span class=giallo-l><span style=color:#616e88>                // 预取下一个节点到缓存</span></span>
+<span class=giallo-l><span style=color:#88c0d0>                __builtin_prefetch</span><span style=color:#eceff4>(</span><span>lthreads</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>],</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 1</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span><span style=color:#81a1c1> else</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span>                n</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>lthreads</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> res</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 获取当前时间（微秒）</span></span>
+<span class=giallo-l><span style=color:#81a1c1>long long</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>() {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    struct</span><span> timeval tv</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    gettimeofday</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>&</span><span>tv</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> NULL</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> tv</span><span style=color:#eceff4>.</span><span>tv_sec</span><span style=color:#81a1c1> *</span><span style=color:#b48ead> 1000000</span><span style=color:#81a1c1>LL +</span><span> tv</span><span style=color:#eceff4>.</span><span>tv_usec</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 哈希表相关结构和函数（模拟Valkey的字典查找优化）</span></span>
+<span class=giallo-l><span style=color:#5e81ac;font-weight:700>#</span><span style=color:#81a1c1>define</span><span style=color:#88c0d0> HASH_SIZE</span><span style=color:#b48ead> 1000003</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>typedef struct</span><span> hash_entry </span><span style=color:#eceff4>{</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    char *</span><span>key</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> value</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    struct</span><span> hash_entry </span><span style=color:#81a1c1>*</span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span><span> hash_entry</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>typedef struct</span><span> hash_table </span><span style=color:#eceff4>{</span></span>
+<span class=giallo-l><span>    hash_entry </span><span style=color:#81a1c1>**</span><span>buckets</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    size_t</span><span> size</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span><span> hash_table</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 简单哈希函数</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> hash_func</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>const char *</span><span>key</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> hash </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 5381</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    int</span><span> c</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span style=color:#eceff4> ((</span><span>c </span><span style=color:#81a1c1>= *</span><span>key</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>))</span></span>
+<span class=giallo-l><span>        hash </span><span style=color:#81a1c1>=</span><span style=color:#eceff4> ((</span><span>hash </span><span style=color:#81a1c1>&lt;&lt;</span><span style=color:#b48ead> 5</span><span style=color:#eceff4>)</span><span style=color:#81a1c1> +</span><span> hash</span><span style=color:#eceff4>)</span><span style=color:#81a1c1> +</span><span> c</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> hash </span><span style=color:#81a1c1>%</span><span> HASH_SIZE</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 创建哈希表</span></span>
+<span class=giallo-l><span>hash_table</span><span style=color:#81a1c1>*</span><span style=color:#88c0d0> create_hash_table</span><span style=color:#eceff4>() {</span></span>
+<span class=giallo-l><span>    hash_table </span><span style=color:#81a1c1>*</span><span>ht </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>sizeof</span><span style=color:#eceff4>(</span><span>hash_table</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    ht</span><span style=color:#81a1c1>-></span><span>size</span><span style=color:#81a1c1> =</span><span> HASH_SIZE</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> calloc</span><span style=color:#eceff4>(</span><span>HASH_SIZE</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> sizeof</span><span style=color:#eceff4>(</span><span>hash_entry</span><span style=color:#81a1c1>*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> ht</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 插入键值对</span></span>
+<span class=giallo-l><span style=color:#81a1c1>void</span><span style=color:#88c0d0> hash_insert</span><span style=color:#eceff4>(</span><span>hash_table </span><span style=color:#81a1c1>*</span><span>ht</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> const char *</span><span>key</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> unsigned long</span><span> value</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> index </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> hash_func</span><span style=color:#eceff4>(</span><span>key</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    hash_entry </span><span style=color:#81a1c1>*</span><span>entry </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>sizeof</span><span style=color:#eceff4>(</span><span>hash_entry</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    entry</span><span style=color:#81a1c1>-></span><span>key</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> strdup</span><span style=color:#eceff4>(</span><span>key</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    entry</span><span style=color:#81a1c1>-></span><span>value</span><span style=color:#81a1c1> =</span><span> value</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    entry</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1> =</span><span> ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>[</span><span>index</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>[</span><span>index</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> entry</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 顺序查找多个键</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> sequential_lookup</span><span style=color:#eceff4>(</span><span>hash_table </span><span style=color:#81a1c1>*</span><span>ht</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> char **</span><span>keys</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> size_t</span><span> num_keys</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> total </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_keys</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        unsigned long</span><span> index </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> hash_func</span><span style=color:#eceff4>(</span><span>keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>        hash_entry </span><span style=color:#81a1c1>*</span><span>entry </span><span style=color:#81a1c1>=</span><span> ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>[</span><span>index</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>        while</span><span style=color:#eceff4> (</span><span>entry</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span style=color:#88c0d0>strcmp</span><span style=color:#eceff4>(</span><span>entry</span><span style=color:#81a1c1>-></span><span>key</span><span style=color:#eceff4>,</span><span> keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>                total </span><span style=color:#81a1c1>+=</span><span> entry</span><span style=color:#81a1c1>-></span><span>value</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                break;</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span></span>
+<span class=giallo-l><span>            entry </span><span style=color:#81a1c1>=</span><span> entry</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> total</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 预取优化的批量查找</span></span>
+<span class=giallo-l><span style=color:#81a1c1>unsigned long</span><span style=color:#88c0d0> prefetch_lookup</span><span style=color:#eceff4>(</span><span>hash_table </span><span style=color:#81a1c1>*</span><span>ht</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> char **</span><span>keys</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> size_t</span><span> num_keys</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> total </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>    hash_entry </span><span style=color:#81a1c1>**</span><span>entries </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>num_keys </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span>hash_entry</span><span style=color:#81a1c1>*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long *</span><span>indices </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>num_keys </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>unsigned long</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 第一阶段：计算所有索引并预取</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_keys</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        indices</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> hash_func</span><span style=color:#eceff4>(</span><span>keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>        entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>[</span><span>indices</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        if</span><span style=color:#eceff4> (</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]) {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>            __builtin_prefetch</span><span style=color:#eceff4>(</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>],</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 1</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 第二阶段：交错查找</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    int</span><span> remaining </span><span style=color:#81a1c1>=</span><span> num_keys</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span style=color:#eceff4> (</span><span>remaining </span><span style=color:#81a1c1>></span><span style=color:#b48ead> 0</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_keys</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>)</span><span style=color:#81a1c1> continue;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span style=color:#eceff4> (</span><span style=color:#88c0d0>strcmp</span><span style=color:#eceff4>(</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>key</span><span style=color:#eceff4>,</span><span> keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>                total </span><span style=color:#81a1c1>+=</span><span> entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>value</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>                entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> = NULL;</span><span style=color:#616e88>  // 标记为已找到</span></span>
+<span class=giallo-l><span>                remaining</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span><span style=color:#81a1c1> else</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span>                entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span> entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                if</span><span style=color:#eceff4> (</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> == NULL</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>                    remaining</span><span style=color:#81a1c1>--;</span></span>
+<span class=giallo-l><span style=color:#eceff4>                }</span><span style=color:#81a1c1> else</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>                    __builtin_prefetch</span><span style=color:#eceff4>(</span><span>entries</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>],</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>,</span><span style=color:#b48ead> 1</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>                }</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>entries</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>indices</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> total</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>// 释放哈希表</span></span>
+<span class=giallo-l><span style=color:#81a1c1>void</span><span style=color:#88c0d0> free_hash_table</span><span style=color:#eceff4>(</span><span>hash_table </span><span style=color:#81a1c1>*</span><span>ht</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> ht</span><span style=color:#81a1c1>-></span><span>size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        hash_entry </span><span style=color:#81a1c1>*</span><span>entry </span><span style=color:#81a1c1>=</span><span> ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        while</span><span style=color:#eceff4> (</span><span>entry</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>            hash_entry </span><span style=color:#81a1c1>*</span><span>temp </span><span style=color:#81a1c1>=</span><span> entry</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span>            entry </span><span style=color:#81a1c1>=</span><span> entry</span><span style=color:#81a1c1>-></span><span>next</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>            free</span><span style=color:#eceff4>(</span><span>temp</span><span style=color:#81a1c1>-></span><span>key</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>            free</span><span style=color:#eceff4>(</span><span>temp</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>        }</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#81a1c1>-></span><span>buckets</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>int</span><span style=color:#88c0d0> main</span><span style=color:#eceff4>() {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>=== Valkey性能优化技术验证程序 ===</span><span style=color:#ebcb8b>\n\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试1：链表遍历优化验证</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>1. 链表遍历优化测试</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>创建测试数据...</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    const size_t</span><span> num_lists </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 16</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    const size_t</span><span> list_size </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 1000000</span><span style=color:#81a1c1>;</span><span style=color:#616e88>  // 为了快速测试，使用100万而非1000万</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    list </span><span style=color:#81a1c1>**</span><span>lists </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>num_lists </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span>list</span><span style=color:#81a1c1>*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 创建测试链表</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    srand</span><span style=color:#eceff4>(</span><span style=color:#88c0d0>time</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>NULL</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_lists</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        lists</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> create_list</span><span style=color:#eceff4>(</span><span>list_size</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>测试数据创建完成：%zu个链表，每个包含%zu个节点</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> num_lists</span><span style=color:#eceff4>,</span><span> list_size</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试顺序遍历</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> start_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> result1 </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> sequential_sum</span><span style=color:#eceff4>(</span><span>num_lists</span><span style=color:#eceff4>,</span><span> lists</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> sequential_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> -</span><span> start_time</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试交错遍历</span></span>
+<span class=giallo-l><span>    start_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> result2 </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> interleaved_sum</span><span style=color:#eceff4>(</span><span>num_lists</span><span style=color:#eceff4>,</span><span> lists</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> interleaved_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> -</span><span> start_time</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试带预取的交错遍历</span></span>
+<span class=giallo-l><span>    start_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> result3 </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> interleaved_sum_with_prefetch</span><span style=color:#eceff4>(</span><span>num_lists</span><span style=color:#eceff4>,</span><span> lists</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> prefetch_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> -</span><span> start_time</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#ebcb8b>\n</span><span style=color:#a3be8c>链表遍历测试结果：</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>顺序遍历：      %lld 微秒，结果：%lu</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> sequential_time</span><span style=color:#eceff4>,</span><span> result1</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>交错遍历：      %lld 微秒，结果：%lu (提升：%.2fx)</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> </span></span>
+<span class=giallo-l><span>           interleaved_time</span><span style=color:#eceff4>,</span><span> result2</span><span style=color:#eceff4>, (</span><span style=color:#81a1c1>double</span><span style=color:#eceff4>)</span><span>sequential_time </span><span style=color:#81a1c1>/</span><span> interleaved_time</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>预取+交错遍历： %lld 微秒，结果：%lu (提升：%.2fx)</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> </span></span>
+<span class=giallo-l><span>           prefetch_time</span><span style=color:#eceff4>,</span><span> result3</span><span style=color:#eceff4>, (</span><span style=color:#81a1c1>double</span><span style=color:#eceff4>)</span><span>sequential_time </span><span style=color:#81a1c1>/</span><span> prefetch_time</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 验证结果正确性</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span style=color:#eceff4> (</span><span>result1 </span><span style=color:#81a1c1>==</span><span> result2 </span><span style=color:#81a1c1>&&</span><span> result2 </span><span style=color:#81a1c1>==</span><span> result3</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>✓ 所有算法结果一致，验证通过</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span><span style=color:#81a1c1> else</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>✗ 结果不一致，可能存在错误</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 清理链表</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_lists</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        free_list</span><span style=color:#eceff4>(</span><span>lists</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>lists</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试2：哈希表查找优化验证</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#ebcb8b>\n</span><span style=color:#a3be8c>2. 哈希表查找优化测试（模拟Valkey字典查找）</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    hash_table </span><span style=color:#81a1c1>*</span><span>ht </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> create_hash_table</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    const size_t</span><span> num_test_keys </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 100000</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    const size_t</span><span> lookup_batch_size </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 1000</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 插入测试数据</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>插入 %zu 个键值对...</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> num_test_keys</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> num_test_keys</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        char</span><span> key</span><span style=color:#eceff4>[</span><span style=color:#b48ead>32</span><span style=color:#eceff4>]</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        snprintf</span><span style=color:#eceff4>(</span><span>key</span><span style=color:#eceff4>,</span><span style=color:#81a1c1> sizeof</span><span style=color:#eceff4>(</span><span>key</span><span style=color:#eceff4>), "</span><span style=color:#a3be8c>key_%zu</span><span style=color:#eceff4>",</span><span> i</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        hash_insert</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#eceff4>,</span><span> key</span><span style=color:#eceff4>,</span><span> i </span><span style=color:#81a1c1>*</span><span style=color:#b48ead> 2</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 准备查找的键</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    char **</span><span>lookup_keys </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span>lookup_batch_size </span><span style=color:#81a1c1>* sizeof</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>char*</span><span style=color:#eceff4>))</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> lookup_batch_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span>        lookup_keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> malloc</span><span style=color:#eceff4>(</span><span style=color:#b48ead>32</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        snprintf</span><span style=color:#eceff4>(</span><span>lookup_keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>],</span><span style=color:#b48ead> 32</span><span style=color:#eceff4>, "</span><span style=color:#a3be8c>key_%zu</span><span style=color:#eceff4>",</span><span style=color:#88c0d0> rand</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> %</span><span> num_test_keys</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试顺序查找</span></span>
+<span class=giallo-l><span>    start_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> hash_result1 </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> sequential_lookup</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#eceff4>,</span><span> lookup_keys</span><span style=color:#eceff4>,</span><span> lookup_batch_size</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> hash_sequential_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> -</span><span> start_time</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 测试预取优化查找</span></span>
+<span class=giallo-l><span>    start_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    unsigned long</span><span> hash_result2 </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> prefetch_lookup</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#eceff4>,</span><span> lookup_keys</span><span style=color:#eceff4>,</span><span> lookup_batch_size</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    long long</span><span> hash_prefetch_time </span><span style=color:#81a1c1>=</span><span style=color:#88c0d0> get_time_us</span><span style=color:#eceff4>()</span><span style=color:#81a1c1> -</span><span> start_time</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#ebcb8b>\n</span><span style=color:#a3be8c>哈希表查找测试结果：</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>顺序查找：    %lld 微秒，结果：%lu</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> hash_sequential_time</span><span style=color:#eceff4>,</span><span> hash_result1</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>预取优化查找：%lld 微秒，结果：%lu (提升：%.2fx)</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>",</span><span> </span></span>
+<span class=giallo-l><span>           hash_prefetch_time</span><span style=color:#eceff4>,</span><span> hash_result2</span><span style=color:#eceff4>, (</span><span style=color:#81a1c1>double</span><span style=color:#eceff4>)</span><span>hash_sequential_time </span><span style=color:#81a1c1>/</span><span> hash_prefetch_time</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span style=color:#eceff4> (</span><span>hash_result1 </span><span style=color:#81a1c1>==</span><span> hash_result2</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>✓ 哈希表查找结果一致，验证通过</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span><span style=color:#81a1c1> else</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>✗ 哈希表查找结果不一致</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    // 清理资源</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span style=color:#eceff4> (</span><span style=color:#81a1c1>size_t</span><span> i </span><span style=color:#81a1c1>=</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span><span> i </span><span style=color:#81a1c1>&lt;</span><span> lookup_batch_size</span><span style=color:#81a1c1>;</span><span> i</span><span style=color:#81a1c1>++</span><span style=color:#eceff4>) {</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        free</span><span style=color:#eceff4>(</span><span>lookup_keys</span><span style=color:#eceff4>[</span><span>i</span><span style=color:#eceff4>])</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>    }</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free</span><span style=color:#eceff4>(</span><span>lookup_keys</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    free_hash_table</span><span style=color:#eceff4>(</span><span>ht</span><span style=color:#eceff4>)</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#ebcb8b>\n</span><span style=color:#a3be8c>=== 总结 ===</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>1. 链表交错遍历相比顺序遍历可以获得显著性能提升</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>2. 预取指令可以进一步提升性能</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>3. 这些优化技术通过改善内存访问模式，减少CPU等待时间</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>4. Valkey通过类似技术在lookupKey函数中获得了80%%以上的性能提升</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    printf</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>5. 结合I/O多线程，Valkey 8.0实现了从360K到1.19M RPS的性能飞跃</span><span style=color:#ebcb8b>\n</span><span style=color:#eceff4>")</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span style=color:#b48ead> 0</span><span style=color:#81a1c1>;</span></span>
+<span class=giallo-l><span style=color:#eceff4>}</span></span></code></pre><p>我还需要创建一个Makefile来帮助编译和运行这个实验程序：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=make><span class=giallo-l><span>CC</span><span style=color:#eceff4> =</span><span> gcc</span></span>
+<span class=giallo-l><span>CFLAGS</span><span style=color:#eceff4> =</span><span> -O2 -Wall -Wextra -std=c99</span></span>
+<span class=giallo-l><span>TARGET</span><span style=color:#eceff4> =</span><span> valkey_test</span></span>
+<span class=giallo-l><span>SOURCE</span><span style=color:#eceff4> =</span><span> valkey_optimization_test.c</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 默认目标</span></span>
+<span class=giallo-l><span style=color:#88c0d0>all</span><span style=color:#eceff4>:</span><span style=color:#81a1c1> $(</span><span>TARGET</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 编译目标</span></span>
+<span class=giallo-l><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>)</span><span>: </span><span style=color:#81a1c1>$(</span><span>SOURCE</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    $(</span><span>CC</span><span style=color:#81a1c1>) $(</span><span>CFLAGS</span><span style=color:#81a1c1>)</span><span> -o </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>) $(</span><span>SOURCE</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 运行测试</span></span>
+<span class=giallo-l><span style=color:#88c0d0>run</span><span style=color:#eceff4>:</span><span style=color:#81a1c1> $(</span><span>TARGET</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l><span>    ./</span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 优化编译（启用更多优化）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>optimized</span><span style=color:#eceff4>:</span><span> </span></span>
+<span class=giallo-l><span style=color:#81a1c1>    $(</span><span>CC</span><span style=color:#81a1c1>)</span><span> -O3 -march=native -mtune=native -Wall -Wextra -std=c99 -o </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>) $(</span><span>SOURCE</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 调试编译</span></span>
+<span class=giallo-l><span style=color:#88c0d0>debug</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    $(</span><span>CC</span><span style=color:#81a1c1>)</span><span> -g -O0 -Wall -Wextra -std=c99 -o </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>) $(</span><span>SOURCE</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 清理</span></span>
+<span class=giallo-l><span style=color:#88c0d0>clean</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    rm -f </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 显示帮助</span></span>
+<span class=giallo-l><span style=color:#88c0d0>help</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    @echo "可用目标："</span></span>
+<span class=giallo-l><span>    @echo "  all       - 编译程序（默认）"</span></span>
+<span class=giallo-l><span>    @echo "  run       - 编译并运行程序"</span></span>
+<span class=giallo-l><span>    @echo "  optimized - 使用最高优化级别编译"</span></span>
+<span class=giallo-l><span>    @echo "  debug     - 编译调试版本"</span></span>
+<span class=giallo-l><span>    @echo "  clean     - 清理编译产物"</span></span>
+<span class=giallo-l><span>    @echo "  help      - 显示此帮助信息"</span></span>
+<span class=giallo-l><span>    @echo ""</span></span>
+<span class=giallo-l><span>    @echo "使用示例："</span></span>
+<span class=giallo-l><span>    @echo "  make run          </span><span style=color:#616e88># 编译并运行测试"</span></span>
+<span class=giallo-l><span>    @echo "  make optimized    </span><span style=color:#616e88># 高优化编译"</span></span>
+<span class=giallo-l><span>    @echo "  make clean        </span><span style=color:#616e88># 清理文件"</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>.PHONY</span><span style=color:#eceff4>:</span><span> all run optimized debug clean help</span></span></code></pre><h2 id=zong-jie>总结</h2><p>我已经完成了对两篇Valkey博客文章的分析和实验程序的编写。以下是主要内容：<h3 id=wen-zhang-he-xin-ji-shu-yao-dian>文章核心技术要点：</h3><ol><li><p><strong>I/O多线程优化</strong>：</p> <ul><li>将I/O操作从主线程分离到专门的I/O线程<li>吞吐量提升230%（360K → 1.19M RPS）<li>平均延迟降低69.8%（1.792ms → 0.542ms）</ul><li><p><strong>内存访问摊销优化</strong>：</p> <ul><li>通过交错执行减少内存访问延迟<li>lookupKey函数性能提升80%+<li>整体性能再提升50%</ul></ol><h3 id=shi-yan-cheng-xu-yan-zheng>实验程序验证：</h3><p>我编写的C语言程序包含两个主要测试：<ol><li><p><strong>链表遍历优化测试</strong>：</p> <ul><li>验证顺序遍历vs交错遍历的性能差异<li>测试预取指令的额外优化效果<li>模拟文章中链表示例的10倍性能提升</ul><li><p><strong>哈希表查找优化测试</strong>：</p> <ul><li>模拟Valkey字典查找的优化场景<li>验证预取和批量处理的性能提升<li>对应文章中lookupKey函数的优化</ul></ol><h3 id=shi-yong-fang-fa>使用方法：</h3><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 编译并运行测试</span></span>
+<span class=giallo-l><span style=color:#88c0d0>make</span><span style=color:#a3be8c> run</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 或者使用高优化编译</span></span>
+<span class=giallo-l><span style=color:#88c0d0>make</span><span style=color:#a3be8c> optimized</span></span>
+<span class=giallo-l><span style=color:#88c0d0>./valkey_test</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#a3be8c>=== Valkey性能优化技术验证程序 ===</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>1.</span><span style=color:#a3be8c> 链表遍历优化测试</span></span>
+<span class=giallo-l><span style=color:#88c0d0>创建测试数据...</span></span>
+<span class=giallo-l><span style=color:#88c0d0>测试数据创建完成：16个链表，每个包含1000000个节点</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>链表遍历测试结果：</span></span>
+<span class=giallo-l><span style=color:#88c0d0>顺序遍历：</span><span style=color:#b48ead>      91915</span><span style=color:#a3be8c> 微秒，结果：7990951360</span></span>
+<span class=giallo-l><span style=color:#88c0d0>交错遍历：</span><span style=color:#b48ead>      57780</span><span style=color:#a3be8c> 微秒，结果：7990951360</span><span> (提升：1.59x)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>预取+交错遍历：</span><span style=color:#b48ead> 53289</span><span style=color:#a3be8c> 微秒，结果：7990951360</span><span> (提升：1.72x)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>✓</span><span style=color:#a3be8c> 所有算法结果一致，验证通过</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>2.</span><span style=color:#a3be8c> 哈希表查找优化测试（模拟Valkey字典查找）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>插入</span><span style=color:#b48ead> 100000</span><span style=color:#a3be8c> 个键值对...</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>哈希表查找测试结果：</span></span>
+<span class=giallo-l><span style=color:#88c0d0>顺序查找：</span><span style=color:#b48ead>    228</span><span style=color:#a3be8c> 微秒，结果：97528762</span></span>
+<span class=giallo-l><span style=color:#88c0d0>预取优化查找：53</span><span style=color:#a3be8c> 微秒，结果：97528762</span><span> (提升：4.30x)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>✓</span><span style=color:#a3be8c> 哈希表查找结果一致，验证通过</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#a3be8c>=== 总结 ===</span></span>
+<span class=giallo-l><span style=color:#88c0d0>1.</span><span style=color:#a3be8c> 链表交错遍历相比顺序遍历可以获得显著性能提升</span></span>
+<span class=giallo-l><span style=color:#88c0d0>2.</span><span style=color:#a3be8c> 预取指令可以进一步提升性能</span></span>
+<span class=giallo-l><span style=color:#88c0d0>3.</span><span style=color:#a3be8c> 这些优化技术通过改善内存访问模式，减少CPU等待时间</span></span>
+<span class=giallo-l><span style=color:#88c0d0>4.</span><span style=color:#a3be8c> Valkey通过类似技术在lookupKey函数中获得了80%以上的性能提升</span></span>
+<span class=giallo-l><span style=color:#88c0d0>5.</span><span style=color:#a3be8c> 结合I/O多线程，Valkey 8.0实现了从360K到1.19M RPS的性能飞跃</span></span></code></pre><p>这个实验程序能够验证Valkey文章中提到的核心优化技术，展示内存访问模式优化对性能的巨大影响。通过交错执行和预取指令，可以显著提升处理大量随机内存访问的性能，这正是Valkey实现百万级RPS的关键技术基础。</div></div></section>

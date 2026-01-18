@@ -1,210 +1,186 @@
-<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Linux iptables、ipset 与 tc 的综合应用实践 | Roc's Blog</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-10-25</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Linux iptables、ipset 与 tc 的综合应用实践</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=yin-yan>引言</h1><p>在中小规模到企业生产环境中，常需要同时满足“连接访问控制”与“带宽/队列管理”。Linux 生态提供了三件利器：<ul><li>iptables：基于 Netfilter 的防火墙规则管理，负责匹配并决定包的命运（ACCEPT/DROP/LOG 等）<li>ipset：高效维护 IP、网段等集合，供 iptables 高速匹配，适合批量名单/黑白名单场景<li>tc（Traffic Control）：基于 qdisc/class/filter 的流量控制，对包进行分类、整形与队列管理，实现带宽限制与延迟优化</ul><p>三者组合可实现“按集合过滤 + 按集合限速”的统一方案，且不依赖上层代理或应用改造。<hr><h1 id=ji-shu-bei-jing-yu-he-xin-gong-neng>技术背景与核心功能</h1><ul><li><p>iptables（过滤防火墙）</p> <ul><li>核心概念：表（<code>filter</code>/<code>nat</code>/<code>mangle</code>/<code>raw</code>/<code>security</code>）、链（<code>INPUT</code>/<code>FORWARD</code>/<code>OUTPUT</code>/<code>PREROUTING</code>/<code>POSTROUTING</code>）<li>常见模块：<code>-m set</code>（与 ipset 集合匹配）、<code>-m state/conntrack</code>（连接状态）、<code>-m tcp/udp</code>（端口）<li>典型用途：按源/目的 IP、端口、协议过滤；日志记录；打标（<code>-j MARK</code>）为后续路由/流控使用</ul><li><p>ipset（集合加速）</p> <ul><li>集合类型：<code>hash:ip</code>、<code>hash:net</code>、<code>bitmap:ip</code>、<code>list:set</code> 等，支持 <code>timeout</code>、<code>maxelem</code>、<code>hashsize</code><li>典型用途：维护黑白名单、限速名单、DDoS 封禁集合；动态增删元素而无需频繁改 iptables 规则</ul><li><p>tc（流量控制）</p> <ul><li>组件：qdisc（队列策略，如 <code>htb</code>、<code>tbf</code>、<code>fq_codel</code>）、class（类）、filter（过滤器，如 <code>fw</code>/<code>u32</code>/<code>flower</code>）<li>典型用途：带宽整形（rate/ceil）、队列调度（延迟控制/拥塞管理）、分流分类（不同业务或不同 IP 的通道隔离）</ul><li><p>组合优势与典型场景</p> <ul><li>将集合匹配与带宽控制打通：iptables 在 <code>mangle</code> 打标，tc 用 <code>fw</code> filter 读取 <code>skb->mark</code> 分类<li>场景示例： <ul><li>为某 IP 集合限制总带宽，同时禁止其访问敏感端口<li>DDoS 下快速封禁集合并限速保护核心服务<li>多租户/环境隔离：不同租户 IP 集合分配不同通道与速率</ul></ul></ul><hr><h1 id=wan-zheng-guan-kong-an-li-she-ji-xian-zhi-te-ding-ip-ji-he-de-dai-kuan-bing-guo-lu-qi-fang-wen>完整管控案例设计：限制特定 IP 集合的带宽并过滤其访问</h1><p>目标：<ul><li>建立 <code>restricted_clients</code> 集合，限制其下行/上行总带宽至 10 Mbit，并禁止访问 <code>tcp/22</code>，只允许 <code>tcp/80</code>/<code>443</code><li>通过 iptables+ipset 实现过滤与打标，通过 tc 实现整形与分类</ul><p>网络示意（简化 ASCII）：<pre style=color:#f8f8f2;background-color:#272822><code><span>[Clients in restricted_clients] --(eth0)--> [Server]
-</span><span>        | iptables(mangle: MARK) + filter(DROP/ACCEPT)
-</span><span>        v
-</span><span>      tc(htb classes) &lt;- fw filter by mark
-</span></code></pre><h2 id=bu-zou-yi-shi-yong-ipset-chuang-jian-yu-guan-li-ip-ji-he>步骤一：使用 ipset 创建与管理 IP 集合</h2><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 创建集合：hash:ip 类型，支持最多 65536 个元素，默认无超时
-</span><span>sudo ipset create restricted_clients hash:ip maxelem 65536
-</span><span>
-</span><span style=color:#75715e># 增加若干 IP（示例）
-</span><span>sudo ipset add restricted_clients 203.0.113.10
-</span><span>sudo ipset add restricted_clients 203.0.113.11
-</span><span>sudo ipset add restricted_clients 203.0.113.12
-</span><span>
-</span><span style=color:#75715e># 查看集合与统计
-</span><span>sudo ipset list restricted_clients
-</span></code></pre><p>参数说明：<ul><li><code>hash:ip</code>：适合离散 IP 集；如批量网段可用 <code>hash:net</code><li><code>maxelem</code>：最大元素数，需结合内存与性能规划<li><code>timeout</code>：可选，为元素设置过期时间（秒），便于临时封禁</ul><h2 id=bu-zou-er-tong-guo-iptables-she-zhi-ji-yu-ipset-de-guo-lu-yu-da-biao-gui-ze>步骤二：通过 iptables 设置基于 ipset 的过滤与打标规则</h2><p>建议在 <code>mangle</code> 表的 <code>PREROUTING</code>/<code>OUTPUT</code> 早期对包打标，减少后续模块开销。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 1) mangle 表：对来自 restricted_clients 的包打标 0x1（十六进制）
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -A</span><span> PREROUTING</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src \
-</span><span style=color:#fd971f;font-style:italic>  -j</span><span> MARK</span><span style=color:#fd971f;font-style:italic> --set-mark</span><span> 0x1
-</span><span>
-</span><span style=color:#75715e># 2) filter 表：拒绝其访问敏感端口（示例：SSH 22）
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> --dport</span><span> 22</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src</span><span style=color:#fd971f;font-style:italic> -j</span><span> DROP
-</span><span>
-</span><span style=color:#75715e># 3) filter 表：允许 HTTP/HTTPS（80/443），其余端口默认策略按需设置
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> -m</span><span> multiport</span><span style=color:#fd971f;font-style:italic> --dports</span><span> 80,443 \
-</span><span style=color:#fd971f;font-style:italic>  -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src</span><span style=color:#fd971f;font-style:italic> -j</span><span> ACCEPT
-</span><span>
-</span><span style=color:#75715e># 4) 可选：对不在集合的流量按默认策略（示例：允许已建立连接）
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -m</span><span> conntrack</span><span style=color:#fd971f;font-style:italic> --ctstate</span><span> ESTABLISHED,RELATED</span><span style=color:#fd971f;font-style:italic> -j</span><span> ACCEPT
-</span></code></pre><p>参数说明：<ul><li><code>-t mangle</code>：适合做标记与特殊处理（不改变连接状态）<li><code>-m set --match-set NAME src|dst</code>：匹配集合与方向（源/目的 IP）<li><code>-j MARK --set-mark</code>：设置包标记供路由/tc 使用<li><code>-m multiport</code>：端口组合匹配，简化规则</ul><h2 id=bu-zou-san-jie-he-tc-dui-te-ding-ip-ji-he-jin-xing-dai-kuan-xian-zhi-an-biao-ji-fen-lei>步骤三：结合 tc 对特定 IP 集合进行带宽限制（按标记分类）</h2><p>tc 以“设备维度”工作，通常在出口（egress）整形。若需入口（ingress）限速，建议使用 <code>ifb</code> 虚拟设备做重定向（下文扩展说明）。<p>示例：在 <code>eth0</code> 上创建 HTB 根队列，分两个类：默认类与限速类，使用 <code>fw</code> 过滤器按标记将集合流量导向限速类。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 1) 创建根 qdisc：HTB，默认 class id 1:30
-</span><span>sudo tc qdisc add dev eth0 root handle 1: htb default 30
-</span><span>
-</span><span style=color:#75715e># 2) 创建类：为 restricted_clients 分配 10Mbit（可调），普通流量 100Mbit
-</span><span>sudo tc class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit prio 1
-</span><span>sudo tc class add dev eth0 parent 1: classid 1:30 htb rate 100mbit ceil 100mbit prio 2
-</span><span>
-</span><span style=color:#75715e># 3) 为类挂队列（可选优化：FQ-CoDel 降低排队延迟）
-</span><span>sudo tc qdisc add dev eth0 parent 1:10 handle 10: fq_codel
-</span><span>sudo tc qdisc add dev eth0 parent 1:30 handle 30: fq_codel
-</span><span>
-</span><span style=color:#75715e># 4) 过滤器：按 fw 标记 0x1 将流量导入 1:10（限速类）
-</span><span>sudo tc filter add dev eth0 parent 1: protocol ip prio 10 handle 0x1 fw flowid 1:10
-</span></code></pre><p>参数说明：<ul><li><code>htb</code>：分层令牌桶，适合多类带宽分配与上限控制（<code>rate</code>/<code>ceil</code>）<li><code>fq_codel</code>：队列算法，抑制 Bufferbloat，改善交互延迟<li><code>fw filter</code>：按 <code>skb->mark</code> 分类；iptables 置位的 <code>MARK</code> 在此生效<li><code>rate/ceil</code>：保证速率与上限；必要时结合 <code>burst/cburst</code>（令牌桶突发）</ul><hr><h1 id=pei-zhi-wan-zheng-shi-li-yu-zhu-xiang-shuo-ming>配置完整示例与逐项说明</h1><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># ==== ipset ====
-</span><span style=color:#75715e># 创建集合并导入样例 IP
-</span><span>ipset create restricted_clients hash:ip maxelem 65536
-</span><span>ipset add restricted_clients 203.0.113.10
-</span><span>ipset add restricted_clients 203.0.113.11
-</span><span>ipset add restricted_clients 203.0.113.12
-</span><span>
-</span><span style=color:#75715e># ==== iptables ====
-</span><span style=color:#75715e># mangle 表：标记集合流量为 0x1（PREROUTING 更早匹配）
-</span><span>ip
-</span><span>tables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -A</span><span> PREROUTING</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src</span><span style=color:#fd971f;font-style:italic> -j</span><span> MARK</span><span style=color:#fd971f;font-style:italic> --set-mark</span><span> 0x1
-</span><span>
-</span><span style=color:#75715e># filter 表：禁止集合访问 SSH（22）
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> --dport</span><span> 22</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src</span><span style=color:#fd971f;font-style:italic> -j</span><span> DROP
-</span><span>
-</span><span style=color:#75715e># filter 表：允许集合访问 80/443
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> -m</span><span> multiport</span><span style=color:#fd971f;font-style:italic> --dports</span><span> 80,443</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients src</span><span style=color:#fd971f;font-style:italic> -j</span><span> ACCEPT
-</span><span>
-</span><span style=color:#75715e># 一般允许已建立连接，避免误伤
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> INPUT</span><span style=color:#fd971f;font-style:italic> -m</span><span> conntrack</span><span style=color:#fd971f;font-style:italic> --ctstate</span><span> ESTABLISHED,RELATED</span><span style=color:#fd971f;font-style:italic> -j</span><span> ACCEPT
-</span><span>
-</span><span style=color:#75715e># ==== tc ====
-</span><span style=color:#75715e># HTB 根队列，默认类 1:30（普通流量）
-</span><span>tc qdisc add dev eth0 root handle 1: htb default 30
-</span><span>
-</span><span style=color:#75715e># 创建限速类（集合流量）与普通类
-</span><span>tc class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit prio 1
-</span><span>tc class add dev eth0 parent 1: classid 1:30 htb rate 100mbit ceil 100mbit prio 2
-</span><span>
-</span><span style=color:#75715e># 为类挂 FQ-CoDel 队列（可选）
-</span><span>tc qdisc add dev eth0 parent 1:10 handle 10: fq_codel
-</span><span>tc qdisc add dev eth0 parent 1:30 handle 30: fq_codel
-</span><span>
-</span><span style=color:#75715e># 按 fw 标记分类：0x1 -> 1:10（限速）
-</span><span>tc filter add dev eth0 parent 1: protocol ip prio 10 handle 0x1 fw flowid 1:10
-</span></code></pre><p>验证方法：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 查看 ipset 集合及命中统计
-</span><span>ipset list restricted_clients
-</span><span>
-</span><span style=color:#75715e># 查看 iptables 规则与计数
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -vnL</span><span> PREROUTING
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -vnL</span><span> INPUT
-</span><span>
-</span><span style=color:#75715e># 查看 tc 类与队列统计（字节/包/丢弃等）
-</span><span>tc</span><span style=color:#fd971f;font-style:italic> -s</span><span> class show dev eth0
-</span><span>tc</span><span style=color:#fd971f;font-style:italic> -s</span><span> qdisc show dev eth0
-</span><span>
-</span><span style=color:#75715e># 进行带宽测试（从集合中的客户端发起）
-</span><span>iperf3</span><span style=color:#fd971f;font-style:italic> -c </span><span style=color:#f92672>&lt;</span><span>server-ip</span><span style=color:#f92672>> </span><span>-p 5201
-</span><span style=color:#75715e># 期望限速类吞吐 ≈ 10Mbit，普通类不受影响
-</span></code></pre><hr><h1 id=ying-yong-chang-jing-kuo-zhan-yu-zui-jia-shi-jian>应用场景扩展与最佳实践</h1><ul><li><p>企业网络管理</p> <ul><li>租户/部门/分环境的 IP 集合管理（ipset），配合 iptables 做端口准入控制<li>按集合限速（tc/htb + fw filter），保障核心业务优先级</ul><li><p>DDoS 防护（基础版）</p> <ul><li>通过 ipset 快速维护黑名单；iptables 直接 DROP 或限速打标<li>结合 <code>hashlimit</code> 模块对新建连接速率限流（如 SYN），减轻峰值冲击</ul><li><p>性能优化建议</p> <ul><li>集合规模规划：<code>maxelem/hashsize</code> 与内存开销权衡；批量导入用 <code>ipset restore</code><li>规则层次清晰：先 mangle 打标，后 filter 做准入；减少重复匹配<li>队列算法选择：默认 <code>fq_codel</code> 提升交互；大带宽可评估 <code>cake</code><li>入口限速：使用 ifb 重定向 ingress<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 创建 ifb 并启用
-</span><span>modprobe ifb
-</span><span>ip link add ifb0 type ifb
-</span><span>ip link set ifb0 up
-</span><span>
-</span><span style=color:#75715e># 将 eth0 ingress 重定向到 ifb0
-</span><span>tc qdisc add dev eth0 handle ffff: ingress
-</span><span>tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 \
-</span><span>  action mirred egress redirect dev ifb0
-</span><span>
-</span><span style=color:#75715e># 在 ifb0 上做 HTB/TBF 等入口整形
-</span><span>tc qdisc add dev ifb0 root handle 2: htb default 20
-</span><span style=color:#75715e># ... 类与过滤器同上（可按 mark 或 u32/flower 匹配）
-</span></code></pre></ul></ul><hr><h1 id=cgroup-wang-luo-kong-jian-ji-cheng-shi-jian>cgroup 网络空间集成实践</h1><h2 id=host-wang-luo-mo-shi-vs-fei-host-wang-luo-mo-shi>Host 网络模式 vs 非 Host 网络模式</h2><p>本文前面介绍了按进程（cgroup）、按目的地址集合（ipset）和按接口/队列（tc）的整形与管控。本小节聚焦容器/进程的网络命名空间（netns）维度，解释 Host 网络模式与独立网络命名空间（非 Host 模式）的差异及实操要点。<h3 id=1-wang-luo-ge-chi-xing>1) 网络隔离性</h3><ul><li>Host 模式：进程/容器直接加入宿主机的网络命名空间，复用同一网络栈与接口（如 <code>eth0</code>、<code>lo</code>）。没有网络隔离，容器内看到的 <code>127.0.0.1</code> 与宿主机一致。<li>非 Host 模式：为进程/容器创建独立的网络命名空间，通常通过 <code>veth</code> 与宿主机桥接（bridge）或使用 <code>macvlan/ipvlan</code> 等机制。命名空间间网络栈相互隔离，需要显式路由/端口映射才能互访。</ul><h3 id=2-wang-luo-pei-zhi>2) 网络配置</h3><ul><li>Host 模式： <ul><li>使用宿主机 IP 与端口，直接在主机 <code>iptables</code>/<code>tc</code> 规则范围内活动。<li>端口冲突需自行避免（容器与宿主机服务共享同一端口空间）。</ul><li>非 Host 模式： <ul><li>容器/进程拥有独立 IP（来自 bridge/maclvan 网络），与宿主机通过 NAT（<code>-p</code> 端口映射）或路由互通。<li>端口映射通常通过 <code>iptables</code> <code>nat</code> 表 <code>PREROUTING/OUTPUT/POSTROUTING</code> 完成；也可不经 NAT，直接在同一二层网络下互通（macvlan/ipvlan）。</ul></ul><h3 id=3-xing-neng-ying-xiang>3) 性能影响</h3><ul><li>Host 模式：路径最短，无 <code>veth</code>/bridge/NAT 额外开销，通常更低延迟与更高吞吐。避免 <code>conntrack</code> 压力与 SNAT 代价，适合高 PPS/低延迟场景。<li>非 Host 模式：存在 <code>veth</code>、bridge、NAT/conntrack 等开销。若采用 <code>macvlan/ipvlan</code> 且不经 NAT，性能介于 Host 与 bridge+NAT 之间。开启/关闭网卡与栈的硬件卸载（GRO/LRO/TSO）也会影响实际性能。</ul><h3 id=4-an-quan-xing>4) 安全性</h3><ul><li>Host 模式：安全性较低。进程/容器可访问宿主机网络栈（包含 <code>lo</code>），宿主机 <code>INPUT/OUTPUT</code> 规则直接影响容器，容器误配置更易影响全机网络。<li>非 Host 模式：命名空间隔离更强，可在容器 netns 内单独维护 <code>iptables</code>，并在宿主机上通过 <code>FORWARD</code> 与 bridge 接口集中治理。适合多租户、严格边界控制与网络策略（NetworkPolicy）场景。</ul><h3 id=5-shi-yong-chang-jing>5) 使用场景</h3><ul><li>Host 模式： <ul><li>需要极致网络性能与最低延迟的服务（如负载均衡、数据面代理、主机级监控代理如 <code>node_exporter</code>）。<li>必须直接绑定宿主机地址的守护进程（如监听 <code>:80/:443</code> 的反向代理）。</ul><li>非 Host 模式： <ul><li>多租户隔离、零信任分段、需精细网络策略与审计的微服务集群。<li>需要不同 IP/路由域的服务编排，简化冲突管理与迁移。</ul></ul><h3 id=6-pei-zhi-shi-li>6) 配置示例</h3><ul><li><p>Docker</p> <ul><li>Host 模式：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 容器共享宿主机网络命名空间，无端口映射
-</span><span>docker run</span><span style=color:#fd971f;font-style:italic> --rm --network</span><span> host</span><span style=color:#fd971f;font-style:italic> --name</span><span> svc-host-mode \
-</span><span style=color:#fd971f;font-style:italic>  -e</span><span> ENV=prod myimage:latest
-</span></code></pre><li>Bridge（非 Host）模式：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 默认 bridge，容器独立 netns + veth；通过 -p 进行端口映射（NAT）
-</span><span>docker run</span><span style=color:#fd971f;font-style:italic> --rm --name</span><span> svc-bridge</span><span style=color:#fd971f;font-style:italic> -p</span><span> 8080:80 myimage:latest
-</span></code></pre><li>Macvlan（非 Host）模式：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 宿主机与容器处于同一二层域，无需 NAT；更接近物理直连，仍具命名空间隔离
-</span><span>docker network create</span><span style=color:#fd971f;font-style:italic> -d</span><span> macvlan \
-</span><span style=color:#fd971f;font-style:italic>  --subnet</span><span style=color:#f92672>=</span><span>192.168.10.0/24</span><span style=color:#fd971f;font-style:italic> --gateway</span><span style=color:#f92672>=</span><span>192.168.10.1 \
-</span><span style=color:#fd971f;font-style:italic>  -o</span><span> parent=eth0 macvlan_net
-</span><span>docker run</span><span style=color:#fd971f;font-style:italic> --rm --network</span><span> macvlan_net</span><span style=color:#fd971f;font-style:italic> --name</span><span> svc-macvlan myimage:latest
-</span></code></pre></ul><li><p>Kubernetes</p> <ul><li>Host 网络：<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span><span>: </span><span style=color:#e6db74>v1
-</span><span style=color:#f92672>kind</span><span>: </span><span style=color:#e6db74>Pod
-</span><span style=color:#f92672>metadata</span><span>:
-</span><span>  </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>svc-host-net
-</span><span style=color:#f92672>spec</span><span>:
-</span><span>  </span><span style=color:#f92672>hostNetwork</span><span>: </span><span style=color:#ae81ff>true  </span><span style=color:#75715e># 直接加入宿主机 netns
-</span><span>  </span><span style=color:#f92672>containers</span><span>:
-</span><span>    - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>app
-</span><span>      </span><span style=color:#f92672>image</span><span>: </span><span style=color:#e6db74>myimage:latest
-</span><span>      </span><span style=color:#f92672>ports</span><span>:
-</span><span>        - </span><span style=color:#f92672>containerPort</span><span>: </span><span style=color:#ae81ff>8080  </span><span style=color:#75715e># 注意与宿主机端口冲突
-</span></code></pre><li>非 Host（由 CNI 提供隔离网络）：<pre class=language-yaml data-lang=yaml style=color:#f8f8f2;background-color:#272822><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span><span>: </span><span style=color:#e6db74>v1
-</span><span style=color:#f92672>kind</span><span>: </span><span style=color:#e6db74>Pod
-</span><span style=color:#f92672>metadata</span><span>:
-</span><span>  </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>svc-bridge-net
-</span><span style=color:#f92672>spec</span><span>:
-</span><span>  </span><span style=color:#f92672>containers</span><span>:
-</span><span>    - </span><span style=color:#f92672>name</span><span>: </span><span style=color:#e6db74>app
-</span><span>      </span><span style=color:#f92672>image</span><span>: </span><span style=color:#e6db74>myimage:latest
-</span><span>      </span><span style=color:#f92672>ports</span><span>:
-</span><span>        - </span><span style=color:#f92672>containerPort</span><span>: </span><span style=color:#ae81ff>80
-</span><span style=color:#75715e># 通过 Service/Ingress 暴露，底层常见为 veth+bridge，必要时经 NAT。
-</span></code></pre></ul><li><p>手动 netns（Linux 原生）</p> <pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 创建独立网络命名空间，配置 veth 与 bridge（非 Host）
-</span><span>ip netns add ns1
-</span><span>ip link add veth-host type veth peer name veth-ns1
-</span><span>ip link set veth-ns1 netns ns1
-</span><span>
-</span><span style=color:#75715e># 宿主机侧创建 bridge 并加入 veth-host
-</span><span>ip link add name br0 type bridge
-</span><span>ip link set veth-host master br0
-</span><span>ip link set br0 up
-</span><span>ip link set veth-host up
-</span><span>
-</span><span style=color:#75715e># 命名空间内配置 IP 与默认路由
-</span><span>ip netns exec ns1 ip addr add 10.10.0.2/24 dev veth-ns1
-</span><span>ip netns exec ns1 ip link set veth-ns1 up
-</span><span>ip netns exec ns1 ip route add default via 10.10.0.1
-</span><span>
-</span><span style=color:#75715e># 宿主机为 br0 配置地址作为网关
-</span><span>ip addr add 10.10.0.1/24 dev br0
-</span><span>
-</span><span style=color:#75715e># 出站上网的 NAT（示例）
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> nat</span><span style=color:#fd971f;font-style:italic> -A</span><span> POSTROUTING</span><span style=color:#fd971f;font-style:italic> -s</span><span> 10.10.0.0/24</span><span style=color:#fd971f;font-style:italic> -o</span><span> eth0</span><span style=color:#fd971f;font-style:italic> -j</span><span> MASQUERADE
-</span></code></pre></ul><h3 id=7-yu-iptables-ipset-tc-de-ji-cheng-chai-yi>7) 与 iptables/ipset/tc 的集成差异</h3><ul><li><p>Host 模式：</p> <ul><li><code>iptables</code>：容器进程经过宿主机 <code>OUTPUT/INPUT</code>（本机出入站）与 <code>FORWARD</code>（转发场景）。可直接在宿主机使用 <code>-m cgroup</code>/<code>-m set</code> 做准入与标记。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 结合 cgroup + ipset，按进程与目标集合做标记与限速
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -A</span><span> OUTPUT</span><span style=color:#fd971f;font-style:italic> -m</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> --cgroup</span><span> 0x00010010 \
-</span><span style=color:#fd971f;font-style:italic>  -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted dst</span><span style=color:#fd971f;font-style:italic> -j</span><span> MARK</span><span style=color:#fd971f;font-style:italic> --set-mark</span><span> 0x3
-</span></code></pre><li><code>tc</code>：建议在实际出站接口（如 <code>eth0</code>）布置队列与过滤器，<code>cgroup</code> 过滤器可直接匹配该进程的 <code>classid</code>。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>tc qdisc add dev eth0 root handle 1: htb default 30
-</span><span>tc class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit
-</span><span>tc filter add dev eth0 parent 1: protocol ip prio 20 cgroup flowid 1:10
-</span></code></pre></ul><li><p>非 Host 模式：</p> <ul><li><code>iptables</code>：容器流量经 <code>veth</code> 进入宿主机 bridge，一般走 <code>FORWARD</code> 链与 <code>nat</code>。可在宿主机匹配 <code>-i vethX</code>/bridge 端口，或进入容器 netns 内单独维护防火墙。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 宿主机上按容器 veth 接口做访问限制（示例）
-</span><span>iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> FORWARD</span><span style=color:#fd971f;font-style:italic> -i</span><span> vethXYZ</span><span style=color:#fd971f;font-style:italic> -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted dst</span><span style=color:#fd971f;font-style:italic> -j</span><span> DROP
-</span></code></pre><li><code>tc</code>：可以选择在容器 <code>eth0</code>（命名空间内）、宿主机 veth 对端或 bridge 设备上布置队列与过滤器；若使用 <code>cgroup</code> 过滤器，仍可匹配由 <code>net_cls</code> 标记的套接字，但需确保过滤器挂载在实际经过的数据路径设备上。<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 示例：对宿主机 veth 对端做限速（假设设备名 veth-host）
-</span><span>tc qdisc add dev veth-host root handle 1: htb default 30
-</span><span>tc class add dev veth-host parent 1: classid 1:10 htb rate 5mbit ceil 5mbit
-</span><span>tc filter add dev veth-host parent 1: protocol ip prio 20 cgroup flowid 1:10
-</span><span>
-</span><span style=color:#75715e># 或在 bridge 设备上按流分类（可结合 flower/iptables 标记）
-</span><span>tc qdisc add dev br0 root handle 1: htb default 30
-</span><span>tc filter add dev br0 ingress prio 10 flower skip_sw \
-</span><span>  dst_ip 203.0.113.0/24 action drop
-</span></code></pre></ul></ul><h3 id=8-shi-ji-zhu-yi-shi-xiang>8) 实际注意事项</h3><ul><li>端口与地址：Host 模式需要避免端口冲突与误监听（容器监听 <code>127.0.0.1</code> 即为宿主机回环）。非 Host 模式建议通过 Service/Ingress 或明确路由暴露服务。<li>策略边界：非 Host 模式可在容器 netns 内单独维护 <code>iptables/ipset</code>，并在宿主机通过 <code>FORWARD</code> 与 bridge 汇总治理；Host 模式建议统一在宿主机层做分段与速率控制。<li>性能与可靠性： <ul><li>关注 <code>conntrack</code> 容量与哈希：非 Host NAT 场景下可调 <code>nf_conntrack_max</code> 与 <code>hashsize</code>，避免高并发丢包。<li>选择合适队列算法：<code>fq_codel/cake</code> 抑制 Bufferbloat；HTB 做带宽层次管理。<li>评估硬件卸载与 GRO/LRO/TSO 开关对延迟/CPU 的影响。</ul><li>兼容性：Kubernetes <code>hostNetwork: true</code> 与 CNI/NetworkPolicy 的交互因实现而异，需结合具体 CNI 文档验证策略是否仍生效或需要例外规则。<li>持久化与编排：在主机用 systemd unit/开机脚本持久化 <code>iptables/tc</code>；容器场景可在入口脚本中执行 netns 内规则，或使用宿主机守护进程监听容器生命周期事件同步策略。</ul><h2 id=ji-ben-gai-nian-yu-gong-zuo-yuan-li>基本概念与工作原理</h2><ul><li>cgroups（控制组）用于按进程维度进行资源隔离与配额管理。网络相关的两个传统控制器： <ul><li><code>net_cls</code>（v1）：为所属 cgroup 的进程产生的网络包打上 32 位 <code>classid</code>（位于 <code>skb->priority</code>），用于后续在 <code>tc</code> 中以 <code>cgroup</code> 过滤器分类，或在 iptables 以 <code>-m cgroup</code> 匹配。<li><code>net_prio</code>（v1）：按接口为 socket 设置优先级（较少使用）。</ul><li>cgroup v2 差异：统一层级中不再包含 <code>net_cls/net_prio</code> 控制器。现代内核推荐用 BPF（如 <code>tc</code> eBPF + <code>clsact</code>，或 cgroup-bpf 钩子）实现按进程/服务的网络分类与策略。本文以 v1 <code>net_cls</code> 为主，并给出 v2 的替代思路。</ul><p>ASCII 流程示意：<pre style=color:#f8f8f2;background-color:#272822><code><span>[Process in cgroup] --(net_cls: classid)--> [skb->priority]
-</span><span>        |                                  |
-</span><span>        |                             tc filter cgroup -> class
-</span><span>        v                                  v
-</span><span>     iptables -m cgroup              HTB/FQ-CoDel shaping
-</span></code></pre><h2 id=pei-zhi-bu-zou-yu-ming-ling-shi-li-cgroup-v1-net-cls>配置步骤与命令示例（cgroup v1 net_cls）</h2><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 1) 挂载 net_cls（若系统未自动挂载）
-</span><span>sudo mkdir</span><span style=color:#fd971f;font-style:italic> -p</span><span> /sys/fs/cgroup/net_cls
-</span><span>sudo mount</span><span style=color:#fd971f;font-style:italic> -t</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> -o</span><span> net_cls none /sys/fs/cgroup/net_cls
-</span><span>
-</span><span style=color:#75715e># 2) 创建 cgroup 并设置 classid（示例：0x00010010）
-</span><span>sudo mkdir</span><span style=color:#fd971f;font-style:italic> -p</span><span> /sys/fs/cgroup/net_cls/restricted_svc
-</span><span style=color:#66d9ef>echo</span><span> 0x00010010 </span><span style=color:#f92672>| </span><span>sudo tee /sys/fs/cgroup/net_cls/restricted_svc/net_cls.classid
-</span><span>
-</span><span style=color:#75715e># 3) 将进程加入该 cgroup（两种方式）
-</span><span style=color:#75715e># 3.1 直接写入 cgroup.procs（PID 示例：12345）
-</span><span style=color:#66d9ef>echo</span><span> 12345 </span><span style=color:#f92672>| </span><span>sudo tee /sys/fs/cgroup/net_cls/restricted_svc/cgroup.procs
-</span><span style=color:#75715e># 3.2 通过 cgexec 启动进程（需安装 libcgroup 工具）
-</span><span>sudo cgexec</span><span style=color:#fd971f;font-style:italic> -g</span><span> net_cls:restricted_svc /usr/bin/my-service</span><span style=color:#fd971f;font-style:italic> --opts
-</span><span>
-</span><span style=color:#75715e># 4) 验证 classid 是否生效（可通过 tc/iptables 计数或 ss 观察）
-</span><span style=color:#75715e># tc/iptables 命中计数将用于验证（见下文集成章节）
-</span></code></pre><p>说明与建议：<ul><li><code>classid</code> 为 32 位，常用高 16 位表示主类、低 16 位表示子类，便于分层管理。<li>systemd 环境下也可按服务/切片组织进程，但 net_cls 赋值仍需在对应 cgroup 路径设置。</ul><h2 id=yu-iptables-ipset-tc-de-ji-cheng-shi-yong>与 iptables、ipset、tc 的集成使用</h2><ul><li>tc（按 cgroup 分类到限速类）</ul><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 在 eth0 已创建的 HTB 根队列下，增加 cgroup 过滤器
-</span><span>sudo tc filter add dev eth0 parent 1: protocol ip prio 20 cgroup flowid 1:10
-</span><span style=color:#75715e># 说明：将属于 cgroup 的进程产生的流量导向 class 1:10（限速类）
-</span></code></pre><ul><li>iptables（匹配 cgroup 并打标/过滤）</ul><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 将本机进程的 egress/OUTPUT 流量按 cgroup classid 匹配并设置 MARK=0x3
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -A</span><span> OUTPUT</span><span style=color:#fd971f;font-style:italic> -m</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> --cgroup</span><span> 0x00010010</span><span style=color:#fd971f;font-style:italic> -j</span><span> MARK</span><span style=color:#fd971f;font-style:italic> --set-mark</span><span> 0x3
-</span><span style=color:#75715e># 可结合 filter 表进行准入控制（如仅允许 80/443）
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> OUTPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> -m</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> --cgroup</span><span> 0x00010010</span><span style=color:#fd971f;font-style:italic> -m</span><span> multiport</span><span style=color:#fd971f;font-style:italic> --dports</span><span> 80,443</span><span style=color:#fd971f;font-style:italic> -j</span><span> ACCEPT
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -A</span><span> OUTPUT</span><span style=color:#fd971f;font-style:italic> -p</span><span> tcp</span><span style=color:#fd971f;font-style:italic> -m</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> --cgroup</span><span> 0x00010010</span><span style=color:#fd971f;font-style:italic> -j</span><span> DROP
-</span></code></pre><ul><li>与 ipset 组合（进程 + 目的 IP 集合的双重约束）</ul><pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span style=color:#75715e># 仅当进程属于 cgroup 且目的地址在 restricted_clients 集合时打标/限速
-</span><span>sudo iptables</span><span style=color:#fd971f;font-style:italic> -t</span><span> mangle</span><span style=color:#fd971f;font-style:italic> -A</span><span> OUTPUT</span><span style=color:#fd971f;font-style:italic> -m</span><span> cgroup</span><span style=color:#fd971f;font-style:italic> --cgroup</span><span> 0x00010010 \
-</span><span style=color:#fd971f;font-style:italic>  -m</span><span> set</span><span style=color:#fd971f;font-style:italic> --match-set</span><span> restricted_clients dst</span><span style=color:#fd971f;font-style:italic> -j</span><span> MARK</span><span style=color:#fd971f;font-style:italic> --set-mark</span><span> 0x1
-</span><span style=color:#75715e># tc 侧继续用 fw/cgroup filter 将标记或 cgroup 流量导向限速类
-</span></code></pre><ul><li>方向选择与注意： <ul><li>进程级匹配更适合本机 egress（<code>OUTPUT</code>）策略；<code>PREROUTING</code>/转发链不一定能关联本机进程。<li>结合现有“按 IP 集合限速”的方案，可通过 cgroup 将本机服务与离线任务区分，避免彼此影响。</ul></ul><h2 id=ying-yong-chang-jing-yu-zui-jia-shi-jian>应用场景与最佳实践</h2><ul><li>按服务/作业限速：将备份、日志上传、离线批处理进程放入 cgroup，限制其带宽与队列优先级，保障交互服务。<li>多租户主机：不同服务（租户）映射不同 <code>classid</code>，在 HTB 下分配独立通道与速率上限。<li>与 IP 集合协同：对外访问仍基于 ipset 管理名单；对内按进程（cgroup）区分业务类型，实现“谁访问 + 访问哪里”的双维管控。<li>命名与映射规范：约定 <code>classid</code> 与 HTB <code>classid</code> 有一致映射（如 0x00010010 -> 1:10），便于运维与审计。</ul><h2 id=xing-neng-diao-you-jian-yi-yu-zhu-yi-shi-xiang>性能调优建议与注意事项</h2><ul><li>队列算法：为 cgroup 对应的类使用 <code>fq_codel</code> 或 <code>cake</code>，降低排队延迟与抖动。<li>过滤器优先级：合理设置 <code>prio</code>，确保 cgroup/mark 过滤器早匹配；避免过多 <code>u32</code> 复杂匹配。<li>监控与验证：使用 <code>tc -s class/qdisc show</code> 与 <code>iptables -vnL</code> 观察命中计数，定期复核 <code>cgroup.procs</code> 中的进程是否符合预期。<li>兼容性： <ul><li>需要内核模块支持：<code>sch_htb</code>、<code>sch_fq_codel</code>、<code>cls_fw</code>、<code>cls_cgroup</code>、<code>xt_set</code>、<code>xt_cgroup</code>。<li>cgroup v2 环境建议评估 BPF 方案（<code>tc qdisc add dev eth0 clsact</code> + <code>tc filter add ... bpf</code>），实现更灵活的按进程/Socket 分类。</ul><li>持久化：将 cgroup 挂载、classid 设置与 tc/iptables 规则固化为开机脚本或 systemd unit，确保重启后生效。<li>安全与隔离：严格控制写入 <code>cgroup.procs</code> 的权限，防止误归类；为高风险作业单独 cgroup 并限制资源上限（CPU/IO 也可结合）。</ul><hr><h1 id=zhu-yi-shi-xiang-yu-pai-cha>注意事项与排查</h1><ul><li><p>操作前备份与回滚</p> <ul><li>备份规则：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>iptables-save </span><span style=color:#f92672>></span><span> /etc/iptables/rules.v4
-</span><span>ipset save </span><span style=color:#f92672>></span><span> /etc/ipset.conf
-</span></code></pre><li>恢复规则：<pre class=language-bash data-lang=bash style=color:#f8f8f2;background-color:#272822><code class=language-bash data-lang=bash><span>iptables-restore </span><span style=color:#f92672>&lt;</span><span> /etc/iptables/rules.v4
-</span><span>ipset restore </span><span style=color:#f92672>&lt;</span><span> /etc/ipset.conf
-</span></code></pre></ul><li><p>持久化方法（随发行版而异）</p> <ul><li>Debian/Ubuntu：安装 <code>iptables-persistent</code> 或 <code>netfilter-persistent</code>，保存于 <code>/etc/iptables/rules.v4</code>、<code>/etc/ipset.conf</code><li>RHEL/CentOS：使用 <code>service iptables save</code> 或结合 firewalld/nftables 转写；注意 iptables-nft 与 iptables-legacy 差异<li>tc：通常以脚本（systemd unit）在启动时应用，或借助 NetworkManager/ifup 触发</ul><li><p>常见问题排查</p> <ul><li>标记未生效：检查 <code>mangle</code> 表规则计数；确认 <code>MARK</code> 置位在 <code>PREROUTING</code>/<code>OUTPUT</code> 的正确方向<li>tc 过滤无匹配：确认 <code>fw filter handle</code> 与 iptables 标记一致；检查过滤器挂载的设备（egress 对应出口设备）<li>入口限速未起效：是否使用 <code>ifb</code> 重定向；<code>ingress qdisc</code> 默认只统计不整形<li>nftables 兼容：现代系统默认 iptables-nft，语义兼容但内部实现不同；大规模规则建议评估直接迁移到 nftables</ul></ul><hr><h1 id=zong-jie>总结</h1><ul><li>使用 ipset 管理名单，iptables 做准入与打标，tc 做速率与队列管理，是兼顾简单、性能与可维护性的组合<li>建议以“标记驱动分类”的模式组织规则，保持早打标、少匹配、设备维度清晰<li>推行脚本化与持久化，确保在重启、变更或回滚时可控可复现</ul><p>参考链接：<ul><li>iptables 文档：https://netfilter.org/<li>ipset 手册：https://ipset.netfilter.org/<li>tc 与 qdisc：https://man7.org/linux/man-pages/man8/tc.8.html<li>FQ-CoDel：https://www.bufferbloat.net/projects/codel/wiki/</ul></div></div></section>
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Linux iptables、ipset 与 tc 的综合应用实践 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2025-10-25</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Linux iptables、ipset 与 tc 的综合应用实践</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=yin-yan>引言</h1><p>在中小规模到企业生产环境中，常需要同时满足“连接访问控制”与“带宽/队列管理”。Linux 生态提供了三件利器：<ul><li>iptables：基于 Netfilter 的防火墙规则管理，负责匹配并决定包的命运（ACCEPT/DROP/LOG 等）<li>ipset：高效维护 IP、网段等集合，供 iptables 高速匹配，适合批量名单/黑白名单场景<li>tc（Traffic Control）：基于 qdisc/class/filter 的流量控制，对包进行分类、整形与队列管理，实现带宽限制与延迟优化</ul><p>三者组合可实现“按集合过滤 + 按集合限速”的统一方案，且不依赖上层代理或应用改造。<hr><h1 id=ji-shu-bei-jing-yu-he-xin-gong-neng>技术背景与核心功能</h1><ul><li><p>iptables（过滤防火墙）</p> <ul><li>核心概念：表（<code>filter</code>/<code>nat</code>/<code>mangle</code>/<code>raw</code>/<code>security</code>）、链（<code>INPUT</code>/<code>FORWARD</code>/<code>OUTPUT</code>/<code>PREROUTING</code>/<code>POSTROUTING</code>）<li>常见模块：<code>-m set</code>（与 ipset 集合匹配）、<code>-m state/conntrack</code>（连接状态）、<code>-m tcp/udp</code>（端口）<li>典型用途：按源/目的 IP、端口、协议过滤；日志记录；打标（<code>-j MARK</code>）为后续路由/流控使用</ul><li><p>ipset（集合加速）</p> <ul><li>集合类型：<code>hash:ip</code>、<code>hash:net</code>、<code>bitmap:ip</code>、<code>list:set</code> 等，支持 <code>timeout</code>、<code>maxelem</code>、<code>hashsize</code><li>典型用途：维护黑白名单、限速名单、DDoS 封禁集合；动态增删元素而无需频繁改 iptables 规则</ul><li><p>tc（流量控制）</p> <ul><li>组件：qdisc（队列策略，如 <code>htb</code>、<code>tbf</code>、<code>fq_codel</code>）、class（类）、filter（过滤器，如 <code>fw</code>/<code>u32</code>/<code>flower</code>）<li>典型用途：带宽整形（rate/ceil）、队列调度（延迟控制/拥塞管理）、分流分类（不同业务或不同 IP 的通道隔离）</ul><li><p>组合优势与典型场景</p> <ul><li>将集合匹配与带宽控制打通：iptables 在 <code>mangle</code> 打标，tc 用 <code>fw</code> filter 读取 <code>skb->mark</code> 分类<li>场景示例： <ul><li>为某 IP 集合限制总带宽，同时禁止其访问敏感端口<li>DDoS 下快速封禁集合并限速保护核心服务<li>多租户/环境隔离：不同租户 IP 集合分配不同通道与速率</ul></ul></ul><hr><h1 id=wan-zheng-guan-kong-an-li-she-ji-xian-zhi-te-ding-ip-ji-he-de-dai-kuan-bing-guo-lu-qi-fang-wen>完整管控案例设计：限制特定 IP 集合的带宽并过滤其访问</h1><p>目标：<ul><li>建立 <code>restricted_clients</code> 集合，限制其下行/上行总带宽至 10 Mbit，并禁止访问 <code>tcp/22</code>，只允许 <code>tcp/80</code>/<code>443</code><li>通过 iptables+ipset 实现过滤与打标，通过 tc 实现整形与分类</ul><p>网络示意（简化 ASCII）：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>[Clients in restricted_clients] --(eth0)--> [Server]</span></span>
+<span class=giallo-l><span>        | iptables(mangle: MARK) + filter(DROP/ACCEPT)</span></span>
+<span class=giallo-l><span>        v</span></span>
+<span class=giallo-l><span>      tc(htb classes) &lt;- fw filter by mark</span></span></code></pre><h2 id=bu-zou-yi-shi-yong-ipset-chuang-jian-yu-guan-li-ip-ji-he>步骤一：使用 ipset 创建与管理 IP 集合</h2><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 创建集合：hash:ip 类型，支持最多 65536 个元素，默认无超时</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> ipset create restricted_clients hash:ip maxelem</span><span style=color:#b48ead> 65536</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 增加若干 IP（示例）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> ipset add restricted_clients</span><span style=color:#b48ead> 203.0.113.10</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> ipset add restricted_clients</span><span style=color:#b48ead> 203.0.113.11</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> ipset add restricted_clients</span><span style=color:#b48ead> 203.0.113.12</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 查看集合与统计</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> ipset list restricted_clients</span></span></code></pre><p>参数说明：<ul><li><code>hash:ip</code>：适合离散 IP 集；如批量网段可用 <code>hash:net</code><li><code>maxelem</code>：最大元素数，需结合内存与性能规划<li><code>timeout</code>：可选，为元素设置过期时间（秒），便于临时封禁</ul><h2 id=bu-zou-er-tong-guo-iptables-she-zhi-ji-yu-ipset-de-guo-lu-yu-da-biao-gui-ze>步骤二：通过 iptables 设置基于 ipset 的过滤与打标规则</h2><p>建议在 <code>mangle</code> 表的 <code>PREROUTING</code>/<code>OUTPUT</code> 早期对包打标，减少后续模块开销。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 1) mangle 表：对来自 restricted_clients 的包打标 0x1（十六进制）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -t mangle -A PREROUTING -m set --match-set restricted_clients src</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -j MARK --set-mark</span><span style=color:#b48ead> 0x1</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 2) filter 表：拒绝其访问敏感端口（示例：SSH 22）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -A INPUT -p tcp --dport</span><span style=color:#b48ead> 22</span><span style=color:#a3be8c> -m set --match-set restricted_clients src -j DROP</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 3) filter 表：允许 HTTP/HTTPS（80/443），其余端口默认策略按需设置</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -A INPUT -p tcp -m multiport --dports 80,443</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -m set --match-set restricted_clients src -j ACCEPT</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 4) 可选：对不在集合的流量按默认策略（示例：允许已建立连接）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span></span></code></pre><p>参数说明：<ul><li><code>-t mangle</code>：适合做标记与特殊处理（不改变连接状态）<li><code>-m set --match-set NAME src|dst</code>：匹配集合与方向（源/目的 IP）<li><code>-j MARK --set-mark</code>：设置包标记供路由/tc 使用<li><code>-m multiport</code>：端口组合匹配，简化规则</ul><h2 id=bu-zou-san-jie-he-tc-dui-te-ding-ip-ji-he-jin-xing-dai-kuan-xian-zhi-an-biao-ji-fen-lei>步骤三：结合 tc 对特定 IP 集合进行带宽限制（按标记分类）</h2><p>tc 以“设备维度”工作，通常在出口（egress）整形。若需入口（ingress）限速，建议使用 <code>ifb</code> 虚拟设备做重定向（下文扩展说明）。<p>示例：在 <code>eth0</code> 上创建 HTB 根队列，分两个类：默认类与限速类，使用 <code>fw</code> 过滤器按标记将集合流量导向限速类。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 1) 创建根 qdisc：HTB，默认 class id 1:30</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc qdisc add dev eth0 root handle 1: htb default</span><span style=color:#b48ead> 30</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 2) 创建类：为 restricted_clients 分配 10Mbit（可调），普通流量 100Mbit</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit prio</span><span style=color:#b48ead> 1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc class add dev eth0 parent 1: classid 1:30 htb rate 100mbit ceil 100mbit prio</span><span style=color:#b48ead> 2</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 3) 为类挂队列（可选优化：FQ-CoDel 降低排队延迟）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc qdisc add dev eth0 parent 1:10 handle 10: fq_codel</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc qdisc add dev eth0 parent 1:30 handle 30: fq_codel</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 4) 过滤器：按 fw 标记 0x1 将流量导入 1:10（限速类）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc filter add dev eth0 parent 1: protocol ip prio</span><span style=color:#b48ead> 10</span><span style=color:#a3be8c> handle</span><span style=color:#b48ead> 0x1</span><span style=color:#a3be8c> fw flowid 1:10</span></span></code></pre><p>参数说明：<ul><li><code>htb</code>：分层令牌桶，适合多类带宽分配与上限控制（<code>rate</code>/<code>ceil</code>）<li><code>fq_codel</code>：队列算法，抑制 Bufferbloat，改善交互延迟<li><code>fw filter</code>：按 <code>skb->mark</code> 分类；iptables 置位的 <code>MARK</code> 在此生效<li><code>rate/ceil</code>：保证速率与上限；必要时结合 <code>burst/cburst</code>（令牌桶突发）</ul><hr><h1 id=pei-zhi-wan-zheng-shi-li-yu-zhu-xiang-shuo-ming>配置完整示例与逐项说明</h1><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># ==== ipset ====</span></span>
+<span class=giallo-l><span style=color:#616e88># 创建集合并导入样例 IP</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> create restricted_clients hash:ip maxelem</span><span style=color:#b48ead> 65536</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> add restricted_clients</span><span style=color:#b48ead> 203.0.113.10</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> add restricted_clients</span><span style=color:#b48ead> 203.0.113.11</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> add restricted_clients</span><span style=color:#b48ead> 203.0.113.12</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># ==== iptables ====</span></span>
+<span class=giallo-l><span style=color:#616e88># mangle 表：标记集合流量为 0x1（PREROUTING 更早匹配）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tables</span><span style=color:#a3be8c> -t mangle -A PREROUTING -m set --match-set restricted_clients src -j MARK --set-mark</span><span style=color:#b48ead> 0x1</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># filter 表：禁止集合访问 SSH（22）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -A INPUT -p tcp --dport</span><span style=color:#b48ead> 22</span><span style=color:#a3be8c> -m set --match-set restricted_clients src -j DROP</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># filter 表：允许集合访问 80/443</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -A INPUT -p tcp -m multiport --dports 80,443 -m set --match-set restricted_clients src -j ACCEPT</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 一般允许已建立连接，避免误伤</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># ==== tc ====</span></span>
+<span class=giallo-l><span style=color:#616e88># HTB 根队列，默认类 1:30（普通流量）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev eth0 root handle 1: htb default</span><span style=color:#b48ead> 30</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 创建限速类（集合流量）与普通类</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit prio</span><span style=color:#b48ead> 1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> class add dev eth0 parent 1: classid 1:30 htb rate 100mbit ceil 100mbit prio</span><span style=color:#b48ead> 2</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 为类挂 FQ-CoDel 队列（可选）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev eth0 parent 1:10 handle 10: fq_codel</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev eth0 parent 1:30 handle 30: fq_codel</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 按 fw 标记分类：0x1 -> 1:10（限速）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> filter add dev eth0 parent 1: protocol ip prio</span><span style=color:#b48ead> 10</span><span style=color:#a3be8c> handle</span><span style=color:#b48ead> 0x1</span><span style=color:#a3be8c> fw flowid 1:10</span></span></code></pre><p>验证方法：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 查看 ipset 集合及命中统计</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> list restricted_clients</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 查看 iptables 规则与计数</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -t mangle -vnL PREROUTING</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -vnL INPUT</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 查看 tc 类与队列统计（字节/包/丢弃等）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> -s class show dev eth0</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> -s qdisc show dev eth0</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 进行带宽测试（从集合中的客户端发起）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iperf3</span><span style=color:#a3be8c> -c</span><span style=color:#81a1c1> &lt;</span><span style=color:#a3be8c>server-i</span><span>p</span><span style=color:#81a1c1>></span><span style=color:#a3be8c> -p</span><span style=color:#b48ead> 5201</span></span>
+<span class=giallo-l><span style=color:#616e88># 期望限速类吞吐 ≈ 10Mbit，普通类不受影响</span></span></code></pre><hr><h1 id=ying-yong-chang-jing-kuo-zhan-yu-zui-jia-shi-jian>应用场景扩展与最佳实践</h1><ul><li><p>企业网络管理</p> <ul><li>租户/部门/分环境的 IP 集合管理（ipset），配合 iptables 做端口准入控制<li>按集合限速（tc/htb + fw filter），保障核心业务优先级</ul><li><p>DDoS 防护（基础版）</p> <ul><li>通过 ipset 快速维护黑名单；iptables 直接 DROP 或限速打标<li>结合 <code>hashlimit</code> 模块对新建连接速率限流（如 SYN），减轻峰值冲击</ul><li><p>性能优化建议</p> <ul><li>集合规模规划：<code>maxelem/hashsize</code> 与内存开销权衡；批量导入用 <code>ipset restore</code><li>规则层次清晰：先 mangle 打标，后 filter 做准入；减少重复匹配<li>队列算法选择：默认 <code>fq_codel</code> 提升交互；大带宽可评估 <code>cake</code><li>入口限速：使用 ifb 重定向 ingress<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 创建 ifb 并启用</span></span>
+<span class=giallo-l><span style=color:#88c0d0>modprobe</span><span style=color:#a3be8c> ifb</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link add ifb0 type ifb</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link set ifb0 up</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 将 eth0 ingress 重定向到 ifb0</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev eth0 handle ffff: ingress</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> filter add dev eth0 parent ffff: protocol ip u32 match u32</span><span style=color:#b48ead> 0 0</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  action mirred egress redirect dev ifb0</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 在 ifb0 上做 HTB/TBF 等入口整形</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev ifb0 root handle 2: htb default</span><span style=color:#b48ead> 20</span></span>
+<span class=giallo-l><span style=color:#616e88># ... 类与过滤器同上（可按 mark 或 u32/flower 匹配）</span></span></code></pre></ul></ul><hr><h1 id=cgroup-wang-luo-kong-jian-ji-cheng-shi-jian>cgroup 网络空间集成实践</h1><h2 id=host-wang-luo-mo-shi-vs-fei-host-wang-luo-mo-shi>Host 网络模式 vs 非 Host 网络模式</h2><p>本文前面介绍了按进程（cgroup）、按目的地址集合（ipset）和按接口/队列（tc）的整形与管控。本小节聚焦容器/进程的网络命名空间（netns）维度，解释 Host 网络模式与独立网络命名空间（非 Host 模式）的差异及实操要点。<h3 id=1-wang-luo-ge-chi-xing>1) 网络隔离性</h3><ul><li>Host 模式：进程/容器直接加入宿主机的网络命名空间，复用同一网络栈与接口（如 <code>eth0</code>、<code>lo</code>）。没有网络隔离，容器内看到的 <code>127.0.0.1</code> 与宿主机一致。<li>非 Host 模式：为进程/容器创建独立的网络命名空间，通常通过 <code>veth</code> 与宿主机桥接（bridge）或使用 <code>macvlan/ipvlan</code> 等机制。命名空间间网络栈相互隔离，需要显式路由/端口映射才能互访。</ul><h3 id=2-wang-luo-pei-zhi>2) 网络配置</h3><ul><li>Host 模式： <ul><li>使用宿主机 IP 与端口，直接在主机 <code>iptables</code>/<code>tc</code> 规则范围内活动。<li>端口冲突需自行避免（容器与宿主机服务共享同一端口空间）。</ul><li>非 Host 模式： <ul><li>容器/进程拥有独立 IP（来自 bridge/maclvan 网络），与宿主机通过 NAT（<code>-p</code> 端口映射）或路由互通。<li>端口映射通常通过 <code>iptables</code> <code>nat</code> 表 <code>PREROUTING/OUTPUT/POSTROUTING</code> 完成；也可不经 NAT，直接在同一二层网络下互通（macvlan/ipvlan）。</ul></ul><h3 id=3-xing-neng-ying-xiang>3) 性能影响</h3><ul><li>Host 模式：路径最短，无 <code>veth</code>/bridge/NAT 额外开销，通常更低延迟与更高吞吐。避免 <code>conntrack</code> 压力与 SNAT 代价，适合高 PPS/低延迟场景。<li>非 Host 模式：存在 <code>veth</code>、bridge、NAT/conntrack 等开销。若采用 <code>macvlan/ipvlan</code> 且不经 NAT，性能介于 Host 与 bridge+NAT 之间。开启/关闭网卡与栈的硬件卸载（GRO/LRO/TSO）也会影响实际性能。</ul><h3 id=4-an-quan-xing>4) 安全性</h3><ul><li>Host 模式：安全性较低。进程/容器可访问宿主机网络栈（包含 <code>lo</code>），宿主机 <code>INPUT/OUTPUT</code> 规则直接影响容器，容器误配置更易影响全机网络。<li>非 Host 模式：命名空间隔离更强，可在容器 netns 内单独维护 <code>iptables</code>，并在宿主机上通过 <code>FORWARD</code> 与 bridge 接口集中治理。适合多租户、严格边界控制与网络策略（NetworkPolicy）场景。</ul><h3 id=5-shi-yong-chang-jing>5) 使用场景</h3><ul><li>Host 模式： <ul><li>需要极致网络性能与最低延迟的服务（如负载均衡、数据面代理、主机级监控代理如 <code>node_exporter</code>）。<li>必须直接绑定宿主机地址的守护进程（如监听 <code>:80/:443</code> 的反向代理）。</ul><li>非 Host 模式： <ul><li>多租户隔离、零信任分段、需精细网络策略与审计的微服务集群。<li>需要不同 IP/路由域的服务编排，简化冲突管理与迁移。</ul></ul><h3 id=6-pei-zhi-shi-li>6) 配置示例</h3><ul><li><p>Docker</p> <ul><li>Host 模式：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 容器共享宿主机网络命名空间，无端口映射</span></span>
+<span class=giallo-l><span style=color:#88c0d0>docker</span><span style=color:#a3be8c> run --rm --network host --name svc-host-mode</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -e ENV=prod myimage:latest</span></span></code></pre><li>Bridge（非 Host）模式：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 默认 bridge，容器独立 netns + veth；通过 -p 进行端口映射（NAT）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>docker</span><span style=color:#a3be8c> run --rm --name svc-bridge -p 8080:80 myimage:latest</span></span></code></pre><li>Macvlan（非 Host）模式：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 宿主机与容器处于同一二层域，无需 NAT；更接近物理直连，仍具命名空间隔离</span></span>
+<span class=giallo-l><span style=color:#88c0d0>docker</span><span style=color:#a3be8c> network create -d macvlan</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  --subnet=192.168.10.0/24 --gateway=192.168.10.1</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -o parent=eth0 macvlan_net</span></span>
+<span class=giallo-l><span style=color:#88c0d0>docker</span><span style=color:#a3be8c> run --rm --network macvlan_net --name svc-macvlan myimage:latest</span></span></code></pre></ul><li><p>Kubernetes</p> <ul><li>Host 网络：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=yaml><span class=giallo-l><span style=color:#8fbcbb>apiVersion</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> v1</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>kind</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> Pod</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>metadata</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> svc-host-net</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>spec</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  hostNetwork</span><span style=color:#eceff4>:</span><span style=color:#81a1c1> true</span><span style=color:#616e88>  # 直接加入宿主机 netns</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  containers</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#eceff4>    -</span><span style=color:#8fbcbb> name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> app</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      image</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> myimage:latest</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      ports</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#eceff4>        -</span><span style=color:#8fbcbb> containerPort</span><span style=color:#eceff4>:</span><span style=color:#b48ead> 8080</span><span style=color:#616e88>  # 注意与宿主机端口冲突</span></span></code></pre><li>非 Host（由 CNI 提供隔离网络）：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=yaml><span class=giallo-l><span style=color:#8fbcbb>apiVersion</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> v1</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>kind</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> Pod</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>metadata</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> svc-bridge-net</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>spec</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  containers</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#eceff4>    -</span><span style=color:#8fbcbb> name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> app</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      image</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> myimage:latest</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      ports</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#eceff4>        -</span><span style=color:#8fbcbb> containerPort</span><span style=color:#eceff4>:</span><span style=color:#b48ead> 80</span></span>
+<span class=giallo-l><span style=color:#616e88># 通过 Service/Ingress 暴露，底层常见为 veth+bridge，必要时经 NAT。</span></span></code></pre></ul><li><p>手动 netns（Linux 原生）</p> <pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 创建独立网络命名空间，配置 veth 与 bridge（非 Host）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> netns add ns1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link add veth-host type veth peer name veth-ns1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link set veth-ns1 netns ns1</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 宿主机侧创建 bridge 并加入 veth-host</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link add name br0 type bridge</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link set veth-host master br0</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link set br0 up</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> link set veth-host up</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 命名空间内配置 IP 与默认路由</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> netns exec ns1 ip addr add 10.10.0.2/24 dev veth-ns1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> netns exec ns1 ip link set veth-ns1 up</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> netns exec ns1 ip route add default via</span><span style=color:#b48ead> 10.10.0.1</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 宿主机为 br0 配置地址作为网关</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ip</span><span style=color:#a3be8c> addr add 10.10.0.1/24 dev br0</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 出站上网的 NAT（示例）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -t nat -A POSTROUTING -s 10.10.0.0/24 -o eth0 -j MASQUERADE</span></span></code></pre></ul><h3 id=7-yu-iptables-ipset-tc-de-ji-cheng-chai-yi>7) 与 iptables/ipset/tc 的集成差异</h3><ul><li><p>Host 模式：</p> <ul><li><code>iptables</code>：容器进程经过宿主机 <code>OUTPUT/INPUT</code>（本机出入站）与 <code>FORWARD</code>（转发场景）。可直接在宿主机使用 <code>-m cgroup</code>/<code>-m set</code> 做准入与标记。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 结合 cgroup + ipset，按进程与目标集合做标记与限速</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -t mangle -A OUTPUT -m cgroup --cgroup</span><span style=color:#b48ead> 0x00010010</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -m set --match-set restricted dst -j MARK --set-mark</span><span style=color:#b48ead> 0x3</span></span></code></pre><li><code>tc</code>：建议在实际出站接口（如 <code>eth0</code>）布置队列与过滤器，<code>cgroup</code> 过滤器可直接匹配该进程的 <code>classid</code>。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev eth0 root handle 1: htb default</span><span style=color:#b48ead> 30</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> class add dev eth0 parent 1: classid 1:10 htb rate 10mbit ceil 10mbit</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> filter add dev eth0 parent 1: protocol ip prio</span><span style=color:#b48ead> 20</span><span style=color:#a3be8c> cgroup flowid 1:10</span></span></code></pre></ul><li><p>非 Host 模式：</p> <ul><li><code>iptables</code>：容器流量经 <code>veth</code> 进入宿主机 bridge，一般走 <code>FORWARD</code> 链与 <code>nat</code>。可在宿主机匹配 <code>-i vethX</code>/bridge 端口，或进入容器 netns 内单独维护防火墙。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 宿主机上按容器 veth 接口做访问限制（示例）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>iptables</span><span style=color:#a3be8c> -A FORWARD -i vethXYZ -m set --match-set restricted dst -j DROP</span></span></code></pre><li><code>tc</code>：可以选择在容器 <code>eth0</code>（命名空间内）、宿主机 veth 对端或 bridge 设备上布置队列与过滤器；若使用 <code>cgroup</code> 过滤器，仍可匹配由 <code>net_cls</code> 标记的套接字，但需确保过滤器挂载在实际经过的数据路径设备上。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 示例：对宿主机 veth 对端做限速（假设设备名 veth-host）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev veth-host root handle 1: htb default</span><span style=color:#b48ead> 30</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> class add dev veth-host parent 1: classid 1:10 htb rate 5mbit ceil 5mbit</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> filter add dev veth-host parent 1: protocol ip prio</span><span style=color:#b48ead> 20</span><span style=color:#a3be8c> cgroup flowid 1:10</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 或在 bridge 设备上按流分类（可结合 flower/iptables 标记）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> qdisc add dev br0 root handle 1: htb default</span><span style=color:#b48ead> 30</span></span>
+<span class=giallo-l><span style=color:#88c0d0>tc</span><span style=color:#a3be8c> filter add dev br0 ingress prio</span><span style=color:#b48ead> 10</span><span style=color:#a3be8c> flower skip_sw</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  dst_ip 203.0.113.0/24 action drop</span></span></code></pre></ul></ul><h3 id=8-shi-ji-zhu-yi-shi-xiang>8) 实际注意事项</h3><ul><li>端口与地址：Host 模式需要避免端口冲突与误监听（容器监听 <code>127.0.0.1</code> 即为宿主机回环）。非 Host 模式建议通过 Service/Ingress 或明确路由暴露服务。<li>策略边界：非 Host 模式可在容器 netns 内单独维护 <code>iptables/ipset</code>，并在宿主机通过 <code>FORWARD</code> 与 bridge 汇总治理；Host 模式建议统一在宿主机层做分段与速率控制。<li>性能与可靠性： <ul><li>关注 <code>conntrack</code> 容量与哈希：非 Host NAT 场景下可调 <code>nf_conntrack_max</code> 与 <code>hashsize</code>，避免高并发丢包。<li>选择合适队列算法：<code>fq_codel/cake</code> 抑制 Bufferbloat；HTB 做带宽层次管理。<li>评估硬件卸载与 GRO/LRO/TSO 开关对延迟/CPU 的影响。</ul><li>兼容性：Kubernetes <code>hostNetwork: true</code> 与 CNI/NetworkPolicy 的交互因实现而异，需结合具体 CNI 文档验证策略是否仍生效或需要例外规则。<li>持久化与编排：在主机用 systemd unit/开机脚本持久化 <code>iptables/tc</code>；容器场景可在入口脚本中执行 netns 内规则，或使用宿主机守护进程监听容器生命周期事件同步策略。</ul><h2 id=ji-ben-gai-nian-yu-gong-zuo-yuan-li>基本概念与工作原理</h2><ul><li>cgroups（控制组）用于按进程维度进行资源隔离与配额管理。网络相关的两个传统控制器： <ul><li><code>net_cls</code>（v1）：为所属 cgroup 的进程产生的网络包打上 32 位 <code>classid</code>（位于 <code>skb->priority</code>），用于后续在 <code>tc</code> 中以 <code>cgroup</code> 过滤器分类，或在 iptables 以 <code>-m cgroup</code> 匹配。<li><code>net_prio</code>（v1）：按接口为 socket 设置优先级（较少使用）。</ul><li>cgroup v2 差异：统一层级中不再包含 <code>net_cls/net_prio</code> 控制器。现代内核推荐用 BPF（如 <code>tc</code> eBPF + <code>clsact</code>，或 cgroup-bpf 钩子）实现按进程/服务的网络分类与策略。本文以 v1 <code>net_cls</code> 为主，并给出 v2 的替代思路。</ul><p>ASCII 流程示意：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>[Process in cgroup] --(net_cls: classid)--> [skb->priority]</span></span>
+<span class=giallo-l><span>        |                                  |</span></span>
+<span class=giallo-l><span>        |                             tc filter cgroup -> class</span></span>
+<span class=giallo-l><span>        v                                  v</span></span>
+<span class=giallo-l><span>     iptables -m cgroup              HTB/FQ-CoDel shaping</span></span></code></pre><h2 id=pei-zhi-bu-zou-yu-ming-ling-shi-li-cgroup-v1-net-cls>配置步骤与命令示例（cgroup v1 net_cls）</h2><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 1) 挂载 net_cls（若系统未自动挂载）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> mkdir -p /sys/fs/cgroup/net_cls</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> mount -t cgroup -o net_cls none /sys/fs/cgroup/net_cls</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 2) 创建 cgroup 并设置 classid（示例：0x00010010）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> mkdir -p /sys/fs/cgroup/net_cls/restricted_svc</span></span>
+<span class=giallo-l><span style=color:#88c0d0>echo</span><span style=color:#b48ead> 0x00010010</span><span style=color:#81a1c1> |</span><span style=color:#88c0d0> sudo</span><span style=color:#a3be8c> tee /sys/fs/cgroup/net_cls/restricted_svc/net_cls.classid</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 3) 将进程加入该 cgroup（两种方式）</span></span>
+<span class=giallo-l><span style=color:#616e88># 3.1 直接写入 cgroup.procs（PID 示例：12345）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>echo</span><span style=color:#b48ead> 12345</span><span style=color:#81a1c1> |</span><span style=color:#88c0d0> sudo</span><span style=color:#a3be8c> tee /sys/fs/cgroup/net_cls/restricted_svc/cgroup.procs</span></span>
+<span class=giallo-l><span style=color:#616e88># 3.2 通过 cgexec 启动进程（需安装 libcgroup 工具）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> cgexec -g net_cls:restricted_svc /usr/bin/my-service --opts</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 4) 验证 classid 是否生效（可通过 tc/iptables 计数或 ss 观察）</span></span>
+<span class=giallo-l><span style=color:#616e88># tc/iptables 命中计数将用于验证（见下文集成章节）</span></span></code></pre><p>说明与建议：<ul><li><code>classid</code> 为 32 位，常用高 16 位表示主类、低 16 位表示子类，便于分层管理。<li>systemd 环境下也可按服务/切片组织进程，但 net_cls 赋值仍需在对应 cgroup 路径设置。</ul><h2 id=yu-iptables-ipset-tc-de-ji-cheng-shi-yong>与 iptables、ipset、tc 的集成使用</h2><ul><li>tc（按 cgroup 分类到限速类）</ul><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 在 eth0 已创建的 HTB 根队列下，增加 cgroup 过滤器</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> tc filter add dev eth0 parent 1: protocol ip prio</span><span style=color:#b48ead> 20</span><span style=color:#a3be8c> cgroup flowid 1:10</span></span>
+<span class=giallo-l><span style=color:#616e88># 说明：将属于 cgroup 的进程产生的流量导向 class 1:10（限速类）</span></span></code></pre><ul><li>iptables（匹配 cgroup 并打标/过滤）</ul><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 将本机进程的 egress/OUTPUT 流量按 cgroup classid 匹配并设置 MARK=0x3</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -t mangle -A OUTPUT -m cgroup --cgroup</span><span style=color:#b48ead> 0x00010010</span><span style=color:#a3be8c> -j MARK --set-mark</span><span style=color:#b48ead> 0x3</span></span>
+<span class=giallo-l><span style=color:#616e88># 可结合 filter 表进行准入控制（如仅允许 80/443）</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -A OUTPUT -p tcp -m cgroup --cgroup</span><span style=color:#b48ead> 0x00010010</span><span style=color:#a3be8c> -m multiport --dports 80,443 -j ACCEPT</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -A OUTPUT -p tcp -m cgroup --cgroup</span><span style=color:#b48ead> 0x00010010</span><span style=color:#a3be8c> -j DROP</span></span></code></pre><ul><li>与 ipset 组合（进程 + 目的 IP 集合的双重约束）</ul><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 仅当进程属于 cgroup 且目的地址在 restricted_clients 集合时打标/限速</span></span>
+<span class=giallo-l><span style=color:#88c0d0>sudo</span><span style=color:#a3be8c> iptables -t mangle -A OUTPUT -m cgroup --cgroup</span><span style=color:#b48ead> 0x00010010</span><span style=color:#ebcb8b> \</span></span>
+<span class=giallo-l><span style=color:#a3be8c>  -m set --match-set restricted_clients dst -j MARK --set-mark</span><span style=color:#b48ead> 0x1</span></span>
+<span class=giallo-l><span style=color:#616e88># tc 侧继续用 fw/cgroup filter 将标记或 cgroup 流量导向限速类</span></span></code></pre><ul><li>方向选择与注意： <ul><li>进程级匹配更适合本机 egress（<code>OUTPUT</code>）策略；<code>PREROUTING</code>/转发链不一定能关联本机进程。<li>结合现有“按 IP 集合限速”的方案，可通过 cgroup 将本机服务与离线任务区分，避免彼此影响。</ul></ul><h2 id=ying-yong-chang-jing-yu-zui-jia-shi-jian>应用场景与最佳实践</h2><ul><li>按服务/作业限速：将备份、日志上传、离线批处理进程放入 cgroup，限制其带宽与队列优先级，保障交互服务。<li>多租户主机：不同服务（租户）映射不同 <code>classid</code>，在 HTB 下分配独立通道与速率上限。<li>与 IP 集合协同：对外访问仍基于 ipset 管理名单；对内按进程（cgroup）区分业务类型，实现“谁访问 + 访问哪里”的双维管控。<li>命名与映射规范：约定 <code>classid</code> 与 HTB <code>classid</code> 有一致映射（如 0x00010010 -> 1:10），便于运维与审计。</ul><h2 id=xing-neng-diao-you-jian-yi-yu-zhu-yi-shi-xiang>性能调优建议与注意事项</h2><ul><li>队列算法：为 cgroup 对应的类使用 <code>fq_codel</code> 或 <code>cake</code>，降低排队延迟与抖动。<li>过滤器优先级：合理设置 <code>prio</code>，确保 cgroup/mark 过滤器早匹配；避免过多 <code>u32</code> 复杂匹配。<li>监控与验证：使用 <code>tc -s class/qdisc show</code> 与 <code>iptables -vnL</code> 观察命中计数，定期复核 <code>cgroup.procs</code> 中的进程是否符合预期。<li>兼容性： <ul><li>需要内核模块支持：<code>sch_htb</code>、<code>sch_fq_codel</code>、<code>cls_fw</code>、<code>cls_cgroup</code>、<code>xt_set</code>、<code>xt_cgroup</code>。<li>cgroup v2 环境建议评估 BPF 方案（<code>tc qdisc add dev eth0 clsact</code> + <code>tc filter add ... bpf</code>），实现更灵活的按进程/Socket 分类。</ul><li>持久化：将 cgroup 挂载、classid 设置与 tc/iptables 规则固化为开机脚本或 systemd unit，确保重启后生效。<li>安全与隔离：严格控制写入 <code>cgroup.procs</code> 的权限，防止误归类；为高风险作业单独 cgroup 并限制资源上限（CPU/IO 也可结合）。</ul><hr><h1 id=zhu-yi-shi-xiang-yu-pai-cha>注意事项与排查</h1><ul><li><p>操作前备份与回滚</p> <ul><li>备份规则：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>iptables-save</span><span style=color:#81a1c1> ></span><span style=color:#a3be8c> /etc/iptables/rules.v4</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> save</span><span style=color:#81a1c1> ></span><span style=color:#a3be8c> /etc/ipset.conf</span></span></code></pre><li>恢复规则：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#88c0d0>iptables-restore</span><span style=color:#81a1c1> &lt;</span><span style=color:#a3be8c> /etc/iptables/rules.v4</span></span>
+<span class=giallo-l><span style=color:#88c0d0>ipset</span><span style=color:#a3be8c> restore</span><span style=color:#81a1c1> &lt;</span><span style=color:#a3be8c> /etc/ipset.conf</span></span></code></pre></ul><li><p>持久化方法（随发行版而异）</p> <ul><li>Debian/Ubuntu：安装 <code>iptables-persistent</code> 或 <code>netfilter-persistent</code>，保存于 <code>/etc/iptables/rules.v4</code>、<code>/etc/ipset.conf</code><li>RHEL/CentOS：使用 <code>service iptables save</code> 或结合 firewalld/nftables 转写；注意 iptables-nft 与 iptables-legacy 差异<li>tc：通常以脚本（systemd unit）在启动时应用，或借助 NetworkManager/ifup 触发</ul><li><p>常见问题排查</p> <ul><li>标记未生效：检查 <code>mangle</code> 表规则计数；确认 <code>MARK</code> 置位在 <code>PREROUTING</code>/<code>OUTPUT</code> 的正确方向<li>tc 过滤无匹配：确认 <code>fw filter handle</code> 与 iptables 标记一致；检查过滤器挂载的设备（egress 对应出口设备）<li>入口限速未起效：是否使用 <code>ifb</code> 重定向；<code>ingress qdisc</code> 默认只统计不整形<li>nftables 兼容：现代系统默认 iptables-nft，语义兼容但内部实现不同；大规模规则建议评估直接迁移到 nftables</ul></ul><hr><h1 id=zong-jie>总结</h1><ul><li>使用 ipset 管理名单，iptables 做准入与打标，tc 做速率与队列管理，是兼顾简单、性能与可维护性的组合<li>建议以“标记驱动分类”的模式组织规则，保持早打标、少匹配、设备维度清晰<li>推行脚本化与持久化，确保在重启、变更或回滚时可控可复现</ul><p>参考链接：<ul><li>iptables 文档：https://netfilter.org/<li>ipset 手册：https://ipset.netfilter.org/<li>tc 与 qdisc：https://man7.org/linux/man-pages/man8/tc.8.html<li>FQ-CoDel：https://www.bufferbloat.net/projects/codel/wiki/</ul></div></div></section>
