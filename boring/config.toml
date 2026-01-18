@@ -48,8 +48,8 @@ url = "https://github.com/dllen"
 icon = "lab la-github"
 
 [[extra.social]]
-url = "https://github.com/dllen"
-icon = "lar la-user-circle"
+url = "https://deepthink.global/"
+icon = "lar la-rss-square"
 
 [[extra.social]]
 url = "https://bb4bb.me/"
