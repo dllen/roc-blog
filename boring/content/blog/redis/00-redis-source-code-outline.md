@@ -2,8 +2,8 @@
 title: "Redis 源码阅读：系列大纲与学习路径"
 date: 2026-01-10T09:00:00+08:00
 description: "Redis 源码阅读系列博客的完整大纲。规划了从底层数据结构、对象系统、核心架构、数据库实现、持久化到分布式特性的七大阶段阅读路线。"
-tags: [Redis, Source Code, Roadmap, Learning]
-weight: -1
+extra:
+  tags: [Redis, Source Code, Roadmap, Learning]
 ---
 
 > **千里之行，始于足下。** 

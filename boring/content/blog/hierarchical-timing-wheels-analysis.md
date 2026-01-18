@@ -2,7 +2,7 @@
 title: "深入解析时间轮（Timing Wheel）：从 Kafka Purgatory 看高效定时任务调度"
 date: "2023-10-27"
 description: "通过分析 Kafka Purgatory 的重构历程，深入探讨分层时间轮（Hierarchical Timing Wheel）的设计原理、性能优势及其在高性能定时任务调度中的应用。"
-taxonomies:
+extra:
   tags: ["Kafka", "System Design", "Algorithm", "Timing Wheel"]
 ---
 
