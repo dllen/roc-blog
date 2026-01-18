@@ -54,3 +54,7 @@ icon = "lab la-github"
 [[extra.social]]
 url = "https://github.com/dllen"
 icon = "lar la-user-circle"
+
+[[extra.social]]
+url = "https://bb4bb.me/"
+icon = "lar la-tools"
