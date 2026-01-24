@@ -19,7 +19,7 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲
 
 对于大多数人来说，如果你打算这辈子都吃汉堡，你当然希望汉堡价格越低越好。同样，如果你在未来几十年里都是股票的净买入者（通过定投退休金等），你为什么会因为股市上涨而高兴，因为下跌而沮丧呢？
 
-**只有那些打算近期卖出股票的人，才应该为股市上涨而高兴。**
+## 只有那些打算近期卖出股票的人，才应该为股市上涨而高兴。
 
 ## 分散与集中
 
@@ -54,4 +54,4 @@ LTCM聚集了全世界最聪明的头脑，包括诺贝尔奖得主，却因为�
 当市场大跌，"桶里的水"被抽干时，就是理性的投资者出手的最佳时机。
 
 ---
-*本文基于 [2008年巴菲特答Emory与Austin大学商学院学生问](https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲特答Emory与Austin大学商学院学生问巴菲特答.md) 整理。*
+* 本文基于 [2008年巴菲特答Emory与Austin大学商学院学生问](https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲特答Emory与Austin大学商学院学生问巴菲特答.md) 整理。*

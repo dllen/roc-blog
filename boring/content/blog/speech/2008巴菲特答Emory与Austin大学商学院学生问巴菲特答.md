@@ -5,7 +5,7 @@ date = 2008-01-01
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲特答Emory与Austin大学商学院学生问巴菲特答.md"
 +++
 
-**巴菲特答 Emory** **与 Austin** **大学商学院学生问**
+## 巴菲特答 Emory** **与 Austin** **大学商学院学生问
 
 2008 年 2 月 25 日
 

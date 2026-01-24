@@ -62,4 +62,4 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/1985巴菲
 在这个信息过载的时代，承认自己“不懂”，或许比假装自己“全懂”，需要更大的智慧和勇气。
 
 ---
-*本文基于 [1985年巴菲特电视采访](https://github.com/roc-blog/buffett-chinese/blob/main/1985巴菲特电视采访.md) 与 [1991年巴菲特对圣母大学演讲](https://github.com/roc-blog/buffett-chinese/blob/main/1991巴菲特对圣母大学对MBA学生的演讲.md) 整理。*
+* 本文基于 [1985年巴菲特电视采访](https://github.com/roc-blog/buffett-chinese/blob/main/1985巴菲特电视采访.md) 与 [1991年巴菲特对圣母大学演讲](https://github.com/roc-blog/buffett-chinese/blob/main/1991巴菲特对圣母大学对MBA学生的演讲.md) 整理。*

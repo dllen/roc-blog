@@ -8,7 +8,7 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_2025
 # 段永平方略访谈
 01
 
-**聊个人经历**
+## 聊个人经历
 
 方三文：这个用户问了个特别无厘头的问题，你是如何度过平常的一天，比如说今天？
 

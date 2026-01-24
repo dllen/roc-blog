@@ -62,4 +62,4 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/1998巴菲
 把那些你欣赏的品质写下来，努力去实践，把它们变成你的习惯。最终，你不需要买入别人的 10%，因为你自己就已经成为了那个值得被投资的人。
 
 ---
-*本文基于 [1998年巴菲特在佛罗里达大学商学院的演讲](https://github.com/roc-blog/buffett-chinese/blob/main/1998巴菲特在佛罗里达大学商学院的演讲.md) 整理。*
+* 本文基于 [1998年巴菲特在佛罗里达大学商学院的演讲](https://github.com/roc-blog/buffett-chinese/blob/main/1998巴菲特在佛罗里达大学商学院的演讲.md) 整理。*
