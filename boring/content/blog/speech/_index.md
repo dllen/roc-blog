@@ -1,7 +1,7 @@
 +++
 title = "巴菲特演讲集锦：与智慧对话"
 description = "精选巴菲特历年经典演讲与访谈，结合段永平的东方智慧，探索价值投资与快乐人生的真谛。"
-sort_by = "weight"
+sort_by = "date"
 weight = 10
 +++
 
