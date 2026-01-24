@@ -1,0 +1,201 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>ollama 教程 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2024-02-20</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">ollama 教程</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>使用 <code>ollama</code> 在本地运行大模型，并完成几个辅助编程的示例。<h2 id=an-zhuang-ollama>安装 ollama</h2><p>官网地址：<a href=https://ollama.com/>https://ollama.com/</a><p>GitHub 地址：<a href=https://github.com/ollama/ollama>GitHub - ollama/ollama</a><p>开源模型列表：<a href=https://ollama.com/library>Models</a><p>可以根据官网介绍安装 ollama 到本地</p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240220230742.png width=463><p>安装完后执行以下命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash># 下载模型
+ollama pull llama2
+ollama pull codellama:7b
+
+# 查看可用模型列表
+ollama list
+
+# 测试
+ollama run codellama:7b '使用 java 写一个 hello world 程序'
+
+# 测试结果 下面是 AI 生成的内容
+Here is an example of a "Hello World" program in Java:
+</code></pre><pre class=language-java data-lang=java><code class=language-java data-lang=java>public class HelloWorld {
+ public static void main(String[] args) {
+ System.out.println("Hello, World!");
+ }
+}
+</code></pre><pre><code>This program will print the string "Hello, World!" to the console when it is run.
+
+To compile and run this program, you can use the following commands:
+$ javac HelloWorld.java
+$ java HelloWorld
+The first command compiles the Java code into a class file named `HelloWorld.class`. The second command runs the `main` method of the
+`HelloWorld` class, which prints the string "Hello, World!" to the console.
+
+</code></pre><h2 id=fu-zhu-bian-cheng-demo>辅助编程 Demo</h2><h3 id=dai-ma-bian-xie>代码编写</h3><p>运行命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama:7b '你是一个 python 专家，给我写一个 简单 计算器 代码'
+</code></pre><p>生成 python 代码<pre class=language-python data-lang=python><code class=language-python data-lang=python>def calculate(num1, num2, op):
+    if op == "+":
+        return num1 + num2
+    elif op == "-":
+        return num1 - num2
+    elif op == "*":
+        return num1 * num2
+    elif op == "/":
+        return num1 / num2
+    else:
+        raise ValueError("Invalid operator")
+</code></pre><p>生成的 代码介绍<pre><code>这个代码是一个简单的计算器，它接收三个参数：`num1`、`num2` 和 `op`。`num1` 和 `num2` 是被操作数，`op` 是操作符。这个函数将根据 `op` 的值执行相应的计算并返回结果。例如，如果 `op` 为 `"+"`，则返回 `num
+num2`，否则将引发一个 `ValueError`。
+
+这个代码使用了 Python 中的 `if-else` 语句来处理不同的操作符。在 Python 中，`if-else` 语句可以用于根据条件判断执行不同
+语句来处理三种可能的操作符：加法、减法、乘法和除法。如果传入的操作符不是其中一个，则将引发一个 `ValueError`。
+
+这个代码使用了 Python 中的 `return` 语句来返回结果。在 Python 中，`return` 语句可以用于在函数内部返回值。如果我们不使用 `return` 语句，则函数将执行完成后直接退出，并且无法返回任何结果。
+
+这个代码使用了 Python 中的 `raise ValueError` 来引发一个 `ValueError`。在 Python 中，`ValueError` 是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一是一种可以被抛出的异常（exception），它可以用于表示函数或程序中的一个错误。如果我们使用了一个无效的操作符，则将引发一个 `ValueError` 来通知调用者。
+</code></pre><h3 id=code-review>Code Review</h3><p>运行命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama '
+Where is the bug in this code?
+
+def calculate(num1, num2, op):
+    if op == "+":
+        return num1 + num2
+    elif op == "-":
+        return num1 - num2
+    elif op == "*":
+        return num1 * num2
+    elif op == "/":
+        return num1 / num2
+    else:
+        raise ValueError("Invalid operator")
+'
+</code></pre><p>执行结果<blockquote><p>这个模型能发现 除0 的bug，而且可以给出修正后的代码。</blockquote><pre><code>The bug in this code is that the function does not handle division by zero. If the user enters a divide operation (op == "/") and the second
+number (num2) is equal to zero, the function will throw a ZeroDivisionError. To fix this, we can add an additional check to make sure that
+num2 is not equal to zero before performing the division.
+
+Here's the corrected code:
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python>def calculate(num1, num2, op):
+ if op == "+":
+ return num1 + num2
+ elif op == "-":
+ return num1 - num2
+ elif op == "*":
+ return num1 * num2
+ elif op == "/" and num2 != 0:
+ return num1 / num2
+ else:
+ raise ValueError("Invalid operator")
+</code></pre><h3 id=bian-xie-dan-yuan-ce-shi>编写单元测试</h3><p>运行命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama 'write a unit test for this function: 
+def calculate(num1, num2, op):
+    if op == "+":
+        return num1 + num2
+    elif op == "-":
+        return num1 - num2
+    elif op == "*":
+        return num1 * num2
+    elif op == "/" and num2 != 0:
+        return num1 / num2
+    else:
+        raise ValueError("Invalid operator")
+'
+</code></pre><p>运行结果<blockquote><p>可以准确给出单元测代码</blockquote><pre class=language-python data-lang=python><code class=language-python data-lang=python>def test_calculate():
+ assert calculate(3, 4, "+") == 7
+ assert calculate(5, 2, "-") == 3
+ assert calculate(6, 3, "*") == 18
+ assert calculate(10, 2, "/") == 5
+ with pytest.raises(ValueError):
+ calculate(10, 0, "/")
+</code></pre><pre><code>This unit test covers all the possible cases for the `calculate` function:
+
+* Adding two numbers (3 + 4 = 7)
+* Subtracting two numbers (5 - 2 = 3)
+* Multiplying two numbers (6 * 3 = 18)
+* Dividing two numbers (10 / 2 = 5)
+* Dividing by zero (raises a `ValueError`)
+
+The test uses the `pytest` framework to write and run the unit tests. The `assert` statement is used to verify that the function returns the
+expected result for each operation. The `with pytest.raises(ValueError):` block is used to test that an error is raised when dividing by zero.
+</code></pre><h3 id=dai-ma-ti-shi>代码提示</h3><p>运行命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama:7b '# 提供一个函数反转数组元素:'
+</code></pre><p>执行结果<pre><code>[PYTHON]
+def reverse(my_list):
+    return my_list[::-1]
+[/PYTHON]
+[TESTS]
+# Test case 1:
+assert reverse([]) == []
+# Test case 2:
+assert reverse([1, 2, 3]) == [3, 2, 1]
+# Test case 3:
+assert reverse([1, 2, 3, 4, 5]) == [5, 4, 3, 2, 1]
+[/TESTS]
+</code></pre><h3 id=dai-ma-bu-qi>代码补齐</h3><p>运行命令<blockquote><p>需要使用下面这种格式的提示词<pre><code>&LTPRE> {prefix} &LTSUF>{suffix} &LTMID>
+</code></pre></blockquote><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama:7b '&LTPRE> def max_val(x, y): &LTSUF>return result &LTMID>'
+</code></pre><p>执行结果<pre><code>  # Check if x is greater than y
+    if x > y:
+        result = x
+    else:
+        result = y
+
+     &LTEOT>
+</code></pre><blockquote><p><code>&LTEOT></code> 是一个结束标记，与 <code>&LTPRE></code> <code>&LTSUF></code> <code>&LTMID></code> 类似</blockquote><h3 id=java-spring>Java & Spring</h3><p>运行命令<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>ollama run codellama:7b '
+# Java Spring MVC 输出 hello world
+public String helloworld():'
+</code></pre><p>执行结果<pre class=language-java data-lang=java><code class=language-java data-lang=java>@RequestMapping(value = "/helloworld", method = RequestMethod.GET)
+public String helloworld() {
+    return "Hello, World!";
+}
+</code></pre><h2 id=gong-ju-bao>工具包</h2><h3 id=python>python</h3><pre><code>pip install ollama
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># 简单问答
+import ollama
+response = ollama.chat(model='llama2', messages=[
+  {
+    'role': 'user',
+    'content': 'Why is the sky blue?',
+  },
+])
+print(response['message']['content'])
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># 获取生成的内容流
+for chunk in chat('mistral', messages=messages, stream=True):
+  print(chunk['message']['content'], end='', flush=True)
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># 文本生成
+result = ollama.generate(
+  model='stable-code',
+  prompt='// A c function to reverse a string\n',
+)
+print(result['response'])
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># Multi-modal 图片识别
+with open('image.png', 'rb') as file:
+  response = ollama.chat(
+    model='llava',
+    messages=[
+      {
+        'role': 'user',
+        'content': 'What is strange about this image?',
+        'images': [file.read()],
+      },
+    ],
+  )
+print(response['message']['content'])
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># 自定义模型
+modelfile='''
+FROM llama2
+SYSTEM You are mario from super mario bros.
+'''
+
+ollama.create(model='example', modelfile=modelfile)
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python># client
+ollama = Client(host='my.ollama.host')
+</code></pre><h3 id=javascript>JavaScript</h3><pre><code>npm install ollama
+</code></pre><pre class=language-javascript data-lang=javascript><code class=language-javascript data-lang=javascript>import ollama from 'ollama'
+
+const response = await ollama.chat({
+  model: 'llama2',
+  messages: [{ role: 'user', content: 'Why is the sky blue?' }],
+})
+console.log(response.message.content)
+</code></pre><h3 id=http-api>HTTP API</h3><p>API文档：https://github.com/ollama/ollama/blob/main/docs/api.md<pre><code>curl http://localhost:11434/api/generate -d '{
+  "model": "llama2",
+  "prompt":"Why is the sky blue?"
+}'
+</code></pre><h3 id=langchain>LangChain</h3><p>参考文档：https://python.langchain.com/docs/integrations/llms/ollama<pre class=language-python data-lang=python><code class=language-python data-lang=python>from langchain_community.llms import Ollama
+
+llm = Ollama(model="llama2")
+
+llm.invoke("Tell me a joke")
+</code></pre><pre class=language-python data-lang=python><code class=language-python data-lang=python>query = "Tell me a joke"
+
+for chunks in llm.stream(query):
+    print(chunks)
+</code></pre><h2 id=ke-shi-hua-gong-ju>可视化工具</h2><h3 id=ollamac>Ollamac</h3><p>地址：<a href=https://github.com/kevinhermawan/Ollamac>GitHub - kevinhermawan/Ollamac: A macOS app for interacting with the Ollama models</a><p><strong>安装命令</strong><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>brew install --cask ollamac
+</code></pre><p><strong>演示Demo</strong></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221000724.png width=767><h3 id=open-webui>Open WebUI</h3><p>地址：<a href=https://github.com/open-webui/open-webui>GitHub - open-webui/open-webui: ChatGPT-Style WebUI for LLMs (Formerly Ollama WebUI)</a><p><strong>安装命令</strong><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
+</code></pre><p><strong>演示Demo</strong><p>浏览器打开 <code>http://127.0.0.1:3000/</code></p><img alt src=https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240221002641.png width=694><h2 id=can-kao-zi-liao>参考资料</h2><ul><li><p><a href=https://ollama.com/blog>Blog · Ollama</a></p><li><p><a href=https://arthurchiao.art/blog/llama-paper-zh/>[译][论文] LLaMA：开放和高效的基础语言模型集（Meta/Facebook，2022）</a></p><li><p>https://python.langchain.com/docs/integrations/llms/ollama</p><li><p><a href=https://klu.ai/glossary/ollama>Ollama: Easily run LLMs locally — Klu</a></p><li><p><a href=https://ollama.com/blog/python-javascript-libraries>Python & JavaScript Libraries · Ollama Blog</a></p><li><p><a href=https://ollama.com/blog/openai-compatibility>OpenAI compatibility · Ollama Blog</a></p></ul></div></div></section>

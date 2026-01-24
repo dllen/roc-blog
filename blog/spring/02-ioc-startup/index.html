@@ -1,0 +1,48 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Spring 源码阅读：02. IoC 容器启动流程 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/spring/> /spring </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-01-14</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Spring 源码阅读：02. IoC 容器启动流程</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>Spring 的核心就是 IoC 容器。了解 <code>ApplicationContext</code> 是如何启动的，是阅读源码的第一步。<h2 id=1-he-xin-fang-fa-refresh>1. 核心方法：<code>refresh()</code></h2><p>所有 ApplicationContext 的启动逻辑都封装在 <code>AbstractApplicationContext.refresh()</code> 方法中。这是一个典型的<strong>模板方法模式</strong>。<pre class=language-java data-lang=java><code class=language-java data-lang=java>public void refresh() throws BeansException, IllegalStateException {
+    synchronized (this.startupShutdownMonitor) {
+        // 1. 准备环境 (Environment, PropertySources)
+        prepareRefresh();
+
+        // 2. 获取 BeanFactory (DefaultListableBeanFactory)
+        // 加载 BeanDefinition (XML, Annotation)
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // 3. 预处理 BeanFactory (设置 ClassLoader, 忽略接口等)
+        prepareBeanFactory(beanFactory);
+
+        try {
+            // 4. 子类扩展点 (如 WebServer 启动)
+            postProcessBeanFactory(beanFactory);
+
+            // 5. 调用 BeanFactoryPostProcessor (BFPP)
+            // 比如 PropertyPlaceholderConfigurer 替换占位符
+            // ConfigurationClassPostProcessor 解析 @Configuration 类
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // 6. 注册 BeanPostProcessor (BPP)
+            // 比如 AutowiredAnnotationBeanPostProcessor 处理 @Autowired
+            registerBeanPostProcessors(beanFactory);
+
+            // 7. 初始化 MessageSource (国际化)
+            initMessageSource();
+
+            // 8. 初始化事件广播器
+            initApplicationEventMulticaster();
+
+            // 9. 子类扩展点 (onRefresh)
+            // Spring Boot 在这里启动 Tomcat
+            onRefresh();
+
+            // 10. 注册监听器
+            registerListeners();
+
+            // 11. 实例化所有非懒加载的单例 Bean (核心步骤!)
+            finishBeanFactoryInitialization(beanFactory);
+
+            // 12. 发布 ContextRefreshedEvent
+            finishRefresh();
+        }
+        ...
+    }
+}
+</code></pre><h2 id=2-beandefinition-de-jia-zai>2. <code>BeanDefinition</code> 的加载</h2><p>在步骤 2 <code>obtainFreshBeanFactory()</code> 中，Spring 会加载所有的 <code>BeanDefinition</code>。 <code>BeanDefinition</code> 是 Spring 对 Bean 的元数据描述（类名、Scope、属性值、依赖关系等）。<ul><li><strong>XML</strong>: <code>XmlBeanDefinitionReader</code> 解析 XML。<li><strong>Annotation</strong>: <code>ConfigurationClassPostProcessor</code> (在步骤 5 执行) 解析 <code>@Component</code>, <code>@Bean</code>。</ul><h2 id=3-shi-li-hua-shi-ji>3. 实例化时机</h2><p>注意，在步骤 11 之前，容器中只有 <code>BeanDefinition</code>，还没有真正的 Bean 实例（BFPP 和 BPP 除外）。 只有执行到 <code>finishBeanFactoryInitialization</code> 时，Spring 才会遍历所有的 <code>BeanDefinition</code>，调用 <code>getBean()</code> 触发实例化。<hr><p><strong>Next</strong>: <a href=../03-bean-lifecycle/>Spring 源码阅读：03. Bean 的生命周期</a></div></div></section>
