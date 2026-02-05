@@ -1,3 +1,7 @@
 [submodule "themes/boring"]
 	path = themes/boring
 	url = https://github.com/ssiyad/boring
+
+[submodule "buffett-chinese"]
+	path = buffett-chinese
+	url = https://github.com/gengjiawen/buffett-chinese.git
