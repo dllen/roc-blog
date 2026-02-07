@@ -1,0 +1,393 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Javassist tutorial | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2019-12-01</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Javassist tutorial</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p><a href=https://github.com/jboss-javassist/javassist>GitHub - jboss-javassist/javassist: Java bytecode engineering toolkit</a><ul><li><p><a href=https://www.javassist.org/tutorial/tutorial.html>tutorial</a></p><li><p><a href=https://www.javassist.org/tutorial/tutorial2.html>tutorial2</a></p><li><p><a href=https://www.javassist.org/tutorial/tutorial3.html>tutorial3</a></p></ul><p><a href=https://gitee.com/dllen/dllen-demos/tree/master/javassist-tour>示例代码地址</a><h3 id=java-bytecode>Java Bytecode</h3><p><a href=https://en.wikipedia.org/wiki/Java_bytecode_instruction_listings>Java字节码指令列表</a><p>示例：<code>Point.java</code><pre class=language-java data-lang=java><code class=language-java data-lang=java>package com.ks.test.app;
+
+public class Point {
+
+    private int x;
+    private int y;
+    public String name;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void move(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+}
+</code></pre><p>编译java文件并查看字节码<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>mvn clean compile
+
+javap -c target.classes.com.ks.test.app.Point
+</code></pre><p>Java 字节码<pre class=language-java data-lang=java><code class=language-java data-lang=java>public class com.ks.test.app.Point {
+  public java.lang.String name;
+
+  public com.ks.test.app.Point(int, int);
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."&LTinit>":()V
+       4: aload_0
+       5: iload_1
+       6: putfield      #2                  // Field x:I
+       9: aload_0
+      10: iload_2
+      11: putfield      #3                  // Field y:I
+      14: return
+
+  public int getX();
+    Code:
+       0: aload_0
+       1: getfield      #2                  // Field x:I
+       4: ireturn
+
+  public void setX(int);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: putfield      #2                  // Field x:I
+       5: return
+
+  public int getY();
+    Code:
+       0: aload_0
+       1: getfield      #3                  // Field y:I
+       4: ireturn
+
+  public void setY(int);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: putfield      #3                  // Field y:I
+       5: return
+
+  public void move(int, int);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: putfield      #2                  // Field x:I
+       5: aload_0
+       6: iload_2
+       7: putfield      #3                  // Field y:I
+      10: return
+}
+</code></pre><p>分析一下<code>move()</code>方法的字节码<ul><li><p>aload_0: 从局部变量0加载一个引用到堆栈上</p><li><p>iload_1: 从局部变量1加载 int 值</p><li><p>putfield：给对象赋值</p><li><p>return：方法返回</p></ul><p>Java代码都会编译成字节码，使用 <em><a href=http://jboss-javassist.github.io/javassist/>Javasisst</a></em> 可以非常容易的修改字节码；<h3 id=generating-a-java-class>Generating a Java Class</h3><p>生产一个Java类<pre class=language-java data-lang=java><code class=language-java data-lang=java>import java.lang.reflect.Field;
+import javassist.ClassPool;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+
+public class Demo1 {
+
+    public static void main(String[] args) throws Exception {
+
+        // 生产一个Demo类，并添加一个id字段
+        ClassFile cf = new ClassFile(false, "com.ks.test.app.Demo", null);
+
+        cf.setInterfaces(new String[]{"java.io.Serializable"});
+
+        FieldInfo fieldInfo = new FieldInfo(cf.getConstPool(), "id", "I");
+        fieldInfo.setAccessFlags(AccessFlag.PUBLIC);
+        cf.addField(fieldInfo);
+
+        ClassPool classPool = ClassPool.getDefault();
+
+        Field[] fields = classPool.makeClass(cf).toClass().getFields();
+
+        //
+        System.out.println(fields[0].getName());
+    }
+
+}
+</code></pre><h3 id=loading-bytecode-instructions-of-class>Loading Bytecode instructions of Class</h3><p>获取Java Class 的字节码<pre class=language-java data-lang=java><code class=language-java data-lang=java>import javassist.ClassPool;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Mnemonic;
+
+public class Demo2 {
+
+    public static void main(String[] args) throws Exception {
+        ClassPool classPool = ClassPool.getDefault();
+
+        ClassFile classFile = classPool.get("com.ks.test.app.Point").getClassFile();
+
+        MethodInfo methodInfo = classFile.getMethod("move");
+
+        CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
+
+        CodeIterator codeIterator = codeAttribute.iterator();
+
+        // 打印 move 方法的字节码
+        System.out.println("start print move byte code....");
+        System.out.println();
+        while (codeIterator.hasNext()) {
+            int index = codeIterator.next();
+            int op = codeIterator.byteAt(index);
+            System.out.println(Mnemonic.OPCODE[op]);
+        }
+        System.out.println();
+        System.out.println("end print move byte code....");
+    }
+
+}
+</code></pre><h3 id=adding-fields-to-existing-class-bytecode>Adding Fields to Existing Class Bytecode</h3><p>给已有Java Class 添加字段<pre class=language-java data-lang=java><code class=language-java data-lang=java>import java.lang.reflect.Field;
+import javassist.ClassPool;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+
+public class Demo3 {
+
+    public static void main(String[] args) throws Exception {
+        ClassPool classPool = ClassPool.getDefault();
+
+        ClassFile classFile = classPool.get("com.ks.test.app.Point").getClassFile();
+        // 给 Point 类添加一个id字段
+        FieldInfo fieldInfo = new FieldInfo(classFile.getConstPool(), "id", "I");
+        fieldInfo.setAccessFlags(AccessFlag.PUBLIC);
+
+        classFile.addField(fieldInfo);
+
+        // only get public fields
+        Field[] fields = classPool.makeClass(classFile).toClass().getFields();
+
+        for (Field field : fields) {
+            System.out.println(field.getName());
+        }
+    }
+
+}
+</code></pre><h3 id=adding-constructor-to-class-bytecode>Adding Constructor to Class Bytecode</h3><p>添加构造方法<pre class=language-java data-lang=java><code class=language-java data-lang=java>import javassist.ClassPool;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Mnemonic;
+
+public class Demo4 {
+
+    public static void main(String[] args) throws Exception {
+
+        ClassPool classPool = ClassPool.getDefault();
+        ClassFile classFile = classPool.get("com.ks.test.app.Point").getClassFile();
+
+        Bytecode bytecode = new Bytecode(classFile.getConstPool());
+        bytecode.addLload(0);
+        bytecode.addInvokespecial("java/lang/Object", MethodInfo.nameInit, "()V");
+        bytecode.addReturn(null);
+        // addInvokespecial
+        // 调用 java.lang.Object &LTinit> 方法
+        MethodInfo methodInfo = new MethodInfo(classFile.getConstPool(), MethodInfo.nameInit, "()V");
+        methodInfo.setCodeAttribute(bytecode.toCodeAttribute());
+        classFile.addMethod(methodInfo);
+
+        CodeIterator codeIterator = bytecode.toCodeAttribute().iterator();
+        // 打印字节码
+        while (codeIterator.hasNext()) {
+            int index = codeIterator.next();
+            int op = codeIterator.byteAt(index);
+            System.out.println(Mnemonic.OPCODE[op]);
+        }
+    }
+}
+</code></pre><h3 id=hot-load-java-class>Hot load Java Class</h3><p>运行时替换 Java Class，可以通过以下2种方式：<h4 id=redefineclassagent>RedefineClassAgent</h4><p>RedefineClassAgent 工具类，生成 jvm agent，并load agent，利用 <code>Instrumentation</code> <code>redefineClasses</code> 更新运行时类字节码信息；<p>以下为关键代码：<p><strong>创建和加载Agent</strong><pre class=language-java data-lang=java><code class=language-java data-lang=java>  /**
+     * Lazy loads the agent that populates {@link #instrumentation}. OK to call multiple times.
+     *
+     * @throws FailedToLoadAgentException if agent either failed to load or if the agent wasn't able to get an
+     *                                    instance of {@link Instrumentation} that allows class redefinitions.
+     */
+    private static void ensureAgentLoaded() throws FailedToLoadAgentException {
+        if (instrumentation != null) {
+            // already loaded
+            return;
+        }
+
+        // load the agent
+        try {
+            File agentJar = createAgentJarFile();
+
+            // Loading an agent requires the PID of the JVM to load the agent to. Find out our PID.
+            String nameOfRunningVM = ManagementFactory.getRuntimeMXBean().getName();
+            String pid = nameOfRunningVM.substring(0, nameOfRunningVM.indexOf('@'));
+
+            // load the agent
+            VirtualMachine vm = VirtualMachine.attach(pid);
+            vm.loadAgent(agentJar.getAbsolutePath(), "");
+            vm.detach();
+        } catch (Exception e) {
+            throw new FailedToLoadAgentException(e);
+        }
+
+        // wait for the agent to load
+        for (int sec = 0; sec < AGENT_LOAD_WAIT_TIME_SEC; sec++) {
+            if (instrumentation != null) {
+                // success!
+                return;
+            }
+
+            try {
+                LOGGER.info("Sleeping for 1 second while waiting for agent to load.");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new FailedToLoadAgentException();
+            }
+        }
+
+        // agent didn't load
+        throw new FailedToLoadAgentException();
+    }
+
+    /**
+     * An agent must be specified as a .jar where the manifest has an Agent-Class attribute. Additionally, in order
+     * to be able to redefine classes, the Can-Redefine-Classes attribute must be true.
+     *
+     * This method creates such an agent Jar as a temporary file. The Agent-Class is this class. If the returned Jar
+     * is loaded as an agent then {@link #agentmain(String, Instrumentation)} will be called by the JVM.
+     *
+     * @return a temporary {@link File} that points at Jar that packages this class.
+     * @throws IOException if agent Jar creation failed.
+     */
+    private static File createAgentJarFile() throws IOException {
+        File jarFile = File.createTempFile("agent", ".jar");
+        jarFile.deleteOnExit();
+
+        // construct a manifest that allows class redefinition
+        Manifest manifest = new Manifest();
+        Attributes mainAttributes = manifest.getMainAttributes();
+        mainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        mainAttributes.put(new Attributes.Name("Agent-Class"), RedefineClassAgent.class.getName());
+        mainAttributes.put(new Attributes.Name("Can-Retransform-Classes"), "true");
+        mainAttributes.put(new Attributes.Name("Can-Redefine-Classes"), "true");
+
+        try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile), manifest)) {
+            // add the agent .class into the .jar
+            JarEntry agent = new JarEntry(RedefineClassAgent.class.getName().replace('.', '/') + ".class");
+            jos.putNextEntry(agent);
+
+            // dump the class bytecode into the entry
+            ClassPool pool = ClassPool.getDefault();
+            CtClass ctClass = pool.get(RedefineClassAgent.class.getName());
+            jos.write(ctClass.toBytecode());
+            jos.closeEntry();
+        } catch (CannotCompileException | NotFoundException e) {
+            // Realistically this should never happen.
+            LOGGER.log(Level.SEVERE, "Exception while creating RedefineClassAgent jar.", e);
+            throw new IOException(e);
+        }
+
+        return jarFile;
+    }
+</code></pre><p><strong>运行时更新类字节码</strong><pre class=language-java data-lang=java><code class=language-java data-lang=java>    /**
+     * Attempts to redefine class bytecode.
+     * &LTp>
+     * On first call this method will attempt to load an agent into the JVM to obtain an instance of
+     * {@link Instrumentation}. This agent load can introduce a pause (in practice 1 to 2 seconds).
+     *
+     * @see Instrumentation#redefineClasses(ClassDefinition...)
+     *
+     * @param definitions classes to redefine.
+     * @throws UnmodifiableClassException as thrown by {@link Instrumentation#redefineClasses(ClassDefinition...)}
+     * @throws ClassNotFoundException as thrown by {@link Instrumentation#redefineClasses(ClassDefinition...)}
+     * @throws FailedToLoadAgentException if agent either failed to load or if the agent wasn't able to get an
+     *                                    instance of {@link Instrumentation} that allows class redefinitions.
+     */
+    public static void redefineClasses(ClassDefinition... definitions) throws UnmodifiableClassException, ClassNotFoundException, FailedToLoadAgentException {
+        ensureAgentLoaded();
+        instrumentation.redefineClasses(definitions);
+    }
+</code></pre><p><strong>测试代码</strong><pre class=language-java data-lang=java><code class=language-java data-lang=java>import java.lang.instrument.ClassDefinition;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+
+public class Demo5 {
+
+    public static void main(String[] args) throws Exception {
+
+        ClassPool classPool = ClassPool.getDefault();
+
+        CtClass ctClass = classPool.get("com.ks.test.app.Point");
+
+        ctClass.stopPruning(true);
+        // javaassist freezes methods if their bytecode is saved
+        // defrost so we can still make changes.
+        if (ctClass.isFrozen()) {
+            ctClass.defrost();
+        }
+
+        CtMethod ctMethod = ctClass.getDeclaredMethod("move");
+        ctMethod.insertBefore("{ System.out.println(\"Wheeeeee!\"); }");
+        byte[] bytecode = ctClass.toBytecode();
+
+        ClassDefinition definition = new ClassDefinition(Class.forName("com.ks.test.app.Point"), bytecode);
+        RedefineClassAgent.redefineClasses(definition);
+
+        Point point = new Point(1, 1);
+        point.move(1, 2);
+    }
+}
+</code></pre><h4 id=hotswapper>HotSwapper</h4><p>使用 javassist HotSwapper 工具，该工具依赖 <a href=https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html>JDWP</a>；<blockquote><p>JDWP: Provides the implementation of the Java Debug Wire Protocol (JDWP) agent.<p>使用方法：<code>java -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y Test</code><p>参考文档：<ul><li><p><a href=https://www.baeldung.com/java-application-remote-debugging>Java Application Remote Debugging | Baeldung</a></p><li><p><a href=https://docs.oracle.com/en/java/javase/12/docs/specs/jpda/architecture.html>JDWP Structure Overview</a></p><li><p><a href=https://mahmoudanouti.wordpress.com/2019/07/07/remote-debugging-java-applications-with-jdwp/>Remote Debugging Java Applications With JDWP | Learning Quest</a></p></ul></blockquote><p>测试代码：<pre class=language-java data-lang=java><code class=language-java data-lang=java>import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.util.HotSwapper;
+
+public class Demo6 {
+
+    //执行命令
+    //java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=10240 Demo6
+    public static void main(String[] args) throws Exception {
+        HotSwapper hs = new HotSwapper(10240);
+        new Hello().print();
+
+        ClassPool classPool = ClassPool.getDefault();
+
+        byte[] originBytes = classPool.get("com.ks.test.app.Hello").toBytecode();
+        System.out.println("** reload a v2 version");
+
+        CtClass ctClass = classPool.get("com.ks.test.app.Hello");
+        ctClass.stopPruning(true);
+        if(ctClass.isFrozen()){
+            ctClass.defrost();
+        }
+        CtMethod ctMethod = ctClass.getDeclaredMethod("print");
+        ctMethod.insertBefore("{System.out.println(\"** HelloWorld.print()\");}");
+        hs.reload("com.ks.test.app.Hello", ctClass.toBytecode());
+
+        new Hello().print();
+
+        System.out.println("** reload the original version");
+
+        hs.reload("com.ks.test.app.Hello", originBytes);
+        new Hello().print();
+    }
+
+}
+</code></pre><p>测试命令：<pre><code>mvn clean package
+
+java -cp "$JAVA_HOME/lib/*:target/javassit-tour-jar-with-dependencies.jar" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=10240 com.ks.test.app.Demo6
+</code></pre><blockquote><p>注意：需要把 jdk 目录里 lib 下 jar 加载到 classpath</blockquote><p>运行结果：<pre><code>Listening for transport dt_socket at address: 10240
+hello world
+** reload a v2 version
+** HelloWorld.print()
+hello world
+** reload the original version
+hello world
+</code></pre></div></div></section>

@@ -1,0 +1,50 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>02. 定义函数与控制流：掌握程序的控制权 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">02. 定义函数与控制流：掌握程序的控制权</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-er-zhang-ding-yi-han-shu-yu-kong-zhi-liu>第二章：定义函数与控制流</h1><blockquote><p>“Software design is an exercise in human communication.”</blockquote><p>在掌握了基本的表达式和内置函数调用后，我们需要迈出关键的一步：<strong>定义自己的函数</strong>。这赋予了我们将复杂操作命名、抽象并重复使用的能力。同时，为了让程序不再只是从头执行到尾，我们需要引入<strong>控制流</strong>。<h2 id=1-3-ding-yi-xin-han-shu-defining-new-functions>1.3 定义新函数 (Defining New Functions)</h2><p>在 Python 中，我们使用 <code>def</code> 语句来定义函数。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def square(x):
+    return x * x
+</code></pre><p>这里发生了两件事：<ol><li>创建了一个新的函数对象（代码逻辑）。<li>将名字 <code>square</code> 绑定到这个函数对象上。</ol><h3 id=1-3-1-huan-jing-tu-environment-diagrams-li-jie-cheng-xu-yun-xing-de-guan-jian>1.3.1 环境图 (Environment Diagrams) —— 理解程序运行的关键</h3><p>SICP 最强调的工具之一就是<strong>环境图</strong>。当你调用一个自定义函数时，不仅仅是“跳转代码”，而是发生了一系列精确的步骤：<p>例如执行 <code>square(10)</code>：<ol><li><strong>创建新帧 (New Frame)</strong>：创建一个新的局部环境（Local Frame）。<li><strong>绑定参数 (Bind Arguments)</strong>：在这个新帧中，将参数名 <code>x</code> 绑定到实参值 <code>10</code>。<li><strong>执行函数体 (Execute Body)</strong>：在这个新环境中执行函数体代码。</ol><pre class=language-text data-lang=text><code class=language-text data-lang=text>Global frame
+    square: func square(x)
+    
+f1: square [parent=Global]
+    x: 10
+    Return value: 100
+</code></pre><p>这种“局部环境”的概念解释了为什么函数内的变量不会污染全局变量。<h2 id=1-4-she-ji-han-shu-designing-functions>1.4 设计函数 (Designing Functions)</h2><p>写出能跑的代码很容易，写出<strong>好</strong>的代码很难。SICP 在早期就引入了软件工程的设计原则。<h3 id=1-4-1-wen-dang-zi-fu-chuan-docstrings>1.4.1 文档字符串 (Docstrings)</h3><p>Python 提倡代码即文档。每个函数的第一行应该是一个字符串，用来描述函数的行为。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def pressure(v, t, n):
+    """Compute the pressure in pascals of an ideal gas.
+
+    Applies the ideal gas law: http://en.wikipedia.org/wiki/Ideal_gas_law
+
+    v -- volume of gas, in cubic meters
+    t -- absolute temperature in degrees kelvin
+    n -- particles of gas
+    """
+    k = 1.38e-23  # Boltzmann's constant
+    return n * k * t / v
+</code></pre><p>你可以通过 <code>help(pressure)</code> 来查看这些信息。<h3 id=1-4-2-han-shu-she-ji-yuan-ze>1.4.2 函数设计原则</h3><ol><li><strong>单一职责 (Do One Thing)</strong>：每个函数应该只负责一个具体的任务。如果你发现函数名包含了 “and”（例如 <code>calculate_and_print</code>），这通常是个坏兆头。<li><strong>不要重复自己 (DRY - Don’t Repeat Yourself)</strong>：如果发现自己在复制粘贴代码，就应该将其抽象为一个函数。<li><strong>通用性 (Generalize)</strong>：尽量让函数处理一般情况，而不是特殊情况（例如写 <code>square(x)</code> 而不是 <code>square_10()</code>）。</ol><h2 id=1-5-kong-zhi-liu-control>1.5 控制流 (Control)</h2><p>到目前为止，我们的程序都是顺序执行的。控制语句允许我们根据条件改变执行路径。<h3 id=1-5-1-print-vs-return>1.5.1 Print vs Return</h3><p>这是初学者最容易混淆的概念。<ul><li><strong>Return</strong>：函数的<strong>结果</strong>。程序后续可以使用这个值。<li><strong>Print</strong>：函数的<strong>副作用</strong>（在屏幕上显示）。程序后续<strong>无法</strong>使用这个显示的内容。</ul><pre class=language-python data-lang=python><code class=language-python data-lang=python>def f_return():
+    return 10
+
+def f_print():
+    print(10)
+
+x = f_return() + 10  # 正常，x 变为 20
+y = f_print() + 10   # 报错！因为 f_print() 返回 None，None 不能和 10 相加
+</code></pre><h3 id=1-5-2-tiao-jian-yu-ju-yu-bu-er-luo-ji>1.5.2 条件语句与布尔逻辑</h3><p>Python 使用 <code>if</code>, <code>elif</code>, <code>else</code> 进行分支控制。<p>有趣的是 Python 的逻辑运算符 <code>and</code> 和 <code>or</code> 具有<strong>短路 (Short-circuit)</strong> 特性：<pre class=language-python data-lang=python><code class=language-python data-lang=python>>>> True or 1/0
+True
+</code></pre><p>这里 <code>1/0</code> 不会报错，因为 <code>True or ...</code> 已经确定结果为 <code>True</code>，Python 就不会去计算后面那个会报错的表达式了。<h3 id=1-5-3-die-dai-iteration-yu-shi-zhan-an-li>1.5.3 迭代 (Iteration) 与 实战案例</h3><p><code>while</code> 循环让我们能够重复执行代码。让我们通过两个经典数学问题来演练：<p><strong>案例 1：斐波那契数列 (Fibonacci Sequence)</strong><p>斐波那契数列是：0, 1, 1, 2, 3, 5, 8, 13, … 每个数是前两个数之和。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def fib(n):
+    """Compute the nth Fibonacci number, for n >= 0."""
+    pred, curr = 0, 1   # pred is the nth Fibonacci number, curr is the (n+1)th
+    k = 0               # 当前计算的是第 k 个
+    while k < n:
+        pred, curr = curr, pred + curr
+        k = k + 1
+    return pred
+
+print(fib(8))  # 输出 21
+</code></pre><p><strong>案例 2：质数检测 (Prime Numbers)</strong><p>如何判断一个数 <code>n</code> 是否是质数？我们可以尝试除以从 2 到 $\sqrt{n}$ 的所有数。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def is_prime(n):
+    """Return True if n is a prime number, else False."""
+    if n <= 1:
+        return False
+    k = 2
+    while k * k <= n:
+        if n % k == 0:
+            return False
+        k = k + 1
+    return True
+</code></pre><h2 id=zong-jie>总结</h2><p>本章我们掌握了编程的核心能力：<ol><li><strong>定义函数</strong> (<code>def</code>) 让我们能创造新的工具。<li><strong>环境图</strong> 让我们理解变量的作用域和生命周期。<li><strong>控制流</strong> (<code>if</code>, <code>while</code>) 让我们能处理复杂的逻辑。</ol><p>在下一章中，我们将进入函数式编程最迷人的领域：<strong>高阶函数 (Higher-Order Functions)</strong> —— 即“将函数作为参数传递”或“返回一个函数”的函数。</div></div></section>

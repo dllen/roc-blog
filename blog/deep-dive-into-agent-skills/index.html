@@ -1,0 +1,46 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>彻底搞懂 Agent Skills：从原理到实践 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-01-04</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">彻底搞懂 Agent Skills：从原理到实践</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>随着 AI Agent 生态的演进，Anthropic 最近推出了 <strong>Agent Skills</strong>（智能体技能）。这不仅仅是一个新功能，更是一种让 AI 更加专业化、标准化的新范式。<p>很多开发者容易将 Skills 与 MCP（Model Context Protocol）混淆。本文将结合官方文档与实战经验，带你彻底搞懂 Agent Skill 的本质、使用方法、背后的设计哲学以及它与 MCP 的根本区别。<h2 id=1-agent-skill-de-ben-zhi-shi-shen-me>1. Agent Skill 的本质是什么？</h2><p>简单来说，<strong>Agent Skill 是一个包含指令的 Markdown 文件，它教会 Claude 如何完成特定的任务。</strong><p>如果把 AI 比作一个新入职的员工：<ul><li><strong>Prompt</strong> 是你临时的一句话命令。<li><strong>Memory</strong> 是他的记事本。<li><strong>MCP</strong> 是你给他配的电脑、数据库权限和 API 工具。<li><strong>Skill</strong> 则是你发给他的<strong>员工手册</strong>或<strong>SOP（标准作业程序）</strong>。</ul><p>Skill 赋予了 AI “专业知识”和“流程规范”。它不是工具本身，而是关于<strong>如何使用工具</strong>以及<strong>遵循什么标准</strong>的知识。<p>例如，你可以创建一个 Skill 来教 Claude：<ul><li>按照团队特定的代码规范审查 Pull Request。<li>生成符合公司格式的 Git Commit Message。<li>查询数据库时优先使用特定的优化 SQL 模式。<li>使用 Python 脚本生成符合 Slack 限制的 GIF 动图。</ul><p>本质上，Skill 是<strong>结构化的上下文注入</strong>。<h2 id=2-agent-skill-de-shi-yong-fang-fa>2. Agent Skill 的使用方法</h2><p>使用 Skill 非常简单，核心在于创建一个 <code>SKILL.md</code> 文件。<h3 id=2-1-wen-jian-jie-gou>2.1 文件结构</h3><p>一个最简单的 Skill 只需要一个文件夹和一个 <code>SKILL.md</code> 文件：<pre class=language-text data-lang=text><code class=language-text data-lang=text>my-skill/
+└── SKILL.md
+</code></pre><p><code>SKILL.md</code> 由两部分组成：<ol><li><strong>YAML Frontmatter</strong>：元数据，告诉 Claude 这个技能叫什么，什么时候用。<li><strong>Markdown 内容</strong>：具体的指令和示例。</ol><h3 id=2-2-bian-xie-shi-li>2.2 编写示例</h3><pre class=language-markdown data-lang=markdown><code class=language-markdown data-lang=markdown>---
+name: code-reviewer
+description: 当用户请求审查代码或 PR 时使用此技能。它定义了团队的代码审查标准。
+---
+
+# Code Reviewer Skill
+
+## 审查标准
+1. **命名规范**：确保所有变量使用驼峰命名法 (camelCase)。
+2. **错误处理**：所有外部调用必须包含 try-catch 块。
+3. **注释**：公共方法必须有 Javadoc/Docstring。
+
+## 步骤
+1. 阅读代码变更。
+2. 检查是否符合上述标准。
+3. 输出 Markdown 格式的审查报告。
+</code></pre><h3 id=2-3-cun-fang-wei-zhi>2.3 存放位置</h3><p>Claude 会根据存放位置决定 Skill 的生效范围：<table><thead><tr><th style=text-align:left>位置<th style=text-align:left>路径<th style=text-align:left>适用范围<tbody><tr><td style=text-align:left><strong>项目级</strong><td style=text-align:left><code>.claude/skills/</code><td style=text-align:left>仅当前项目可用，适合项目特定的规范<tr><td style=text-align:left><strong>个人级</strong><td style=text-align:left><code>~/.claude/skills/</code><td style=text-align:left>跨项目可用，适合个人的工作流偏好<tr><td style=text-align:left><strong>企业级</strong><td style=text-align:left>(托管配置)<td style=text-align:left>组织内所有成员可用</table><h3 id=2-4-zi-dong-hong-fa>2.4 自动触发</h3><p>你<strong>不需要</strong>显式调用 Skill（如 <code>/review-code</code>）。当你的 Prompt 意图与 Skill 的 <code>description</code> 匹配时，Claude 会自动加载并应用该 Skill。<h3 id=2-5-shi-zhan-yan-shi-gou-jian-svg-tu-biao-sheng-cheng-zhu-shou>2.5 实战演示：构建“SVG 图标生成助手”</h3><p>让我们构建一个更实用的 Skill，教 Claude 如何生成风格统一的 SVG 图标。这个例子展示了 Skill 如何结合外部文件来增强能力。<p><strong>目录结构：</strong><pre class=language-text data-lang=text><code class=language-text data-lang=text>.claude/skills/svg-icon-generator/
+├── SKILL.md
+└── palette.json  # 存储品牌配色方案
+</code></pre><p><strong>文件内容 (<code>SKILL.md</code>)：</strong><pre class=language-markdown data-lang=markdown><code class=language-markdown data-lang=markdown>---
+name: svg-icon-generator
+description: 当用户需要创建、设计或生成 SVG 图标/图像时使用。
+---
+
+# SVG Icon Generator
+
+## 任务目标
+生成符合 Material Design 风格的 SVG 代码。
+
+## 设计约束
+1. **尺寸**：默认 24x24 viewBox。
+2. **颜色**：必须优先从 `palette.json` 中读取品牌色。
+3. **结构**：尽量使用 `&LTpath>` 元素，保持代码精简。
+
+## 执行步骤
+1. 读取 `palette.json` 获取允许的颜色列表。
+2. 根据用户描述设计图标几何形状。
+3. 输出完整的 `&LTsvg>` 代码块。
+4. 验证 SVG 是否闭合且无语法错误。
+
+## 示例
+**用户**："画一个红色的删除按钮"
+**行为**：读取调色板找到 "danger-red" (#FF5252)，生成一个带 "X" 符号的圆形图标。
+</code></pre><p>通过这个结构，Claude 不仅学会了“怎么画”，还学会了“用什么颜色画”，确保了输出的一致性。<h2 id=3-jian-jin-shi-pi-lu-ji-zhi-progressive-disclosure>3. 渐进式披露机制 (Progressive Disclosure)</h2><p>这是 Agent Skill 设计中最精妙的地方。<p>你可能会担心：<em>“如果我定义了 100 个 Skills，每次对话都把它们全部塞进 Context，Token 不就爆炸了吗？”</em><p>答案是<strong>不会</strong>。Agent Skills 使用了一种**渐进式披露（Progressive Disclosure）**机制。<h3 id=ji-zhi-liu-cheng>机制流程</h3><ol><li><strong>扫描与索引</strong>：在会话开始时，Claude 仅读取所有可用 Skills 的 <strong>YAML Frontmatter</strong>（主要是 <code>name</code> 和 <code>description</code>）。这只占用极少的 Token。<li><strong>意图匹配</strong>：当你发出指令（例如“帮我生成个 GIF”）时，Claude 根据 <code>description</code> 判断哪个 Skill 相关。<li><strong>按需加载</strong>：一旦命中某个 Skill，Claude 才会读取该 Skill 的 <code>SKILL.md</code> 完整内容（指令、步骤、示例）。<li><strong>延迟加载支持文件</strong>：如果 Skill 非常复杂，包含大量的文档或脚本，你可以将它们放在单独的文件中，并在 <code>SKILL.md</code> 中引用。Claude 只有在真正需要阅读细节时，才会去读取这些支持文件。</ol><p><strong>价值</strong>：<ul><li><strong>Token 效率极高</strong>：你可以拥有成百上千个 Skills，但只会消耗命中技能的 Token。<li><strong>专注度</strong>：避免无关的指令干扰 AI 的注意力。</ul><h2 id=4-agent-skill-vs-mcp-dao-di-xuan-na-ge>4. Agent Skill vs MCP：到底选哪个？</h2><p>这是开发者最容易困惑的问题。两者看似都扩展了 AI 的能力，但侧重点完全不同。<table><thead><tr><th style=text-align:left>维度<th style=text-align:left>Agent Skill<th style=text-align:left>MCP (Model Context Protocol)<tbody><tr><td style=text-align:left><strong>核心定义</strong><td style=text-align:left><strong>Knowledge (知识/流程)</strong><td style=text-align:left><strong>Tool / Capability (工具/能力)</strong><tr><td style=text-align:left><strong>作用</strong><td style=text-align:left>教 AI <strong>“如何做”</strong> (How to do)<td style=text-align:left>给 AI <strong>“用什么”</strong> (What to use)<tr><td style=text-align:left><strong>实现方式</strong><td style=text-align:left>Markdown 文件 (文本指令)<td style=text-align:left>Server/Client 协议 (代码/API)<tr><td style=text-align:left><strong>依赖环境</strong><td style=text-align:left>依赖现有的计算环境 (如本地 Shell, Python)<td style=text-align:left>依赖外部服务的连接 (如 Postgres, Slack API)<tr><td style=text-align:left><strong>典型场景</strong><td style=text-align:left>代码规范、最佳实践、复杂任务的SOP<td style=text-align:left>读取数据库、访问文件系统、调用 SaaS API</table><h3 id=jue-ce-zhi-nan>决策指南</h3><ul><li><p><strong>选择 MCP，如果：</strong></p> <ul><li>你需要让 AI 连接到一个外部系统（如数据库、Jira、GitHub、Slack）。<li>你需要执行 AI 无法通过写代码直接完成的操作（如读取私有云日志）。<li>你在构建通用的工具能力。</ul><li><p><strong>选择 Skill，如果：</strong></p> <ul><li>你想规范 AI 的输出格式（如特定的 Commit 格式）。<li>你想固化某种工作流（如“发布前的检查清单”）。<li>你想让 AI 学会使用现有的工具（例如，你已经装了 <code>ffmpeg</code>，写一个 Skill 教 AI 如何组合参数来处理视频）。<li>你需要复用一组复杂的 Prompt 提示词。</ul></ul><h3 id=xie-tong-gong-zuo>协同工作</h3><p>最强大的模式是 <strong>Skill + MCP</strong> 结合使用：<ul><li><strong>MCP</strong> 提供“查询数据库”的能力。<li><strong>Skill</strong> 提供“查询数据库时必须遵循的表结构规范和安全准则”。</ul><h2 id=zong-jie>总结</h2><p>Agent Skill 是 AI 时代的“岗位培训手册”。它利用<strong>渐进式披露</strong>机制，以极低的成本赋予了 AI 专业的领域知识和流程规范。<p>与 MCP 提供的“硬连接”能力不同，Skill 专注于“软实力”——即如何正确、优雅地使用工具。对于希望构建高质量、标准化 AI 辅助工作流的开发者来说，掌握 Agent Skill 的编写是必修课。<hr><p><em>参考资料：</em><ul><li><a href=https://code.claude.com/docs/en/skills>Claude Code Docs: Agent Skills</a><li><a href=https://simonwillison.net/2025/Oct/16/claude-skills/>Simon Willison: Claude Skills are awesome</a></ul></div></div></section>

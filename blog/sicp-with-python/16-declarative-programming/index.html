@@ -1,0 +1,46 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>16. 声明式编程与 SQL：告诉计算机“要什么” | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">16. 声明式编程与 SQL：告诉计算机“要什么”</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-shi-liu-zhang-sheng-ming-shi-bian-cheng-yu-sql-gao-su-ji-suan-ji-yao-shen-me>第十六章：声明式编程与 SQL——告诉计算机“要什么”</h1><blockquote><p>“Declarative languages abstract away procedural details, instead focusing on the form of the result.” — SICP</blockquote><p>在之前的章节中，无论是 Python 还是 Scheme，我们都在做<strong>命令式编程 (Imperative Programming)</strong>：我们详细地告诉计算机每一步该怎么做（定义变量、循环、判断、赋值）。<p>今天，我们进入<strong>声明式编程 (Declarative Programming)</strong> 的世界。在这里，我们只描述<strong>我们想要什么结果</strong>，而将“怎么做”的复杂细节交给解释器去处理。<p>最典型的例子就是 <strong>SQL (Structured Query Language)</strong>。<h2 id=4-3-1-sheng-ming-shi-si-wei-declarative-thinking>4.3.1 声明式思维 (Declarative Thinking)</h2><p>想象你要在包含百万条记录的数据库中找到“所有住在 Berkeley 的人”。<ul><li><p><strong>命令式做法</strong>：</p> <ol><li>打开文件。<li>创建一个空列表 <code>results</code>。<li>循环读取每一行。<li>如果该行的 <code>city</code> 字段等于 “Berkeley”，将其加入 <code>results</code>。<li>返回 <code>results</code>。</ol><li><p><strong>声明式做法 (SQL)</strong>：</p> <pre class=language-sql data-lang=sql><code class=language-sql data-lang=sql>SELECT * FROM cities WHERE name = 'Berkeley';
+</code></pre></ul><p>你只需要描述数据的特征（<code>WHERE name = 'Berkeley'</code>），数据库引擎会自动决定是全表扫描、使用索引还是其他优化算法。<h2 id=4-3-2-sql-he-xin-yu-fa>4.3.2 SQL 核心语法</h2><p>我们使用 SQLite 的方言来探索 SQL 的核心能力。<h3 id=1-biao-tables-yu-tou-ying-projection>1. 表 (Tables) 与投影 (Projection)</h3><p>表是记录的集合。<code>SELECT</code> 语句用于从表中选取数据，这被称为<strong>投影</strong>。<pre class=language-sql data-lang=sql><code class=language-sql data-lang=sql>-- 创建表
+create table cities as
+  select 38 as latitude, 122 as longitude, "Berkeley" as name union
+  select 42,             71,               "Cambridge"        union
+  select 45,             93,               "Minneapolis";
+
+-- 查询：计算距离并重命名列
+select name, 60*abs(latitude-38) as distance from cities;
+</code></pre><h3 id=2-guo-lu-filtering>2. 过滤 (Filtering)</h3><p><code>WHERE</code> 子句用于筛选满足条件的行。<pre class=language-sql data-lang=sql><code class=language-sql data-lang=sql>select name from cities where latitude > 43;
+</code></pre><h3 id=3-lian-jie-joins>3. 连接 (Joins)</h3><p>这是 SQL 最强大的功能。<code>JOIN</code> 允许我们将多个表的数据结合起来。<p>假设我们有另一个表 <code>temps</code> 记录气温：<pre class=language-sql data-lang=sql><code class=language-sql data-lang=sql>create table temps as
+  select "Berkeley" as city, 68 as temp union
+  select "Chicago"         , 59         union
+  select "Minneapolis"     , 55;
+</code></pre><p>我们可以通过 <code>WHERE</code> 子句连接这两个表：<pre class=language-sql data-lang=sql><code class=language-sql data-lang=sql>-- 查找城市的纬度和气温
+select name, latitude, temp 
+from cities, temps 
+where name = city;
+</code></pre><p>这背后发生了什么？从逻辑上讲，SQL 执行了<strong>笛卡尔积</strong>（所有可能的组合），然后通过 <code>where name = city</code> 过滤出有意义的匹配。<h2 id=4-3-3-yong-python-shi-xian-sql-jie-shi-qi>4.3.3 用 Python 实现 SQL 解释器</h2><p>为了彻底理解声明式编程，我们可以在 Python 中实现一个微型的 SQL 解释器。<h3 id=shu-ju-jie-gou>数据结构</h3><p>我们用 <code>namedtuple</code> 来表示行，用列表来表示表。<pre class=language-python data-lang=python><code class=language-python data-lang=python>from collections import namedtuple
+
+# 定义行结构
+CitiesRow = namedtuple("Row", ["latitude", "longitude", "name"])
+
+# 数据
+cities = [
+    CitiesRow(38, 122, "Berkeley"),
+    CitiesRow(42, 71, "Cambridge"),
+    CitiesRow(43, 93, "Minneapolis")
+]
+</code></pre><h3 id=select-lei-de-shi-xian>Select 类的实现</h3><p>一个 <code>Select</code> 语句可以看作是一个对象，它包含 <code>columns</code>, <code>tables</code>, <code>condition</code> 等属性。<pre class=language-python data-lang=python><code class=language-python data-lang=python>class Select:
+    """SQL Select 语句的抽象"""
+    def __init__(self, columns, tables, condition):
+        self.columns = columns
+        self.tables = tables
+        self.condition = condition
+
+    def execute(self, env):
+        # 1. Join: 生成所有表的笛卡尔积
+        from_rows = join(self.tables, env)
+        
+        # 2. Filter: 应用 where 条件
+        filtered_rows = filter(self.filter_func, from_rows)
+        
+        # 3. Project: 计算 select 中的表达式
+        return map(self.project_func, filtered_rows)
+</code></pre><p>这个微型解释器揭示了 SQL 的本质：它是一系列集合操作（积、选择、投影）的组合。<h2 id=zong-jie>总结</h2><p>声明式编程将程序员从控制流的细节中解放出来。在 SQL 中：<ul><li><strong>表</strong> 是数据源。<li><strong>Select</strong> 是投影变换。<li><strong>Where</strong> 是过滤器。<li><strong>Join</strong> 是数据关联的桥梁。</ul><p>下一章，我们将探索另一种声明式编程范式：<strong>逻辑编程 (Logic Programming)</strong>，在那里我们将通过定义事实和规则来进行推理。<hr><p><em>参考链接：</em><ul><li><a href=https://www.composingprograms.com/pages/43-declarative-programming.html>Composing Programs 4.3 Declarative Programming</a></ul></div></div></section>

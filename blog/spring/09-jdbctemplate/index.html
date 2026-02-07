@@ -1,0 +1,17 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Spring 源码阅读：09. JdbcTemplate 设计模式 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/spring/> /spring </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-01-14</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Spring 源码阅读：09. JdbcTemplate 设计模式</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p><code>JdbcTemplate</code> 是模板方法模式的教科书级应用，也是 Spring 最早提供的功能之一。<h2 id=1-tong-dian-yang-ban-dai-ma>1. 痛点：样板代码</h2><p>在原生 JDBC 中，执行一个查询需要写一大堆代码：<ol><li>获取连接。<li>创建 Statement。<li>执行 SQL。<li>处理 ResultSet。<li>处理异常。<li><strong>关闭 ResultSet, Statement, Connection</strong> (finally 块中)。</ol><p>其中，只有步骤 3 和 4 是业务相关的，其他都是样板代码。<h2 id=2-jie-jue-fang-an-template-callback>2. 解决方案：Template-Callback</h2><p><code>JdbcTemplate</code> 将样板代码封装在 <code>execute</code> 方法中，而将变化的部分（SQL 执行、结果集处理）通过回调接口暴露出来。<h3 id=2-1-he-xin-fang-fa-execute-statementcallback>2.1 核心方法 <code>execute(StatementCallback)</code></h3><pre class=language-java data-lang=java><code class=language-java data-lang=java>public &LTT> T execute(StatementCallback&LTT> action) {
+    Connection con = DataSourceUtils.getConnection(obtainDataSource());
+    Statement stmt = null;
+    try {
+        stmt = con.createStatement();
+        // 回调用户逻辑
+        return action.doInStatement(stmt);
+    } catch (SQLException ex) {
+        // 异常转换
+        throw translateException("StatementCallback", getSql(action), ex);
+    } finally {
+        // 资源释放
+        JdbcUtils.closeStatement(stmt);
+        DataSourceUtils.releaseConnection(con, obtainDataSource());
+    }
+}
+</code></pre><h3 id=2-2-chang-yong-hui-diao>2.2 常用回调</h3><ul><li><code>RowMapper</code>: 将 ResultSet 的每一行映射为一个 Java 对象。<li><code>PreparedStatementSetter</code>: 设置 SQL 参数。</ul><hr><p><strong>Next</strong>: <a href=../10-transaction/>Spring 源码阅读：10. 声明式事务管理</a></div></div></section>

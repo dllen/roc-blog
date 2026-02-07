@@ -1,0 +1,32 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>09. 对象抽象：接口与泛型操作 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">09. 对象抽象：接口与泛型操作</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-jiu-zhang-dui-xiang-chou-xiang-tong-yong-jie-kou-yu-fan-xing-cao-zuo>第九章：对象抽象——通用接口与泛型操作</h1><blockquote><p>“A language that doesn’t affect the way you think about programming, is not worth knowing.” — Alan Perlis</blockquote><p>在构建了对象系统之后，我们面临一个新的挑战：<strong>如何让不同类型的对象协同工作？</strong> 例如，我们希望 <code>add(x, y)</code> 既能计算 <code>1 + 2</code>，也能计算 <code>Complex(1, 2) + Complex(3, 4)</code>，甚至能处理 <code>Rational(1, 2) + 0.5</code> 这样的混合类型运算。<p>这就是本章的核心主题：<strong>泛型操作 (Generic Operations)</strong>。<h2 id=2-7-dui-xiang-chou-xiang-object-abstraction>2.7 对象抽象 (Object Abstraction)</h2><h3 id=2-7-1-zi-fu-chuan-biao-shi-repr-vs-str>2.7.1 字符串表示：<code>__repr__</code> vs <code>__str__</code></h3><p>Python 为对象提供了两种标准的字符串表示形式，这体现了<strong>分层抽象</strong>的思想：<ol><li><p><strong><code>__repr__</code> (canonical representation)</strong>：</p> <ul><li><strong>目标</strong>：准确、无歧义，最好能通过 <code>eval(repr(obj))</code> 还原对象。<li><strong>受众</strong>：开发者 (Developer)。<li><strong>调用</strong>：交互式解释器、<code>repr()</code> 函数。</ul><li><p><strong><code>__str__</code> (human-readable representation)</strong>：</p> <ul><li><strong>目标</strong>：可读性强，格式友好。<li><strong>受众</strong>：最终用户 (User)。<li><strong>调用</strong>：<code>print()</code>、<code>str()</code> 函数。</ul></ol><pre class=language-python data-lang=python><code class=language-python data-lang=python>class Rational:
+    def __init__(self, n, d):
+        self.numer = n
+        self.denom = d
+
+    def __repr__(self):
+        return f"Rational({self.numer}, {self.denom})"
+
+    def __str__(self):
+        return f"{self.numer}/{self.denom}"
+
+half = Rational(1, 2)
+# >>> half
+# Rational(1, 2)
+# >>> print(half)
+# 1/2
+</code></pre><p><strong>多态的体现</strong>：<code>print</code> 函数是一个<strong>泛型函数</strong>，它可以作用于任何实现了 <code>__str__</code> 方法的对象。<h3 id=2-7-2-te-shu-fang-fa-special-methods>2.7.2 特殊方法 (Special Methods)</h3><p>Python 的“魔术方法” (Magic Methods) 是实现通用接口的关键。通过实现特定的 <code>__method__</code>，我们可以让自定义对象表现得像内置类型一样。<ul><li><strong>算术运算</strong>：<code>__add__</code>, <code>__sub__</code>, <code>__mul__</code><li><strong>布尔值</strong>：<code>__bool__</code><li><strong>长度</strong>：<code>__len__</code><li><strong>调用</strong>：<code>__call__</code></ul><pre class=language-python data-lang=python><code class=language-python data-lang=python>class Complex:
+    def __init__(self, real, imag):
+        self.real = real
+        self.imag = imag
+    
+    def __add__(self, other):
+        return Complex(self.real + other.real, self.imag + other.imag)
+    
+    def __repr__(self):
+        return f"Complex({self.real}, {self.imag})"
+
+# >>> Complex(1, 2) + Complex(3, 4)
+# Complex(4, 6)
+</code></pre><p>这种机制被称为<strong>接口 (Interface)</strong>。只要对象遵守了协议（实现了特定方法），它就能被系统接纳。<h3 id=2-7-3-duo-zhong-biao-shi-yu-fan-xing-han-shu-multiple-representations>2.7.3 多重表示与泛型函数 (Multiple Representations)</h3><p>当我们需要处理多种数据类型（如复数的直角坐标表示和极坐标表示）时，有三种主要策略：<ol><li><p><strong>基于类型的分发 (Dispatch on Type)</strong>： 检查参数类型（<code>isinstance</code>），跳转到对应的处理逻辑。 <em>优点</em>：简单直接。 <em>缺点</em>：违反开闭原则，每增加新类型都要修改核心函数。</p><li><p><strong>数据导向编程 (Data-Directed Programming)</strong>： 维护一个二维表格 <code>(操作, 类型)</code>，查表执行。 这是大型系统常用的插件式架构基础。</p><li><p><strong>消息传递 (Message Passing)</strong>： 即 OOP 的方法调用。对象自己决定如何处理操作。</p></ol><h3 id=2-7-4-qiang-zhi-zhuan-huan-coercion>2.7.4 强制转换 (Coercion)</h3><p>如果我们要计算 <code>Rational(1, 2) + 0.5</code> 怎么办？ 一种方法是<strong>强制转换</strong>：将低精度的类型（有理数）升级为高精度的类型（浮点数），然后运算。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def add_complex_and_rational(c, r):
+    return Complex(c.real + r.numer/r.denom, c.imag)
+</code></pre><p>在 Python 中，这通常通过 <code>__radd__</code> (右加) 和类型检查来实现混合算术运算。<h2 id=zong-jie>总结</h2><p><strong>泛型操作</strong>是构建可扩展系统的关键。<ul><li>通过标准接口（如 <code>__str__</code>），我们统一了不同对象的行为。<li>通过多态和分发机制，我们实现了代码的解耦。</ul><p>这是《SICP》第二部分“数据抽象”的最高潮：我们不仅抽象了数据，还抽象了<strong>操作数据的操作</strong>。<hr><p><em>注：Composing Programs 2.8 (Efficiency) 和 2.9 (Recursive Objects) 将作为本部分的补充阅读，接下来我们将进入激动人心的第三部分。</em></div></div></section>

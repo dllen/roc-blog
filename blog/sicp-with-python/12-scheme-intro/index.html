@@ -1,0 +1,30 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>12. 初识 Scheme：像 Lisp 程序员一样思考 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">12. 初识 Scheme：像 Lisp 程序员一样思考</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-shi-er-zhang-chu-shi-scheme-xiang-lisp-cheng-xu-yuan-yi-yang-si-kao>第十二章：初识 Scheme——像 Lisp 程序员一样思考</h1><blockquote><p>“Lisp is not a language, it’s a building material.” — Alan Kay</blockquote><p>在前两部分中，我们主要使用 Python。Python 是一门多范式语言（面向对象、命令式、函数式）。 而在第三部分，为了深入理解<strong>解释器 (Interpreter)</strong> 的工作原理，我们将切换到一门更“纯粹”的语言：<strong>Scheme</strong>（Lisp 的一种方言）。<p>为什么要学习 Scheme？<ol><li><strong>极简主义</strong>：它的核心语法规则一只手就能数过来。<li><strong>代码即数据</strong>：Scheme 代码本身就是 Scheme 的数据结构（列表）。这使得编写解释器变得异常简单。<li><strong>函数式编程</strong>：强制我们用纯函数思考，没有赋值语句（至少在我们使用的子集中）。</ol><h2 id=3-2-1-biao-da-shi-expressions>3.2.1 表达式 (Expressions)</h2><p>Scheme 使用<strong>波兰前缀表达式 (Polish Prefix Notation)</strong>。 所有表达式都用括号包围：<code>(operator operand1 operand2 ...)</code><pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>; Python: 1 + 2 * 3
+(+ 1 (* 2 3))
+; Value: 7
+
+; Python: (10 - 6) / 2
+(/ (- 10 6) 2)
+; Value: 2
+</code></pre><p>这种语法消除了对优先级规则（如先乘除后加减）的需求。解释器只需要简单地递归求值。<h2 id=3-2-2-ding-yi-yu-te-shu-xing-shi-definitions-special-forms>3.2.2 定义与特殊形式 (Definitions & Special Forms)</h2><p>在 Scheme 中，并非所有东西都是函数调用。<strong>特殊形式 (Special Forms)</strong> 具有特殊的求值规则。<h3 id=define-ding-yi-bian-liang-he-han-shu><code>define</code>：定义变量和函数</h3><pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>(define pi 3.14)
+(* pi 2)
+
+; 定义函数 (define (name params...) body)
+(define (square x) (* x x))
+(square 5) ; Value: 25
+</code></pre><h3 id=if-kong-zhi-liu><code>if</code>：控制流</h3><p><code>if</code> 是特殊形式，因为通过短路求值，它只执行其中一个分支。<pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>(if (> 3 2)
+    'yes
+    'no)
+; Value: yes
+</code></pre><h3 id=lambda-ni-ming-han-shu><code>lambda</code>：匿名函数</h3><p><code>lambda</code> 用来创建匿名函数。事实上，<code>define</code> 只是 <code>lambda</code> 的语法糖。<pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>(lambda (x) (* x x))
+; 等价于
+((lambda (x) (* x x)) 5) ; Value: 25
+</code></pre><h2 id=3-2-3-lie-biao-yu-yin-yong-lists-quotation>3.2.3 列表与引用 (Lists & Quotation)</h2><p>Lisp 代表 “LISt Processing”。列表是其核心数据结构。<ul><li><code>cons</code>：构建序对 (Pair)。<li><code>car</code>：获取第一个元素 (Contents of the Address part of Register)。<li><code>cdr</code>：获取剩余部分 (Contents of the Decrement part of Register)。<li><code>list</code>：构建列表。<li><code>nil</code>：空列表。</ul><pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>(define x (cons 1 2))
+(car x) ; 1
+(cdr x) ; 2
+
+(define s (list 1 2 3))
+(car s) ; 1
+(cdr s) ; (2 3)
+</code></pre><h3 id=yin-yong-quote>引用 (Quote)</h3><p>如果我们输入 <code>(a b)</code>，Scheme 会尝试调用函数 <code>a</code>。 如果我们想表示“一个包含符号 a 和 b 的列表”，我们需要<strong>引用</strong>它。<pre class=language-scheme data-lang=scheme><code class=language-scheme data-lang=scheme>(list 'a 'b) ; (a b)
+'(a b)       ; (a b) 的简写
+</code></pre><p>这就是<strong>代码即数据</strong>：<ul><li><code>(+ 1 2)</code> 是代码（一个加法表达式）。<li><code>'(+ 1 2)</code> 是数据（一个包含 <code>+</code>, <code>1</code>, <code>2</code> 的列表）。</ul><p>这种同像性 (Homoiconicity) 使得我们可以轻松地编写程序来处理程序——也就是<strong>解释器</strong>。<h2 id=zong-jie>总结</h2><p>Scheme 看起来可能很奇怪（大量的括号），但它不仅是一门语言，更是一种<strong>思想工具</strong>。 它强迫我们剥离语法的干扰，直面计算的本质：<strong>求值 (Evaluation)</strong> 和 <strong>应用 (Application)</strong>。<p>下一章，我们将利用 Scheme 的这些特性，开始构建我们自己的解释器。<hr><p><em>参考链接：</em><ul><li><a href=https://www.composingprograms.com/pages/31-introduction.html>Composing Programs 3.1 Introduction</a><li><a href=https://www.composingprograms.com/pages/32-functional-programming.html>Composing Programs 3.2 Functional Programming</a></ul></div></div></section>

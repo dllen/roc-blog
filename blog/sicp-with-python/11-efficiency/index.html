@@ -1,0 +1,43 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>11. 算法效率：增长阶数与大O表示法 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">11. 算法效率：增长阶数与大O表示法</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-shi-yi-zhang-suan-fa-xiao-lu-zeng-chang-jie-shu-yu-da-obiao-shi-fa>第十一章：算法效率——增长阶数与大O表示法</h1><blockquote><p>“Premature optimization is the root of all evil.” — Donald Knuth</blockquote><p>在前几章中，我们关注的是<strong>正确性</strong>和<strong>抽象</strong>。我们学习了如何写出优雅、可维护的代码。 但在现实世界中，<strong>效率 (Efficiency)</strong> 同样至关重要。一个计算需要几秒钟还是几百年，决定了它是否可用。<p>本章（Composing Programs 2.8）将带我们进入算法分析的世界。<h2 id=2-8-1-heng-liang-xiao-lu-measuring-efficiency>2.8.1 衡量效率 (Measuring Efficiency)</h2><h3 id=di-gui-de-e-meng-fei-bo-na-qi-shu-lie>递归的噩梦：斐波那契数列</h3><p>让我们回顾那个经典的树递归函数：<pre class=language-python data-lang=python><code class=language-python data-lang=python>def fib(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fib(n-2) + fib(n-1)
+</code></pre><p>这个函数看起来很简洁，但它的性能极其糟糕。 我们可以写一个装饰器来统计函数被调用的次数：<pre class=language-python data-lang=python><code class=language-python data-lang=python>def count(f):
+    def counted(*args):
+        counted.call_count += 1
+        return f(*args)
+    counted.call_count = 0
+    return counted
+
+fib = count(fib)
+fib(19)  # 结果 4181
+print(fib.call_count)  # 输出 13529
+</code></pre><p>计算 <code>fib(19)</code> 竟然调用了 13,529 次函数！ 随着 $n$ 的增加，调用次数呈<strong>指数级爆炸</strong>。计算 <code>fib(30)</code> 可能需要几秒，而 <code>fib(100)</code> 可能需要宇宙毁灭的时间。<h3 id=kong-jian-xiao-lu>空间效率</h3><p>除了时间，我们还要考虑空间。 对于树递归，虽然计算步数很多，但<strong>同时活跃的栈帧 (Stack Frames)</strong> 数量其实并不多。 <code>fib(n)</code> 的最大递归深度是 $n$。这意味着它的<strong>空间复杂度</strong>是线性的 $O(n)$。<h2 id=2-8-2-ji-yi-hua-memoization>2.8.2 记忆化 (Memoization)</h2><p>如何拯救 <code>fib</code> 函数？ 观察发现，我们在重复计算大量相同的值（例如 <code>fib(3)</code> 在 <code>fib(5)</code> 的计算树中出现了两次）。<p>我们可以使用<strong>记忆化</strong>技术：把算过的结果存起来。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def memo(f):
+    cache = {}
+    def memoized(n):
+        if n not in cache:
+            cache[n] = f(n)
+        return cache[n]
+    return memoized
+
+fib = count(fib)  # 重置计数器
+fib = memo(fib)
+fib(19)
+print(fib.call_count) # 输出 20 (如果不算 memo 内部调用，实际计算仅 n+1 次)
+</code></pre><p>通过一个简单的装饰器，我们将一个指数级算法变成了线性算法！ 这展示了<strong>空间换时间</strong>的经典权衡。<h2 id=2-8-3-zeng-chang-jie-shu-orders-of-growth>2.8.3 增长阶数 (Orders of Growth)</h2><p>我们很难精确预测程序运行的确切秒数（受硬件、系统影响），但我们可以预测<strong>当输入规模 $n$ 变大时，资源消耗增长的趋势</strong>。 这就是<strong>增长阶数</strong>，通常用 $\Theta$ (Theta) 或 $O$ (Big O) 表示。<p>常见的时间复杂度（按效率从高到低）：<ol><li><strong>$\Theta(1)$ 常数时间</strong>：如访问列表索引 <code>lst[i]</code>。<li><strong>$\Theta(\log n)$ 对数时间</strong>：如二分查找，快速幂。<li><strong>$\Theta(n)$ 线性时间</strong>：如遍历列表。<li><strong>$\Theta(n^2)$ 二方时间</strong>：如嵌套循环，冒泡排序。<li><strong>$\Theta(2^n)$ 指数时间</strong>：如未优化的斐波那契递归。</ol><h3 id=shi-li-qiu-mi-exponentiation>示例：求幂 (Exponentiation)</h3><p>计算 $b^n$。<p><strong>方法 1：线性递归</strong> $$b^n = b \cdot b^{n-1}$$<pre class=language-python data-lang=python><code class=language-python data-lang=python>def exp(b, n):
+    if n == 0:
+        return 1
+    return b * exp(b, n-1)
+</code></pre><p>时间复杂度：$\Theta(n)$<p><strong>方法 2：快速幂 (Successive Squaring)</strong> 利用 $$b^{2n} = (b^n)^2$$ 的性质。 如果 $n$ 是偶数，$b^n = (b^{n/2})^2$。 如果 $n$ 是奇数，$b^n = b \cdot b^{n-1}$。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def square(x):
+    return x * x
+
+def fast_exp(b, n):
+    if n == 0:
+        return 1
+    if n % 2 == 0:
+        return square(fast_exp(b, n//2))
+    else:
+        return b * fast_exp(b, n-1)
+</code></pre><p>时间复杂度：$\Theta(\log n)$。 当 $n=1000$ 时，线性算法需要 1000 次乘法，而快速幂只需要约 14 次！<h2 id=zong-jie>总结</h2><p>效率分析是程序员的必修课。<ul><li><strong>不要过早优化</strong>，但要避免明显的低效（如指数级递归）。<li><strong>记忆化</strong>是优化递归的利器。<li>理解<strong>增长阶数</strong>，能让你在设计系统时做出正确的算法选择。</ul><p>至此，SICP Python 版的第二部分（抽象与数据）全部结束。 下一章，我们将进入更为神秘的领域：<strong>解释计算机程序</strong>。我们将学习一门新语言 Scheme，并最终用 Python 写一个解释器来运行它。<hr><p><em>参考链接：</em><ul><li><a href=https://www.composingprograms.com/pages/28-efficiency.html>Composing Programs 2.8 Efficiency</a></ul></div></div></section>

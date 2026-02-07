@@ -1,0 +1,18 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>ZooKeeper 源码阅读：03. 启动流程详解 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/zookeeper/> /zookeeper </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-01-13</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">ZooKeeper 源码阅读：03. 启动流程详解</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=1-ru-kou-quorumpeermain>1. 入口：<code>QuorumPeerMain</code></h2><p>ZK 的启动类是 <code>org.apache.zookeeper.server.quorum.QuorumPeerMain</code>。<h2 id=2-qi-dong-bu-zou>2. 启动步骤</h2><ol><li><strong>解析配置</strong>: 加载 <code>zoo.cfg</code>。<li><strong>判断模式</strong>: <ul><li>如果 servers 列表只有一个（或者是 Standalone 模式），启动 <code>ZooKeeperServerMain</code>。<li>如果是集群模式，继续执行 <code>runFromConfig</code>。</ul><li><strong>注册 JMX</strong>: 用于监控。<li><strong>创建 <code>QuorumPeer</code></strong>: 这是核心线程。<li><strong>加载数据</strong>: <code>FileTxnSnapLog.restore()</code>，从磁盘恢复内存数据 <code>DataTree</code>，并获取最大的 <code>zxid</code>。<li><strong>启动 <code>QuorumPeer</code> 线程</strong>: <ul><li>进入 <code>super.start()</code>。<li>启动 <code>AdminServer</code> (Jetty)。<li>启动 <code>CnxnFactory</code> (监听 Client 端口)。<li>开始选举循环 (<code>run()</code> 方法)。</ul></ol><h2 id=3-quorumpeer-run-xun-huan>3. <code>QuorumPeer.run()</code> 循环</h2><p>这是 ZK 节点的主循环：<pre class=language-java data-lang=java><code class=language-java data-lang=java>while (running) {
+    switch (getPeerState()) {
+        case LOOKING:
+            // 发起 Leader 选举
+            makeLeader = electionAlg.lookForLeader();
+            break;
+        case OBSERVING:
+            observer.observeLeader();
+            break;
+        case FOLLOWING:
+            follower.followLeader();
+            break;
+        case LEADING:
+            leader.lead();
+            break;
+    }
+}
+</code></pre><hr><p><strong>Next</strong>: <a href=../04-datatree/>ZooKeeper 源码阅读：04. 数据模型 (DataTree)</a></div></div></section>
