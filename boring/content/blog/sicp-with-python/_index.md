@@ -1,10 +1,11 @@
 ---
 title: "SICP Python版：计算机程序的构造和解释"
-date: 2026-02-07T10:00:00+08:00
 draft: false
-tags: ["Python", "SICP", "CS基础", "算法", "编程思想"]
-categories: ["SICP-Python"]
 description: "基于 Composing Programs (SICP Python版) 的中文重制教程。以 Python 3 为载体，深入浅出讲解计算机程序的构造与解释，掌握编程的核心思想与抽象艺术。"
+extra:
+  date: 2026-02-07T10:00:00+08:00
+  tags: ["Python", "SICP", "CS基础", "算法", "编程思想"]
+  categories: ["SICP-Python"]
 ---
 
 # SICP Python版：计算机程序的构造和解释

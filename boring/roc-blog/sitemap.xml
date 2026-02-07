@@ -15,6 +15,10 @@
         <lastmod>2025-12-04T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/alibaba-dragonwell-wisp-coroutine-practice/</loc>
+        <lastmod>2026-02-01T12:00:00+08:00</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/apache-dolphinscheduler-secondary-development-handbook/</loc>
         <lastmod>2025-10-25</lastmod>
     </url>
@@ -175,6 +179,10 @@
     <url>
         <loc>https://scp.net.cn/blog/golang-ecommerce-inventory-middle-platform/</loc>
         <lastmod>2025-10-25</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/guidance-for-the-lost-soul-five-philosophies/</loc>
+        <lastmod>2026-02-03T14:00:00+08:00</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/hbase/</loc>
@@ -498,6 +506,21 @@
         <lastmod>2024-12-15T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/reading/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/reading/human-reboot/</loc>
+        <lastmod>2026-02-07T12:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/reading/rethinking-intelligence/</loc>
+        <lastmod>2026-02-07T14:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/reading/weak-propagation/</loc>
+        <lastmod>2026-02-05T10:00:00+08:00</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/redis/</loc>
     </url>
     <url>
@@ -609,6 +632,101 @@
         <lastmod>2026-01-12T00:00:00+08:00</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/01-building-abstractions-with-functions/</loc>
+        <lastmod>2026-02-07T10:01:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/02-defining-functions-and-control/</loc>
+        <lastmod>2026-02-07T10:15:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/03-higher-order-functions/</loc>
+        <lastmod>2026-02-07T10:30:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/04-recursion/</loc>
+        <lastmod>2026-02-07T10:45:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/05-data-abstraction/</loc>
+        <lastmod>2026-02-07T11:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/06-sequences-and-trees/</loc>
+        <lastmod>2026-02-07T11:15:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/07-mutable-data/</loc>
+        <lastmod>2026-02-07T11:30:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/08-object-oriented-programming/</loc>
+        <lastmod>2026-02-07T11:45:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/09-generic-operations/</loc>
+        <lastmod>2026-02-07T12:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/10-recursive-objects/</loc>
+        <lastmod>2026-02-07T13:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/11-efficiency/</loc>
+        <lastmod>2026-02-07T14:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/12-scheme-intro/</loc>
+        <lastmod>2026-02-07T15:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/13-calculator-interpreter/</loc>
+        <lastmod>2026-02-07T16:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/14-interpreter-abstraction/</loc>
+        <lastmod>2026-02-07T17:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/15-implicit-sequences/</loc>
+        <lastmod>2026-02-07T18:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/16-declarative-programming/</loc>
+        <lastmod>2026-02-07T19:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/17-logic-programming/</loc>
+        <lastmod>2026-02-07T20:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/18-unification-algorithm/</loc>
+        <lastmod>2026-02-07T21:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/19-distributed-computing/</loc>
+        <lastmod>2026-02-07T22:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/20-mapreduce/</loc>
+        <lastmod>2026-02-07T23:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/21-parallel-computing/</loc>
+        <lastmod>2026-02-08T00:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/sicp-with-python/22-epilogue/</loc>
+        <lastmod>2026-02-09T00:00:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/spec-driven-development-depth-analysis/</loc>
+        <lastmod>2026-02-01T10:00:00+08:00</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/speech/</loc>
     </url>
     <url>
@@ -629,6 +747,142 @@
     </url>
     <url>
         <loc>https://scp.net.cn/blog/speech/05-eastern-echo/</loc>
+        <lastmod>2024-01-24</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/1985ba-fei-te-dian-shi-cai-fang/</loc>
+        <lastmod>1985-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/1990nian-ba-fei-te-zai-si-tan-fu-da-xue-de-yan-jiang/</loc>
+        <lastmod>1990-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/1991ba-fei-te-dui-sheng-mu-da-xue-dui-mbaxue-sheng-de-yan-jiang/</loc>
+        <lastmod>1991-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/1998ba-fei-te-zai-fo-luo-li-da-da-xue-shang-xue-yuan-de-yan-jiang/</loc>
+        <lastmod>1998-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/1998nian-ba-fei-te-yu-bi-er-gai-ci-zai-hua-sheng-dun-da-xue-de-dui-hua/</loc>
+        <lastmod>1998-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2005kan-sa-si-shang-xue-yuan-xue-sheng-yu-bo-ke-xi-er-zong-bu-yu-wo-lun-ba-fei-te-de-wen-da/</loc>
+        <lastmod>2005-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2007nian-yang-shi-zhuan-fang-ba-fei-te/</loc>
+        <lastmod>2007-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2008ba-fei-te-da-emoryyu-austinda-xue-shang-xue-yuan-xue-sheng-wen-ba-fei-te-da/</loc>
+        <lastmod>2008-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2010nian-cnbccai-fang-ba-fei-te-quan-wen/</loc>
+        <lastmod>2010-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2010yang-shi-cai-jing-cai-fang-ba-fei-te/</loc>
+        <lastmod>2010-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2011nian-ba-fei-te-yu-nan-jing-da-xue-embaxue-sheng-chang-yan-tan-tou-zi-yu-ren-sheng-quan-zhong-wen-ji-lu/</loc>
+        <lastmod>2011-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2013ba-fei-te-yu-ma-li-lan-da-xue-mbaxue-sheng-de-jiao-liu-fa-yan/</loc>
+        <lastmod>2013-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2015wo-lun-ba-fei-te-da-iveyshang-xue-yuan-mbaxue-sheng-wen-wo-lun-ba-fei-te-da/</loc>
+        <lastmod>2015-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2016nian-ba-fei-te-yu-8suo-da-xue-mbaxue-sheng-jian-mian-hui-de-20ge-wen-da/</loc>
+        <lastmod>2016-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2017nian-ba-fei-te-dui-hua-bei-jing-da-xue-xue-sheng-zui-hao-de-tou-zi-shi-tou-zi-zi-ji/</loc>
+        <lastmod>2017-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2017nian-cnbccai-fang-ba-fei-te/</loc>
+        <lastmod>2017-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2017nian-ge-lun-bi-ya-da-xue-ren-sheng-zui-mei-hao-de-shi-shi-shen-me-ba-fei-te-mei-kao-shang-ha-fo-da-xue/</loc>
+        <lastmod>2017-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2018nian-ba-fei-te-zai-du-yao-qing-bei-da-guang-hua-xue-zi-gong-jin-wu-can-wen-da-quan-ji-lu/</loc>
+        <lastmod>2018-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2019nian-5yue-ya-hu-cai-jing-zhuan-fang-ba-fei-te/</loc>
+        <lastmod>2019-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2020nian-wo-lun-ba-fei-te-jie-shou-cnbczhuan-fang/</loc>
+        <lastmod>2020-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2022ba-fei-te-he-cha-li-luo-si-dui-tan/</loc>
+        <lastmod>2022-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2023nian-bo-ke-xi-er-gu-dong-da-hui/</loc>
+        <lastmod>2023-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2024nian-bo-ke-xi-er-gu-dong-da-hui/</loc>
+        <lastmod>2024-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/2025nian-bo-ke-xi-er-gu-dong-da-hui/</loc>
+        <lastmod>2025-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-1998-buffett-florida/</loc>
+        <lastmod>1998-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-1998-duan-yong-ping-dui-bu-bu-gao-suo-you-ying-xiao-ren-yuan-de-jiang-hua/</loc>
+        <lastmod>1998-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-1999-duan-yong-ping/</loc>
+        <lastmod>1999-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-2011nian-duan-yong-ping-xue-chang-zai-zhe-jiang-da-xue-de-bi-ye-yan-jiang/</loc>
+        <lastmod>2011-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-2013-university-of-maryland/</loc>
+        <lastmod>2013-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-2018duan-yong-ping-si-tan-fu-da-xue-53wen/</loc>
+        <lastmod>2018-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-2025duan-yong-ping-fang-lue-fang-tan/</loc>
+        <lastmod>2025-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-2025duan-yong-ping-zhe-da/</loc>
+        <lastmod>2025-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-duan-yong-ping-lun-kuai-le-ren-sheng/</loc>
+        <lastmod>2024-01-24</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/speech/extra-fu-mu-xu-yao-zhi-dao-de-shi/</loc>
         <lastmod>2024-01-24</lastmod>
     </url>
     <url>
@@ -731,6 +985,10 @@
     <url>
         <loc>https://scp.net.cn/blog/translate/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/</loc>
         <lastmod>2020-03-18T12:13:35+05:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/translate/why-bloom-filters-work-the-way-they-do-cn/</loc>
+        <lastmod>2026-01-31</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/translate/why-hikaricp/</loc>
