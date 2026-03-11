@@ -1,0 +1,275 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Telegram Bot for  GitHub Actions | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/extra/> /extra </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2020-04-01</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Telegram Bot for GitHub Actions</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h2 id=telegram>Telegram</h2><p><a href=https://telegram.org/>Telegram</a> is a cloud-based mobile and desktop messaging app with a focus on security and speed. It is free to use and extensively hackable. It also has a good bot support system. The API is also easy to implement and has many wrappers for building bots with the API.<h2 id=github-actions>GitHub Actions</h2><p><a href=https://github.com/features/actions>GitHub Actions</a> is a CI/CD runtime for your GitHub repository. You can run almost anything from scripts to docker containers. You can build, test and deploy your code with GitHub Actions. All these actions are called workflows and workflows differ in the job they’re doing. These maybe test workflows, build ones or deployment ones. You can find all the actions on GitHub in the <a href="https://github.com/marketplace?type=actions">marketplace</a><h2 id=building-the-bot>Building the Bot</h2><h3 id=prerequisites>Prerequisites</h3><ul><li>Basic JavaScript Knowledge<li>Basic GitHub Knowledge<li>Telegram Account</ul><blockquote><p>There are templates for building actions. Here we’re gonna start from scratch</blockquote><h3 id=environment-setup>Environment Setup</h3><ul><li><strong>Node</strong>, You can download node from their <a href=https://nodejs.org/en/download/>website</a><li>NPM comes with node, so you don’t have to worry about it.<li>Initialize the Project</ul><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>$ git init ## initialize a new git repository for version management
+---
+$ npm init
+</code></pre><ul><li><strong>dotenv</strong>, Dotenv can be downloaded via</ul><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>$ npm i dotenv
+---
+$ yarn add dotenv
+</code></pre><ul><li><strong>node-telegram-bot-api</strong>, node-telegram-bot-api is a simple wrapper for building telegram bots. You can download it via</ul><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>$ npm i node-telegram-bot-api
+---
+$ yarn add node-telegram-bot-api
+</code></pre><ul><li><strong>@zeit/ncc</strong>, NCC is a Simple CLI for compiling a Node.js module into a single file, together with all its dependencies, GCC-style. It’s a dev dependency and can be downloaded</ul><pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>yarn add --dev @zeit/ncc
+---
+npm i -D @zeit/ncc
+</code></pre><h4 id=folder-structure>Folder Structure</h4><p>The <code>dist</code> folder will be automatically created. <code>action.yml</code> will be made<pre><code>.
+├── dist
+│   └── index.js
+├── index.js
+├── action.yml
+├── README.md
+└── package.json
+
+</code></pre><ul><li><code>index.js</code> is the file we’re defining the bot<li><code>action.yml</code> is the file we’ll define the action and it’s behaviours</ul><h2 id=making-the-bot>Making the Bot</h2><p>We need to get an API bot token from telegram. For that Go to Telegram and Search for <code>Botfather</code>. It’s a bot. <img alt src=https://scp.net.cn/blog/extra/tg-gh/bfather.png> Create a new bot with the <code>/newbot</code> command and get the API key. We’ll need that, also talk to <code>jsondump</code> bot and get your chat id. The output may be like this, so<pre class=language-json data-lang=json><code class=language-json data-lang=json>{
+  "update_id": 143943779,
+  "message": {
+    "message_id": 181575,
+    "from": {
+      "id": 123456 // this is what we need
+      "is_bot": false,
+      "first_name": "Tg Name",
+      "username": "TG Username",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 123456,
+      "first_name": "Tg Name",
+      "username": "TG Username",
+      "type": "private"
+    },
+    "date": 1584119424,
+    "text": "message"
+  }
+}
+</code></pre><p>This will be needed for further use and We need to add it to the repo secrets which can be found in the repo settings. Be careful to add it as <code>token</code> and <code>chat</code> like as shown below <img alt src=https://scp.net.cn/blog/extra/tg-gh/scr.png><h3 id=writing-the-action-and-building-the-bot>Writing the Action and Building the Bot</h3><p>Fire up the terminal/cmd and make a new folder. Install the dependencies. Run the following command<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>$ touch index.js action.yml
+</code></pre><p>Open your favourite text editor within the folder or with the file. We’ll define the bot in <code>index.js</code><pre class=language-javaScript data-lang=javaScript><code class=language-javaScript data-lang=javaScript>require("dotenv").config
+const Bot = require('node-telegram-bot-api');
+const {
+    INPUT_STATUS: ipstatus,
+    INPUT_TOKEN: tgtoken,//Telegram api token
+    INPUT_CHAT: chatid,// Telegram Chat ID
+    INPUT_IU_TITLE: ititle,// Issue title
+    INPUT_IU_NUM: inum,// Issue Number
+    INPUT_IU_ACTOR: iactor,// Issue made by
+    INPUT_IU_BODY: ibody,// Issue Body
+    INPUT_PR_NUM: pnum,// PR Number
+    INPUT_PR_STATE: prstate,// PR Opened, reponed or closed
+    INPUT_PR_TITLE: ptitle,// PR Title
+    INPUT_PR_BODY: pbody,// Body of the PR
+    GITHUB_EVENT_NAME: ghevent,// Name of the trigger event
+    GITHUB_REPOSITORY: repo,// Repository the trigger was made from
+    GITHUB_ACTOR: ghactor,// User who triggered the action
+    GITHUB_SHA: sha,// Commit ID
+    GITHUB_WORKFLOW: ghwrkflw// Workflow Name
+} = process.env;
+
+const bot = new Bot(tgtoken)
+</code></pre><p>First, we’re defining the dotenv for config and initializing Telegram Bot. Here we’re defining the alias variables for the <em>environment variables</em>. You might notice an <code>INPUT_</code> for almost every environment variable, this is because GitHub Actions pass the env variable with an INPUT prefix. Other env variables are action’s default environment variables. Then we initialized the bot with the API token.<p>GitHub actions could be triggered with Issues, Pull Request or Pushes. You can find the trigger events <a href=https://help.github.com/en/actions/reference/events-that-trigger-workflows>here</a>. Here we’re gonna get a message from the bot when an <em>Issue</em> or <em>Pull Request</em> or a <em>Push</em> event has happened.<pre class=language-js data-lang=js><code class=language-js data-lang=js>const evresp = (gevent) => {
+    switch (gevent) {
+
+        case "issues":
+            return `
+❗️❗️❗️❗️❗️❗️
+        
+Issue ${prstate}
+
+Issue Title and Number  : ${ititle} | #${inum}
+
+Commented or Created By : \`${iactor}\`
+
+Issue Body : *${ibody}*
+
+[Link to Issue](https://github.com/${repo}/issues/${inum})
+[Link to Repo ](https://github.com/${repo}/)
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+        case "pull_request":
+            return `
+🔃🔀🔃🔀🔃🔀
+PR ${prstate} 
+        
+PR Number:      ${pnum}
+        
+PR Title:       ${ptitle}
+        
+PR Body:        *${pbody}*
+        
+PR By:          ${ghactor}
+        
+[Link to Issue](https://github.com/${repo}/pull/${pnum})
+[Link to Repo ](https://github.com/${repo}/)
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+        default:
+            return `
+⬆️⇅⬆️⇅
+            
+ID: ${ghwrkflw}
+        
+Action was a *${ipstatus}!*
+        
+\`Repository:  ${repo}\` 
+        
+On:          *${ghevent}*
+        
+By:            *${ghactor}* 
+        
+Tag:        ${process.env.GITHUB_REF}
+        
+[Link to Repo ](https://github.com/${repo}/)
+            `
+    }
+}
+</code></pre><p>In these lines of code, we’re just initializing a switch statement for the responses. We’re also declaring an anonymous function to use the switch responses via a function later. We’re using all the defined variables in the switch. You can check the <a href=https://help.github.com/en/actions/reference/events-that-trigger-workflows>trigger Events</a> to get how the event is triggered and what keyword should be used.<p>Now for the last part of the Js file, we just take the response from the switch and assign it to a constant. Then we use the <code>sendMessage</code> function of the <code>node-telegram-bot-api</code> to send the message to the bot with the chatid and the output as the arguments.<pre class=language-js data-lang=js><code class=language-js data-lang=js>const output = evresp(ghevent)
+</code></pre><p>bot.sendMessage(chatid,output,{parse_mode : “Markdown”})<h2 id=compiling-and-minifying-the-js-code>Compiling and Minifying the Js code</h2><p>Since we have installed <code>@zeit/ncc</code> and this is used for the making the whole program with all the APIs to a single file and we need to use NCC for that. We just need to run<pre class=language-bash data-lang=bash><code class=language-bash data-lang=bash>yarn run ncc build index.js -C -m -o dist
+</code></pre><p>or you might wanna add the following to you <code>package.json</code> file, and run <code>npm run test</code> to compile and minify the code.<pre class=language-json data-lang=json><code class=language-json data-lang=json>"scripts": {
+    "test": "ncc build index.js -C -m -o dist"
+  },
+</code></pre><p>This will create a <code>dist</code> folder with and <code>index.js</code> file which contains the compiled code.<h2 id=making-it-a-valid-action>Making it a valid action</h2><p>For making this Js file a valid action, we need to add an <code>action.yml</code> file. The action.yml for this action is like this<pre class=language-yml data-lang=yml><code class=language-yml data-lang=yml>name: 'Action Name'
+description: 'Action Descreption'
+author: '&LTauthor name>'
+inputs: 
+  chat:
+    description: 'Chat to send: chat id or @channel_name'
+    required: true
+  token:
+    description: 'Telegram Bot token'
+    required: true
+  status:
+    description: 'Job status'
+    required: true
+  iu_title: 
+    description: 'Issue Title'
+    default: ${{ github.event.issue.title }}
+  iu_num:
+    description: 'Issue Number'
+    default: ${{ github.event.issue.number }}
+  iu_actor: 
+    description: 'Issue Triggerer'
+    default: ${{ github.event.issue.user.login }}
+  iu_com:
+    description: 'Issue Comment'
+    default: ${{github.event.comment.body}}
+  pr_state:
+    description: 'State of the PR'
+    default: ${{ github.event.action }}
+  pr_num:
+    description: 'PR Number'
+    default: ${{ github.event.number }}
+  pr_title:
+    description: 'Title of the PR'
+    default: ${{ github.event.pull_request.title }}
+  pr_body:
+    description: 'Body/Contents of the PR'
+    default: ${{ github.event.pull_request.body }}
+runs:
+  using: "node12"
+  main: "dist/index.js"
+branding:
+  icon: 'repeat'  
+  color: 'green'
+</code></pre><p>Here we’re defining the Input variables to be loaded for the action in GitHub’s runtime environemt. All these <code>default</code> data are taken from the response of the webhooks which are send by GitHub when a trigger event is occured. You can find out more in the <a href=https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context>Action Documentation Here</a>.<pre class=language-yml data-lang=yml><code class=language-yml data-lang=yml>runs:
+  using: "node12"
+  main: "dist/index.js"
+</code></pre><p>Here we are defining that this is a node action and should run in an environment with node, and the file which should be run, here the <code>index.js</code> file in the <code>dist</code> folder. That should do it. Create a new commit and push it to a repo. <strong>Create a new tag</strong> and this action will appear in the <a href="https://github.com/marketplace?type=actions">marketplace</a>.<h3 id=defining-a-workflow-to-test-your-action>Defining a workflow to test your action</h3><p>GitHub Action workflows are defined using the <code>.yml</code> syntax. Here is an example of a sample workflow for this action<pre class=language-yml data-lang=yml><code class=language-yml data-lang=yml>name: &LTWorkflow Name>
+
+on:
+  push:
+  pull_request:
+    types: [opened, closed]
+  issues:
+    types: [opened, closed, reopened]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: &LTAnyName>
+        uses: &LTusername>/&LTrepo>@master
+        if: always()
+        with:
+          chat: ${{ secrets.chat }}
+          token: ${{ secrets.token }}
+          status: ${{ job.status }}
+</code></pre><p>The Complete code for the bot is<pre class=language-js data-lang=js><code class=language-js data-lang=js>//Initializing dotenv and the bot
+require("dotenv").config
+const Bot = require('node-telegram-bot-api');
+// aliasing the environment variables 
+const {
+    INPUT_STATUS: ipstatus, 
+    INPUT_TOKEN: tgtoken, //Telegram api token
+    INPUT_CHAT: chatid,// Telegram Chat ID
+    INPUT_IU_TITLE: ititle,// Issue title
+    INPUT_IU_NUM: inum,// Issue Number
+    INPUT_IU_ACTOR: iactor, // Issue made by
+    INPUT_IU_BODY: ibody, // Issue Body
+    INPUT_PR_NUM: pnum, // PR Number
+    INPUT_PR_STATE: prstate, // PR Opened, reponed or closed
+    INPUT_PR_TITLE: ptitle, // PR Title
+    INPUT_PR_BODY: pbody, // Body of the PR
+    GITHUB_EVENT_NAME: ghevent, // Name of the trigger event
+    GITHUB_REPOSITORY: repo, // Repository the trigger was made from
+    GITHUB_ACTOR: ghactor, // User who triggered the action
+    GITHUB_SHA: sha, // Commit ID
+    GITHUB_WORKFLOW: ghwrkflw // Workflow Name
+} = process.env;
+
+const bot = new Bot(tgtoken)
+// Function to return the response for the specific trigger
+const evresp = (gevent) => {
+    switch (gevent) {
+//Switch statement for issues
+        case "issues":
+            return `
+❗️❗️❗️❗️❗️❗️
+        
+Issue ${prstate}
+
+Issue Title and Number  : ${ititle} | #${inum}
+
+Commented or Created By : \`${iactor}\`
+
+Issue Body : *${ibody}*
+
+[Link to Issue](https://github.com/${repo}/issues/${inum})
+[Link to Repo ](https://github.com/${repo}/)
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+// Switch statement for Pull Requests
+        case "pull_request":
+            return `
+🔃🔀🔃🔀🔃🔀
+PR ${prstate} 
+        
+PR Number:      ${pnum}
+        
+PR Title:       ${ptitle}
+        
+PR Body:        *${pbody}*
+        
+PR By:          ${ghactor}
+        
+[Link to Issue](https://github.com/${repo}/pull/${pnum})
+[Link to Repo ](https://github.com/${repo}/)
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+        default:
+// switch statement for Pushes
+            return `
+⬆️⇅⬆️⇅
+            
+ID: ${ghwrkflw}
+        
+Action was a *${ipstatus}!*
+        
+\`Repository:  ${repo}\` 
+        
+On:          *${ghevent}*
+        
+By:            *${ghactor}* 
+        
+Tag:        ${process.env.GITHUB_REF}
+        
+[Link to Repo ](https://github.com/${repo}/)
+            `
+    }
+}
+// assigning the output to a variable
+const output = evresp(ghevent)
+// sending the message
+bot.sendMessage(chatid,output,{parse_mode : "Markdown"})
+</code></pre><hr><p>You can try out many different items using actions and this is just a sample action to get you started. Maybe sending Cat GIFs if the build succeded on the pull request or sending a welcome message to a first time contributor. You imagination is the limit😄 and <strong>Never Stop being ⚡️</strong></div></div></section>

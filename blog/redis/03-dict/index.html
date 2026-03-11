@@ -1,0 +1,69 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>Redis 源码阅读：03. Dict (字典与渐进式 Rehash) | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/redis/> /redis </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-01-10</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">Redis 源码阅读：03. Dict (字典与渐进式 Rehash)</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><p>如果说 SDS 是 Redis 的肌肉，那么 <strong>Dict (字典/哈希表)</strong> 就是 Redis 的骨架。<p>Redis 本身就是一个巨大的 KV 数据库，这个 “KV” 的底层实现就是 Dict。此外，Redis 的 Hash 类型、Set 类型（当元素多时）、ZSet 的一部分（查找成员 Score）都严重依赖 Dict。<p>本文将带你深入 <code>dict.h</code> 和 <code>dict.c</code>，理解 Redis 字典的设计哲学，重点解析它是如何通过 <strong>渐进式 Rehash</strong> 解决大规模数据扩容时的卡顿问题的。<h2 id=1-he-xin-jie-gou-ti>1. 核心结构体</h2><p>Redis 的字典实现非常经典，采用了 <strong>开链法 (Chaining)</strong> 来解决哈希冲突。<h3 id=1-1-dictentry-jie-dian>1.1 dictEntry (节点)</h3><p>这是哈希表中的最小单位，保存了具体的键值对。<pre class=language-c data-lang=c><code class=language-c data-lang=c>typedef struct dictEntry {
+    void *key;              // 键
+    union {
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    } v;                    // 值 (使用 union 节省内存)
+    struct dictEntry *next; // 下一个节点指针 (解决哈希冲突)
+} dictEntry;
+</code></pre><h3 id=1-2-dictht-ha-xi-biao>1.2 dictht (哈希表)</h3><p>这是一个标准的哈希表结构。<pre class=language-c data-lang=c><code class=language-c data-lang=c>typedef struct dictht {
+    dictEntry **table;      // 哈希表数组 (bucket 数组)
+    unsigned long size;     // 哈希表大小 (总是 2 的幂)
+    unsigned long sizemask; // 掩码 (size - 1)，用于计算索引
+    unsigned long used;     // 该表中已有的节点数量
+} dictht;
+</code></pre><h3 id=1-3-dict-zi-dian>1.3 dict (字典)</h3><p>这是最外层的包装。<strong>注意：这里有两个 dictht</strong>。<pre class=language-c data-lang=c><code class=language-c data-lang=c>typedef struct dict {
+    dictType *type; // 类型特定函数 (支持多态，如 key 的复制、析构、哈希计算等)
+    void *privdata; // 私有数据
+    dictht ht[2];   // 两个哈希表！ht[0] 平时用，ht[1] 扩容/缩容时用
+    long rehashidx; // Rehash 索引。-1 表示未进行 Rehash
+    int16_t pauserehash; // 是否暂停 Rehash (>0 表示暂停)
+} dict;
+</code></pre><h2 id=2-wei-shen-me-yao-liang-ge-ha-xi-biao-ht-0-ht-1>2. 为什么要两个哈希表？(ht[0] & ht[1])</h2><p>大多数语言（如 Java HashMap, C++ std::unordered_map）内部只有一个哈希表。扩容时，它们会创建一个更大的新数组，然后<strong>一次性</strong>将所有数据迁移过去。<p>对于 Redis 这种<strong>单线程</strong>内存数据库，一次性迁移几百万甚至上亿个 Key 是灾难性的。这会导致服务器在几百毫秒甚至几秒内无法响应任何请求（Stop-The-World）。<p>为了解决这个问题，Redis 引入了 <strong>渐进式 Rehash (Progressive Rehash)</strong>。<h2 id=3-jian-jin-shi-rehash-xiang-jie>3. 渐进式 Rehash 详解</h2><p>渐进式 Rehash 的核心思想是：<strong>分而治之</strong>。将庞大的迁移工作分摊到后续的每一次增删改查操作中，以及后台的定时任务中。<h3 id=3-1-hong-fa-tiao-jian>3.1 触发条件</h3><p>当以下条件满足时，Redis 会开始扩容：<ol><li>服务器没有执行 <code>BGSAVE</code> (RDB) 或 <code>BGREWRITEAOF</code> (AOF 重写)，且负载因子 (<code>used / size</code>) >= 1。<li>服务器正在执行 <code>BGSAVE</code> 等子进程，但负载因子 >= 5 (强制扩容)。</ol><p>此时，<code>dict</code> 的 <code>rehashidx</code> 从 -1 变为 0，标志着 Rehash 开始。<code>ht[1]</code> 被分配空间（大小通常是 <code>ht[0]</code> 的 2 倍）。<h3 id=3-2-qian-yi-guo-cheng>3.2 迁移过程</h3><p>Rehash 开始后，并没有立即迁移数据。迁移发生在以下两个时间点：<ol><li><p><strong>被动迁移 (Lazy)</strong>： 每次对字典执行添加、删除、查找或更新操作时（<code>dictAdd</code>, <code>dictFind</code> 等），程序除了执行指定操作外，还会顺带将 <code>ht[0]</code> 中 <code>rehashidx</code> 索引位置上的<strong>所有</strong>键值对迁移到 <code>ht[1]</code>，然后将 <code>rehashidx</code> 加 1。</p><li><p><strong>主动迁移 (Active)</strong>： Redis 的 <code>serverCron</code> 定时任务中，会花费 1 毫秒的时间来进行 Rehash（<code>dictRehashMilliseconds</code>），防止长期没有读写导致 Rehash 停滞。</p></ol><h3 id=3-3-rehash-qi-jian-de-du-xie>3.3 Rehash 期间的读写</h3><p>在 Rehash 进行期间，字典同时使用 <code>ht[0]</code> 和 <code>ht[1]</code>：<ul><li><strong>添加 (Add)</strong>：新数据一律添加到 <code>ht[1]</code>。保证 <code>ht[0]</code> 只减不增，最终变为空。<li><strong>查找/删除 (Find/Delete)</strong>：先在 <code>ht[0]</code> 找，找不到再去 <code>ht[1]</code> 找。</ul><h3 id=3-4-jie-shu>3.4 结束</h3><p>当 <code>ht[0]</code> 中所有节点都被迁移到 <code>ht[1]</code> 后，Rehash 结束：<ol><li>释放 <code>ht[0]</code>。<li>将 <code>ht[1]</code> 设置为 <code>ht[0]</code>。<li>重置 <code>ht[1]</code> 为空。<li><code>rehashidx</code> 设为 -1。</ol><h2 id=4-yuan-ma-jing-du-dictrehash>4. 源码精读：dictRehash</h2><p>这是渐进式 Rehash 的核心函数 <code>dict.c/dictRehash</code>：<pre class=language-c data-lang=c><code class=language-c data-lang=c>int dictRehash(dict *d, int n) {
+    int empty_visits = n * 10; // 最大空桶访问次数，防止在空桶多的哈希表上卡太久
+    if (!dictIsRehashing(d)) return 0;
+
+    while(n-- && d->ht[0].used != 0) {
+        dictEntry *de, *nextde;
+
+        // 找到下一个非空的 bucket
+        while(d->ht[0].table[d->rehashidx] == NULL) {
+            d->rehashidx++;
+            if (--empty_visits == 0) return 1; // 还没搬完，但本次配额用光了
+        }
+        
+        // 搬迁该 bucket 上的整条链表
+        de = d->ht[0].table[d->rehashidx];
+        while(de) {
+            uint64_t h;
+
+            nextde = de->next;
+            // 计算在 ht[1] 的新下标
+            h = dictHashKey(d, de->key) & d->ht[1].sizemask;
+            
+            // 头插法插入到 ht[1]
+            de->next = d->ht[1].table[h];
+            d->ht[1].table[h] = de;
+            
+            d->ht[0].used--;
+            d->ht[1].used++;
+            de = nextde;
+        }
+        d->ht[0].table[d->rehashidx] = NULL; // 原位置置空
+        d->rehashidx++;
+    }
+
+    // 检查是否全部搬完
+    if (d->ht[0].used == 0) {
+        zfree(d->ht[0].table); // 释放 ht[0] 内存
+        d->ht[0] = d->ht[1];   // ht[1] 上位
+        _dictReset(&d->ht[1]); // 重置 ht[1]
+        d->rehashidx = -1;     // 标记结束
+        return 0;
+    }
+
+    return 1; // 还没搬完
+}
+</code></pre><h2 id=5-zong-jie>5. 总结</h2><p>Redis 的 Dict 实现充分体现了工程设计的权衡：<ul><li>使用 <strong>链地址法</strong> 解决冲突，简单且内存利用率高。<li>通过 <strong>双哈希表 + 渐进式 Rehash</strong>，完美解决了单线程模型下的大规模扩容卡顿问题。这是 Redis 能够保持极低延迟的关键技术之一。</ul><p>下一篇，我们将研究 Redis 中那些为了省内存而“丧心病狂”设计的数据结构 —— <strong>ZipList (压缩列表) 与 ListPack</strong>。</div></div></section>

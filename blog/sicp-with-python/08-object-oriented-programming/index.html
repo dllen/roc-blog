@@ -1,0 +1,37 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><title>08. 面向对象编程：万物皆对象 | 码农的自留地</title><body class="bg-white dark:bg-slate-900 transition ease-in-out"><section><div class="sticky top-0 bg-slate-100 dark:bg-slate-800"><div class="container mx-auto px-auto xl:px-0 w-full xl:w-1/2 flex place-content-between py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900 dark:text-slate-300"><div class=flex><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/> /blog </a><a class="m-0 p-0 text-slate-900 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200" href=/blog/sicp-with-python/> /sicp-with-python </a></div><div class="flex gap-4"><div class="hidden cursor-pointer" id=back-to-top><i class="las la-level-up-alt"></i></div><a href=/><i class="las la-home"></i></a><div class=cursor-pointer id=darkmode-toggle><div class="hidden dark:inline"><i class="las la-sun"></i></div><div class="inline dark:hidden"><i class="las la-moon"></i></div></div></div></div></div><div class="container mx-auto w-full xl:w-1/2 mb-16"><div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">2026-02-07</div><h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">08. 面向对象编程：万物皆对象</h1><div class="mt-2 mb-6 flex flex-wrap gap-2"></div><div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 prose-headings:text-slate-800 dark:prose-headings:bg-indigo-900 prose-headings:font-normal dark:prose-headings:text-slate-300 prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base"><h1 id=di-ba-zhang-mian-xiang-dui-xiang-bian-cheng-mo-wu-jie-dui-xiang>第八章：面向对象编程——万物皆对象</h1><blockquote><p>“Alan Kay (Smalltalk 发明者) 曾说：‘OOP to me means only messaging, local retention and protection and hiding of state-process, and extreme late-binding of all things.’”</blockquote><p>在上一章，我们通过 <code>make_withdraw</code> 函数和 <code>nonlocal</code> 模拟了拥有状态的“对象”。这种手动管理状态的方式虽然强大，但不够通用。<p>本章我们将介绍 Python 内置的 <strong>对象系统 (Object System)</strong>。<h2 id=2-5-mian-xiang-dui-xiang-bian-cheng-oop>2.5 面向对象编程 (OOP)</h2><h3 id=2-5-1-lei-yu-shi-li-classes-and-instances>2.5.1 类与实例 (Classes and Instances)</h3><p>OOP 的核心是将数据（属性）和操作数据的方法（函数）捆绑在一起。<ul><li><strong>类 (Class)</strong>：蓝图、模板。描述了一类对象的共同特征。<li><strong>实例 (Instance)</strong>：根据蓝图造出来的具体对象。</ul><pre class=language-python data-lang=python><code class=language-python data-lang=python>class Account:
+    """A bank account that has a non-negative balance."""
+    
+    interest = 0.02  # 类属性 (Class Attribute)，所有实例共享
+
+    def __init__(self, account_holder):
+        self.balance = 0                # 实例属性 (Instance Attribute)
+        self.holder = account_holder
+
+    def deposit(self, amount):
+        self.balance = self.balance + amount
+        return self.balance
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            return 'Insufficient funds'
+        self.balance = self.balance - amount
+        return self.balance
+</code></pre><p><strong>深入理解 <code>self</code></strong>： 当你调用 <code>a.deposit(100)</code> 时，Python 实际上在执行 <code>Account.deposit(a, 100)</code>。<code>self</code> 就是那个具体的实例 <code>a</code>。<h3 id=2-5-2-xiao-xi-chuan-di-message-passing>2.5.2 消息传递 (Message Passing)</h3><p>SICP 独特之处在于它从<strong>消息传递</strong>的角度解释 OOP。 当我们调用 <code>a.withdraw(10)</code> 时，我们实际上是在向对象 <code>a</code> 发送了一条消息：“请执行 <code>withdraw</code> 操作，参数是 <code>10</code>”。<p>对象根据自己的内部逻辑（方法定义）来响应这条消息。这种<strong>动态分发 (Dynamic Dispatch)</strong> 是多态的基础。<h3 id=2-5-3-ji-cheng-inheritance>2.5.3 继承 (Inheritance)</h3><p>继承允许我们定义一个新类（子类），它继承了现有类（基类）的所有属性和方法。这极大地促进了<strong>代码复用</strong>。<pre class=language-python data-lang=python><code class=language-python data-lang=python>class CheckingAccount(Account):
+    """A bank account that charges for withdrawals."""
+    
+    withdraw_charge = 1
+    interest = 0.01
+
+    def withdraw(self, amount):
+        return Account.withdraw(self, amount + self.withdraw_charge)
+</code></pre><p><strong>Is-a 关系</strong>：<code>CheckingAccount</code> <strong>is a</strong> <code>Account</code>。 这里我们<strong>重写 (Override)</strong> 了 <code>withdraw</code> 方法，但通过 <code>Account.withdraw(...)</code> 复用了父类的逻辑。<h3 id=2-5-4-duo-tai-polymorphism>2.5.4 多态 (Polymorphism)</h3><p>多态意味着“多种形态”。在编程中，它指<strong>不同的对象对相同的消息做出不同的响应</strong>。<pre class=language-python data-lang=python><code class=language-python data-lang=python>def make_payment(account, amount):
+    return account.withdraw(amount)
+</code></pre><p><code>make_payment</code> 函数根本不需要知道 <code>account</code> 是普通的 <code>Account</code> 还是 <code>CheckingAccount</code>。只要它能响应 <code>withdraw</code> 消息，代码就能工作。<p>这就是<strong>鸭子类型 (Duck Typing)</strong>：“如果它走起来像鸭子，叫起来像鸭子，那它就是鸭子。”<h3 id=2-5-5-duo-zhong-ji-cheng-multiple-inheritance>2.5.5 多重继承 (Multiple Inheritance)</h3><p>Python 支持一个类继承多个父类。这虽然强大，但也带来了复杂性（如菱形继承问题）。Python 使用 <strong>C3 线性化算法 (MRO)</strong> 来确定方法解析顺序。<pre class=language-python data-lang=python><code class=language-python data-lang=python>class SavingsAccount(Account):
+    deposit_charge = 2
+    def deposit(self, amount):
+        return Account.deposit(self, amount - self.deposit_charge)
+
+class CleverBank(CheckingAccount, SavingsAccount):
+    """同时拥有取款手续费和存款手续费的黑心银行"""
+    pass
+</code></pre><h2 id=zong-jie-yu-si-kao>总结与思考</h2><ul><li><strong>封装</strong>：将状态和行为打包，隐藏内部细节。<li><strong>继承</strong>：避免重复造轮子。<li><strong>多态</strong>：编写通用的接口，适应不同的实现。</ul><p>至此，SICP 的第二部分（数据抽象）告一段落。 在接下来的第三部分，我们将进入更加抽象和底层的领域——<strong>解释计算机程序的程序</strong>（解释器）。但在那之前，SICP 2.9 还探讨了<strong>泛型操作 (Generic Operations)</strong>，这是构建大型系统的关键技术。</div></div></section>
