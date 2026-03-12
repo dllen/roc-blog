@@ -503,7 +503,7 @@ public class Demo6 {
 
 测试命令：
 
-```
+```java
 mvn clean package
 
 java -cp "$JAVA_HOME/lib/*:target/javassit-tour-jar-with-dependencies.jar" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=10240 com.ks.test.app.Demo6

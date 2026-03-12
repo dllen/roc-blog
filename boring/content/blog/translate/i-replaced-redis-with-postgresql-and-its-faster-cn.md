@@ -162,7 +162,7 @@ WHERE key = $1 AND expires_at > NOW();
 
 定期清理过期数据（可以用 cron 或调度任务跑）：
 
-```sql
+```http
 DELETE FROM cache WHERE expires_at < NOW();
 ```
 

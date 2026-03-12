@@ -31,7 +31,7 @@ tags: [Elasticsearch, 性能优化, 存储]
 - 仅影响新段：更改后只对新生成的段生效；老段需 `forcemerge` 才能受益。
 - 设置示例：
 
-```json
+```http
 PUT my-index/_settings
 {
   "index": {
@@ -46,7 +46,7 @@ PUT my-index/_settings
 
 - 文本字段（不需要短语/位置时）：
 
-```json
+```http
 PUT my-index
 {
   "settings": { "index.codec": "best_compression" },
@@ -85,7 +85,7 @@ PUT my-index
 - 副本数（`number_of_replicas`）：降低副本可节省磁盘，但会降低容错能力；生产通常至少 1 副本。
 - 示例：小型索引可用：
 
-```json
+```http
 PUT small-index
 {
   "settings": {
@@ -99,7 +99,7 @@ PUT small-index
 
 - 策略示例（按规模调整）：
 
-```json
+```http
 PUT _ilm/policy/logs-policy
 {
   "policy": {
@@ -135,7 +135,7 @@ PUT _ilm/policy/logs-policy
 
 - 仅对只读索引使用，避免影响写入与查询；可显著减少段文件和开销。
 
-```json
+```http
 POST my-index/_forcemerge?max_num_segments=1
 ```
 
@@ -147,7 +147,7 @@ POST my-index/_forcemerge?max_num_segments=1
 
 - 使用默认或更严格的磁盘水位防护（按需调整）：
 
-```json
+```http
 PUT _cluster/settings
 {
   "persistent": {

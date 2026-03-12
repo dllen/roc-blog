@@ -203,10 +203,14 @@ mount -o noatime,commit=30 /dev/sda1 /kafka-logs
 
 ```properties
 # server.properties 配置
-socket.send.buffer.bytes=102400          # Socket 发送缓冲区
-socket.receive.buffer.bytes=102400       # Socket 接收缓冲区
-log.flush.interval.messages=10000        # 刷盘消息数量
-log.flush.interval.ms=3000               # 刷盘时间间隔
+# Socket 发送缓冲区
+socket.send.buffer.bytes=102400
+# Socket 接收缓冲区
+socket.receive.buffer.bytes=102400
+# 刷盘消息数量
+log.flush.interval.messages=10000
+# 刷盘时间间隔
+log.flush.interval.ms=3000
 ```
 
 ## 监控和调优
@@ -498,7 +502,7 @@ props.put("max.poll.records", 5000);        // 增加单次poll记录数
 
 ### 3. **网络带宽瓶颈**
 
-```bash
+```java
 # 问题：网络成为瓶颈
 # 解决：
 # - 启用压缩

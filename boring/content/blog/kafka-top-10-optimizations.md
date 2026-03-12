@@ -37,7 +37,8 @@ kafka-topics.sh --bootstrap-server <broker:9092> \
 - 配置：
 ```properties
 # broker/server.properties
-replica.lag.time.max.ms=5000  # 示例：5s，需结合网络/磁盘能力与延迟容忍度
+# 示例：5s，需结合网络/磁盘能力与延迟容忍度
+replica.lag.time.max.ms=5000
 ```
 - 取舍：滞后阈值太短易频繁出入 ISR，太长则风险积累；结合 `min.insync.replicas` 与 `acks` 联动。
 
@@ -77,9 +78,12 @@ props.put("acks", "all");             // 强持久性，需配合 min.insync.rep
 - 原理：每次抓取的最小字节与最大等待影响吞吐与延迟。
 ```properties
 # consumer
-fetch.min.bytes=1048576      # 1MB，增大以减少请求开销
-fetch.max.wait.ms=50         # 最长等待以凑满批次
-max.partition.fetch.bytes=8388608  # 每分区最大抓取
+# 1MB，增大以减少请求开销
+fetch.min.bytes=1048576
+# 最长等待以凑满批次
+fetch.max.wait.ms=50
+# 每分区最大抓取
+max.partition.fetch.bytes=8388608
 ```
 - 经验：延迟敏感业务降低 `fetch.max.wait.ms`；吞吐优先业务增大 `fetch.min.bytes` 与 `max.partition.fetch.bytes`。
 

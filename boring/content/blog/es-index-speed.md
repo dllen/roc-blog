@@ -34,7 +34,7 @@ tags: [Elasticsearch, 性能优化, 索引]
 
 - 提高刷新间隔：减少新段创建频率，降低合并压力并提升写入吞吐。
 
-```json
+```http
 PUT my-index/_settings
 {
   "index": {
@@ -45,7 +45,7 @@ PUT my-index/_settings
 
 - 初始加载禁用刷新与副本（风险可控）：
 
-```json
+```http
 PUT my-index/_settings
 {
   "index": {
@@ -57,7 +57,7 @@ PUT my-index/_settings
 
 - 加载完成后恢复设置：
 
-```json
+```http
 PUT my-index/_settings
 {
   "index": {
@@ -74,7 +74,7 @@ PUT my-index/_settings
 - 自动 ID：使用自动生成 `_id` 可跳过“同分片查重”，显著降低写入开销，尤其在索引规模增长后。
 - 索引 Buffer：为重写入分片提升 `indices.memory.index_buffer_size`，最多让“单个重索引分片”获得约 512MB 的索引缓冲。
 
-```json
+```http
 PUT _cluster/settings
 {
   "persistent": {

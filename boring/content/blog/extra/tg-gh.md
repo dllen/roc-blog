@@ -66,15 +66,14 @@ The `dist` folder will be automatically created. `action.yml` will be made
 
 ## Making the Bot
 We need to get an API bot token from telegram. For that Go to Telegram and Search for `Botfather`. It's a bot.
-![](bfather.png)
-Create a new bot with the `/newbot` command and get the API key. We'll need that, also talk to `jsondump` bot and get your chat id. The output may be like this, so
+Create a new bot with the `/newbot` command and get the API key. We'll need that, also talk to `jsondump` bot and get your chat id. The output may be like this:
 ```json
 {
   "update_id": 143943779,
   "message": {
     "message_id": 181575,
     "from": {
-      "id": 123456 // this is what we need
+      "id": 123456,
       "is_bot": false,
       "first_name": "Tg Name",
       "username": "TG Username",
@@ -91,8 +90,7 @@ Create a new bot with the `/newbot` command and get the API key. We'll need that
   }
 }
 ```
-This will be needed for further use and We need to add it to the repo secrets which can be found in the repo settings. Be careful to add it as `token` and `chat` like as shown below
-![](scr.png)
+You need `message.chat.id`. This will be needed for further use and We need to add it to the repo secrets which can be found in the repo settings. Be careful to add it as `token` and `chat`.
 
 ### Writing the Action and Building the Bot
 Fire up the terminal/cmd and make a new folder. Install the dependencies. Run the following command
@@ -101,8 +99,8 @@ $ touch index.js action.yml
 ```
 Open your favourite text editor within the folder or with the file. We'll define the bot in `index.js`
 
-```javaScript   
-require("dotenv").config
+```javascript
+require("dotenv").config()
 const Bot = require('node-telegram-bot-api');
 const {
     INPUT_STATUS: ipstatus,
@@ -123,7 +121,7 @@ const {
     GITHUB_WORKFLOW: ghwrkflw// Workflow Name
 } = process.env;
 
-const bot = new Bot(tgtoken)
+const bot = new Bot(tgtoken, { polling: false })
 ```
 First, we're defining the dotenv for config and initializing Telegram Bot. Here we're defining the alias variables for the *environment variables*. You might notice an `INPUT_` for almost every environment variable, this is because GitHub Actions pass the env variable with an INPUT prefix. Other env variables are action's default environment variables. Then we initialized the bot with the API token.
 
@@ -147,7 +145,8 @@ Issue Body : *${ibody}*
 
 [Link to Issue](https://github.com/${repo}/issues/${inum})
 [Link to Repo ](https://github.com/${repo}/)
-[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)
+            `
         case "pull_request":
             return `
 🔃🔀🔃🔀🔃🔀
@@ -163,7 +162,8 @@ PR By:          ${ghactor}
         
 [Link to Issue](https://github.com/${repo}/pull/${pnum})
 [Link to Repo ](https://github.com/${repo}/)
-[Build log here](https://github.com/${repo}/commit/${sha}/checks)`
+[Build log here](https://github.com/${repo}/commit/${sha}/checks)
+            `
         default:
             return `
 ⬆️⇅⬆️⇅
@@ -191,17 +191,23 @@ Now for the last part of the Js file, we just take the response from the switch 
 ```js
 const output = evresp(ghevent)
 ```
-bot.sendMessage(chatid,output,{parse_mode : "Markdown"})
+```js
+(async () => {
+  await bot.sendMessage(chatid, output, { parse_mode: "Markdown" })
+})()
+```
 ## Compiling and Minifying the Js code 
-Since we have installed `@zeit/ncc` and this is used for the making the whole program with all the APIs to a single file and we need to use NCC for that. We just need to run
-```bash 
+Since we have installed `@vercel/ncc` and this is used for the making the whole program with all the APIs to a single file and we need to use NCC for that. We just need to run
+```bash
 yarn run ncc build index.js -C -m -o dist
-``` 
-or you might wanna add the following to you `package.json` file, and run `npm run test` to compile and minify the code.
+```
+or you might wanna add the following to you `package.json` file, and run `npm run build` to compile and minify the code.
 ```json
-"scripts": {
-    "test": "ncc build index.js -C -m -o dist"
-  },
+{
+  "scripts": {
+    "build": "ncc build index.js -C -m -o dist"
+  }
+}
 ```
 This will create a `dist` folder with and `index.js` file which contains the compiled code.
 
@@ -230,9 +236,9 @@ inputs:
   iu_actor: 
     description: 'Issue Triggerer'
     default: ${{ github.event.issue.user.login }}
-  iu_com:
-    description: 'Issue Comment'
-    default: ${{github.event.comment.body}}
+  iu_body:
+    description: 'Issue Body / Comment'
+    default: ${{ github.event.comment.body || github.event.issue.body }}
   pr_state:
     description: 'State of the PR'
     default: ${{ github.event.action }}
@@ -246,7 +252,7 @@ inputs:
     description: 'Body/Contents of the PR'
     default: ${{ github.event.pull_request.body }}
 runs:
-  using: "node12"
+  using: "node20"
   main: "dist/index.js"
 branding:
   icon: 'repeat'  
@@ -256,7 +262,7 @@ Here we're defining the Input variables to be loaded for the action in GitHub's 
 
 ```yml
 runs:
-  using: "node12"
+  using: "node20"
   main: "dist/index.js"
 ```
 Here we are defining that this is a node action and should run in an environment with node, and the file which should be run, here the `index.js` file in the `dist` folder. That should do it. Create a new commit and push it to a repo. **Create a new tag** and this action will appear in the [marketplace](https://github.com/marketplace?type=actions).
