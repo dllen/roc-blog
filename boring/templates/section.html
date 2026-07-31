@@ -16,10 +16,8 @@
         {% endif %}
 
         {% if paginator %}
-            {# 分页页面：使用 paginator.pages #}
             {% set posts = paginator.pages %}
         {% else %}
-            {# 单页：使用 section.pages #}
             {% set posts = section.pages %}
         {% endif %}
 
@@ -37,6 +35,7 @@
                             <a class="block" href="{{ page.permalink | safe }}">
                                 <div class="font-serif text-4xl xl:text-xl">
                                     {{ page.title }}
+                                    {% if page.extra.password or page.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
                                 </div>
                                 <div class="text-2xl xl:text-sm text-slate-500 mt-1">
                                     {{ page.extra.update_date | default(value=page.date) | date(format="%Y-%m-%d") }}
@@ -53,7 +52,6 @@
                 </ul>
             </div>
 
-            {# 分页 UI（仅当 paginator 存在时）#}
             {% if paginator and paginator.number_pagers %}
             <nav class="mt-12 flex gap-2 justify-center text-2xl xl:text-base">
                 {% if paginator.previous %}

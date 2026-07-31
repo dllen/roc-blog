@@ -63,6 +63,10 @@ roc-blog/
    文章内容...
    ```
 
+### 加密文章（可选）
+
+在 frontmatter 加 `password: "..."` 即可对单篇文章启用密码保护（基于 StaticShield 的浏览器端加密）。详见 [docs/features/encryption.md](docs/features/encryption.md)。
+
 ## 部署到 Cloudflare Pages
 
 ### 自动部署

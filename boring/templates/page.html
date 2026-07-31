@@ -70,6 +70,11 @@
                 {{ page.date | date(format="%Y-%m-%d") }}
             </div>
             <h1 class="font-serif text-5xl xl:text-4xl text-slate-900 dark:text-slate-200 mt-2 mb-4">
+                {% if page.extra.password or page.password %}
+                <svg class="post-locked" viewBox="0 0 24 24" aria-label="加密文章" role="img">
+                    <path fill="currentColor" d="M17 8V7a5 5 0 0 0-10 0v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-1zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V7a2.1 2.1 0 1 1 4.2 0v1z"/>
+                </svg>
+                {% endif %}
                 {{ page.title }}
             </h1>
             <div class="flex flex-wrap gap-2 mb-6">
