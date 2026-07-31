@@ -32,8 +32,8 @@ theme = "nord"
 [link_checker]
 internal_level = "warn"
 
-[taxonomies]
-tags = "tags"
+[[taxonomies]]
+name = "tags"
 
 generate_feeds = true
 feed_limit = 20
