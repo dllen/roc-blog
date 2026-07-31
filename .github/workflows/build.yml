@@ -31,6 +31,34 @@ jobs:
         working-directory: boring
         run: yarn build
 
+      - name: Audit frontmatter
+        working-directory: boring
+        run: node scripts/audit-frontmatter.mjs content/blog --out _audit
+        continue-on-error: true
+        id: audit
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontmatter-audit
+          path: boring/_audit/frontmatter-audit.md
+
+      - name: Comment on PR (audit results)
+        if: github.event_name == 'pull_request' && steps.audit.outcome == 'failure'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: frontmatter-audit
+          path: boring/_audit/frontmatter-audit.md
+
+      - name: Generate OG images
+        working-directory: boring
+        run: node scripts/og-generator.mjs content/blog --out static/og
+
+      - name: Cleanup orphan OG images
+        working-directory: boring
+        run: node scripts/cleanup-og.mjs content/blog --out static/og
+
       - name: Download Zola binary
         run: |
           ZOLA_VERSION="v0.19.2"
