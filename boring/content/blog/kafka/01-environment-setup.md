@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：01. 环境搭建与源码编译"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Build, Gradle]
+taxonomies:
+  tags: [Kafka, Source Code, Build, Gradle]
 weight: 1
 ---
 

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：15. DB 结构 (键空间与过期字典)"
 date: 2026-01-11T13:00:00+08:00
 description: "Redis 数据库的内部结构是怎样的？redisDb 结构体详解，键空间 dict 和过期字典 expires。"
-tags: [Redis, Source Code, Database, Key Space]
+taxonomies:
+  tags: [Redis, Source Code, Database, Key Space]
 weight: 15
 ---
 

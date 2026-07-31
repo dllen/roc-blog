@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：13. 异步 Web 处理"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, MVC, Async]
+taxonomies:
+  tags: [Spring, Source Code, MVC, Async]
 weight: 13
 ---
 

@@ -3,7 +3,8 @@ title: "ollama 教程"
 date: 2024-02-20T02:01:58+05:30
 update_date: 2024-02-20T02:01:58+05:30
 description: "How to prompt Code Llama"
-tags: [ollama, ai]
+taxonomies:
+  tags: [ollama, ai]
 ---
 
 使用 `ollama` 在本地运行大模型，并完成几个辅助编程的示例。

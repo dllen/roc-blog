@@ -2,7 +2,8 @@
 title: "🧠 Prompt Engineering Tip: Always provide context a"
 date: "2025-11-13"
 description: "来自 X 采集：prompt"
-tags: [Prompt, X]
+taxonomies:
+  tags: [Prompt, X]
 categories: [Prompt]
 slug: "prompt-engineering-tip-always-provide-context-a"
 ---

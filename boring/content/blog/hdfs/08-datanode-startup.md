@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：08. DataNode 启动与注册"
 date: 2026-01-19T10:00:00+08:00
 description: "DataNode 启动全流程解析：从存储初始化、BlockPool 管理到向 NameNode 注册。"
-tags: [Hadoop, HDFS, DataNode, Startup]
+taxonomies:
+  tags: [Hadoop, HDFS, DataNode, Startup]
 weight: 8
 ---
 

@@ -2,7 +2,8 @@
 title: "New framework for critical thinking prompts:"
 date: "2025-11-12"
 description: "来自 X 采集：prompt"
-tags: [Prompt, X]
+taxonomies:
+  tags: [Prompt, X]
 categories: [Prompt]
 slug: "new-framework-for-critical-thinking-prompts"
 ---

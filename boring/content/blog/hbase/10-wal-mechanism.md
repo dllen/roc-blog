@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：10. WAL 机制"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, WAL, FSHLog]
+taxonomies:
+  tags: [HBase, Source Code, WAL, FSHLog]
 weight: 10
 ---
 

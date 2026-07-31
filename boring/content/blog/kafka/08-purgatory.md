@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：08. 延时操作 (Purgatory)"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Purgatory, TimingWheel]
+taxonomies:
+  tags: [Kafka, Source Code, Purgatory, TimingWheel]
 weight: 8
 ---
 

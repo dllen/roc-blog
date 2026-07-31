@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：18. High Availability (HA)"
 date: 2026-01-13T04:00:00+08:00
 description: "基于 ZooKeeper 和 Kubernetes 的 Leader 选举与元数据存储。"
-tags: [Flink, Source Code, HA, ZooKeeper, K8s]
+taxonomies:
+  tags: [Flink, Source Code, HA, ZooKeeper, K8s]
 weight: 18
 ---
 

@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：07. 租约管理 (LeaseManager)"
 date: 2026-01-18T10:00:00+08:00
 description: "HDFS 如何保证只有一个客户端能写入同一个文件？深入解析 LeaseManager 的软硬限制与恢复机制。"
-tags: [Hadoop, HDFS, NameNode, Lease]
+taxonomies:
+  tags: [Hadoop, HDFS, NameNode, Lease]
 weight: 7
 ---
 

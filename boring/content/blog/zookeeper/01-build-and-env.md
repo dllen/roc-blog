@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：01. 环境搭建与源码编译"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Build]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Build]
 weight: 1
 ---
 

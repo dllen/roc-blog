@@ -3,7 +3,8 @@ title: "稳定性总结"
 date: 2024-02-08T02:01:58+05:30
 update_date: 2024-02-08T02:01:58+05:30
 description: "行稳致远，进而有为"
-tags: [sre]
+taxonomies:
+  tags: [sre]
 ---
 
 ## 稳定性的重要性

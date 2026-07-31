@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：25. Stream (流数据)"
 date: 2026-01-11T23:00:00+08:00
 description: "Redis 5.0 引入的 Stream 是什么？Radix Tree (基数树) 在其中的应用，Consumer Group 消费模型详解。"
-tags: [Redis, Source Code, Stream, Radix Tree]
+taxonomies:
+  tags: [Redis, Source Code, Stream, Radix Tree]
 weight: 25
 ---
 

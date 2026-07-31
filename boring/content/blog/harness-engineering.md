@@ -4,7 +4,8 @@ date: "2026-03-11"
 update_date: "2026-03-11"
 description: "从 OpenAI Codex 与 LangChain 的实践出发，系统化理解 Harness Engineering 的核心要素：上下文、约束、反馈与熵管理。"
 tldr: "Harness engineering 不是“更会写提示词”，而是用文档、工具、约束、测试与反馈回路，把智能体的能力稳定地“落到工程系统里”。"
-tags: ["AI", "LLM", "Agent", "Harness Engineering", "Codex", "LangChain"]
+taxonomies:
+  tags: ["AI", "LLM", "Agent", "Harness Engineering", "Codex", "LangChain"]
 ---
 
 近两年，大家对“AI 写代码”的讨论经常停留在两个层面：要么是模型能力的跃迁（更强的推理、更好的代码），要么是提示词技巧（Prompt Engineering）。但当你真的想把智能体放进一个持续演进的代码库里，让它能在几个月、几年尺度上持续贡献、持续修复、持续维护时，真正决定成败的往往不是模型，而是模型周围那套**可操作、可验证、可演进**的工程系统。

@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：10. KRaft 共识协议"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, KRaft, Raft, Controller]
+taxonomies:
+  tags: [Kafka, Source Code, KRaft, Raft, Controller]
 weight: 10
 ---
 

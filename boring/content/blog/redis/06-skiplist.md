@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：06. SkipList (跳表)"
 date: 2026-01-10T15:00:00+08:00
 description: "为什么 Redis 的 ZSet 选择跳表而不是红黑树？深入理解跳表的概率平衡机制与实现细节。"
-tags: [Redis, Source Code, Data Structure, SkipList, ZSet]
+taxonomies:
+  tags: [Redis, Source Code, Data Structure, SkipList, ZSet]
 weight: 6
 ---
 

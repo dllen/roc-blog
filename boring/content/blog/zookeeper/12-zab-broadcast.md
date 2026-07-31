@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：12. ZAB 协议：原子广播"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, ZAB, Broadcast]
+taxonomies:
+  tags: [ZooKeeper, Source Code, ZAB, Broadcast]
 weight: 12
 ---
 

@@ -2,7 +2,8 @@
 title: "Wireshark 深度解析：macOS 网络抓包与分析实战指南（含案例与过滤器）"
 date: "2025-11-13"
 description: "从核心功能到实战案例，全面掌握在 macOS 上使用 Wireshark 的抓包、过滤与分析工作流；附高级过滤器示例与参考链接。"
-tags: [网络, Wireshark, macOS, 抓包, 分析]
+taxonomies:
+  tags: [网络, Wireshark, macOS, 抓包, 分析]
 extra:
   reading_time: 16
 update_date: "2025-11-13"

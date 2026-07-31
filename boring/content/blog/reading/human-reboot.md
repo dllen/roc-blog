@@ -2,7 +2,8 @@
 title: "模型训练崩了可以重来，人崩了怎么重启？"
 date: 2026-02-07T12:00:00+08:00
 draft: false
-tags: ["Naval Ravikant", "Kevin Kelly", "Burnout", "Wisdom", "Career", "Life"]
+taxonomies:
+  tags: ["Naval Ravikant", "Kevin Kelly", "Burnout", "Wisdom", "Career", "Life"]
 categories: ["Reading"]
 ---
 

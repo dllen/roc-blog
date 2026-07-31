@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：05. 调度中心 (ExecutionGraph)"
 date: 2026-01-12T15:00:00+08:00
 description: "JobMaster 如何将 JobGraph 转化为可执行的 ExecutionGraph，并申请 Slot。"
-tags: [Flink, Source Code, ExecutionGraph, Scheduler]
+taxonomies:
+  tags: [Flink, Source Code, ExecutionGraph, Scheduler]
 weight: 5
 ---
 

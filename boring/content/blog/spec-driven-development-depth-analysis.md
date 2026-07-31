@@ -2,7 +2,8 @@
 title: "拒绝 'Vibe Coding' 的虚幻快感：深度解析 Spec-Driven Development (SDD) 与 AI 编程的未来"
 date: 2026-02-01T10:00:00+08:00
 draft: false
-tags: ["SDD", "Spec-Driven Development", "AI Coding", "Spec Kit", "Martin Fowler", "ThoughtWorks"]
+taxonomies:
+  tags: ["SDD", "Spec-Driven Development", "AI Coding", "Spec Kit", "Martin Fowler", "ThoughtWorks"]
 categories: ["Engineering"]
 ---
 

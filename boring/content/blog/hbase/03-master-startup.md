@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：03. Master 启动流程"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Master, Startup]
+taxonomies:
+  tags: [HBase, Source Code, Master, Startup]
 weight: 3
 ---
 

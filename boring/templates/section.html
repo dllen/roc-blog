@@ -6,69 +6,75 @@
     <title>{{ section.title }} | {{ config.title }}</title>
 {% endblock head_extend %}
 
-{% block jsonld %}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "{{ section.title }}",
-      "description": "{{ section.description | default(value='') }}",
-      "url": "{{ section.permalink | safe }}",
-      "hasPart": [
-        {% for p in section.pages %}
-        { "@type": "BlogPosting", "name": "{{ p.title }}", "url": "{{ p.permalink | safe }}" }{% if not loop.last %},{% endif %}
-        {% endfor %}
-      ]
-    }
-    </script>
-    {% endblock jsonld %}
 {% block content %}
     {{ macros::header(components=section.components, is_page=false) }}
-    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16">
-        {% if section.pages %}
+    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
+        {% if section.description %}
+            <p class="font-sans text-3xl xl:text-base text-slate-600 dark:text-slate-400 mb-8">
+                {{ section.description }}
+            </p>
+        {% endif %}
+
+        {% if paginator %}
+            {# 分页页面：使用 paginator.pages #}
+            {% set posts = paginator.pages %}
+        {% else %}
+            {# 单页：使用 section.pages #}
+            {% set posts = section.pages %}
+        {% endif %}
+
+        {% if posts %}
             <div class="my-8">
                 <div class="text-6xl xl:text-2xl bg-amber-100 text-slate-800
                     dark:bg-indigo-900 dark:text-slate-300 p-2 w-max">
                     Posts
                 </div>
                 <ul>
-                    {% for page in section.pages %}
+                    {% for page in posts %}
                         <li class="text-slate-900 hover:text-slate-600
                             dark:text-slate-400 hover:dark:text-slate-300
-                            transition">
-                            <a class="flex my-12 xl:my-4 text-4xl xl:text-base" href="{{ page.permalink | safe }}">
-                                {{ page.title }}
-                                <div class="ml-2 hidden xl:inline">
-                                    <i class="las la-arrow-right"></i>
+                            transition my-6 xl:my-4">
+                            <a class="block" href="{{ page.permalink | safe }}">
+                                <div class="font-serif text-4xl xl:text-xl">
+                                    {{ page.title }}
                                 </div>
+                                <div class="text-2xl xl:text-sm text-slate-500 mt-1">
+                                    {{ page.extra.update_date | default(value=page.date) | date(format="%Y-%m-%d") }}
+                                </div>
+                                {% if page.description %}
+                                <p class="font-sans text-3xl xl:text-base text-slate-600
+                                          dark:text-slate-400 mt-1 line-clamp-2">
+                                    {{ page.description }}
+                                </p>
+                                {% endif %}
                             </a>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
-        {% endif %}
-        {% if section.subsections %}
-            <div class="my-8">
-                <div class="text-6xl xl:text-2xl bg-amber-100 dark:bg-indigo-900
-                    text-slate-800 dark:text-slate-300 p-2 w-max">
-                    Categories 
-                </div>
-                <ul>
-                    {% for sub in section.subsections %}
-                        {% set sect = get_section(path=sub, metadata_only=true) %}
-                        <li class="text-slate-900 hover:text-slate-600
-                            dark:text-slate-400 hover:dark:text-slate-300 transition">
-                            <a class="flex my-12 xl:my-4 text-4xl xl:text-base" href="{{ sect.permalink }}">
-                                {{ sect.title }}
-                                <div class="ml-2 hidden xl:inline">
-                                    <i class="las la-arrow-right"></i>
-                                </div>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+
+            {# 分页 UI（仅当 paginator 存在时）#}
+            {% if paginator and paginator.number_pagers %}
+            <nav class="mt-12 flex gap-2 justify-center text-2xl xl:text-base">
+                {% if paginator.previous %}
+                    <a href="{{ paginator.previous }}"
+                       class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
+                              dark:hover:bg-slate-600">←</a>
+                {% endif %}
+                {% set paginator_base = paginator.base | default(value="") %}
+                {% for i in range(end=paginator.number_pagers) %}
+                    <a href="{{ paginator_base }}{{ i + 1 }}/"
+                       class="px-3 py-1 {% if i == paginator.current_index | default(value=0) %}bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900{% else %}bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600{% endif %}">
+                        {{ i + 1 }}
+                    </a>
+                {% endfor %}
+                {% if paginator.next %}
+                    <a href="{{ paginator.next }}"
+                       class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
+                              dark:hover:bg-slate-600">→</a>
+                {% endif %}
+            </nav>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock content %}
-

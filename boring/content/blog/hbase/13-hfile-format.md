@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：13. HFile 格式解析"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, HFile, File Format]
+taxonomies:
+  tags: [HBase, Source Code, HFile, File Format]
 weight: 13
 ---
 

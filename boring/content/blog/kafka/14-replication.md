@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：14. 副本同步机制"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Replication, HW]
+taxonomies:
+  tags: [Kafka, Source Code, Replication, HW]
 weight: 14
 ---
 

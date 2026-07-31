@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：07. 日志存储 (Log Storage)"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Storage, Log]
+taxonomies:
+  tags: [Kafka, Source Code, Storage, Log]
 weight: 7
 ---
 

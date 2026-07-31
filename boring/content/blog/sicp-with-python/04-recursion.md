@@ -2,7 +2,8 @@
 title: "04. 递归与分治：跨越抽象的鸿沟"
 date: 2026-02-07T10:45:00+08:00
 draft: false
-tags: ["Python", "SICP", "递归", "分治算法", "数学归纳法", "CSAPP"]
+taxonomies:
+  tags: ["Python", "SICP", "递归", "分治算法", "数学归纳法", "CSAPP"]
 categories: ["SICP-Python"]
 description: "深度解析递归（Recursion）：从数学归纳法的理论基础，到 CSAPP 视角下的栈帧实现，再到树形递归与分治策略的实际应用。理解为什么递归是计算机科学中最强大的思想工具之一。"
 ---

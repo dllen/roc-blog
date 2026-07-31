@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：15. StateBackend"
 date: 2026-01-13T01:00:00+08:00
 description: "HeapStateBackend 与 RocksDBStateBackend 的源码对比与选型建议。"
-tags: [Flink, Source Code, StateBackend, RocksDB]
+taxonomies:
+  tags: [Flink, Source Code, StateBackend, RocksDB]
 weight: 15
 ---
 

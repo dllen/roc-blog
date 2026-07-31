@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：09. 请求处理链 (RequestProcessor)"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, RequestProcessor]
+taxonomies:
+  tags: [ZooKeeper, Source Code, RequestProcessor]
 weight: 9
 ---
 

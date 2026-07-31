@@ -3,7 +3,8 @@ title: 基于 Filebeat、Kafka、Flink、ES、ClickHouse、HBase 的日志系统
 date: 2025-10-25
 update_date: 2025-10-25
 description: 从架构到实现与运维的端到端实践，含配置与脚本示例。
-tags: [日志, Filebeat, Kafka, Flink, Elasticsearch, ClickHouse, HBase, 大数据, 实时, 运维]
+taxonomies:
+  tags: [日志, Filebeat, Kafka, Flink, Elasticsearch, ClickHouse, HBase, 大数据, 实时, 运维]
 ---
 
 # 概览

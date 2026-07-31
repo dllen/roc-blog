@@ -2,7 +2,8 @@
 title: "11. 算法效率：增长阶数与大O表示法"
 date: 2026-02-07T14:00:00+08:00
 draft: false
-tags: ["Python", "SICP", "算法", "复杂度", "大O表示法", "记忆化"]
+taxonomies:
+  tags: ["Python", "SICP", "算法", "复杂度", "大O表示法", "记忆化"]
 categories: ["SICP-Python"]
 description: "SICP 2.8 核心内容：如何衡量程序的效率？从斐波那契数列的递归噩梦说起，探讨记忆化 (Memoization) 技术，并深入理解算法的增长阶数 (Orders of Growth) 与大 O 表示法。"
 ---

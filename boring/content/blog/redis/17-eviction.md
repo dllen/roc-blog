@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：17. 内存淘汰机制 (LRU & LFU)"
 date: 2026-01-11T15:00:00+08:00
 description: "当内存满了，Redis 如何选择要牺牲的 Key？深入解析 LRU 近似算法与 LFU 的实现。"
-tags: [Redis, Source Code, Eviction, LRU, LFU]
+taxonomies:
+  tags: [Redis, Source Code, Eviction, LRU, LFU]
 weight: 17
 ---
 

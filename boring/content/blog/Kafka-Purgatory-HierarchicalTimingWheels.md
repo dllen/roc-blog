@@ -3,7 +3,8 @@ title: "Apache Kafka, Purgatory, and Hierarchical Timing Wheels"
 date: 2023-11-12T23:01:58+05:30
 update_date: 2023-11-12T23:01:58+05:30
 description: "How can we efficiently keep track of tens of thousands of requests that are being asynchronously satisfied by other activity in the cluster?"
-tags: [kafka, TimeingWheel]
+taxonomies:
+  tags: [kafka, TimeingWheel]
 ---
 
 Kafka 中有很多HTTP请求需要处理，例如：生产者 ack=all、消费者 min.bytes=1 、集群内部 broker 之间通信，需要跟踪这些请求的状态（成功、失败、超时）；

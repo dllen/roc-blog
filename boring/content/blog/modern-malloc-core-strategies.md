@@ -3,8 +3,8 @@ title: "现代 malloc 库核心内存管理策略"
 date: 2025-12-26T10:00:00+08:00
 update_date: 2025-12-26T10:00:00+08:00
 description: "深入剖析 jemalloc、tcmalloc 和 mimalloc 等现代内存分配器的核心设计思想，探讨它们如何通过 Thread Local Cache、Size Classes 和多级缓存架构来解决高并发下的性能瓶颈与内存碎片问题。"
-tags: [malloc, jemalloc, tcmalloc, mimalloc, system, performance, memory-management]
-
+taxonomies:
+  tags: [malloc, jemalloc, tcmalloc, mimalloc, system, performance, memory-management]
 ---
 
 内存分配器（Memory Allocator）是所有非托管语言（如 C/C++、Rust）程序的基石，也是许多托管语言（如 Java、Go）运行时的底层依赖。随着多核处理器的普及和云计算场景下对高并发、低延迟的极致追求，传统的 glibc `ptmalloc` 在某些场景下逐渐显露出扩展性不足和碎片化的问题。

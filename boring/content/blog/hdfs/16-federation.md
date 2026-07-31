@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：16. Federation (联邦)"
 date: 2026-01-27T10:00:00+08:00
 description: "当单 NameNode 内存成为瓶颈时，Federation 允许水平扩展 Namespace。"
-tags: [Hadoop, HDFS, Federation, Scalability]
+taxonomies:
+  tags: [Hadoop, HDFS, Federation, Scalability]
 weight: 16
 ---
 

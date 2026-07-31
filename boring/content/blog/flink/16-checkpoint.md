@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：16. Checkpoint 核心流程"
 date: 2026-01-13T02:00:00+08:00
 description: "Chandy-Lamport 算法在 Flink 中的实现。Barrier 对齐与异步快照。"
-tags: [Flink, Source Code, Checkpoint, Fault Tolerance]
+taxonomies:
+  tags: [Flink, Source Code, Checkpoint, Fault Tolerance]
 weight: 16
 ---
 

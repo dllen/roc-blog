@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：06. 网络通信"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Networking, NIO]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Networking, NIO]
 weight: 6
 ---
 

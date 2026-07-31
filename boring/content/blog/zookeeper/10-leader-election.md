@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：10. Leader 选举 (FastLeaderElection)"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Leader Election, ZAB]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Leader Election, ZAB]
 weight: 10
 ---
 

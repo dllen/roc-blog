@@ -2,7 +2,8 @@
 title: "阅读伴侣 Prompt：如何阅读一本书（长期学习参考）"
 date: "2025-11-13"
 description: "基于《如何阅读一本书》的主动阅读方法，提供结构化Prompt，帮助理解、记忆与应用。"
-tags: [Prompt, 阅读, 学习方法, 主动阅读]
+taxonomies:
+  tags: [Prompt, 阅读, 学习方法, 主动阅读]
 extra:
   reading_time: 12
 update_date: "2025-11-13"

@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：11. DispatcherServlet 流程"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, MVC, DispatcherServlet]
+taxonomies:
+  tags: [Spring, Source Code, MVC, DispatcherServlet]
 weight: 11
 ---
 

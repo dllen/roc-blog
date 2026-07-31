@@ -2,7 +2,8 @@
 title: "05. 数据抽象：构建系统的防火墙"
 date: 2026-02-07T11:00:00+08:00
 draft: false
-tags: ["Python", "SICP", "数据抽象", "抽象屏障", "有理数", "软件架构"]
+taxonomies:
+  tags: ["Python", "SICP", "数据抽象", "抽象屏障", "有理数", "软件架构"]
 categories: ["SICP-Python"]
 description: "从 SICP 2.2 出发，探讨数据抽象（Data Abstraction）的核心理念：构造函数与选择函数、抽象屏障（Abstraction Barriers）的重要性。这是大型软件系统能够保持可维护性的关键。"
 ---

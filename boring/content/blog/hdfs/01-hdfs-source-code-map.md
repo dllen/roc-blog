@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：01. 源码编译与环境搭建"
 date: 2026-01-12T14:00:00+08:00
 description: "HDFS 源码阅读第一步：源码下载、Maven 编译指南、IDEA 项目导入及远程调试环境配置。"
-tags: [Hadoop, HDFS, Source Code, Build]
+taxonomies:
+  tags: [Hadoop, HDFS, Source Code, Build]
 weight: 1
 ---
 

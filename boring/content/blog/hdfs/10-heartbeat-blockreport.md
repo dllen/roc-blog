@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：10. 心跳与块汇报 (Heartbeat & BlockReport)"
 date: 2026-01-21T10:00:00+08:00
 description: "解析 DataNode 与 NameNode 之间的生命线：心跳机制、全量块汇报与增量块汇报。"
-tags: [Hadoop, HDFS, DataNode, RPC]
+taxonomies:
+  tags: [Hadoop, HDFS, DataNode, RPC]
 weight: 10
 ---
 

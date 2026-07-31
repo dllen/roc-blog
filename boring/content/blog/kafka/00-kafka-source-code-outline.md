@@ -2,7 +2,8 @@
 title: "Kafka 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-15T10:00:00+08:00
 description: "Apache Kafka 源码阅读系列大纲。从 Scala 到 Java，从 ZK 到 KRaft，深入剖析消息系统的王者。"
-tags: [Kafka, Source Code, Outline, Roadmap]
+taxonomies:
+  tags: [Kafka, Source Code, Outline, Roadmap]
 weight: 0
 ---
 

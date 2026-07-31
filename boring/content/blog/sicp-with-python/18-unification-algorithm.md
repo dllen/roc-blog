@@ -2,7 +2,8 @@
 title: "18. Unification 算法：逻辑编程的引擎"
 date: 2026-02-07T21:00:00+08:00
 draft: false
-tags: ["Logic Programming", "Unification", "Pattern Matching", "Algorithm", "SICP"]
+taxonomies:
+  tags: ["Logic Programming", "Unification", "Pattern Matching", "Algorithm", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.5 核心内容：深入逻辑编程的底层机制——Unification 算法。了解解释器如何通过模式匹配和递归搜索来证明查询。"
 ---

@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：02. 项目结构概览"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Architecture]
+taxonomies:
+  tags: [HBase, Source Code, Architecture]
 weight: 2
 ---
 

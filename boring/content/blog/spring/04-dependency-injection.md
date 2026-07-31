@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：04. 依赖注入 (DI) 的实现"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, DI, Circular Dependency]
+taxonomies:
+  tags: [Spring, Source Code, DI, Circular Dependency]
 weight: 4
 ---
 

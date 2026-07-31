@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：12. Rebalance 机制"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Consumer, Rebalance]
+taxonomies:
+  tags: [Kafka, Source Code, Consumer, Rebalance]
 weight: 12
 ---
 

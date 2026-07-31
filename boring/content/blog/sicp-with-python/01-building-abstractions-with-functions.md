@@ -2,7 +2,8 @@
 title: "01. 函数抽象：编程的基石"
 date: 2026-02-07T10:01:00+08:00
 draft: false
-tags: ["Python", "SICP", "函数", "抽象", "表达式"]
+taxonomies:
+  tags: ["Python", "SICP", "函数", "抽象", "表达式"]
 categories: ["SICP-Python"]
 description: "SICP Python版第一章：从交互式编程开始，探索表达式、函数调用、变量绑定以及纯函数与非纯函数的区别。理解计算机程序的基本构造元素。"
 ---

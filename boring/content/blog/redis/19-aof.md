@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：19. AOF (日志持久化)"
 date: 2026-01-11T17:00:00+08:00
 description: "AOF 如何保证数据不丢失？三种刷盘策略的实现原理，以及 AOF 重写 (Rewrite) 机制。"
-tags: [Redis, Source Code, Persistence, AOF]
+taxonomies:
+  tags: [Redis, Source Code, Persistence, AOF]
 weight: 19
 ---
 

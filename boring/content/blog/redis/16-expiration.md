@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：16. 过期策略 (Lazy & Active)"
 date: 2026-01-11T14:00:00+08:00
 description: "Redis 是如何删除过期 Key 的？惰性删除与定期删除的实现细节，以及它们是如何配合工作的。"
-tags: [Redis, Source Code, Expiration, Strategy]
+taxonomies:
+  tags: [Redis, Source Code, Expiration, Strategy]
 weight: 16
 ---
 

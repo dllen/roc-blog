@@ -2,7 +2,8 @@
 title: "20. MapReduce：大数据处理的瑞士军刀"
 date: 2026-02-07T23:00:00+08:00
 draft: false
-tags: ["MapReduce", "Big Data", "Distributed Systems", "Hadoop", "Unix Pipes", "SICP"]
+taxonomies:
+  tags: ["MapReduce", "Big Data", "Distributed Systems", "Hadoop", "Unix Pipes", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.7 核心内容：深入理解 MapReduce 编程模型。从 Unix 管道的单机模拟到 Hadoop 集群的分布式执行，掌握大规模数据处理的核心思想。"
 ---

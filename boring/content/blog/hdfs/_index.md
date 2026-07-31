@@ -1,5 +1,6 @@
 ---
 title: "HDFS Source Code Reading"
+paginate_by: 20
 description: "A deep dive into Hadoop Distributed File System (HDFS) source code."
 extra:
   tags: [Hadoop, HDFS, Source Code, Big Data]

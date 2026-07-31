@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：08. redisObject (对象系统核心)"
 date: 2026-01-10T17:00:00+08:00
 description: "Redis 如何在底层数据结构之上构建出 String, List, Hash 等对象？redisObject 结构体详解，类型、编码与 LRU。"
-tags: [Redis, Source Code, Object System, Type, Encoding]
+taxonomies:
+  tags: [Redis, Source Code, Object System, Type, Encoding]
 weight: 8
 ---
 

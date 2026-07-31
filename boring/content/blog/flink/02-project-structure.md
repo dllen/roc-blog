@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：02. 项目结构与核心模块"
 date: 2026-01-12T12:00:00+08:00
 description: "Flink 源码目录结构详解。flink-runtime, flink-streaming-java, flink-core 等模块的功能定位。"
-tags: [Flink, Source Code, Architecture]
+taxonomies:
+  tags: [Flink, Source Code, Architecture]
 weight: 2
 ---
 

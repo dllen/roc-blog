@@ -2,7 +2,8 @@
 title: "06. 序列与树：数据的递归结构"
 date: 2026-02-07T11:15:00+08:00
 draft: false
-tags: ["Python", "SICP", "链表", "树", "递归", "数据结构"]
+taxonomies:
+  tags: ["Python", "SICP", "链表", "树", "递归", "数据结构"]
 categories: ["SICP-Python"]
 description: "SICP 2.3 深入解析：从 Python 的列表推导式，到手写递归链表（Linked Lists），再到树形结构（Trees）的递归处理。掌握如何用递归思想操纵复杂数据。"
 ---

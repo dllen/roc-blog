@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：02. IoC 容器启动流程"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, IoC, ApplicationContext]
+taxonomies:
+  tags: [Spring, Source Code, IoC, ApplicationContext]
 weight: 2
 ---
 

@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：17. 纠删码 (Erasure Coding)"
 date: 2026-01-28T10:00:00+08:00
 description: "Hadoop 3.0 的重磅特性。解析 EC 如何用 1.5 倍的存储开销实现 3 倍副本的可靠性。"
-tags: [Hadoop, HDFS, Erasure Coding, Storage Efficiency]
+taxonomies:
+  tags: [Hadoop, HDFS, Erasure Coding, Storage Efficiency]
 weight: 17
 ---
 

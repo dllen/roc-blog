@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：05. 持久化机制 (FsImage & EditLog)"
 date: 2026-01-16T10:00:00+08:00
 description: "解析 FSEditLog 的双缓冲机制与 Checkpoint 流程。"
-tags: [Hadoop, HDFS, NameNode, Persistence]
+taxonomies:
+  tags: [Hadoop, HDFS, NameNode, Persistence]
 weight: 5
 ---
 

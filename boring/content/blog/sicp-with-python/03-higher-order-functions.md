@@ -2,7 +2,8 @@
 title: "03. 高阶函数：抽象的艺术与软件设计哲学"
 date: 2026-02-07T10:30:00+08:00
 draft: false
-tags: ["Python", "SICP", "高阶函数", "设计模式", "UNIX哲学", "Currying"]
+taxonomies:
+  tags: ["Python", "SICP", "高阶函数", "设计模式", "UNIX哲学", "Currying"]
 categories: ["SICP-Python"]
 description: "从 SICP 1.6 出发，探讨高阶函数如何体现 UNIX 的'组合'哲学，以及它与策略模式、工厂模式等现代软件设计模式的深刻联系。学会像设计语言一样设计程序。"
 ---

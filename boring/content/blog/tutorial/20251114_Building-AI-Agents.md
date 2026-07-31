@@ -2,7 +2,8 @@
 title: "Building AI Agents"
 date: "2025-11-14"
 description: "从零到一构建、评估与迭代 AI 代理的实践路线与资源"
-tags: [AI, Agents, MCP, RAG, ReAct, CoT, ToT]
+taxonomies:
+  tags: [AI, Agents, MCP, RAG, ReAct, CoT, ToT]
 categories: [Tutorial]
 slug: "building-ai-agents"
 ---

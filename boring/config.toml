@@ -32,11 +32,36 @@ theme = "nord"
 [link_checker]
 internal_level = "warn"
 
+[[taxonomies]]
+name = "tags"
+
+generate_feeds = true
+feed_limit = 20
+
 [extra]
 homepage_title = "码农的自留地"
 homepage_subtitle = "Less is more!"
 # homepage_img_url = "/homepage-img.jpg"
 homepage_img_url = "/index-image.png"
+
+homepage_latest_limit = 10
+
+nav_sections = [
+  { name = "Spring 源码",  url = "/blog/spring/" },
+  { name = "Redis",        url = "/blog/redis/" },
+  { name = "Kafka",        url = "/blog/kafka/" },
+  { name = "Flink",        url = "/blog/flink/" },
+  { name = "ZooKeeper",    url = "/blog/zookeeper/" },
+  { name = "HBase",        url = "/blog/hbase/" },
+  { name = "HDFS",         url = "/blog/hdfs/" },
+  { name = "翻译",         url = "/blog/translate/" },
+  { name = "演讲",         url = "/blog/speech/" },
+  { name = "阅读",         url = "/blog/reading/" },
+  { name = "SRE",          url = "/blog/sre/" },
+  { name = "Prompt",       url = "/blog/prompt/" },
+  { name = "Weekly",       url = "/blog/weekly/" },
+  { name = "Tutorial",     url = "/blog/tutorial/" },
+]
 
 # Refer https://support.google.com/analytics/answer/9539598?hl=en
 google_analytics_measurement_id = ""

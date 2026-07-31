@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：13. Window Operator"
 date: 2026-01-12T23:00:00+08:00
 description: "窗口分配器 (Assigner)、触发器 (Trigger) 与驱逐器 (Evictor) 的实现。"
-tags: [Flink, Source Code, Window, Operator]
+taxonomies:
+  tags: [Flink, Source Code, Window, Operator]
 weight: 13
 ---
 

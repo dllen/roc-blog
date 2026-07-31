@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：07. Session 管理"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Session]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Session]
 weight: 7
 ---
 

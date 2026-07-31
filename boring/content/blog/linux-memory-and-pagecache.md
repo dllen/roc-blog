@@ -3,7 +3,8 @@ title: "Linux 内存与 PageCache 深度技术手册"
 date: 2026-02-27T10:00:00+08:00
 update_date: 2026-02-27T10:00:00+08:00
 description: "内核机制 · NUMA · cgroup · 云原生数据库调优 · 实战排障。深入解析 Linux PageCache 核心原理、驱逐算法、eBPF 监控及数据库内核级调优实战。"
-tags: [linux, memory, pagecache, performance, database, kubernetes, ebpf, numa]
+taxonomies:
+  tags: [linux, memory, pagecache, performance, database, kubernetes, ebpf, numa]
 ---
 
 ## 目录

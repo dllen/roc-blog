@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：09. 存储管理 (FsDatasetImpl)"
 date: 2026-01-20T10:00:00+08:00
 description: "深入 DataNode 内部的 FsDatasetImpl，解析 HDFS 如何在本地文件系统上组织 Block。"
-tags: [Hadoop, HDFS, DataNode, Storage]
+taxonomies:
+  tags: [Hadoop, HDFS, DataNode, Storage]
 weight: 9
 ---
 

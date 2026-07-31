@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：14. 文件读取流程 (Read Path)"
 date: 2026-01-25T10:00:00+08:00
 description: "解析 DFSInputStream 如何选择最优的 DataNode，以及 Checksum 校验机制。"
-tags: [Hadoop, HDFS, Client, Read]
+taxonomies:
+  tags: [Hadoop, HDFS, Client, Read]
 weight: 14
 ---
 

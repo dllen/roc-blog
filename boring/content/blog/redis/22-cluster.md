@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：22. Cluster (集群模式)"
 date: 2026-01-11T20:00:00+08:00
 description: "Redis Cluster 是如何实现数据分片的？Hash Slot、Gossip 协议、MOVED 重定向原理详解。"
-tags: [Redis, Source Code, Distributed, Cluster, Sharding]
+taxonomies:
+  tags: [Redis, Source Code, Distributed, Cluster, Sharding]
 weight: 22
 ---
 

@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：12. Compaction 原理"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Compaction, LSM]
+taxonomies:
+  tags: [HBase, Source Code, Compaction, LSM]
 weight: 12
 ---
 

@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：09. 写流程详解 (Write Path)"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Write Path, WAL]
+taxonomies:
+  tags: [HBase, Source Code, Write Path, WAL]
 weight: 9
 ---
 

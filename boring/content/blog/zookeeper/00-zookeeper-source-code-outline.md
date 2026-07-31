@@ -2,7 +2,8 @@
 title: "ZooKeeper 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-13T10:00:00+08:00
 description: "Apache ZooKeeper 源码阅读系列大纲。从 ZAB 协议到 DataTree，从 Leader 选举到 Watcher 机制，全链路源码解析。"
-tags: [ZooKeeper, Source Code, Outline, Roadmap]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Outline, Roadmap]
 weight: 0
 ---
 

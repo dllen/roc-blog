@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：07. 内存管理机制"
 date: 2026-01-12T17:00:00+08:00
 description: "Flink 如何管理堆外内存？MemorySegment 与 Network Buffer 的设计。"
-tags: [Flink, Source Code, Memory, Buffer]
+taxonomies:
+  tags: [Flink, Source Code, Memory, Buffer]
 weight: 7
 ---
 

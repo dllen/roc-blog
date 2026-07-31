@@ -2,7 +2,8 @@
 title: "17. 逻辑编程：通过事实与规则进行推理"
 date: 2026-02-07T20:00:00+08:00
 draft: false
-tags: ["Logic Programming", "Prolog", "Recursion", "Declarative Programming", "SICP"]
+taxonomies:
+  tags: ["Logic Programming", "Prolog", "Recursion", "Declarative Programming", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.4 核心内容：探索逻辑编程范式。通过定义事实（Facts）和规则（Rules），让计算机自动推导查询结果，实现祖先关系查找和列表拼接等复杂逻辑。"
 ---

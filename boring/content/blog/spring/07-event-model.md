@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：07. Event 事件驱动模型"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, Event, Listener]
+taxonomies:
+  tags: [Spring, Source Code, Event, Listener]
 weight: 7
 ---
 

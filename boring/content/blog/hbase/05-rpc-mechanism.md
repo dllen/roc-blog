@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：05. RPC 通信机制"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, RPC, Netty, Protobuf]
+taxonomies:
+  tags: [HBase, Source Code, RPC, Netty, Protobuf]
 weight: 5
 ---
 

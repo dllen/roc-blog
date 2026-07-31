@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：开篇与源码地图"
 date: 2026-01-10T10:00:00+08:00
 description: "开启 Redis 源码阅读之旅，梳理 Redis 源码目录结构，规划阅读路径。不积跬步，无以至千里。"
-tags: [Redis, Source Code, C, Database, Architecture]
+taxonomies:
+  tags: [Redis, Source Code, C, Database, Architecture]
 ---
 
 Redis 作为全球最流行的内存数据库，其代码质量一直被开发者称道。它用纯 C 语言编写，没有复杂的依赖，代码风格简洁明快，是学习 C 语言网络编程、数据结构设计以及系统架构的绝佳范本。

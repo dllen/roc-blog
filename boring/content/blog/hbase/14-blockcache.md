@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：14. BlockCache 缓存"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, BlockCache, Cache]
+taxonomies:
+  tags: [HBase, Source Code, BlockCache, Cache]
 weight: 14
 ---
 

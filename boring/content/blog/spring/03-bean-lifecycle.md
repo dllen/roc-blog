@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：03. Bean 的生命周期"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, Bean Lifecycle]
+taxonomies:
+  tags: [Spring, Source Code, Bean Lifecycle]
 weight: 3
 ---
 

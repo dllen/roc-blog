@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：09. 反压机制 (Backpressure)"
 date: 2026-01-12T19:00:00+08:00
 description: "Credit-based Flow Control 详解。Flink 如何优雅地处理下游消费不过来的情况。"
-tags: [Flink, Source Code, Backpressure, Flow Control]
+taxonomies:
+  tags: [Flink, Source Code, Backpressure, Flow Control]
 weight: 9
 ---
 

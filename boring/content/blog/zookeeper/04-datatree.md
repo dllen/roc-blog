@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：04. 数据模型 (DataTree)"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, DataTree, ZKDatabase]
+taxonomies:
+  tags: [ZooKeeper, Source Code, DataTree, ZKDatabase]
 weight: 4
 ---
 

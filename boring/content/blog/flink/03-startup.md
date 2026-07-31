@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：03. 启动流程详解"
 date: 2026-01-12T13:00:00+08:00
 description: "Flink Cluster 的启动流程，从 Entrypoint 到 Dispatcher 和 ResourceManager 的初始化。"
-tags: [Flink, Source Code, Startup, ClusterEntrypoint]
+taxonomies:
+  tags: [Flink, Source Code, Startup, ClusterEntrypoint]
 weight: 3
 ---
 

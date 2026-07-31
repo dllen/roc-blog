@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：18. RDB (快照持久化)"
 date: 2026-01-11T16:00:00+08:00
 description: "RDB 文件是如何生成的？fork 子进程与 Copy-On-Write 技术详解。"
-tags: [Redis, Source Code, Persistence, RDB]
+taxonomies:
+  tags: [Redis, Source Code, Persistence, RDB]
 weight: 18
 ---
 

@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：10. StreamGraph 生成"
 date: 2026-01-12T20:00:00+08:00
 description: "DataStream API 如何转化为流图。StreamGraphGenerator 源码解析。"
-tags: [Flink, Source Code, StreamGraph, DataStream]
+taxonomies:
+  tags: [Flink, Source Code, StreamGraph, DataStream]
 weight: 10
 ---
 

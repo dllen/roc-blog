@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：11. Server 启动流程 (main 函数)"
 date: 2026-01-11T09:00:00+08:00
 description: "Redis 服务器启动时都做了什么？从 main 函数开始，一步步追踪 Redis 的初始化过程。"
-tags: [Redis, Source Code, Startup, Server]
+taxonomies:
+  tags: [Redis, Source Code, Startup, Server]
 weight: 11
 ---
 
