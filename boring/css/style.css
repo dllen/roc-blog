@@ -6,9 +6,8 @@
   max-width: 100% !important;
   width: 100%;
 }
-<<<<<<< HEAD
 
-/* ===== Reading experience: typography + dark mode (spec 3) ===== */
+/* ===== Reading experience: typography + dark mode ===== */
 .prose { line-height: 1.75; }
 .prose p { margin: 1.25em 0; }
 .prose h2 { font-size: 1.875rem; margin-top: 2.5em; margin-bottom: 1em; }
