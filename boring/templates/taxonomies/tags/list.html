@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% import "macros.html" as macros %}
+
+{% block head_extend %}
+    <title>Tags | {{ config.title }}</title>
+{% endblock head_extend %}
+
+{% block content %}
+    {{ macros::header(components=["tags"], is_page=false) }}
+    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
+        <h1 class="font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-200 mb-4">
+            全部标签
+        </h1>
+        <p class="text-3xl xl:text-base text-slate-500 dark:text-slate-500 mb-8">
+            {{ terms | length }} 个标签
+        </p>
+        {% set counts = terms | map(attribute="pages") | map("length") | list %}
+        {% set max_count = counts | max %}
+        {% set min_count = counts | min %}
+        <p class="leading-loose">
+            {% for term in terms %}
+                {% set count = term.pages | length %}
+                {% if max_count == min_count %}
+                    {% set size = 16 %}
+                {% else %}
+                    {% set size = 12 + (((count - min_count) * 12) / (max_count - min_count)) | round %}
+                {% endif %}
+                <a href="{{ term.permalink | safe }}"
+                   class="px-2 text-slate-600 hover:text-slate-800
+                          dark:text-slate-400 dark:hover:text-slate-200 transition"
+                   style="font-size: {{ size }}px;"
+                   title="{{ count }} 篇文章">
+                    {{ term.name }}<sup class="text-xs ml-0.5 text-slate-400">{{ count }}</sup>
+                </a>
+            {% endfor %}
+        </p>
+    </div>
+{% endblock content %}
