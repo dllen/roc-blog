@@ -139,6 +139,26 @@ test('theme bootstrap treats an invalid saved value as no preference', async () 
     assert.equal(dom.window.document.documentElement.classList.contains('dark'), true);
 });
 
+test('homepage exposes the responsive site navigation controls', async () => {
+    const { document } = (await loadOutput('index.html')).window;
+
+    assert.ok(document.querySelector('[data-site-navigation]'));
+    assert.ok(document.querySelector('[data-navigation-scroll]'));
+    assert.equal(document.querySelectorAll('#darkmode-toggle').length, 1);
+    assert.ok(document.querySelector('a[href="/blog/atom.xml"][aria-label="RSS feed"]'));
+    assert.equal(document.querySelector('[data-site-brand]')?.getAttribute('aria-current'), 'page');
+});
+
+test('section navigation marks only the matching section as current', async () => {
+    const { document } = (await loadOutput('blog/spring/index.html')).window;
+    const links = [...document.querySelectorAll('[data-navigation-scroll] a')];
+    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentLinks.length, 1);
+    assert.equal(currentLinks[0].getAttribute('href'), '/blog/spring/');
+    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+});
+
 test('homepage WebSite metadata does not advertise search', async () => {
     const html = await readOutput('index.html');
 
