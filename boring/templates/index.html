@@ -4,6 +4,22 @@
     <title>Home | {{ config.title }}</title>
 {% endblock head_extend %}
 
+{% block jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ config.title }}",
+      "url": "{{ config.base_url }}",
+      "description": "{{ config.description }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ config.base_url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    {% endblock jsonld %}
 {% block content %}
 <div class="h-screen xl:h-auto xl:w-screen flex flex-col xl:flex-row gap-8 xl:gap-0
             items-center xl:items-start text-center xl:text-left justify-center

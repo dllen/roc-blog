@@ -1,3 +1,7 @@
 node_modules/
 public/
+_audit/*
+!_audit/.gitkeep
+static/og/*
+!static/og/.gitkeep
 *.log

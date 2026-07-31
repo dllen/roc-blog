@@ -4,8 +4,37 @@
 
 {% block head_extend %}
     <title>{{ page.title }} | {{ config.title }}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.description | default(value=page.content | striptags | truncate(length=160)) }}">
+    <meta property="og:image" content="{{ page.extra.og_image | default(value='/og/' ~ page.slug ~ '.png') }}">
+    <meta property="og:url" content="{{ page.permalink | safe }}">
+    <meta property="og:site_name" content="{{ config.title }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.description | default(value='') }}">
+    <meta name="twitter:image" content="{{ page.extra.og_image | default(value='/og/' ~ page.slug ~ '.png') }}">
 {% endblock head_extend %}
 
+{% block jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ page.title }}",
+      "datePublished": "{{ page.date }}",
+      "dateModified": "{{ page.update_date | default(value=page.date) }}",
+      "description": "{{ page.description | default(value='') }}",
+      "keywords": "{{ page.taxonomies.tags | default(value=[]) | join(sep=', ') }}",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ page.permalink | safe }}" },
+      "author": { "@type": "Person", "name": "roc" }
+    }
+    </script>
+    {% endblock jsonld %}
 {% block content %}
     {{ macros::header(components=page.components, is_page=true) }}
     <div class="container mx-auto w-full xl:w-1/2 mb-16">

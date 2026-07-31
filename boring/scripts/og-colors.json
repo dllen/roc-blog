@@ -1,0 +1,21 @@
+{
+  "_comment": "Section main colors for OG image top bar. Single source of truth.",
+  "_fallback": "#52525b",
+  "speech": "#b91c1c",
+  "spring": "#fbbf24",
+  "redis": "#dc2626",
+  "valkey": "#dc2626",
+  "kafka": "#0f766e",
+  "flink": "#1d4ed8",
+  "hbase": "#15803d",
+  "hdfs": "#15803d",
+  "zookeeper": "#7c2d12",
+  "translate": "#7c3aed",
+  "sre": "#475569",
+  "reading": "#a16207",
+  "sicp-with-python": "#a16207",
+  "prompt": "#0e7490",
+  "tutorial": "#4338ca",
+  "weekly": "#4338ca",
+  "extra": "#52525b"
+}
