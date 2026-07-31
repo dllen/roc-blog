@@ -15,9 +15,13 @@
         <p class="text-3xl xl:text-base text-slate-500 dark:text-slate-500 mb-8">
             {{ terms | length }} 个标签
         </p>
-        {% set counts = terms | map(attribute="pages") | map("length") | list %}
-        {% set max_count = counts | max %}
-        {% set min_count = counts | min %}
+        {% set_global max_count = 0 %}
+        {% set_global min_count = 999999 %}
+        {% for term in terms %}
+            {% set count = term.pages | length %}
+            {% if count > max_count %}{% set_global max_count = count %}{% endif %}
+            {% if count < min_count %}{% set_global min_count = count %}{% endif %}
+        {% endfor %}
         {% set range_size = max_count - min_count %}
         <p class="leading-loose">
             {% for term in terms %}
