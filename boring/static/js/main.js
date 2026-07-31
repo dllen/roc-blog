@@ -1,34 +1,31 @@
-function enableDarkMode() {
-    const e = document.getElementsByTagName('html')[0];
-    e.classList.add('dark');
-    localStorage.setItem('is_darkmode_set', e.classList.contains('dark'));
+function persistTheme(isDark) {
+    try {
+        localStorage.setItem('is_darkmode_set', isDark);
+    } catch {}
 }
 
 function toggleDarkMode() {
     const e = document.getElementsByTagName('html')[0];
     e.classList.toggle('dark');
-    localStorage.setItem('is_darkmode_set', e.classList.contains('dark'));
+    persistTheme(e.classList.contains('dark'));
 }
 
 function toggleBackToTop() {
     const e = document.getElementById('back-to-top');
-    if (window.scrollY === 0) e.classList.add('hidden');
-    else e.classList.remove('hidden');
+    if (!e) return;
+    e.classList.toggle('hidden', window.scrollY === 0);
 }
 
 function backToTop() {
     window.scrollTo(0, 0);
 }
 
-if (localStorage.getItem('is_darkmode_set') === 'true') enableDarkMode();
+const darkModeToggle = document.getElementById('darkmode-toggle');
+if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
 
-document
-    .getElementById('darkmode-toggle')
-    .addEventListener('click', toggleDarkMode);
-
-document
-    .getElementById('back-to-top')
-    .addEventListener('click', backToTop);
-
-window.addEventListener('scroll', toggleBackToTop)
-
+const backToTopButton = document.getElementById('back-to-top');
+if (backToTopButton) {
+    backToTopButton.addEventListener('click', backToTop);
+    window.addEventListener('scroll', toggleBackToTop, { passive: true });
+    toggleBackToTop();
+}
