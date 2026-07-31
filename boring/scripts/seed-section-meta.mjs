@@ -61,7 +61,7 @@ function suggestMeta(stats, fallbackTitle) {
   return { title: fallbackTitle, description, weight: 10 };
 }
 
-let created = 0, patched = 0, skipped = 0;
+let created = 0, patchedCount = 0, skipped = 0;
 
 let entries;
 try { entries = readdirSync(root); } catch (e) {
@@ -92,16 +92,16 @@ for (const name of entries) {
   } else {
     const src = readFileSync(indexPath, 'utf8');
     if (/^description\s*[:=]/m.test(src)) { skipped++; continue; }
-    const patched = src.replace(
+    const newContent = src.replace(
       /^(title\s*[:=].*)$/m,
       `$1\ndescription = ${JSON.stringify(meta.description)}`
     );
     console.log(`[seed] would-patch: ${relative(root, indexPath)}`);
-    if (!dryRun) { writeFileSync(indexPath, patched, 'utf8'); patched++; }
+    if (!dryRun) { writeFileSync(indexPath, newContent, 'utf8'); patchedCount++; }
   }
 }
 
-console.log(`[seed] ${dryRun ? 'dry-run' : 'done'}: created=${created} patched=${patched} skipped=${skipped}`);
+console.log(`[seed] ${dryRun ? 'dry-run' : 'done'}: created=${created} patched=${patchedCount} skipped=${skipped}`);
 process.exit(0);
 
 function walkMd(dir) {
