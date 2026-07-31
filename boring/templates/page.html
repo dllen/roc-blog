@@ -66,10 +66,10 @@
 
         {# 文章正文 #}
         <article class="flex-1 min-w-0">
-            <div class="text-base xl:text-sm text-slate-500 dark:text-slate-500">
+            <div class="article-meta">
                 {{ page.date | date(format="%Y-%m-%d") }}
             </div>
-            <h1 class="font-serif text-5xl xl:text-4xl text-slate-900 dark:text-slate-200 mt-2 mb-4">
+            <h1 class="article-title">
                 {% if page.extra.password or page.password %}
                 <svg class="post-locked" viewBox="0 0 24 24" aria-label="加密文章" role="img">
                     <path fill="currentColor" d="M17 8V7a5 5 0 0 0-10 0v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-1zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V7a2.1 2.1 0 1 1 4.2 0v1z"/>
@@ -80,21 +80,12 @@
             <div class="flex flex-wrap gap-2 mb-6">
                 {% if page.taxonomies and page.taxonomies.tags %}
                     {% for tag in page.taxonomies.tags %}
-                        <a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700
-                                  text-slate-800 dark:text-slate-200"
+                        <a class="tag-chip"
                            href="/tags/{{ tag | slugify }}/">#{{ tag }}</a>
                     {% endfor %}
                 {% endif %}
             </div>
-            <div class="prose dark:prose-invert prose-pre:rounded-none
-                        prose-headings:bg-amber-100 dark:prose-headings:bg-indigo-900
-                        prose-headings:text-slate-800 dark:prose-headings:text-slate-300
-                        prose-headings:font-normal
-                        prose-headings:p-2
-                        prose-headings:w-max
-                        prose-headings:font-serif
-                        prose-2xl xl:prose-base
-                        max-w-none">
+            <div class="article-content prose dark:prose-invert max-w-none">
                 {{ page.content | safe }}
             </div>
 

@@ -13,6 +13,46 @@ async function loadOutput(path) {
     return new JSDOM(await readOutput(path));
 }
 
+async function findFirstHomepageArticle() {
+    const { document } = (await loadOutput('index.html')).window;
+    const siteUrl = new URL('https://scp.net.cn/');
+
+    for (const link of document.querySelectorAll('main a[href]')) {
+        const href = link.getAttribute('href');
+        let url;
+
+        try {
+            url = new URL(href, siteUrl);
+        } catch {
+            continue;
+        }
+
+        if (url.origin !== siteUrl.origin || url.pathname === '/') {
+            continue;
+        }
+
+        const pathname = decodeURIComponent(url.pathname);
+        const outputPath = pathname.endsWith('.html')
+            ? pathname.replace(/^\/+/, '')
+            : `${pathname.replace(/^\/+|\/+$/g, '')}/index.html`;
+
+        try {
+            const dom = await loadOutput(outputPath);
+            const metadata = [...dom.window.document.querySelectorAll('script[type="application/ld+json"]')]
+                .map((script) => script.textContent)
+                .find((content) => content.includes('BlogPosting'));
+
+            if (metadata) {
+                return { dom, html: await readOutput(outputPath), outputPath };
+            }
+        } catch {
+            continue;
+        }
+    }
+
+    assert.fail('homepage article output not found');
+}
+
 async function readThemeBootstrap() {
     const { document } = (await loadOutput('index.html')).window;
     const script = [...document.querySelectorAll('script')]
@@ -167,6 +207,14 @@ test('later section navigation marks weekly as current', async () => {
     assert.equal(currentLinks.length, 1);
     assert.equal(currentLinks[0].getAttribute('href'), '/blog/weekly/');
     assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+});
+
+test('homepage first article uses the editorial article content contract', async () => {
+    const { dom, html } = await findFirstHomepageArticle();
+
+    assert.ok(dom.window.document.querySelector('.article-content'));
+    assert.doesNotMatch(html, /prose-headings:w-max/);
+    assert.doesNotMatch(html, /prose-2xl xl:prose-base/);
 });
 
 test('homepage WebSite metadata does not advertise search', async () => {
