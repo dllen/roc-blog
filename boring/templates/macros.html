@@ -59,24 +59,17 @@
 
 {# 上一篇 / 下一篇 (同 section 内，按 date 排序) #}
 {% macro prev_next(current) %}
-  {% set_global prev_page = null %}
-  {% set_global next_page = null %}
   {% if current.section %}
     {% set_global sorted_pages = current.section.pages | sort(attribute="date") %}
-    {% set_global found = false %}
-    {% set_global next_candidate = null %}
     {% for p in sorted_pages %}
-      {% if found and next_candidate is null %}
-        {% set_global next_page = p %}
-      {% endif %}
       {% if p.slug == current.slug %}
-        {% set_global found = true %}
-        {% if next_candidate is not null %}
-          {% set_global next_page = next_candidate %}
+        {% if not loop.first %}
+          {% set_global prev_page = sorted_pages[loop.index0 - 1] %}
         {% endif %}
-        {% set_global prev_page_candidate = null %}
+        {% if not loop.last %}
+          {% set_global next_page = sorted_pages[loop.index0 + 1] %}
+        {% endif %}
       {% endif %}
-      {% set_global prev_page = p %}
     {% endfor %}
   {% endif %}
   {% if prev_page is defined or next_page is defined %}
