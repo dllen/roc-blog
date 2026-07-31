@@ -25,3 +25,7 @@ docs
 # Git worktrees（独立开发分支）
 .worktrees
 
+
+# Brainstorming visual companion artifacts
+.superpowers/
+.superstorms/
