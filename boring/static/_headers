@@ -1,0 +1,27 @@
+# HTML: short cache, always revalidate
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# CSS / JS / Fonts / OG: long cache, immutable
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/og/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Atom feed: medium cache
+/blog/atom.xml
+  Cache-Control: public, max-age=3600
+
+# List pages: short cache
+/tags/*
+  Cache-Control: public, max-age=300, must-revalidate
+/blog/page/*
+  Cache-Control: public, max-age=300, must-revalidate
+/blog/*/
+  Cache-Control: public, max-age=300, must-revalidate
+/blog/
+  Cache-Control: public, max-age=300, must-revalidate
