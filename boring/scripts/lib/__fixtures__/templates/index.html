@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ config.title }}",
+      "url": "{{ config.base_url }}",
+      "description": "{{ config.description }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ config.base_url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    {% endblock jsonld %}
+{% block content %}
+<h1>Home</h1>
+{% endblock %}

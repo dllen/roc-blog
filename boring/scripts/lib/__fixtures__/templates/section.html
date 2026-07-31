@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "{{ section.title }}",
+      "description": "{{ section.description | default(value='') }}",
+      "url": "{{ section.permalink | safe }}",
+      "hasPart": [
+        {% for p in section.pages %}
+        { "@type": "BlogPosting", "name": "{{ p.title }}", "url": "{{ p.permalink | safe }}" }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+    </script>
+    {% endblock jsonld %}
+{% block content %}
+<h1>{{ section.title }}</h1>
+{% endblock %}
