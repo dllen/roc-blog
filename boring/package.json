@@ -19,5 +19,8 @@
     "test": "node --test scripts/**/*.test.mjs",
     "audit": "node scripts/audit-frontmatter.mjs",
     "og": "node scripts/og-generator.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1"
   }
 }
