@@ -18,11 +18,19 @@
 
         <script>
             (function () {
-                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var systemDark = false;
+                try {
+                    if (typeof window.matchMedia === 'function') {
+                        systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+                    }
+                } catch (error) {
+                    systemDark = false;
+                }
                 var isDark = systemDark;
                 try {
                     var savedTheme = localStorage.getItem('is_darkmode_set');
-                    if (savedTheme !== null) isDark = savedTheme === 'true';
+                    if (savedTheme === 'true') isDark = true;
+                    if (savedTheme === 'false') isDark = false;
                 } catch (error) {
                     isDark = systemDark;
                 }

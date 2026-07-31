@@ -30,7 +30,7 @@
         {% if config.extra.social %}
             <div class="flex gap-3 text-slate-400 dark:text-slate-500">
                 {% for i in config.extra.social %}
-                    <a href="{{ i.url }}" target="_blank"
+                    <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
                        aria-label="{{ i.name }}"
                        class="hover:text-amber-500 dark:hover:text-amber-400 transition text-lg">
                         <i class="{{ i.icon }}" aria-hidden="true"></i>
