@@ -15,10 +15,14 @@
             </p>
         {% endif %}
 
-        {% set_global posts = section.pages %}
-        {% if section.paginator %}
-          {% set_global posts = section.paginator.pages %}
+        {% if paginator %}
+            {# 分页页面：使用 paginator.pages #}
+            {% set posts = paginator.pages %}
+        {% else %}
+            {# 单页：使用 section.pages #}
+            {% set posts = section.pages %}
         {% endif %}
+
         {% if posts %}
             <div class="my-8">
                 <div class="text-6xl xl:text-2xl bg-amber-100 text-slate-800
@@ -49,22 +53,22 @@
                 </ul>
             </div>
 
-            {# 分页 UI（仅当 section.paginator 存在时）#}
-            {% if section.paginator %}
+            {# 分页 UI（仅当 paginator 存在时）#}
+            {% if paginator %}
             <nav class="mt-12 flex gap-2 justify-center text-2xl xl:text-base">
-                {% if section.paginator.previous %}
-                    <a href="{{ section.paginator.previous }}"
+                {% if paginator.previous %}
+                    <a href="{{ paginator.previous }}"
                        class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
                               dark:hover:bg-slate-600">←</a>
                 {% endif %}
-                {% for i in range(end=section.paginator.number_pagers) %}
-                    <a href="{{ section.paginator.base }}{{ i + 1 }}/"
-                       class="px-3 py-1 {% if i == section.paginator.current_index %}bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900{% else %}bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600{% endif %}">
+                {% for i in range(end=paginator.number_pagers) %}
+                    <a href="{{ paginator.base }}{{ i + 1 }}/"
+                       class="px-3 py-1 {% if i == paginator.current_index %}bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900{% else %}bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600{% endif %}">
                         {{ i + 1 }}
                     </a>
                 {% endfor %}
-                {% if section.paginator.next %}
-                    <a href="{{ section.paginator.next }}"
+                {% if paginator.next %}
+                    <a href="{{ paginator.next }}"
                        class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
                               dark:hover:bg-slate-600">→</a>
                 {% endif %}
