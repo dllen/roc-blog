@@ -62,7 +62,6 @@
   {% set_global prev_idx = -1 %}
   {% set_global next_idx = -1 %}
   {% set_global current_section = get_section(path="blog/_index.md") %}
-  {# Find which subsection this page belongs to by walking section paths #}
   {% if current_section %}
     {% for s in current_section.subsections %}
       {% set sect = get_section(path=s) %}
