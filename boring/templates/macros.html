@@ -1,61 +1,26 @@
-{% macro nav() %}
-<div class="nav-scroll flex gap-1 overflow-x-auto whitespace-nowrap py-2 text-base xl:text-sm
-            scrollbar-hide border-t border-slate-200 dark:border-slate-700">
-  {% for section in config.extra.nav_sections %}
-    <a class="shrink-0 px-2 py-1 text-slate-600 hover:text-slate-800
-              dark:text-slate-400 dark:hover:text-slate-200 transition"
-       href="{{ section.url | safe }}">{{ section.name }}</a>
-  {% endfor %}
-  <a class="shrink-0 px-2 py-1 text-slate-600 hover:text-slate-800
-            dark:text-slate-400 dark:hover:text-slate-200 transition"
-     href="/tags/">Tags</a>
-  <a class="shrink-0 px-2 py-1 text-rose-600 hover:text-rose-800
-            dark:text-rose-400 dark:hover:text-rose-200 transition"
-     href="/blog/atom.xml" title="Atom feed">RSS</a>
-</div>
-{% endmacro nav %}
-
 {% macro header(components, is_page) %}
-    <div class="sticky top-0 z-50 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-        <div class="container mx-auto px-4 w-full xl:w-1/2 flex
-        place-content-between py-4 xl:py-3 font-sans text-2xl xl:text-2xl text-slate-900
-        dark:text-slate-300">
-            <div class="flex items-center min-w-0 overflow-x-auto">
-                {% set_global rel_url = "/" %}
-                {% for component in components %}
-                    {% set_global rel_url = rel_url ~ component ~ '/' %}
-                    {% if not loop.last %}
-                        <a class="shrink-0 p-0 text-slate-900 hover:text-slate-700
-                            dark:text-slate-300 dark:hover:text-slate-200"
-                            href="{{ rel_url }}">
-                            /{{ component }}
-                        </a>
-                    {% elif is_page %}
-                    {% else %}
-                        <div class="shrink-0 p-0 text-slate-700 dark:text-slate-200">
-                            /{{ component }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div class="flex gap-4 shrink-0">
-                <div id="back-to-top" class="hidden cursor-pointer">
-                    <i class="las la-level-up-alt"></i>
-                </div>
-                <a href="/"><i class="las la-home"></i></a>
-                <div id="darkmode-toggle" class="cursor-pointer">
-                    <div class="hidden dark:inline">
-                        <i class="las la-sun"></i>
-                    </div>
-                    <div class="inline dark:hidden">
-                        <i class="las la-moon"></i>
-                    </div>
-                </div>
+    <div class="sticky top-12 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <div class="max-w-2xl mx-auto px-4 flex items-center gap-1 h-10 font-sans text-sm text-slate-500 dark:text-slate-400">
+            <a href="/" class="hover:text-slate-900 dark:hover:text-slate-100 transition">~</a>
+            {% set_global rel_url = "/" %}
+            {% for component in components %}
+                {% set_global rel_url = rel_url ~ component ~ '/' %}
+                <span class="mx-0.5">/</span>
+                {% if not loop.last %}
+                    <a class="hover:text-slate-900 dark:hover:text-slate-100 transition"
+                       href="{{ rel_url }}">{{ component }}</a>
+                {% elif is_page %}
+                    <span class="text-slate-400 dark:text-slate-500 truncate max-w-xs">{{ component }}</span>
+                {% else %}
+                    <span class="text-slate-700 dark:text-slate-200">{{ component }}</span>
+                {% endif %}
+            {% endfor %}
+            <div id="back-to-top" class="hidden cursor-pointer ml-auto">
+                <i class="las la-level-up-alt" aria-hidden="true"></i>
             </div>
         </div>
-        {{ macros::nav() }}
     </div>
-{% endmacro head %}
+{% endmacro header %}
 
 {# 上一篇 / 下一篇 (同 section 内，按 date 排序) #}
 {% macro prev_next(current) %}
