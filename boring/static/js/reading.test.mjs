@@ -75,3 +75,39 @@ test('reading: initAnchors adds # link to each heading', () => {
   assert.equal(anchors.length, 2);
   assert.equal(anchors[0].textContent, '#');
 });
+
+test('reading: initRelated fetches index and renders top N shared-tag items', async () => {
+  const html = `<html><body>
+    <section data-related-container
+             data-current-permalink="/blog/x/"
+             data-current-tags="Spring|源码"
+             data-limit="3">
+      <h3>Related</h3>
+      <div data-related-list></div>
+    </section>
+  </body></html>`;
+  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/blog/x/' });
+  const { window } = dom;
+  window.IntersectionObserver = class { observe() {} disconnect() {} };
+  // Mock fetch
+  window.fetch = async () => ({
+    ok: true,
+    json: async () => [
+      { title: 'A', permalink: '/blog/x/', slug: 'x', section: 'blog', date: '2024-12-01', tags: ['Spring', '源码'] },
+      { title: 'B', permalink: '/blog/y/', slug: 'y', section: 'blog', date: '2024-12-02', tags: ['Spring', '源码', 'IoC'] },
+      { title: 'C', permalink: '/blog/z/', slug: 'z', section: 'blog', date: '2024-12-03', tags: ['Spring'] },
+      { title: 'D', permalink: '/blog/w/', slug: 'w', section: 'blog', date: '2024-12-04', tags: ['Other'] },
+    ],
+  });
+  window.eval(readingSrc);
+  if (window.document.readyState === 'loading') {
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+  }
+  // Wait for fetch to resolve
+  await new Promise(r => setTimeout(r, 50));
+  const list = window.document.querySelector('[data-related-list]');
+  const items = list.querySelectorAll('a');
+  assert.equal(items.length, 2, 'only 2 articles share tags with x');
+  assert.ok(items[0].getAttribute('href') === '/blog/y/' || items[0].getAttribute('href') === '/blog/z/',
+    'B (shared 3) and C (shared 1) should be top items, x (self) excluded');
+});
