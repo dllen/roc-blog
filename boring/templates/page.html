@@ -6,6 +6,21 @@
     <title>{{ page.title }} | {{ config.title }}</title>
 {% endblock head_extend %}
 
+{% block jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ page.title }}",
+      "datePublished": "{{ page.date }}",
+      "dateModified": "{{ page.update_date | default(value=page.date) }}",
+      "description": "{{ page.description | default(value='') }}",
+      "keywords": "{{ page.taxonomies.tags | default(value=[]) | join(sep=', ') }}",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ page.permalink | safe }}" },
+      "author": { "@type": "Person", "name": "roc" }
+    }
+    </script>
+    {% endblock jsonld %}
 {% block content %}
     {{ macros::header(components=page.components, is_page=true) }}
     <div class="container mx-auto w-full xl:w-1/2 mb-16">
