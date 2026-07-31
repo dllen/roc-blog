@@ -18,14 +18,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: 'boring/yarn.lock'
 
       - name: Install frontend dependencies
         working-directory: boring
         run: |
           corepack enable
-          yarn install --immutable || yarn install
+          yarn install
 
       - name: Setup Python (for fonttools)
         uses: actions/setup-python@v5
