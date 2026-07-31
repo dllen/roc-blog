@@ -1,0 +1,15 @@
+{%- set_global entries = [] -%}
+{%- set_global all_sections = get_section(path="blog/_index.md") -%}
+{%- if all_sections -%}
+{%- for s in all_sections.subsections -%}
+{%- set sect = get_section(path=s) -%}
+{%- if sect -%}
+{%- for p in sect.pages -%}
+{%- if p.permalink -%}
+{%- set_global entries = entries | concat(with=p.title) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+[]
