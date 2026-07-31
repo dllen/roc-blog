@@ -163,12 +163,63 @@
     } catch { return false; }
   }
 
+  // ── 5. Related articles (fetches /related-index.json) ───
+  function initRelated() {
+    const container = document.querySelector('[data-related-container]');
+    if (!container) return;
+    const currentPermalink = container.getAttribute('data-current-permalink');
+    const currentTags = (container.getAttribute('data-current-tags') || '')
+      .split('|').filter(Boolean);
+    const limit = parseInt(container.getAttribute('data-limit') || '3', 10);
+    const list = container.querySelector('[data-related-list]');
+    if (!list) return;
+
+    fetch('/related-index.json', { credentials: 'same-origin' })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('fetch failed')))
+      .then(articles => {
+        const scored = [];
+        for (const a of articles) {
+          if (a.permalink === currentPermalink) continue;
+          const shared = (a.tags || []).filter(t => currentTags.includes(t)).length;
+          if (shared > 0) {
+            scored.push({ article: a, shared, date: a.date || '1970-01-01' });
+          }
+        }
+        scored.sort((a, b) => {
+          if (b.shared !== a.shared) return b.shared - a.shared;
+          return b.date.localeCompare(a.date);
+        });
+        const top = scored.slice(0, limit);
+        renderRelatedList(list, top);
+      })
+      .catch(err => {
+        list.innerHTML = '<p class="text-slate-500 text-sm col-span-full">相关文章暂不可用。</p>';
+        console.warn('related-index fetch failed:', err);
+      });
+  }
+
+  function renderRelatedList(list, items) {
+    if (items.length === 0) {
+      list.innerHTML = '<p class="text-slate-500 text-sm col-span-full">暂无相关文章。</p>';
+      return;
+    }
+    list.innerHTML = items.map(({ article, shared }) =>
+      `<a href="${escapeHtml(article.permalink)}"
+          class="block p-4 border border-slate-200 dark:border-slate-700 rounded
+                 hover:border-amber-400 transition">
+         <div class="font-serif text-base text-slate-900 dark:text-slate-200">${escapeHtml(article.title)}</div>
+         <div class="text-sm text-slate-500 mt-1">${escapeHtml(article.date)} · 共享 ${shared} 标签</div>
+       </a>`
+    ).join('');
+  }
+
   // ── boot ───────────────────────────────────────────────
   function boot() {
     initProgress();
     initToc();
     initAnchors();
     initCodeCopy();
+    initRelated();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

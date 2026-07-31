@@ -96,7 +96,8 @@
             {# 上一篇 / 下一篇 #}
             {{ macros::prev_next(current=page) }}
 
-            {# 相关阅读 - TODO: 实现为 reading.js 客户端或 Node 预生成 #}
+            {# 相关阅读 - reading.js 客户端从 /related-index.json 取 #}
+            {{ macros::related(current=page, limit=3) }}
         </article>
 
         {# 右侧 hover 区（占位） #}
