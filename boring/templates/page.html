@@ -4,6 +4,20 @@
 
 {% block head_extend %}
     <title>{{ page.title }} | {{ config.title }}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.description | default(value=page.content | striptags | truncate(length=160)) }}">
+    <meta property="og:image" content="{{ page.extra.og_image | default(value='/og/' ~ page.slug ~ '.png') }}">
+    <meta property="og:url" content="{{ page.permalink | safe }}">
+    <meta property="og:site_name" content="{{ config.title }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.description | default(value='') }}">
+    <meta name="twitter:image" content="{{ page.extra.og_image | default(value='/og/' ~ page.slug ~ '.png') }}">
 {% endblock head_extend %}
 
 {% block jsonld %}
