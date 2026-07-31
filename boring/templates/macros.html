@@ -61,15 +61,29 @@
 {% macro prev_next(current) %}
   {% set_global prev_idx = -1 %}
   {% set_global next_idx = -1 %}
-  {% if current.section %}
-    {% set_global sorted_pages = current.section.pages | sort(attribute="date") %}
+  {% set_global current_section = get_section(path="blog/_index.md") %}
+  {# Find which subsection this page belongs to by walking section paths #}
+  {% if current_section %}
+    {% for s in current_section.subsections %}
+      {% set sect = get_section(path=s) %}
+      {% if sect %}
+        {% for p in sect.pages %}
+          {% if p.slug == current.slug %}
+            {% set_global found_section = sect %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% if found_section is defined %}
+    {% set_global sorted_pages = found_section.pages | sort(attribute="date") %}
     {% for p in sorted_pages %}
       {% if p.slug == current.slug %}
         {% if not loop.first %}{% set_global prev_idx = loop.index0 - 1 %}{% endif %}
         {% if not loop.last %}{% set_global next_idx = loop.index0 + 1 %}{% endif %}
       {% endif %}
     {% endfor %}
-    {% if prev_idx >= 0 %}
+    {% if prev_idx >= 0 or next_idx >= 0 %}
       {% for p in sorted_pages %}
         {% if loop.index0 == prev_idx %}{% set_global prev_page = p %}{% endif %}
         {% if loop.index0 == next_idx %}{% set_global next_page = p %}{% endif %}
