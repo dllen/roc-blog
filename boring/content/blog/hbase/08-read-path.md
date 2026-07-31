@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：08. 读流程详解 (Read Path)"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Read Path, Scanner]
+taxonomies:
+  tags: [HBase, Source Code, Read Path, Scanner]
 weight: 8
 ---
 

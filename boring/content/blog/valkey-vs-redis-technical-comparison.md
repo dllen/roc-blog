@@ -2,7 +2,8 @@
 title: "Redis vs. Valkey：2025年技术选型深度指南"
 date: 2025-12-07T08:30:00+08:00
 description: "深入对比 Redis 和 Valkey：从开源协议的分歧到多线程架构的演进，全面解析两大内存数据库的技术差异、性能基准及未来路线。"
-tags: [Redis, Valkey, Database, OpenSource, Architecture]
+taxonomies:
+  tags: [Redis, Valkey, Database, OpenSource, Architecture]
 ---
 
 2024年初，Redis 宣布修改其开源协议，这一举动在开源社区引发了巨大的震动，也直接促成了 Valkey 的诞生。如今一年过去，随着 Redis 8.0 和 Valkey 8.0/8.1 的相继发布，这场"分叉"已经不仅仅是关于许可证的争论，更演变成了两种不同技术理念和架构路线的较量。

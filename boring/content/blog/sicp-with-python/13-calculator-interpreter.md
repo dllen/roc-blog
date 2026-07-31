@@ -2,7 +2,8 @@
 title: "13. 构建计算器解释器：从语法分析到求值"
 date: 2026-02-07T16:00:00+08:00
 draft: false
-tags: ["Interpreter", "Scheme", "Python", "Parsing", "REPL", "SICP"]
+taxonomies:
+  tags: ["Interpreter", "Scheme", "Python", "Parsing", "REPL", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 3.3-3.4 核心内容：动手实现一个 Scheme 语法的计算器。深入理解解释器的核心循环：Read-Eval-Print Loop。"
 ---

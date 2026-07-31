@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：10. List, Hash, Set, ZSet 的编码演进"
 date: 2026-01-10T19:00:00+08:00
 description: "Redis 集合类型的底层编码是如何动态切换的？一文看懂 List, Hash, Set, ZSet 的编码策略。"
-tags: [Redis, Source Code, List, Hash, Set, ZSet, Encoding]
+taxonomies:
+  tags: [Redis, Source Code, List, Hash, Set, ZSet, Encoding]
 weight: 10
 ---
 

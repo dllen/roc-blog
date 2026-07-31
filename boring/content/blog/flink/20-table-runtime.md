@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：20. Table Runtime (代码生成)"
 date: 2026-01-13T06:00:00+08:00
 description: "Code Generation 技术详解。为什么 Flink SQL 比手写 Java 代码还快？"
-tags: [Flink, Source Code, SQL, Codegen, Janino]
+taxonomies:
+  tags: [Flink, Source Code, SQL, Codegen, Janino]
 weight: 20
 ---
 

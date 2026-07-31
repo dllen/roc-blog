@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：14. 命令执行模型 (processCommand)"
 date: 2026-01-11T12:00:00+08:00
 description: "Redis 接收到命令后是如何执行的？查找命令表、权限校验、参数校验、调用执行函数、记录慢查询日志。"
-tags: [Redis, Source Code, Command, Execution]
+taxonomies:
+  tags: [Redis, Source Code, Command, Execution]
 weight: 14
 ---
 

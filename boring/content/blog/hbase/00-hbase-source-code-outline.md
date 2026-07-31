@@ -2,7 +2,8 @@
 title: "HBase 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-12T10:00:00+08:00
 description: "Apache HBase 源码阅读系列大纲。从 Master 启动到 RegionServer 读写，从 LSM Tree 到 WAL 机制，全链路源码解析。"
-tags: [HBase, Source Code, Outline, Roadmap]
+taxonomies:
+  tags: [HBase, Source Code, Outline, Roadmap]
 weight: 0
 ---
 

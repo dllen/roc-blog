@@ -3,7 +3,8 @@ title: "BTrace User's Guide"
 date: 2020-03-18T12:13:32+05:30
 update_date: 2020-03-18T12:13:32+05:30
 description: "BTrace User's Guide"
-tags: [java, btrace]
+taxonomies:
+  tags: [java, btrace]
 ---
 
 - [原文地址](https://gist.github.com/yulewei/53339ccced8837686895e3c9f45557cc)

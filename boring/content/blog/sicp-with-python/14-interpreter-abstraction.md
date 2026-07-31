@@ -2,7 +2,8 @@
 title: "14. 环境模型与解释器：构建完整的编程语言"
 date: 2026-02-07T17:00:00+08:00
 draft: false
-tags: ["Interpreter", "Scheme", "Python", "Environment Model", "SICP"]
+taxonomies:
+  tags: ["Interpreter", "Scheme", "Python", "Environment Model", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 3.5 核心内容：引入环境模型，支持变量定义和用户自定义函数，将计算器升级为图灵完备的 Scheme 解释器。"
 ---

@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：14. TimerService (时间轮)"
 date: 2026-01-13T00:00:00+08:00
 description: "Flink 如何高效管理数百万个定时器？基于时间轮 (Timing Wheel) 还是优先队列？"
-tags: [Flink, Source Code, Timer, Timing Wheel]
+taxonomies:
+  tags: [Flink, Source Code, Timer, Timing Wheel]
 weight: 14
 ---
 

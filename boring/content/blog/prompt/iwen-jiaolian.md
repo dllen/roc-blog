@@ -2,7 +2,8 @@
 title: "提问教练：用结构化提问打造强韧决策力"
 date: "2025-11-13"
 description: "基于 12 步批判性提问框架的实战方法与评估指南。"
-tags: [Prompt, 批判性思维, 决策, 提问]
+taxonomies:
+  tags: [Prompt, 批判性思维, 决策, 提问]
 categories: [思考方法]
 slug: "tiwen-jiaolian"
 ---

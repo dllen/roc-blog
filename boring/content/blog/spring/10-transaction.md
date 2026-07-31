@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：10. 声明式事务管理"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, Transaction, AOP]
+taxonomies:
+  tags: [Spring, Source Code, Transaction, AOP]
 weight: 10
 ---
 

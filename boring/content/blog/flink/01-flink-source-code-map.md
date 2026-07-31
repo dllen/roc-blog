@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：01. 源码编译与环境搭建"
 date: 2026-01-12T11:00:00+08:00
 description: "工欲善其事，必先利其器。如何编译 Flink 源码，并在 IDEA 中运行 WordCount 示例进行 Debug。"
-tags: [Flink, Source Code, Build, Maven, IDEA]
+taxonomies:
+  tags: [Flink, Source Code, Build, Maven, IDEA]
 weight: 1
 ---
 

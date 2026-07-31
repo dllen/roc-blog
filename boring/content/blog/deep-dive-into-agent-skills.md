@@ -3,7 +3,8 @@ title: "彻底搞懂 Agent Skills：从原理到实践"
 date: 2026-01-04
 description: "深入解析 Agent Skills 的本质、渐进式披露机制以及与 MCP 的核心差异"
 tldr: "Skill 是教 AI “怎么做”的知识胶囊，MCP 是给 AI “用什么”的工具接口。本文带你彻底搞懂 Agent Skills 的方方面面。"
-tags: ["Agent", "LLM", "Claude", "MCP"]
+taxonomies:
+  tags: ["Agent", "LLM", "Claude", "MCP"]
 ---
 
 随着 AI Agent 生态的演进，Anthropic 最近推出了 **Agent Skills**（智能体技能）。这不仅仅是一个新功能，更是一种让 AI 更加专业化、标准化的新范式。

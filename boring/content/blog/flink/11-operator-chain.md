@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：11. Operator Chain (算子链)"
 date: 2026-01-12T21:00:00+08:00
 description: "Flink 如何通过 Operator Chain 减少序列化开销和线程切换。"
-tags: [Flink, Source Code, Optimization, Operator Chain]
+taxonomies:
+  tags: [Flink, Source Code, Optimization, Operator Chain]
 weight: 11
 ---
 

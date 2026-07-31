@@ -1,7 +1,8 @@
 ---
 title: "Kafka 源码阅读：03. Producer 初始化与 Metadata 更新"
 date: 2026-01-15T10:00:00+08:00
-tags: [Kafka, Source Code, Producer, Metadata]
+taxonomies:
+  tags: [Kafka, Source Code, Producer, Metadata]
 weight: 3
 ---
 

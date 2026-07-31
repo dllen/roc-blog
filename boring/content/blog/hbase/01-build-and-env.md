@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：01. 源码编译与环境搭建"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Build, Environment]
+taxonomies:
+  tags: [HBase, Source Code, Build, Environment]
 weight: 1
 ---
 

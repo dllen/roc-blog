@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：09. String 对象 (int, embstr, raw)"
 date: 2026-01-10T18:00:00+08:00
 description: "Redis String 只有一种吗？不，它有三种编码：int, embstr, raw。它们有何区别？Redis 何时会进行编码转换？"
-tags: [Redis, Source Code, String, Encoding]
+taxonomies:
+  tags: [Redis, Source Code, String, Encoding]
 weight: 9
 ---
 

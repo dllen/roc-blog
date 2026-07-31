@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：07. QuickList (快速列表)"
 date: 2026-01-10T16:00:00+08:00
 description: "Redis List 类型的底层实现。QuickList 是如何结合双向链表和压缩列表的优点，既省内存又高性能？"
-tags: [Redis, Source Code, Data Structure, QuickList, List]
+taxonomies:
+  tags: [Redis, Source Code, Data Structure, QuickList, List]
 weight: 7
 ---
 

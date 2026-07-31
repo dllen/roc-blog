@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：12. 参数解析与返回值处理"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, MVC, ArgumentResolver]
+taxonomies:
+  tags: [Spring, Source Code, MVC, ArgumentResolver]
 weight: 12
 ---
 

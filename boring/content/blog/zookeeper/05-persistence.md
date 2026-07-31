@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：05. 持久化机制"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Persistence, TxnLog, Snapshot]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Persistence, TxnLog, Snapshot]
 weight: 5
 ---
 

@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：08. 统一异常体系"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, Exception, DataAccess]
+taxonomies:
+  tags: [Spring, Source Code, Exception, DataAccess]
 weight: 8
 ---
 

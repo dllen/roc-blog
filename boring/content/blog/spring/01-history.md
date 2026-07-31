@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：01. 历史的回响：从 interface21 到 Spring"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, History, Rod Johnson]
+taxonomies:
+  tags: [Spring, Source Code, History, Rod Johnson]
 weight: 1
 ---
 

@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：03. 启动流程详解"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Startup]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Startup]
 weight: 3
 ---
 

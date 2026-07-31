@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-12T12:00:00+08:00
 description: "Hadoop Distributed File System (HDFS) 源码阅读系列大纲。涵盖 NameNode 元数据管理、DataNode 存储引擎、客户端读写流程、HA 高可用机制等核心模块。"
-tags: [Hadoop, HDFS, Source Code, Outline, Roadmap]
+taxonomies:
+  tags: [Hadoop, HDFS, Source Code, Outline, Roadmap]
 weight: 0
 ---
 

@@ -2,7 +2,8 @@
 title: "Docker 网络模式"
 date: 2024-01-21T12:13:30+05:30
 update_date: 2024-01-21T12:13:30+05:30
-tags: [Docker]
+taxonomies:
+  tags: [Docker]
 ---
 
 Docker 包括一个网络系统，用于管理容器、 Docker 主机和外部世界之间的通信。支持几种不同的网络类型，支持不同的使用场景。

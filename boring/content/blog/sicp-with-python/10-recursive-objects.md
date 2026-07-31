@@ -2,7 +2,8 @@
 title: "10. 递归对象：链表与树的类实现"
 date: 2026-02-07T13:00:00+08:00
 draft: false
-tags: ["Python", "SICP", "递归", "数据结构", "OOP", "链表", "树"]
+taxonomies:
+  tags: ["Python", "SICP", "递归", "数据结构", "OOP", "链表", "树"]
 categories: ["SICP-Python"]
 description: "SICP 2.9 深入解析：如何用类 (Class) 实现递归数据结构？从 `Link` 类到 `Tree` 类，探索对象系统的递归本质，并将其应用于集合 (Sets) 的实现。"
 ---

@@ -2,7 +2,8 @@
 title: "给 Java 插上翅膀：Alibaba Dragonwell Wisp 协程深度解析与实战避坑指南"
 date: 2026-02-01T12:00:00+08:00
 draft: false
-tags: ["Java", "Dragonwell", "Wisp", "Coroutine", "Performance", "Concurrency"]
+taxonomies:
+  tags: ["Java", "Dragonwell", "Wisp", "Coroutine", "Performance", "Concurrency"]
 categories: ["Backend", "Performance Tuning"]
 ---
 

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：13. 网络层 (连接、IO 与 RESP)"
 date: 2026-01-11T11:00:00+08:00
 description: "Redis 如何处理新连接？如何读取请求并解析 RESP 协议？输出缓冲区是如何工作的？"
-tags: [Redis, Source Code, Networking, RESP, IO]
+taxonomies:
+  tags: [Redis, Source Code, Networking, RESP, IO]
 weight: 13
 ---
 

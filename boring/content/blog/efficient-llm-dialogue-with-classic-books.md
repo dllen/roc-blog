@@ -3,7 +3,8 @@ title: "向经典致敬：用大师的提问艺术驯服大模型"
 date: "2026-01-05"
 description: "基于《学会提问》、《如何解决问题》等经典著作，构建与 AI 高效对话的思维框架"
 tldr: "不要只学 Prompt 技巧，要学提问的本质。本文汇总 10 本经典著作的智慧，重构你与 AI 的对话逻辑。"
-tags: ["LLM", "Prompt Engineering", "Reading", "Thinking"]
+taxonomies:
+  tags: ["LLM", "Prompt Engineering", "Reading", "Thinking"]
 ---
 
 在 AI 时代，"Prompt Engineering"（提示词工程）似乎成了一门显学。但剥去技术的外衣，其内核依然是人类几千年来不断探索的**“提问的艺术”**。

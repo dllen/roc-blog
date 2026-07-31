@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：19. Flink SQL 编译流程"
 date: 2026-01-13T05:00:00+08:00
 description: "从 SQL 语句到 Physical Plan。Calcite 在 Flink SQL 中的应用。"
-tags: [Flink, Source Code, SQL, Calcite, Planner]
+taxonomies:
+  tags: [Flink, Source Code, SQL, Calcite, Planner]
 weight: 19
 ---
 

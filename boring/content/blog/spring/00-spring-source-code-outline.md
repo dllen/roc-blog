@@ -2,7 +2,8 @@
 title: "Spring 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-14T10:00:00+08:00
 description: "结合《Expert One-on-One J2EE Development without EJB》，规划 Spring 源码阅读路线。从 POJO 编程模型到 Spring Boot 自动装配。"
-tags: [Spring, Source Code, Outline, Rod Johnson]
+taxonomies:
+  tags: [Spring, Source Code, Outline, Rod Johnson]
 weight: 0
 ---
 

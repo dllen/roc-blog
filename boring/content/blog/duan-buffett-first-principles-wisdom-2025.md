@@ -2,7 +2,8 @@
 title: "从段永平与巴菲特最新访谈：用第一性原理提炼普世智慧"
 date: "2025-11-12"
 description: "基于浙大见面会与巴菲特股东大会问答，抽象为可践行的原则。"
-tags: [投资, 经营, 第一性原理]
+taxonomies:
+  tags: [投资, 经营, 第一性原理]
 extra:
   reading_time: 8
 update_date: "2025-11-12"

@@ -2,7 +2,8 @@
 title: "21. 并行计算：驾驭多线程的野兽"
 date: 2026-02-08T00:00:00+08:00
 draft: false
-tags: ["Parallel Computing", "Concurrency", "Threading", "Multiprocessing", "Locks", "Deadlocks", "SICP"]
+taxonomies:
+  tags: ["Parallel Computing", "Concurrency", "Threading", "Multiprocessing", "Locks", "Deadlocks", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.8 核心内容：探索并行计算的世界。理解多线程与多进程的区别，掌握锁（Locks）、信号量（Semaphores）和屏障（Barriers）等同步机制，学会避免竞态条件与死锁。"
 ---

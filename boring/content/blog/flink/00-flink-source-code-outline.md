@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：00. 阅读大纲与学习路线"
 date: 2026-01-12T10:00:00+08:00
 description: "Apache Flink 源码阅读系列大纲。从 JobGraph 到 Task 调度，从 Checkpoint 到反压机制，全链路源码解析。"
-tags: [Flink, Source Code, Outline, Roadmap]
+taxonomies:
+  tags: [Flink, Source Code, Outline, Roadmap]
 weight: 0
 ---
 

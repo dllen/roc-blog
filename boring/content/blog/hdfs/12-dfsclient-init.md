@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：12. DFSClient 初始化"
 date: 2026-01-23T10:00:00+08:00
 description: "DFSClient 是 HDFS 交互的入口。解析 DistributedFileSystem 与 DFSClient 的关系，以及 RPC 代理的创建。"
-tags: [Hadoop, HDFS, Client, Initialization]
+taxonomies:
+  tags: [Hadoop, HDFS, Client, Initialization]
 weight: 12
 ---
 

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：21. Sentinel (哨兵模式)"
 date: 2026-01-11T19:00:00+08:00
 description: "Sentinel 如何实现自动故障转移？主观下线与客观下线的区别，Raft 算法在 Leader 选举中的应用。"
-tags: [Redis, Source Code, Distributed, Sentinel, HA]
+taxonomies:
+  tags: [Redis, Source Code, Distributed, Sentinel, HA]
 weight: 21
 ---
 

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：26. 完结篇 - 更多特性"
 date: 2026-01-12T00:00:00+08:00
 description: "HyperLogLog, Geo, Bitmap, Module System... Redis 的世界远比想象中精彩。系列总结与未来展望。"
-tags: [Redis, Source Code, HyperLogLog, Geo, Bitmap, Module]
+taxonomies:
+  tags: [Redis, Source Code, HyperLogLog, Geo, Bitmap, Module]
 weight: 26
 ---
 

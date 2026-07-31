@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：15. Region 切分 (Split)"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Split, Region]
+taxonomies:
+  tags: [HBase, Source Code, Split, Region]
 weight: 15
 ---
 

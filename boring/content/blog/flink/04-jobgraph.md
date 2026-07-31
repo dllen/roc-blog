@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：04. 提交流程 (JobGraph)"
 date: 2026-01-12T14:00:00+08:00
 description: "Client 端如何将用户代码转化为 JobGraph，并提交给 Dispatcher。"
-tags: [Flink, Source Code, JobGraph, Submission]
+taxonomies:
+  tags: [Flink, Source Code, JobGraph, Submission]
 weight: 4
 ---
 

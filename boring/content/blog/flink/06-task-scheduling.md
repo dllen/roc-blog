@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：06. Task 调度与执行"
 date: 2026-01-12T16:00:00+08:00
 description: "TaskManager 如何启动 Task？Slot、Task、SubTask 的关系，以及 Task 线程模型。"
-tags: [Flink, Source Code, Task, Thread Model]
+taxonomies:
+  tags: [Flink, Source Code, Task, Thread Model]
 weight: 6
 ---
 

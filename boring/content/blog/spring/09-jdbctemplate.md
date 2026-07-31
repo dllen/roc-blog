@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：09. JdbcTemplate 设计模式"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, JdbcTemplate, Template Pattern]
+taxonomies:
+  tags: [Spring, Source Code, JdbcTemplate, Template Pattern]
 weight: 9
 ---
 

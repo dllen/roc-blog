@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：11. ZAB 协议：发现与同步"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, ZAB, Synchronization]
+taxonomies:
+  tags: [ZooKeeper, Source Code, ZAB, Synchronization]
 weight: 11
 ---
 

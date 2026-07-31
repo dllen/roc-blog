@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：21. PyFlink 原理"
 date: 2026-01-13T07:00:00+08:00
 description: "Java 与 Python 进程间的通信模型。Apache Beam Portability Framework 的应用。"
-tags: [Flink, Source Code, PyFlink, Python, Beam]
+taxonomies:
+  tags: [Flink, Source Code, PyFlink, Python, Beam]
 weight: 21
 ---
 

@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：03. NameNode 启动流程"
 date: 2026-01-14T10:00:00+08:00
 description: "NameNode 启动全流程解析：从 main 函数入口到 RPC 服务就绪，以及 SafeMode 的处理逻辑。"
-tags: [Hadoop, HDFS, NameNode, Startup]
+taxonomies:
+  tags: [Hadoop, HDFS, NameNode, Startup]
 weight: 3
 ---
 

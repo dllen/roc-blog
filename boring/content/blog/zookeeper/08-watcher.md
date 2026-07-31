@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：08. Watcher 监听机制"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Watcher]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Watcher]
 weight: 8
 ---
 

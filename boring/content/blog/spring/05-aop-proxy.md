@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：05. AOP 代理机制"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, AOP, Proxy, CGLIB]
+taxonomies:
+  tags: [Spring, Source Code, AOP, Proxy, CGLIB]
 weight: 5
 ---
 

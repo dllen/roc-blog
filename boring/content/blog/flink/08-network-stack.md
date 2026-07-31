@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：08. 通信层实现 (RPC & Data)"
 date: 2026-01-12T18:00:00+08:00
 description: "基于 Akka 的控制流 RPC 与基于 Netty 的数据流传输。"
-tags: [Flink, Source Code, RPC, Netty, Akka]
+taxonomies:
+  tags: [Flink, Source Code, RPC, Netty, Akka]
 weight: 8
 ---
 

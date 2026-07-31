@@ -2,7 +2,8 @@
 title: "15. 隐式序列与生成器：惰性计算的力量"
 date: 2026-02-07T18:00:00+08:00
 draft: false
-tags: ["Python", "Iterator", "Generator", "Lazy Evaluation", "SICP"]
+taxonomies:
+  tags: ["Python", "Iterator", "Generator", "Lazy Evaluation", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.2 核心内容：深入 Python 的迭代器协议与生成器，理解惰性计算如何处理无限序列与大数据流。"
 ---

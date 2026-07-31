@@ -2,7 +2,8 @@
 title: "给迷惘一代的哲学药方：当尼采、佛陀与老子在十字路口相遇"
 date: 2026-02-03T14:00:00+08:00
 draft: false
-tags: ["Philosophy", "Life Guide", "Nietzsche", "Buddhism", "Confucianism", "Taoism", "Christianity"]
+taxonomies:
+  tags: ["Philosophy", "Life Guide", "Nietzsche", "Buddhism", "Confucianism", "Taoism", "Christianity"]
 categories: ["Thinking", "Life"]
 ---
 

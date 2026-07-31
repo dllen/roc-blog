@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：12. Watermark 机制"
 date: 2026-01-12T22:00:00+08:00
 description: "水位线 (Watermark) 的生成、传播与处理乱序数据的原理。"
-tags: [Flink, Source Code, Watermark, Time]
+taxonomies:
+  tags: [Flink, Source Code, Watermark, Time]
 weight: 12
 ---
 

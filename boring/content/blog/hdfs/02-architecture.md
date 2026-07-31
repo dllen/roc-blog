@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：02. 核心架构设计"
 date: 2026-01-13T10:00:00+08:00
 description: "HDFS 架构深度解析。Master/Slave 模式的优劣、Block 设计哲学以及 RPC 通信协议概览。"
-tags: [Hadoop, HDFS, Architecture, Design]
+taxonomies:
+  tags: [Hadoop, HDFS, Architecture, Design]
 weight: 2
 ---
 

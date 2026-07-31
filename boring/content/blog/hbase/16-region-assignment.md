@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：16. 负载均衡 (Assignment & Balancer)"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Balancer, Assignment]
+taxonomies:
+  tags: [HBase, Source Code, Balancer, Assignment]
 weight: 16
 ---
 

@@ -3,7 +3,8 @@ title: "Paxos 协议"
 date: 2023-08-04T15:00:00+20:30
 update_date: 2023-08-04T15:00:00+20:30
 description: "分布式 paxos 协议和实现注意事项"
-tags: [分布式系统, Paxos]
+taxonomies:
+  tags: [分布式系统, Paxos]
 ---
 
 Paxos 协议是一种分布式一致性算法，用于在多个节点上达成一致性，确保分布式系统的可靠性和高可用性。Paxos 协议的核心思想是将分布式系统中的节点划分为 Proposer、Acceptor 和 Learner 三类节点，Proposer 节点提出提案，Acceptor 节点接受或拒绝提案，Learner 节点学习已经达成一致的提案结果。

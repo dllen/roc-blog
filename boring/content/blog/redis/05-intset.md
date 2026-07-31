@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：05. IntSet (整数集合)"
 date: 2026-01-10T14:00:00+08:00
 description: "Redis Set 类型的底层优化。当集合中只有整数时，Redis 如何用 IntSet 节省内存？什么是编码升级？"
-tags: [Redis, Source Code, Data Structure, IntSet]
+taxonomies:
+  tags: [Redis, Source Code, Data Structure, IntSet]
 weight: 5
 ---
 

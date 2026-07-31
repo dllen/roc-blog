@@ -2,7 +2,8 @@
 title: "我们一直把“聪明”想窄了：深度理解才是真正的护城河"
 date: 2026-02-07T14:00:00+08:00
 draft: false
-tags: ["Thinking", "Learning", "Cognition", "Wisdom", "Nabeel Qureshi"]
+taxonomies:
+  tags: ["Thinking", "Learning", "Cognition", "Wisdom", "Nabeel Qureshi"]
 categories: ["Reading"]
 ---
 

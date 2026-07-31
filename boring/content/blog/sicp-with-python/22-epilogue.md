@@ -2,7 +2,8 @@
 title: "Epilogue: 编程的本质与未来"
 date: 2026-02-09T00:00:00+08:00
 draft: false
-tags: ["SICP", "Summary", "Computer Science", "Philosophy"]
+taxonomies:
+  tags: ["SICP", "Summary", "Computer Science", "Philosophy"]
 categories: ["SICP-Python"]
 description: "SICP Python 系列完结篇。回顾我们走过的旅程，从函数抽象到分布式系统，探讨编程的本质：控制复杂性。"
 ---

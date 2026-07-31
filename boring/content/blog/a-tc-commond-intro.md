@@ -3,7 +3,8 @@ title: "Linux TC 进阶：一行命令实现特定流量延迟"
 date: 2025-12-04T12:13:32+05:30
 update_date: 2025-12-04T12:13:32+05:30
 description: "深入解析如何使用 tc 和 iptables 对特定网络流量施加延迟，以及其背后的原理和副作用。"
-tags: [Linux, Network, Chaos Engineering]
+taxonomies:
+  tags: [Linux, Network, Chaos Engineering]
 ---
 
 本文将详细解析一行复杂的 `tc` (Traffic Control) 命令。这行命令通常用于混沌工程（Chaos Engineering）或网络模拟测试中，目的是**在不影响其他流量的情况下，精准地对特定数据包施加延迟**。

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：04. ZipList & ListPack (内存紧凑之道)"
 date: 2026-01-10T13:00:00+08:00
 description: "解析 Redis 为了省内存而设计的压缩列表。ZipList 的连锁更新灾难是什么？新一代 ListPack 又是如何完美解决这个问题的？"
-tags: [Redis, Source Code, Data Structure, ZipList, ListPack]
+taxonomies:
+  tags: [Redis, Source Code, Data Structure, ZipList, ListPack]
 weight: 4
 ---
 

@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：11. Flush 机制"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Flush, MemStore]
+taxonomies:
+  tags: [HBase, Source Code, Flush, MemStore]
 weight: 11
 ---
 

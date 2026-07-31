@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：20. 主从复制 (Replication)"
 date: 2026-01-11T18:00:00+08:00
 description: "Redis 主从复制是如何实现的？PSYNC 命令详解，全量复制与增量复制的流程。"
-tags: [Redis, Source Code, Distributed, Replication]
+taxonomies:
+  tags: [Redis, Source Code, Distributed, Replication]
 weight: 20
 ---
 

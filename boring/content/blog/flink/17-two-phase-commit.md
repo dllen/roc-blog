@@ -2,7 +2,8 @@
 title: "Flink 源码阅读：17. Two-Phase Commit (2PC)"
 date: 2026-01-13T03:00:00+08:00
 description: "Flink 如何实现端到端的 Exactly-Once？Sink 端的两阶段提交详解。"
-tags: [Flink, Source Code, 2PC, Exactly-Once, Kafka]
+taxonomies:
+  tags: [Flink, Source Code, 2PC, Exactly-Once, Kafka]
 weight: 17
 ---
 

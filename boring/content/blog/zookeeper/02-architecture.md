@@ -1,7 +1,8 @@
 ---
 title: "ZooKeeper 源码阅读：02. 核心架构与模块概览"
 date: 2026-01-13T10:00:00+08:00
-tags: [ZooKeeper, Source Code, Architecture]
+taxonomies:
+  tags: [ZooKeeper, Source Code, Architecture]
 weight: 2
 ---
 

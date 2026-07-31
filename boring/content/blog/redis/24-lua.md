@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：24. Lua 脚本"
 date: 2026-01-11T22:00:00+08:00
 description: "Redis 为什么选择 Lua？脚本原子性是如何保证的？EVAL 命令执行原理。"
-tags: [Redis, Source Code, Lua, Scripting]
+taxonomies:
+  tags: [Redis, Source Code, Lua, Scripting]
 weight: 24
 ---
 

@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：03. Dict (字典与渐进式 Rehash)"
 date: 2026-01-10T12:00:00+08:00
 description: "深度剖析 Redis 核心数据结构 Dict。双哈希表设计、哈希冲突解决、以及最精彩的渐进式 Rehash 机制详解。"
-tags: [Redis, Source Code, C, Data Structure, Dict, Hash]
+taxonomies:
+  tags: [Redis, Source Code, C, Data Structure, Dict, Hash]
 weight: 3
 ---
 

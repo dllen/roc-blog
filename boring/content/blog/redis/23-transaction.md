@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：23. 事务 (Transaction)"
 date: 2026-01-11T21:00:00+08:00
 description: "Redis 事务支持 ACID 吗？为什么 Redis 不支持回滚？MULTI, EXEC, WATCH 原理详解。"
-tags: [Redis, Source Code, Transaction, ACID]
+taxonomies:
+  tags: [Redis, Source Code, Transaction, ACID]
 weight: 23
 ---
 

@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：11. 数据传输协议 (DataTransferProtocol)"
 date: 2026-01-22T10:00:00+08:00
 description: "解析 HDFS 的数据高速公路：基于 TCP/Netty 的 DataTransferProtocol，以及 DataXceiver 的工作原理。"
-tags: [Hadoop, HDFS, DataNode, Network]
+taxonomies:
+  tags: [Hadoop, HDFS, DataNode, Network]
 weight: 11
 ---
 

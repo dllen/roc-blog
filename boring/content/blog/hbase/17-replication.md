@@ -1,7 +1,8 @@
 ---
 title: "HBase 源码阅读：17. 复制机制 (Replication)"
 date: 2026-01-12T10:00:00+08:00
-tags: [HBase, Source Code, Replication, DR]
+taxonomies:
+  tags: [HBase, Source Code, Replication, DR]
 weight: 17
 ---
 

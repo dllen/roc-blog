@@ -2,7 +2,8 @@
 title: "02. 定义函数与控制流：掌握程序的控制权"
 date: 2026-02-07T10:15:00+08:00
 draft: false
-tags: ["Python", "SICP", "函数定义", "控制流", "斐波那契"]
+taxonomies:
+  tags: ["Python", "SICP", "函数定义", "控制流", "斐波那契"]
 categories: ["SICP-Python"]
 description: "SICP Python版 1.3-1.5：深入理解如何定义函数、使用环境图分析函数调用、编写高质量的文档字符串，以及掌握 if/while 控制流和布尔逻辑。"
 ---

@@ -1,7 +1,8 @@
 ---
 title: "Spring 源码阅读：06. Pointcut 与 Advisor"
 date: 2026-01-14T10:00:00+08:00
-tags: [Spring, Source Code, AOP, Pointcut, Advisor]
+taxonomies:
+  tags: [Spring, Source Code, AOP, Pointcut, Advisor]
 weight: 6
 ---
 

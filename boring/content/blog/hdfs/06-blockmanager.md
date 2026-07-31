@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：06. 块管理 (BlockManager)"
 date: 2026-01-17T10:00:00+08:00
 description: "BlockManager 是 NameNode 中最繁忙的组件，负责副本管理、损坏块处理与副本放置策略。"
-tags: [Hadoop, HDFS, NameNode, BlockManager]
+taxonomies:
+  tags: [Hadoop, HDFS, NameNode, BlockManager]
 weight: 6
 ---
 

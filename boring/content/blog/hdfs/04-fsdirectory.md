@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：04. 元数据管理 (FSDirectory)"
 date: 2026-01-15T10:00:00+08:00
 description: "深入 FSDirectory 内部，解析 INode 内存结构与目录树的锁机制。"
-tags: [Hadoop, HDFS, NameNode, Metadata]
+taxonomies:
+  tags: [Hadoop, HDFS, NameNode, Metadata]
 weight: 4
 ---
 

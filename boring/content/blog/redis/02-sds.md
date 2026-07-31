@@ -2,7 +2,8 @@
 title: "Redis 源码阅读：02. SDS (Simple Dynamic String)"
 date: 2026-01-10T11:00:00+08:00
 description: "深入解析 Redis 的 SDS 字符串结构。为什么 Redis 不直接使用 C 语言字符串？SDS 如何实现二进制安全、内存预分配与惰性释放？"
-tags: [Redis, Source Code, C, Data Structure, SDS]
+taxonomies:
+  tags: [Redis, Source Code, C, Data Structure, SDS]
 weight: 2
 ---
 

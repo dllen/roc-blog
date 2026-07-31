@@ -2,7 +2,8 @@
 title: "HDFS 源码阅读：13. 文件写入流程 (Write Path)"
 date: 2026-01-24T10:00:00+08:00
 description: "HDFS 最复杂的流程之一。解析 DFSOutputStream, DataStreamer, Packet 队列与 Pipeline 恢复机制。"
-tags: [Hadoop, HDFS, Client, Write]
+taxonomies:
+  tags: [Hadoop, HDFS, Client, Write]
 weight: 13
 ---
 

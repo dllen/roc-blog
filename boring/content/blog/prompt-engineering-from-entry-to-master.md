@@ -4,7 +4,8 @@ date: "2025-11-13"
 update_date: "2025-11-13"
 description: 系统化掌握提示词工程的概念、方法、评估与实战
 tldr: 全流程提示词工程方法论与案例，含入门、进阶与精通指南
-tags: ["LLM", "Prompt Engineering", "AI"]
+taxonomies:
+  tags: ["LLM", "Prompt Engineering", "AI"]
 ---
 
 大语言模型（LLM）已成为通用智能应用的核心能力。从软件开发到知识管理、从教育到企业流程自动化，LLM 的价值往往取决于人与模型的“对话界面”质量——**提示词（Prompt）**。
