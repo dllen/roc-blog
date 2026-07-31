@@ -36,31 +36,72 @@
     </script>
     {% endblock jsonld %}
 {% block content %}
-    {{ macros::header(components=page.components, is_page=true) }}
-    <div class="container mx-auto w-full xl:w-1/2 mb-16">
-        <div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">
-            {{ page.date | date(format="%Y-%m-%d") }}
-        </div>
-        <h1 class="w-full xl:w-2/3 mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900
-                   dark:text-slate-300">
-            {{ page.title }}
-        </h1>
-        <div class="mt-2 mb-6 flex flex-wrap gap-2">
-            {% if page.taxonomies and page.taxonomies.tags %}
-                {% for tag in page.taxonomies.tags %}
-                    <a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600" href="/tags/{{ tag | slugify }}/">#{{ tag }}</a>
-                {% endfor %}
-            {% endif %}
-        </div>
-        <div class="w-100 border-t mb-8 border-slate-300
-            dark:border-slate-700"></div>
-        <div class="prose dark:prose-invert prose-pre:rounded-none
-                    prose-headings:bg-amber-100 prose-headings:text-slate-800
-                    dark:prose-headings:bg-indigo-900 prose-headings:font-normal
-                    dark:prose-headings:text-slate-300 prose-headings:p-2
-                    prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base">
-            {{ page.content | safe }}
-        </div>
-    </div>
-{% endblock content %}
+    {# 顶部进度条 #}
+    <div id="reading-progress" class="fixed top-0 left-0 right-0 h-0.5 bg-amber-400 z-50"
+         style="width: 0%; transition: width 0.05s linear;"></div>
 
+    {{ macros::header(components=page.components, is_page=true) }}
+
+    {# 移动端 TOC 抽屉（xl 以下显） #}
+    <details class="xl:hidden mx-4 my-4 bg-slate-100 dark:bg-slate-800 rounded p-3">
+        <summary class="cursor-pointer font-bold text-slate-900 dark:text-slate-200">
+            目录 ▾
+        </summary>
+        <div class="mt-2 text-sm leading-relaxed" id="toc-list-mobile"></div>
+    </details>
+
+    {# 3 栏布局：左 TOC + 中文章 + 右侧 hover 区 #}
+    <div class="container mx-auto w-full xl:w-2/3 mt-8 mb-16 px-4 xl:px-8 flex gap-8">
+        {# 左侧 TOC（仅 xl+ 显） #}
+        <aside class="hidden xl:block w-56 shrink-0">
+            <nav id="toc" class="sticky top-32 max-h-[calc(100vh-9rem)] overflow-y-auto
+                                text-sm leading-relaxed">
+                <div class="font-bold text-slate-900 dark:text-slate-200 mb-2">目录</div>
+                <div class="border-l border-slate-200 dark:border-slate-700 pl-3"
+                     id="toc-list">
+                    {# JS 注入 #}
+                </div>
+            </nav>
+        </aside>
+
+        {# 文章正文 #}
+        <article class="flex-1 min-w-0">
+            <div class="text-base xl:text-sm text-slate-500 dark:text-slate-500">
+                {{ page.date | date(format="%Y-%m-%d") }}
+            </div>
+            <h1 class="font-serif text-5xl xl:text-4xl text-slate-900 dark:text-slate-200 mt-2 mb-4">
+                {{ page.title }}
+            </h1>
+            <div class="flex flex-wrap gap-2 mb-6">
+                {% if page.taxonomies and page.taxonomies.tags %}
+                    {% for tag in page.taxonomies.tags %}
+                        <a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700
+                                  text-slate-800 dark:text-slate-200"
+                           href="/tags/{{ tag | slugify }}/">#{{ tag }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="prose dark:prose-invert prose-pre:rounded-none
+                        prose-headings:bg-amber-100 dark:prose-headings:bg-indigo-900
+                        prose-headings:text-slate-800 dark:prose-headings:text-slate-300
+                        prose-headings:font-normal
+                        prose-headings:p-2
+                        prose-headings:w-max
+                        prose-headings:font-serif
+                        prose-2xl xl:prose-base
+                        max-w-none">
+                {{ page.content | safe }}
+            </div>
+
+            {# 上一篇 / 下一篇 #}
+            {{ macros::prev_next(current=page) }}
+
+            {# 相关阅读 - TODO: 实现为 reading.js 客户端或 Node 预生成 #}
+        </article>
+
+        {# 右侧 hover 区（占位） #}
+        <div class="hidden xl:block w-12 shrink-0"></div>
+    </div>
+
+    <script src="/js/reading.js" defer></script>
+{% endblock content %}
