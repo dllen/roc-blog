@@ -1,9 +1,23 @@
-// Minimal TOML frontmatter parser supporting only the subset we need:
-//   - top-level:  key = "string"  |  key = number
-//   - section:    [name]  (we use only [extra])
-//   - comments:   # line, and trailing on the same line
-//   - blank lines
-// Not a general TOML parser.
+// Minimal frontmatter parser supporting both TOML (+++) and YAML (---)
+// delimiters. Returns the subset of fields relevant to the encryption feature.
+//
+// Supported in TOML (+++):
+//   - top-level: key = "string" | key = number
+//   - section:   [name]  (we use only [extra])
+//   - line and trailing # comments
+//
+// Supported in YAML (---):
+//   - top-level: key: "string" | key: number | key: bare-string
+//   - nested:    key:\n  subkey: value  (we use only `extra`)
+//   - line # comments
+//
+// Not supported (out of scope):
+//   - YAML lists, anchors, multi-line strings, flow style
+//   - General TOML (datetime, multiline, arrays)
+//
+// Returns: { title?, date?, extra: { password?, password_hint?, remember_days? } }
+
+const KNOWN_EXTRA = ['password', 'password_hint', 'remember_days'];
 
 function stripQuotes(s) {
   if ((s.startsWith('"') && s.endsWith('"')) ||
@@ -13,11 +27,8 @@ function stripQuotes(s) {
   return s;
 }
 
-function parseFrontmatter(md) {
-  const m = md.match(/^\+\+\+\n([\s\S]*?)\n\+\+\+\n?/);
-  if (!m) throw new Error('No TOML frontmatter found');
-  const lines = m[1].split('\n');
-
+function parseTomlBlock(body) {
+  const lines = body.split('\n');
   const top = {};
   const sections = {};
   let currentSection = null;
@@ -42,9 +53,61 @@ function parseFrontmatter(md) {
     if (currentSection) sections[currentSection][key] = parsed;
     else top[key] = parsed;
   }
+  return { top, sections };
+}
 
-  // Result shape: { title?, date?, extra: { ...known encryption fields } }
-  const KNOWN_EXTRA = ['password', 'password_hint', 'remember_days'];
+function parseYamlBlock(body) {
+  const lines = body.split('\n');
+  const top = {};
+  const nested = {}; // key -> { subkey: value }
+  let pendingNested = null; // key whose sub-keys follow on indented lines
+
+  const flush = () => {
+    if (pendingNested) {
+      nested[pendingNested] = currentNested;
+      pendingNested = null;
+      currentNested = null;
+    }
+  };
+  let currentNested = null;
+
+  for (const raw of lines) {
+    // Strip trailing comments (but not # inside quoted strings — out of scope)
+    const line = raw.replace(/\s+#.*$/, '');
+    if (!line.trim() || line.trim().startsWith('#')) continue;
+
+    // Nested sub-key (2-space indent under a pending parent)
+    const nestedMatch = line.match(/^  (\w+):\s*(.+)$/);
+    if (nestedMatch && pendingNested) {
+      const [, key, rawVal] = nestedMatch;
+      const val = rawVal.trim();
+      const parsed = /^-?\d+(\.\d+)?$/.test(val) ? Number(val) : stripQuotes(val);
+      currentNested[key] = parsed;
+      continue;
+    }
+
+    // Anything at column 0 (top-level): flush any pending nested block first
+    flush();
+    const topMatch = line.match(/^(\w+):\s*(.*)$/);
+    if (!topMatch) continue;
+    const [, key, rawVal] = topMatch;
+    const val = rawVal.trim();
+
+    if (val === '') {
+      // `key:` with no value starts a nested block
+      pendingNested = key;
+      currentNested = {};
+      continue;
+    }
+    const parsed = /^-?\d+(\.\d+)?$/.test(val) ? Number(val) : stripQuotes(val);
+    top[key] = parsed;
+  }
+  flush(); // trailing nested block
+
+  return { top, nested };
+}
+
+function mergeResult({ top, sections }, delim) {
   const result = {
     title: top.title,
     date: top.date != null ? String(top.date) : undefined,
@@ -55,6 +118,32 @@ function parseFrontmatter(md) {
     else if (k in top) result.extra[k] = top[k];
   }
   return result;
+}
+
+function mergeYamlResult({ top, nested }) {
+  const result = {
+    title: top.title,
+    date: top.date != null ? String(top.date) : undefined,
+    extra: {},
+  };
+  for (const k of KNOWN_EXTRA) {
+    if (nested.extra && k in nested.extra) result.extra[k] = nested.extra[k];
+    else if (k in top) result.extra[k] = top[k];
+  }
+  return result;
+}
+
+function parseFrontmatter(md) {
+  // Detect delimiter (+++ for TOML, --- for YAML)
+  const m = md.match(/^(\+\+\+|---)\n([\s\S]*?)\n\1\n?/);
+  if (!m) throw new Error('No TOML/YAML frontmatter found');
+  const [, delim, body] = m;
+
+  if (delim === '+++') {
+    return mergeResult(parseTomlBlock(body), delim);
+  }
+  // YAML
+  return mergeYamlResult(parseYamlBlock(body));
 }
 
 export { parseFrontmatter };
