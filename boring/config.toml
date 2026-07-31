@@ -71,11 +71,14 @@ google_analytics_measurement_id = ""
 [[extra.social]]
 url = "https://github.com/dllen"
 icon = "lab la-github"
+name = "GitHub"
 
 [[extra.social]]
 url = "https://deepthink.global/"
 icon = "las la-rss-square"
+name = "RSS / Blog"
 
 [[extra.social]]
 url = "https://bb4bb.me/"
 icon = "las la-tools"
+name = "Tools Site"
