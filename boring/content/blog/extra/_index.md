@@ -1,4 +1,4 @@
 ---
 title: "Extra"
-paginate_by = 20
+paginate_by: 20
 ---

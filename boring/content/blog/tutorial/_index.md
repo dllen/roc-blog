@@ -1,4 +1,4 @@
 ---
 title: "Tutorial"
-paginate_by = 20
+paginate_by: 20
 ---

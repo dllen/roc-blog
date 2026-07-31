@@ -1,4 +1,4 @@
 ---
 title: "SRE"
-paginate_by = 20
+paginate_by: 20
 ---

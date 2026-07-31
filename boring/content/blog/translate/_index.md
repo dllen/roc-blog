@@ -1,4 +1,4 @@
 ---
 title: "Translate"
-paginate_by = 20
+paginate_by: 20
 ---

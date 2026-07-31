@@ -1,6 +1,6 @@
 ---
 title: "SICP Python版：计算机程序的构造和解释"
-paginate_by = 20
+paginate_by: 20
 draft: false
 description: "基于 Composing Programs (SICP Python版) 的中文重制教程。以 Python 3 为载体，深入浅出讲解计算机程序的构造与解释，掌握编程的核心思想与抽象艺术。"
 extra:

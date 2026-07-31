@@ -1,4 +1,4 @@
 ---
 title: "Weekly"
-paginate_by = 20
+paginate_by: 20
 ---
