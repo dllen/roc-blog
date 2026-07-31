@@ -69,7 +69,7 @@
 {% set blog = get_section(path='blog/_index.md') %}
 {% if blog and blog.pages %}
   {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
-  {% set latest = blog.pages | sort(attribute="extra.update_date", reverse=true) %}
+  {% set latest = blog.pages | sort(attribute="date", reverse=true) %}
   <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
     <h2 class="font-serif text-6xl xl:text-2xl text-slate-900 dark:text-slate-200 mb-8">
       最新文章
