@@ -18,13 +18,15 @@
         {% set counts = terms | map(attribute="pages") | map("length") | list %}
         {% set max_count = counts | max %}
         {% set min_count = counts | min %}
+        {% set range_size = max_count - min_count %}
         <p class="leading-loose">
             {% for term in terms %}
                 {% set count = term.pages | length %}
-                {% if max_count == min_count %}
+                {% if range_size == 0 %}
                     {% set font_size = 16 %}
                 {% else %}
-                    {% set font_size = 12 + (((count - min_count) * 12) / (max_count - min_count)) | round %}
+                    {% set ratio = count - min_count %}
+                    {% set font_size = 12 + (ratio * 12 / range_size) | round %}
                 {% endif %}
                 <a href="{{ term.permalink | safe }}"
                    class="px-2 text-slate-600 hover:text-slate-800
