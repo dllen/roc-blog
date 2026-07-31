@@ -5,3 +5,8 @@ _audit/*
 static/og/*
 !static/og/.gitkeep
 *.log
+
+# 内容治理（spec 1-4 累积）
+**/_review_reports/
+*.bak
+*.tmp

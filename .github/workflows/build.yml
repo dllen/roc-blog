@@ -27,6 +27,18 @@ jobs:
           corepack enable
           yarn install --immutable || yarn install
 
+      - name: Setup Python (for fonttools)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install fonttools + brotli
+        run: pip install fonttools==4.47.0 brotli==1.1.0
+
+      - name: Build subset fonts
+        working-directory: boring
+        run: bash scripts/build-fonts.sh
+
       - name: Build CSS with PostCSS (yarn build)
         working-directory: boring
         run: yarn build
