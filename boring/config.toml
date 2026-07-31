@@ -35,9 +35,6 @@ internal_level = "warn"
 [taxonomies]
 tags = "tags"
 
-[pagination]
-per_page = 20
-
 generate_feeds = true
 feed_limit = 20
 
