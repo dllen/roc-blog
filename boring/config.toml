@@ -15,7 +15,7 @@ generate_sitemap = true
 compile_sass = false
 
 # Whether to build a search index to be used later on by a JavaScript library
-build_search_index = true
+build_search_index = false
 
 [markdown]
 # When set to "true", emoji aliases translated to their corresponding
