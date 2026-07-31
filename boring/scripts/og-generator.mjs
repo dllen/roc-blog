@@ -53,7 +53,9 @@ for (const file of mdFiles) {
   };
 
   const svg = buildOgSvg(meta, colors);
-  const resvg = new Resvg(svg, { background: '#0f172a', font: { loadSystemFonts: true } });
+  // Don't load system fonts (5-10x faster). Resvg falls back to built-in fonts.
+  // For CJK characters, install fonts-noto-cjk in CI (TODO Task 13 followup).
+  const resvg = new Resvg(svg, { background: '#0f172a', font: { loadSystemFonts: false } });
   const png = resvg.render().asPng();
 
   writeFileSync(pngPath, png);
