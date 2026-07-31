@@ -22,14 +22,14 @@
             {% for term in terms %}
                 {% set count = term.pages | length %}
                 {% if max_count == min_count %}
-                    {% set size = 16 %}
+                    {% set font_size = 16 %}
                 {% else %}
-                    {% set size = 12 + (((count - min_count) * 12) / (max_count - min_count)) | round %}
+                    {% set font_size = 12 + (((count - min_count) * 12) / (max_count - min_count)) | round %}
                 {% endif %}
                 <a href="{{ term.permalink | safe }}"
                    class="px-2 text-slate-600 hover:text-slate-800
                           dark:text-slate-400 dark:hover:text-slate-200 transition"
-                   style="font-size: {{ size }}px;"
+                   style="font-size: {{ font_size }}px;"
                    title="{{ count }} 篇文章">
                     {{ term.name }}<sup class="text-xs ml-0.5 text-slate-400">{{ count }}</sup>
                 </a>
