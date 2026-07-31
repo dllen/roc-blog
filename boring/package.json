@@ -15,6 +15,9 @@
   "license": "MIT",
   "scripts": {
     "build": "npx postcss css/style.css -o static/css/style.css",
-    "watch": "npx postcss css/style.css -o static/css/style.css --watch"
+    "watch": "npx postcss css/style.css -o static/css/style.css --watch",
+    "test": "node --test scripts/**/*.test.mjs",
+    "audit": "node scripts/audit-frontmatter.mjs",
+    "og": "node scripts/og-generator.mjs"
   }
 }
