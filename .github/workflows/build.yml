@@ -41,6 +41,10 @@ jobs:
         working-directory: boring
         run: yarn build
 
+      - name: Run tests
+        working-directory: boring
+        run: yarn test
+
       - name: Audit frontmatter
         working-directory: boring
         run: node scripts/audit-frontmatter.mjs content/blog --out _audit
