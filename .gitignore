@@ -33,6 +33,7 @@ boring/roc-blog/
 .superpowers/
 .superstorms/
 
+.codeflicker/
 
 yarn.lock
 
