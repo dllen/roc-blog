@@ -22,6 +22,9 @@ node_modules/
 # 文档目录
 docs
 
+# Zola build output
+boring/roc-blog/
+
 # Git worktrees（独立开发分支）
 .worktrees
 
