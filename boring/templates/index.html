@@ -64,4 +64,42 @@
         </div>
     </div>
 </div>
+
+{# 下方：最新 N 篇文章 #}
+{% set blog = get_section(path='blog/_index.md') %}
+{% if blog and blog.pages %}
+  {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
+  {% set latest = blog.pages | sort(attribute="update_date", reverse=true) %}
+  <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
+    <h2 class="font-serif text-6xl xl:text-2xl text-slate-900 dark:text-slate-200 mb-8">
+      最新文章
+    </h2>
+    <ul>
+      {% for p in latest | slice(end=limit) %}
+        <li class="my-6 xl:my-4">
+          <a href="{{ p.permalink | safe }}" class="block group">
+            <div class="font-serif text-4xl xl:text-xl text-slate-900
+                        dark:text-slate-200 group-hover:text-slate-700
+                        dark:group-hover:text-slate-100">
+              {{ p.title }}
+            </div>
+            <div class="font-sans text-2xl xl:text-sm text-slate-500 mt-1">
+              {{ p.update_date | default(value=p.date) | date(format="%Y-%m-%d") }}
+            </div>
+            <p class="font-sans text-3xl xl:text-base text-slate-600 dark:text-slate-400
+                      mt-2 line-clamp-2">
+              {{ p.description | default(value=p.content | striptags | truncate(length=100)) }}
+            </p>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="mt-8 text-3xl xl:text-base">
+      <a href="/blog/" class="text-slate-600 hover:text-slate-800
+                            dark:text-slate-400 dark:hover:text-slate-200">
+        查看全部 ({{ blog.pages | length }} 篇) →
+      </a>
+    </div>
+  </div>
+{% endif %}
 {% endblock content %}
