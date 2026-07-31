@@ -159,6 +159,16 @@ test('section navigation marks only the matching section as current', async () =
     assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
 });
 
+test('later section navigation marks weekly as current', async () => {
+    const { document } = (await loadOutput('blog/weekly/index.html')).window;
+    const links = [...document.querySelectorAll('[data-navigation-scroll] a')];
+    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentLinks.length, 1);
+    assert.equal(currentLinks[0].getAttribute('href'), '/blog/weekly/');
+    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+});
+
 test('homepage WebSite metadata does not advertise search', async () => {
     const html = await readOutput('index.html');
 

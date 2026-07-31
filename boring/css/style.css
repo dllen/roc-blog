@@ -40,7 +40,6 @@
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  overflow-x: hidden;
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-body);
@@ -62,6 +61,7 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-background);
   background: color-mix(in srgb, var(--color-background) 92%, transparent);
   backdrop-filter: blur(12px);
 }
@@ -218,6 +218,10 @@
 
   .site-navigation-scroll {
     gap: 1rem;
+    margin-inline: -0.25rem;
+    padding-inline: 0.5rem;
+    mask-image: linear-gradient(to right, transparent, #000 0.5rem, #000 calc(100% - 0.5rem), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 0.5rem, #000 calc(100% - 0.5rem), transparent);
   }
 
   .site-navigation__link {
