@@ -21,7 +21,7 @@
                             dark:text-slate-400 hover:dark:text-slate-300
                             transition">
                             <a class="flex my-12 xl:my-4 text-4xl xl:text-base" href="{{ page.permalink | safe }}">
-                                {{ page.title }}
+                                {{ page.title }}{% if page.extra.password or page.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
                                 <div class="ml-2 hidden xl:inline">
                                     <i class="las la-arrow-right"></i>
                                 </div>
