@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.13",
     "cssnano": "^5.1.14",
