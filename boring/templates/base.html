@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="zh-CN" class="scroll-smooth">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {% set gtag_id = config.extra.google_analytics_measurement_id %}
         {% if gtag_id %}
@@ -15,6 +16,19 @@
             </script>
         {% endif %}
 
+        <script>
+            (function () {
+                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDark = systemDark;
+                try {
+                    var savedTheme = localStorage.getItem('is_darkmode_set');
+                    if (savedTheme !== null) isDark = savedTheme === 'true';
+                } catch (error) {
+                    isDark = systemDark;
+                }
+                document.documentElement.classList.toggle('dark', isDark);
+            })();
+        </script>
         <link rel="stylesheet" href="/css/style.css"/>
         <link rel="stylesheet" href="/line-awesome/css/line-awesome.min.css"/>
         <script src="/js/main.js" defer></script>
@@ -24,7 +38,7 @@
         {% block jsonld %}{% endblock %}
     </head>
 
-    <body class="bg-white dark:bg-slate-900 transition ease-in-out">
+    <body class="site-body bg-white dark:bg-slate-900 transition ease-in-out">
         <nav aria-label="Main navigation" class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
             <div class="max-w-2xl mx-auto px-4 flex items-center justify-between h-12">
                 <a href="/" class="font-bold text-sm text-slate-900 dark:text-slate-100 hover:text-amber-500 dark:hover:text-amber-400 transition">
@@ -55,7 +69,19 @@
                 </div>
             </div>
         </nav>
-        {% block content %}{% endblock %}
+        <main id="main-content" class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="site-footer">
+            <div class="max-w-2xl mx-auto px-4 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+                <span>&copy; {{ now() | date(format="%Y") }} {{ config.title }}</span>
+                <nav aria-label="Footer navigation" class="flex items-center gap-4">
+                    <a href="/">首页</a>
+                    <a href="/tags/">标签</a>
+                    <a href="/blog/atom.xml">RSS</a>
+                </nav>
+            </div>
+        </footer>
         {% block body_extra %}{% endblock %}
     </body>
 </html>

@@ -11,12 +11,7 @@
       "@type": "WebSite",
       "name": "{{ config.title }}",
       "url": "{{ config.base_url }}",
-      "description": "{{ config.description }}",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "{{ config.base_url }}/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "description": "{{ config.description }}"
     }
     </script>
 {% endblock jsonld %}
