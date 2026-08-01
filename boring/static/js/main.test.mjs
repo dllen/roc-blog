@@ -15,16 +15,22 @@ function createDOM(html = '<!doctype html><html><body></body></html>') {
     });
 }
 
+function loadMain(dom) {
+    dom.window.eval(mainSrc);
+    dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+}
+
 test('initializes without optional controls', () => {
     const dom = createDOM();
 
-    assert.doesNotThrow(() => dom.window.eval(mainSrc));
+    assert.doesNotThrow(() => loadMain(dom));
 });
 
 test('dark mode toggle updates the html class, persisted preference, and accessible state', () => {
     const dom = createDOM('<!doctype html><html><body><button id="darkmode-toggle"></button></body></html>');
     const { window } = dom;
     window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
 
     const toggle = window.document.getElementById('darkmode-toggle');
     assert.equal(toggle.getAttribute('aria-pressed'), 'false');
@@ -54,6 +60,7 @@ test('back-to-top becomes visible after scrolling and scrolls to the top when cl
         scrollToArgs = args;
     };
     window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
 
     window.dispatchEvent(new window.Event('scroll'));
 
@@ -74,7 +81,7 @@ test('localStorage access errors do not break initialization or dark mode clicks
         },
     });
 
-    assert.doesNotThrow(() => window.eval(mainSrc));
+    assert.doesNotThrow(() => { window.eval(mainSrc); window.document.dispatchEvent(new window.Event('DOMContentLoaded')); });
     assert.doesNotThrow(() => window.document.getElementById('darkmode-toggle').click());
     assert.equal(window.document.documentElement.classList.contains('dark'), true);
 });

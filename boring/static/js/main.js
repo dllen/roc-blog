@@ -71,7 +71,7 @@ function initDropdowns() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function init() {
     var darkModeToggle = document.getElementById('darkmode-toggle');
     if (darkModeToggle) {
         syncThemeToggle(darkModeToggle, document.documentElement.classList.contains('dark'));
@@ -92,4 +92,10 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('scroll', toggleBackToTop, { passive: true });
         toggleBackToTop();
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
