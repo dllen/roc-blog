@@ -202,7 +202,7 @@ test('homepage exposes the responsive site navigation controls without missing i
     const { document } = (await loadOutput('index.html')).window;
 
     assert.ok(document.querySelector('[data-site-navigation]'));
-    assert.ok(document.querySelector('[data-navigation-scroll]'));
+    assert.ok(document.querySelector('[data-dropdown]'));
     assert.equal(document.querySelectorAll('#darkmode-toggle').length, 1);
     assert.ok(document.querySelector('a[href="/blog/atom.xml"][aria-label="RSS feed"]'));
     assert.equal(document.querySelector('[data-site-brand]')?.getAttribute('aria-current'), 'page');
@@ -211,7 +211,7 @@ test('homepage exposes the responsive site navigation controls without missing i
 
 test('section navigation marks only the matching section as current', async () => {
     const { document } = (await loadOutput('blog/spring/index.html')).window;
-    const links = [...document.querySelectorAll('[data-navigation-scroll] a')];
+    const links = [...document.querySelectorAll('[data-site-navigation] [data-dropdown] a[role="menuitem"]')];
     const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
 
     assert.equal(currentLinks.length, 1);
@@ -221,7 +221,7 @@ test('section navigation marks only the matching section as current', async () =
 
 test('later section navigation marks weekly as current', async () => {
     const { document } = (await loadOutput('blog/weekly/index.html')).window;
-    const links = [...document.querySelectorAll('[data-navigation-scroll] a')];
+    const links = [...document.querySelectorAll('[data-site-navigation] [data-dropdown] a[role="menuitem"]')];
     const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
 
     assert.equal(currentLinks.length, 1);
