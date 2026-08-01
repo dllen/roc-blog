@@ -43,6 +43,10 @@ class FakeIntersectionObserver {
   }
 }
 
+function flushPromises() {
+  return new Promise(resolve => setImmediate(resolve));
+}
+
 function setupDOM(html) {
   FakeIntersectionObserver.reset();
   const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/blog/test/' });
@@ -236,6 +240,22 @@ test('reading: initToc retains the active heading when every heading leaves', ()
   assert.equal(document.querySelector('[data-active]').dataset.tocId, 'b');
 });
 
+test('reading: repeated DOMContentLoaded does not duplicate anchors or copy buttons', () => {
+  const html = `<html><body>
+    <article>
+      <h2 id="x">Hello</h2>
+      <pre><code>console.log(1)</code></pre>
+    </article>
+  </body></html>`;
+  const { window, document } = setupDOM(html);
+
+  window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+  assert.equal(document.querySelectorAll('.heading-anchor-group').length, 1);
+  assert.equal(document.querySelectorAll('.anchor-link').length, 1);
+  assert.equal(document.querySelectorAll('.code-copy').length, 1);
+});
+
 test('reading: initCodeCopy adds Copy button to each pre', () => {
   const html = `<html><body>
     <article>
@@ -249,7 +269,24 @@ test('reading: initCodeCopy adds Copy button to each pre', () => {
   assert.equal(buttons[0].textContent, 'Copy');
 });
 
-test('reading: initAnchors adds # link to each heading', () => {
+test('reading: copy button remains keyboard-visible and reports fallback failure', async () => {
+  const html = `<html><body>
+    <article><pre><code>console.log(1)</code></pre></article>
+  </body></html>`;
+  const { window, document } = setupDOM(html);
+  window.document.execCommand = () => false;
+  window.setTimeout = () => 1;
+  const button = document.querySelector('.code-copy');
+
+  assert.match(button.className, /focus-visible:opacity-100/);
+  assert.ok(!button.className.includes('opacity-0'));
+  button.click();
+  await flushPromises();
+
+  assert.equal(button.textContent, 'Failed');
+});
+
+test('reading: initAnchors adds keyboard-visible # link to each heading', () => {
   const html = `<html><body>
     <article>
       <h2 id="x">Hello</h2>
@@ -260,6 +297,8 @@ test('reading: initAnchors adds # link to each heading', () => {
   const anchors = document.querySelectorAll('.anchor-link');
   assert.equal(anchors.length, 2);
   assert.equal(anchors[0].textContent, '#');
+  assert.match(anchors[0].className, /focus-visible:opacity-100/);
+  assert.ok(anchors[0].parentElement.classList.contains('heading-anchor-group'));
 });
 
 test('reading: initRelated fetches index and renders top N shared-tag items', async () => {
@@ -289,11 +328,34 @@ test('reading: initRelated fetches index and renders top N shared-tag items', as
   if (window.document.readyState === 'loading') {
     window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
   }
-  // Wait for fetch to resolve
-  await new Promise(r => setTimeout(r, 50));
+  await flushPromises();
   const list = window.document.querySelector('[data-related-list]');
   const items = list.querySelectorAll('a');
   assert.equal(items.length, 2, 'only 2 articles share tags with x');
+  assert.ok(items[0].classList.contains('related-card'));
+  assert.ok(items[0].querySelector('.related-card__title'));
+  assert.ok(items[0].querySelector('.related-card__meta'));
   assert.ok(items[0].getAttribute('href') === '/blog/y/' || items[0].getAttribute('href') === '/blog/z/',
     'B (shared 3) and C (shared 1) should be top items, x (self) excluded');
+});
+
+test('reading: initRelated hides the container when fetch throws', async () => {
+  const html = `<html><body>
+    <section data-related-container data-current-permalink="/blog/x/" data-current-tags="Spring" data-limit="3">
+      <div data-related-list><p>加载中…</p></div>
+    </section>
+  </body></html>`;
+  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/blog/x/' });
+  const { window } = dom;
+  window.IntersectionObserver = class { observe() {} disconnect() {} };
+  window.fetch = async () => { throw new Error('network down'); };
+  window.console.warn = () => {};
+
+  window.eval(readingSrc);
+  if (window.document.readyState === 'loading') {
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+  }
+  await flushPromises();
+
+  assert.equal(window.document.querySelector('[data-related-container]').hidden, true);
 });

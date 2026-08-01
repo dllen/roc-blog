@@ -137,11 +137,11 @@
     if (!article) return;
     const headings = article.querySelectorAll('h2, h3, h4');
     headings.forEach(h => {
+      if (h.parentElement && h.parentElement.classList.contains('heading-anchor-group')) return;
       const a = document.createElement('a');
       a.href = '#' + h.id;
       a.textContent = '#';
-      a.className = 'anchor-link opacity-0 group-hover:opacity-100 transition ' +
-                    'ml-2 text-slate-400 hover:text-amber-600 no-underline';
+      a.className = 'anchor-link opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition ml-2 no-underline';
       a.addEventListener('click', e => {
         e.preventDefault();
         const url = window.location.origin + window.location.pathname + '#' + h.id;
@@ -154,7 +154,7 @@
       });
       // Wrap heading in a span so we can add the anchor link
       const wrapper = document.createElement('span');
-      wrapper.className = 'group';
+      wrapper.className = 'heading-anchor-group group';
       h.parentNode.insertBefore(wrapper, h);
       wrapper.appendChild(h);
       wrapper.appendChild(a);
@@ -165,13 +165,12 @@
   function initCodeCopy() {
     const pres = document.querySelectorAll('article pre');
     pres.forEach(pre => {
+      if (pre.querySelector(':scope > .code-copy')) return;
       pre.style.position = 'relative';
       pre.classList.add('group');
       const btn = document.createElement('button');
       btn.textContent = 'Copy';
-      btn.className = 'code-copy absolute top-2 right-2 px-2 py-1 text-xs ' +
-                      'rounded bg-slate-700 text-slate-200 hover:bg-slate-600 ' +
-                      'opacity-0 group-hover:opacity-100 transition z-10';
+      btn.className = 'code-copy absolute top-2 right-2 px-2 py-1 text-xs opacity-70 group-hover:opacity-100 focus-visible:opacity-100 transition z-10';
       btn.addEventListener('click', () => {
         const code = pre.querySelector('code');
         const text = code ? code.textContent : pre.textContent;
@@ -233,22 +232,20 @@
         renderRelatedList(list, top);
       })
       .catch(err => {
-        list.innerHTML = '<p class="text-slate-500 text-sm col-span-full">相关文章暂不可用。</p>';
+        container.hidden = true;
         console.warn('related-index fetch failed:', err);
       });
   }
 
   function renderRelatedList(list, items) {
     if (items.length === 0) {
-      list.innerHTML = '<p class="text-slate-500 text-sm col-span-full">暂无相关文章。</p>';
+      list.innerHTML = '<p class="related-grid__empty">暂无相关文章。</p>';
       return;
     }
     list.innerHTML = items.map(({ article, shared }) =>
-      `<a href="${escapeHtml(article.permalink)}"
-          class="block p-4 border border-slate-200 dark:border-slate-700 rounded
-                 hover:border-amber-400 transition">
-         <div class="font-serif text-base text-slate-900 dark:text-slate-200">${escapeHtml(article.title)}</div>
-         <div class="text-sm text-slate-500 mt-1">${escapeHtml(article.date)} · 共享 ${shared} 标签</div>
+      `<a href="${escapeHtml(article.permalink)}" class="related-card">
+         <div class="related-card__title">${escapeHtml(article.title)}</div>
+         <div class="related-card__meta">${escapeHtml(article.date)} · 共享 ${shared} 标签</div>
        </a>`
     ).join('');
   }

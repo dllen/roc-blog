@@ -86,32 +86,28 @@
     {% endif %}
   {% endif %}
   {% if prev_page is defined or next_page is defined %}
-  <nav class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 border-t
-              border-slate-200 dark:border-slate-700 pt-8">
+  <nav class="article-pagination" aria-label="文章分页">
     {% if prev_page is defined %}
-    <a href="{{ prev_page.permalink | safe }}"
-       class="block p-4 border border-slate-200 dark:border-slate-700 rounded
-              hover:border-amber-400 transition">
-      <div class="text-sm text-slate-500">← 上一篇</div>
-      <div class="font-serif text-lg mt-1 text-slate-900 dark:text-slate-200">
+    <a href="{{ prev_page.permalink | safe }}" class="article-pagination__card">
+      <div class="article-pagination__label">← 上一篇</div>
+      <div class="article-pagination__title">
         {{ prev_page.title }}
       </div>
-      <div class="text-sm text-slate-500 mt-1">
+      <div class="article-pagination__meta">
         {{ prev_page.date | date(format="%Y-%m-%d") }}
       </div>
     </a>
     {% else %}
-    <div></div>
+    <div class="article-pagination__placeholder"></div>
     {% endif %}
     {% if next_page is defined %}
     <a href="{{ next_page.permalink | safe }}"
-       class="block p-4 border border-slate-200 dark:border-slate-700 rounded
-              hover:border-amber-400 transition text-right">
-      <div class="text-sm text-slate-500">下一篇 →</div>
-      <div class="font-serif text-lg mt-1 text-slate-900 dark:text-slate-200">
+       class="article-pagination__card article-pagination__card--next">
+      <div class="article-pagination__label">下一篇 →</div>
+      <div class="article-pagination__title">
         {{ next_page.title }}
       </div>
-      <div class="text-sm text-slate-500 mt-1">
+      <div class="article-pagination__meta">
         {{ next_page.date | date(format="%Y-%m-%d") }}
       </div>
     </a>
@@ -122,14 +118,14 @@
 
 {# 相关阅读 (客户端由 reading.js 计算) - 这里只输出容器 #}
 {% macro related(current, limit) %}
-  <section class="mt-12" data-related-container data-current-permalink="{{ current.permalink | safe }}"
+  <section class="related-section" data-related-container data-current-permalink="{{ current.permalink | safe }}"
            data-current-tags="{{ current.taxonomies.tags | default(value=[]) | join(sep='|') }}"
            data-limit="{{ limit }}">
-    <h3 class="font-serif text-2xl text-slate-900 dark:text-slate-200 mb-4">
+    <h3 class="related-section__title">
       相关阅读
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-related-list>
-      <p class="text-slate-500 text-sm col-span-full">加载中…</p>
+    <div class="related-grid" data-related-list>
+      <p class="related-grid__empty">加载中…</p>
     </div>
   </section>
 {% endmacro related %}
