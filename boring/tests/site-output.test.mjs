@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
 
@@ -12,6 +12,24 @@ async function readOutput(path) {
 
 async function loadOutput(path) {
     return new JSDOM(await readOutput(path));
+}
+
+async function findOutputHtmlPaths(directory = outputDirectory) {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const paths = [];
+
+    for (const entry of entries) {
+        const url = new URL(entry.name, directory);
+
+        if (entry.isDirectory()) {
+            url.pathname += '/';
+            paths.push(...await findOutputHtmlPaths(url));
+        } else if (entry.isFile() && entry.name.endsWith('.html')) {
+            paths.push(decodeURIComponent(url.pathname.slice(outputDirectory.pathname.length)));
+        }
+    }
+
+    return paths;
 }
 
 async function findFirstHomepageArticle() {
@@ -281,6 +299,26 @@ test('homepage first article uses the editorial article content contract', async
     assert.ok(dom.window.document.querySelector('.article-content'));
     assert.doesNotMatch(html, /prose-headings:w-max/);
     assert.doesNotMatch(html, /prose-2xl xl:prose-base/);
+});
+
+test('rendered Markdown images use native lazy loading and async decoding', async () => {
+    const expectedAlt = 'JVM 内存模型';
+    const expectedSrc = '/jvm-memory-model-diagram.svg';
+    let renderedImage;
+
+    for (const outputPath of await findOutputHtmlPaths()) {
+        const { document } = (await loadOutput(outputPath)).window;
+        const image = document.querySelector(`.article-content img[alt="${expectedAlt}"][src="${expectedSrc}"]`);
+
+        if (image) {
+            renderedImage = image;
+            break;
+        }
+    }
+
+    assert.ok(renderedImage, 'known Markdown image not found in recursive site output');
+    assert.equal(renderedImage.getAttribute('loading'), 'lazy');
+    assert.equal(renderedImage.getAttribute('decoding'), 'async');
 });
 
 test('article desktop grid keeps the content track fluid within the shell', async () => {
