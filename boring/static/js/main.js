@@ -14,7 +14,10 @@ function toggleDarkMode() {
     e.classList.toggle('dark');
     const isDark = e.classList.contains('dark');
     persistTheme(isDark);
-    if (darkModeToggle) syncThemeToggle(darkModeToggle, isDark);
+    var toggle = document.getElementById('darkmode-toggle');
+    if (toggle) syncThemeToggle(toggle, isDark);
+    toggle = document.getElementById('darkmode-toggle-dropdown');
+    if (toggle) syncThemeToggle(toggle, isDark);
 }
 
 function toggleBackToTop() {
@@ -27,21 +30,9 @@ function backToTop() {
     window.scrollTo(0, 0);
 }
 
-const darkModeToggle = document.getElementById('darkmode-toggle');
-if (darkModeToggle) {
-    syncThemeToggle(darkModeToggle, document.documentElement.classList.contains('dark'));
-    darkModeToggle.addEventListener('click', toggleDarkMode);
-}
-
-const dropdownToggle = document.getElementById('darkmode-toggle-dropdown');
-if (dropdownToggle) {
-    syncThemeToggle(dropdownToggle, document.documentElement.classList.contains('dark'));
-    dropdownToggle.addEventListener('click', toggleDarkMode);
-}
-
 function initDropdowns() {
     document.querySelectorAll('[data-dropdown]').forEach(function (dd) {
-        var trigger = dd.querySelector('[data-dropdown] .site-dropdown__trigger, .site-dropdown__trigger');
+        var trigger = dd.querySelector('.site-dropdown__trigger');
         var panel = dd.querySelector('.site-dropdown__panel');
         if (!trigger || !panel) return;
         trigger.addEventListener('click', function (e) {
@@ -79,11 +70,26 @@ function initDropdowns() {
         }
     });
 }
-initDropdowns();
 
-const backToTopButton = document.getElementById('back-to-top');
-if (backToTopButton) {
-    backToTopButton.addEventListener('click', backToTop);
-    window.addEventListener('scroll', toggleBackToTop, { passive: true });
-    toggleBackToTop();
-}
+document.addEventListener('DOMContentLoaded', function () {
+    var darkModeToggle = document.getElementById('darkmode-toggle');
+    if (darkModeToggle) {
+        syncThemeToggle(darkModeToggle, document.documentElement.classList.contains('dark'));
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+
+    var dropdownToggle = document.getElementById('darkmode-toggle-dropdown');
+    if (dropdownToggle) {
+        syncThemeToggle(dropdownToggle, document.documentElement.classList.contains('dark'));
+        dropdownToggle.addEventListener('click', toggleDarkMode);
+    }
+
+    initDropdowns();
+
+    var backToTopButton = document.getElementById('back-to-top');
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', backToTop);
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        toggleBackToTop();
+    }
+});
