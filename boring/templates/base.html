@@ -49,7 +49,7 @@
         <header class="site-header">
             <nav aria-label="主导航" class="site-shell site-header__inner" data-site-navigation>
                 <a href="/" class="site-brand" data-site-brand{% if current_path is defined and current_path == "/" %} aria-current="page"{% endif %}>
-                    {{ config.title }}
+                    {% if current_path is defined and current_path == "/" %}{{ config.extra.homepage_title }}{% else %}{{ config.title }}{% endif %}
                 </a>
                 <div class="site-actions">
                     <div class="site-dropdown" data-dropdown>

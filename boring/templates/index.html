@@ -20,22 +20,6 @@
 
 {% block content %}
 <div class="listing-shell">
-    <section class="editorial-hero" aria-labelledby="homepage-title">
-        <p class="eyebrow">Editorial Journal</p>
-        <h1 id="homepage-title" class="editorial-hero__title">{{ config.extra.homepage_title }}</h1>
-        <p class="editorial-hero__subtitle">{{ config.extra.homepage_subtitle }}</p>
-        {% if config.extra.social %}
-            <div class="editorial-hero__socials" aria-label="社交链接">
-                {% for i in config.extra.social %}
-                    <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
-                       aria-label="{{ i.name }}" class="editorial-hero__social-link">
-                        <i class="{{ i.icon }}" aria-hidden="true"></i>
-                    </a>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </section>
-
     {% set blog = get_section(path='blog/_index.md') %}
     {% if blog and blog.pages %}
         {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
