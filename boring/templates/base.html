@@ -78,6 +78,16 @@
                             </div>
                         </div>
                     </div>
+                    {% if config.extra.social %}
+                        {% for i in config.extra.social %}
+                            <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
+                               class="site-action"
+                               aria-label="{{ i.name }}"
+                               title="{{ i.name }}">
+                                <i class="{{ i.icon }}" aria-hidden="true"></i>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
                     <a href="/blog/atom.xml"
                        class="site-action"
                        aria-label="RSS feed"
