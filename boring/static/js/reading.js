@@ -10,10 +10,7 @@
       .replace(/[^\w\u4e00-\u9fff\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/^-+|-+$/g, '');
-    if (ascii.length > 0) return ascii.slice(0, 60);
-    let h = 0;
-    for (let i = 0; i < text.length; i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0;
-    return 'h' + Math.abs(h).toString(36);
+    return ascii.slice(0, 60);
   }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -39,12 +36,24 @@
 
   // ── 2. TOC ───────────────────────────────────────────────
   function initToc() {
+    const containers = document.querySelectorAll('[data-toc-container]');
     const article = document.querySelector('article');
-    if (!article) return;
-    const headings = article.querySelectorAll('h2, h3, h4');
-    if (headings.length === 0) return;
+    const headings = article ? article.querySelectorAll('h2, h3, h4') : [];
+    if (headings.length === 0) {
+      containers.forEach(container => { container.hidden = true; });
+      return;
+    }
+    containers.forEach(container => { container.hidden = false; });
 
-    headings.forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
+    const usedIds = new Set();
+    headings.forEach(h => {
+      const base = h.id || slugify(h.textContent) || 'section';
+      let id = base;
+      let suffix = 2;
+      while (usedIds.has(id)) id = `${base}-${suffix++}`;
+      h.id = id;
+      usedIds.add(id);
+    });
 
     const minLevel = Math.min(...Array.from(headings).map(h => +h.tagName[1]));
     const items = Array.from(headings).map(h => ({
@@ -56,12 +65,7 @@
     function makeHtml(items) {
       return items.map(it => {
         const indent = (it.level - minLevel) * 12;
-        return `<a href="#${it.id}" data-toc-id="${it.id}"
-                  class="block py-1 text-slate-600 dark:text-slate-400
-                         hover:text-amber-600 dark:hover:text-amber-400
-                         border-l-2 border-transparent"
-                  data-active-class="border-amber-400 text-amber-600 font-bold"
-                  style="padding-left: ${indent}px;">${escapeHtml(it.text)}</a>`;
+        return `<a href="#${escapeHtml(it.id)}" data-toc-id="${escapeHtml(it.id)}" style="padding-left: ${indent}px;">${escapeHtml(it.text)}</a>`;
       }).join('');
     }
     const html = makeHtml(items);
@@ -70,22 +74,30 @@
     if (list) list.innerHTML = html;
     if (listMobile) listMobile.innerHTML = html;
 
-    const links = document.querySelectorAll('[data-toc-id]');
     const linkMap = new Map();
-    links.forEach(l => linkMap.set(l.dataset.tocId, l));
+    document.querySelectorAll('[data-toc-id]').forEach(link => {
+      const id = link.dataset.tocId;
+      const links = linkMap.get(id) || [];
+      links.push(link);
+      linkMap.set(id, links);
+    });
     let activeId = null;
+    function setActive(id) {
+      if (activeId) {
+        (linkMap.get(activeId) || []).forEach(link => {
+          link.removeAttribute('data-active');
+          link.removeAttribute('aria-current');
+        });
+      }
+      (linkMap.get(id) || []).forEach(link => {
+        link.setAttribute('data-active', '');
+        link.setAttribute('aria-current', 'location');
+      });
+      activeId = id;
+    }
     const io = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          const id = e.target.id;
-          if (activeId && activeId !== id) {
-            const prev = linkMap.get(activeId);
-            if (prev) prev.removeAttribute('data-active');
-          }
-          const cur = linkMap.get(id);
-          if (cur) cur.setAttribute('data-active', '');
-          activeId = id;
-        }
+        if (e.isIntersecting) setActive(e.target.id);
       });
     }, { rootMargin: '-30% 0% -60% 0%' });
     headings.forEach(h => io.observe(h));

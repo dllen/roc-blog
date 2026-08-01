@@ -8,16 +8,42 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const readingSrc = readFileSync(resolve(__dirname, 'reading.js'), 'utf8');
 
+class FakeIntersectionObserver {
+  static instances = [];
+
+  static reset() {
+    FakeIntersectionObserver.instances = [];
+  }
+
+  constructor(callback, options) {
+    this.callback = callback;
+    this.options = options;
+    this.observed = [];
+    FakeIntersectionObserver.instances.push(this);
+  }
+
+  observe(element) {
+    this.observed.push(element);
+  }
+
+  unobserve(element) {
+    this.observed = this.observed.filter(observed => observed !== element);
+  }
+
+  disconnect() {
+    this.observed = [];
+  }
+
+  trigger(element, isIntersecting = true) {
+    this.callback([{ target: element, isIntersecting }], this);
+  }
+}
+
 function setupDOM(html) {
+  FakeIntersectionObserver.reset();
   const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/blog/test/' });
   const { window } = dom;
-  // Mock IntersectionObserver (not in jsdom by default)
-  window.IntersectionObserver = class {
-    constructor() {}
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  };
+  window.IntersectionObserver = FakeIntersectionObserver;
   window.eval(readingSrc);
   // jsdom doesn't fire DOMContentLoaded after eval; trigger manually
   if (window.document.readyState === 'loading') {
@@ -48,6 +74,94 @@ test('reading: initToc builds toc-list from article h2/h3/h4', () => {
   assert.ok(list.innerHTML.includes('Second'));
   assert.ok(list.innerHTML.includes('Third'));
   assert.equal(document.querySelectorAll('[data-toc-id]').length, 3);
+});
+
+test('reading: initToc synchronizes active links across desktop and mobile lists', () => {
+  const html = `<html><body>
+    <article>
+      <h2 id="a">First</h2>
+      <h2 id="b">Second</h2>
+    </article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+    <details data-toc-container="mobile"><div id="toc-list-mobile"></div></details>
+  </body></html>`;
+  const { document } = setupDOM(html);
+  const observer = FakeIntersectionObserver.instances[0];
+  const [a, b] = document.querySelectorAll('article h2');
+
+  assert.deepEqual(observer.observed, [a, b]);
+  assert.equal(observer.options.rootMargin, '-30% 0% -60% 0%');
+
+  observer.trigger(a);
+  const aLinks = document.querySelectorAll('[data-toc-id="a"]');
+  assert.equal(aLinks.length, 2);
+  aLinks.forEach(link => {
+    assert.ok(link.hasAttribute('data-active'));
+    assert.equal(link.getAttribute('aria-current'), 'location');
+  });
+
+  observer.trigger(b);
+  aLinks.forEach(link => {
+    assert.ok(!link.hasAttribute('data-active'));
+    assert.ok(!link.hasAttribute('aria-current'));
+  });
+  const bLinks = document.querySelectorAll('[data-toc-id="b"]');
+  assert.equal(bLinks.length, 2);
+  bLinks.forEach(link => {
+    assert.ok(link.hasAttribute('data-active'));
+    assert.equal(link.getAttribute('aria-current'), 'location');
+  });
+});
+
+test('reading: initToc hides every toc container when the article has no headings', () => {
+  const html = `<html><body>
+    <article><p>No sections</p></article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+    <details data-toc-container="mobile"><div id="toc-list-mobile"></div></details>
+  </body></html>`;
+  const { document } = setupDOM(html);
+
+  document.querySelectorAll('[data-toc-container]').forEach(container => {
+    assert.ok(container.hidden);
+  });
+  assert.equal(FakeIntersectionObserver.instances.length, 0);
+});
+
+test('reading: initToc assigns unique generated IDs to duplicate headings', () => {
+  const html = `<html><body>
+    <article>
+      <h2>Design</h2>
+      <h2>Design</h2>
+    </article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+  </body></html>`;
+  const { document } = setupDOM(html);
+  const headings = document.querySelectorAll('article h2');
+
+  assert.deepEqual(Array.from(headings, heading => heading.id), ['design', 'design-2']);
+  assert.deepEqual(
+    Array.from(document.querySelectorAll('.anchor-link'), anchor => anchor.getAttribute('href')),
+    ['#design', '#design-2']
+  );
+});
+
+test('reading: initToc preserves the first valid existing ID and uniquifies duplicates', () => {
+  const html = `<html><body>
+    <article>
+      <h2 id="kept">First</h2>
+      <h2 id="kept">Second</h2>
+      <h2>!!!</h2>
+      <h2>!!!</h2>
+    </article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+  </body></html>`;
+  const { document } = setupDOM(html);
+  const headings = document.querySelectorAll('article h2');
+
+  assert.deepEqual(
+    Array.from(headings, heading => heading.id),
+    ['kept', 'kept-2', 'section', 'section-2']
+  );
 });
 
 test('reading: initCodeCopy adds Copy button to each pre', () => {
