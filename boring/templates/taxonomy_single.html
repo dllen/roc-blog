@@ -8,33 +8,21 @@
 
 {% block content %}
     {{ macros::header(components=["tags", term.slug], is_page=false) }}
-    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
-        <h1 class="font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-200 mb-2">
-            #{{ term.name }}
-        </h1>
-        <p class="text-3xl xl:text-base text-slate-500 dark:text-slate-500 mb-8">
-            {{ term.pages | length }} 篇文章
-        </p>
-        <ul>
-            {% for page in term.pages | sort(attribute="date", reverse=true) %}
-                <li class="my-6 xl:my-4">
-                    <a href="{{ page.permalink | safe }}" class="block group">
-                        <div class="font-serif text-4xl xl:text-xl text-slate-900
-                                    dark:text-slate-200 group-hover:text-slate-700">
-                            {{ page.title }}
-                        </div>
-                        <div class="text-2xl xl:text-sm text-slate-500 mt-1">
-                            {{ page.date | date(format="%Y-%m-%d") }}
-                        </div>
-                        {% if page.description %}
-                        <p class="font-sans text-3xl xl:text-base text-slate-600
-                                  dark:text-slate-400 mt-1 line-clamp-2">
-                            {{ page.description }}
-                        </p>
-                        {% endif %}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="listing-shell">
+        <header class="listing-page-header">
+            <p class="eyebrow">Tag archive</p>
+            <h1 class="listing-page-title">#{{ term.name }}</h1>
+            <p class="listing-page-description">{{ term.pages | length }} 篇文章</p>
+        </header>
+        <section class="listing-section" aria-labelledby="tag-posts-heading">
+            <div class="listing-heading">
+                <h2 id="tag-posts-heading" class="listing-heading__title">相关文章</h2>
+            </div>
+            <ul class="article-list" data-article-list>
+                {% for page in term.pages | sort(attribute="date", reverse=true) %}
+                    {{ macros::article_row(item=page, show_tags=false, show_reading_time=true) }}
+                {% endfor %}
+            </ul>
+        </section>
     </div>
 {% endblock content %}

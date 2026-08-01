@@ -209,6 +209,35 @@ test('later section navigation marks weekly as current', async () => {
     assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
 });
 
+test('homepage uses the shared editorial article list contract', async () => {
+    const { document } = (await loadOutput('index.html')).window;
+    const articleList = document.querySelector('[data-article-list]');
+
+    assert.ok(articleList);
+    assert.ok(articleList.querySelector('[data-article-row]'));
+    assert.equal(document.body.textContent.includes('Views'), false);
+    assert.equal(document.querySelector('[data-cover]'), null);
+});
+
+test('listing templates do not use desktop-first reverse mobile type classes', async () => {
+    const templatesDirectory = new URL('../templates/', import.meta.url);
+    const paths = ['index.html', 'section.html', 'taxonomy_list.html', 'taxonomy_single.html', '404.html'];
+    const reverseMobileClasses = [
+        'text-8xl xl:text-4xl',
+        'text-6xl xl:text-2xl',
+        'text-4xl xl:text-xl',
+        'text-3xl xl:text-base',
+        'text-2xl xl:text-sm'
+    ];
+
+    for (const path of paths) {
+        const source = await readFile(new URL(path, templatesDirectory), 'utf8');
+        for (const className of reverseMobileClasses) {
+            assert.equal(source.includes(className), false, `${path} contains ${className}`);
+        }
+    }
+});
+
 test('homepage first article uses the editorial article content contract', async () => {
     const { dom, html } = await findFirstHomepageArticle();
 

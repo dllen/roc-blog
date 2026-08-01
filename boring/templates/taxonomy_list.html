@@ -8,38 +8,20 @@
 
 {% block content %}
     {{ macros::header(components=["tags"], is_page=false) }}
-    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
-        <h1 class="font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-200 mb-4">
-            全部标签
-        </h1>
-        <p class="text-3xl xl:text-base text-slate-500 dark:text-slate-500 mb-8">
-            {{ terms | length }} 个标签
-        </p>
-        {% set_global max_count = 0 %}
-        {% set_global min_count = 999999 %}
-        {% for term in terms %}
-            {% set count = term.pages | length %}
-            {% if count > max_count %}{% set_global max_count = count %}{% endif %}
-            {% if count < min_count %}{% set_global min_count = count %}{% endif %}
-        {% endfor %}
-        {% set range_size = max_count - min_count %}
-        <p class="leading-loose">
+    <div class="listing-shell">
+        <header class="listing-page-header">
+            <p class="eyebrow">Index</p>
+            <h1 class="listing-page-title">全部标签</h1>
+            <p class="listing-page-description">{{ terms | length }} 个标签</p>
+        </header>
+        <section class="tag-index" aria-label="标签索引">
             {% for term in terms %}
                 {% set count = term.pages | length %}
-                {% if range_size == 0 %}
-                    {% set font_size = 16 %}
-                {% else %}
-                    {% set ratio = count - min_count %}
-                    {% set font_size = 12 + (ratio * 12 / range_size) | round %}
-                {% endif %}
-                <a href="{{ term.permalink | safe }}"
-                   class="px-2 text-slate-600 hover:text-slate-800
-                          dark:text-slate-400 dark:hover:text-slate-200 transition"
-                   style="font-size: {{ font_size }}px;"
-                   title="{{ count }} 篇文章">
-                    {{ term.name }}<sup class="text-xs ml-0.5 text-slate-400">{{ count }}</sup>
+                <a href="{{ term.permalink | safe }}" class="tag-chip tag-index__item" title="{{ count }} 篇文章">
+                    <span>{{ term.name }}</span>
+                    <span class="tag-index__count">{{ count }}</span>
                 </a>
             {% endfor %}
-        </p>
+        </section>
     </div>
 {% endblock content %}

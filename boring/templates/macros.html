@@ -1,3 +1,34 @@
+{% macro article_row(item, show_tags, show_reading_time) %}
+    <li class="article-row" data-article-row>
+        <a href="{{ item.permalink | safe }}" class="article-row__link">
+            <div class="article-row__heading">
+                <h2 class="article-row__title">
+                    {{ item.title }}
+                    {% if item.extra.password or item.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
+                </h2>
+                <time class="article-row__date" datetime="{{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}">
+                    {{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}
+                </time>
+            </div>
+            {% if item.description %}
+                <p class="article-row__description">{{ item.description }}</p>
+            {% endif %}
+            {% if show_tags or show_reading_time %}
+                <div class="article-row__meta">
+                    {% if show_tags and item.taxonomies and item.taxonomies.tags %}
+                        {% for tag in item.taxonomies.tags | slice(end=3) %}
+                            <span class="tag-chip">{{ tag }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    {% if show_reading_time and item.reading_time %}
+                        <span class="article-row__reading-time">{{ item.reading_time }} min read</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </a>
+    </li>
+{% endmacro article_row %}
+
 {% macro header(components, is_page) %}
     <div class="sticky top-12 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
         <div class="max-w-2xl mx-auto px-4 flex items-center gap-1 h-10 font-sans text-sm text-slate-500 dark:text-slate-400">
