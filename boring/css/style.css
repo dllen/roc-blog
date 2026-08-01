@@ -1313,7 +1313,7 @@
 
   .article-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 14.375rem;
+    grid-template-columns: minmax(0, 1fr) 21.5625rem;
     align-items: start;
     gap: clamp(3.5rem, 5vw, 4.5rem);
     justify-content: center;
