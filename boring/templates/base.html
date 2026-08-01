@@ -48,9 +48,10 @@
     <body class="site-body">
         <header class="site-header">
             <nav aria-label="主导航" class="site-shell site-header__inner" data-site-navigation>
-                <a href="/" class="site-brand" data-site-brand{% if current_path is defined and current_path == "/" %} aria-current="page"{% endif %}>
-                    {% if current_path is defined and current_path == "/" %}{{ config.extra.homepage_title }}{% else %}{{ config.title }}{% endif %}
-                </a>
+                <div class="site-brand-group" data-site-brand{% if current_path is defined and current_path == "/" %} aria-current="page"{% endif %}>
+                    <a href="/" class="site-brand">{% if current_path is defined and current_path == "/" %}{{ config.extra.homepage_title }}{% else %}{{ config.title }}{% endif %}</a>
+                    <span class="site-slogan">{{ config.extra.homepage_subtitle }}</span>
+                </div>
                 <div class="site-actions">
                     <div class="site-dropdown" data-dropdown>
                         <button type="button" class="site-dropdown__trigger site-action" aria-label="导航菜单" aria-expanded="false" aria-haspopup="true">

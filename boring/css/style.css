@@ -119,20 +119,36 @@
   min-height: 4rem;
 }
 
+.site-brand-group {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
 .site-brand {
   flex: none;
   color: var(--color-text);
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: 2rem;
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  text-decoration: none;
   transition: color var(--transition-duration) ease;
 }
 
+.site-slogan {
+  color: var(--color-secondary);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
 .site-brand:hover,
-.site-brand[aria-current="page"] {
+.site-brand-group[aria-current="page"] .site-brand {
   color: var(--color-primary);
 }
 
@@ -306,8 +322,12 @@
   .site-brand {
     max-width: 7rem;
     overflow: hidden;
-    font-size: 1rem;
+    font-size: 1.5rem;
     text-overflow: ellipsis;
+  }
+
+  .site-slogan {
+    font-size: 0.75rem;
   }
 
   .site-actions {
