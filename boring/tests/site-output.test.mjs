@@ -4,6 +4,7 @@ import test from 'node:test';
 import { JSDOM } from 'jsdom';
 
 const outputDirectory = new URL('../roc-blog/', import.meta.url);
+const sourceStylesheet = new URL('../css/style.css', import.meta.url);
 
 async function readOutput(path) {
     return readFile(new URL(path, outputDirectory), 'utf8');
@@ -280,6 +281,18 @@ test('homepage first article uses the editorial article content contract', async
     assert.ok(dom.window.document.querySelector('.article-content'));
     assert.doesNotMatch(html, /prose-headings:w-max/);
     assert.doesNotMatch(html, /prose-2xl xl:prose-base/);
+});
+
+test('article desktop grid keeps the content track fluid within the shell', async () => {
+    const css = await readFile(sourceStylesheet, 'utf8');
+
+    assert.match(css, /\.article-shell\s*\{[^}]*max-width:\s*82\.5rem;/s);
+    assert.match(css, /\.article-main\s*\{[^}]*max-width:\s*62\.5rem;/s);
+    assert.match(
+        css,
+        /@media\s*\(min-width:\s*1280px\)[\s\S]*?\.article-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+14\.375rem;[^}]*gap:\s*clamp\(3\.5rem,\s*5vw,\s*4\.5rem\);[^}]*justify-content:\s*center;/s
+    );
+    assert.doesNotMatch(css, /grid-template-columns:\s*minmax\(0,\s*62\.5rem\)\s+14\.375rem;/);
 });
 
 test('real article uses the wide article layout with responsive table of contents', async () => {

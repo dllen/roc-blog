@@ -650,7 +650,8 @@
 }
 
 .article-shell {
-  width: min(100%, 78.875rem);
+  width: 100%;
+  max-width: 82.5rem;
   margin-inline: auto;
   padding: clamp(2rem, 5vw, 4.5rem) 1rem 4rem;
 }
@@ -1043,15 +1044,16 @@
 
 @media (min-width: 1280px) {
   .article-shell {
-    width: min(calc(100% - 4rem), 78.875rem);
+    width: calc(100% - 4rem);
     padding-inline: 0;
   }
 
   .article-layout {
     display: grid;
-    grid-template-columns: minmax(0, 62.5rem) 14.375rem;
+    grid-template-columns: minmax(0, 1fr) 14.375rem;
     align-items: start;
-    gap: 2rem;
+    gap: clamp(3.5rem, 5vw, 4.5rem);
+    justify-content: center;
   }
 
   .article-toc-mobile {
