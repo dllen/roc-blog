@@ -1,6 +1,7 @@
 # HTML: short cache, always revalidate
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
+  Permissions-Policy: unload=()
 
 # CSS / JS / Fonts / OG: long cache, immutable
 /css/*
