@@ -1,0 +1,70 @@
+<!doctype html><html class=scroll-smooth lang=en><head><meta charset=utf-8><link href=/css/style.css rel=stylesheet><link href=/line-awesome/css/line-awesome.min.css rel=stylesheet><script defer src=/js/main.js></script><link href=https://scp.net.cn/blog/atom.xml rel=alternate title=码农的自留地 type=application/atom+xml><title>06. 序列与树：数据的递归结构 | 码农的自留地</title><meta content=article property=og:type><meta content="06. 序列与树：数据的递归结构" property=og:title><meta content="SICP 2.3 深入解析：从 Python 的列表推导式，到手写递归链表（Linked Lists），再到树形结构（Trees）的递归处理。掌握如何用递归思想操纵复杂数据。" property=og:description><meta content=/og/06-sequences-and-trees.png property=og:image><meta content=https://scp.net.cn/blog/sicp-with-python/06-sequences-and-trees/ property=og:url><meta content=码农的自留地 property=og:site_name><meta content=summary_large_image name=twitter:card><meta content="06. 序列与树：数据的递归结构" name=twitter:title><meta content="SICP 2.3 深入解析：从 Python 的列表推导式，到手写递归链表（Linked Lists），再到树形结构（Trees）的递归处理。掌握如何用递归思想操纵复杂数据。" name=twitter:description><meta content=/og/06-sequences-and-trees.png name=twitter:image><script type=application/ld+json>
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "06. 序列与树：数据的递归结构",
+      "datePublished": "2026-02-07T11:15:00+08:00",
+      "dateModified": "2026-02-07T11:15:00+08:00",
+      "description": "SICP 2.3 深入解析：从 Python 的列表推导式，到手写递归链表（Linked Lists），再到树形结构（Trees）的递归处理。掌握如何用递归思想操纵复杂数据。",
+      "keywords": "Python, SICP, 链表, 树, 递归, 数据结构",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://scp.net.cn/blog/sicp-with-python/06-sequences-and-trees/" },
+      "author": { "@type": "Person", "name": "roc" }
+    }
+    </script><body class="bg-white dark:bg-slate-900 transition ease-in-out"><nav aria-label="Main navigation" class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800"><div class="max-w-2xl mx-auto px-4 flex items-center justify-between h-12"><a class="font-bold text-sm text-slate-900 dark:text-slate-100 hover:text-amber-500 dark:hover:text-amber-400 transition" href=/> 码农的自留地 </a><div class="flex items-center gap-5"><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/spring/> Spring 源码 </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/redis/> Redis </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/kafka/> Kafka </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/flink/> Flink </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/zookeeper/> ZooKeeper </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/hbase/> HBase </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/hdfs/> HDFS </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/translate/> 翻译 </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/speech/> 演讲 </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/reading/> 阅读 </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/sre/> SRE </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/prompt/> Prompt </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/weekly/> Weekly </a><a class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/tutorial/> Tutorial </a><a aria-label="RSS feed" class="text-sm text-slate-500 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 transition" title="RSS feed" href=/blog/atom.xml> <i class="las la-rss" aria-hidden=true></i> </a><button aria-label="Toggle dark mode" class="cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition" id=darkmode-toggle type=button><span class="hidden dark:inline"><i class="las la-sun" aria-hidden=true></i></span> <span class="inline dark:hidden"><i class="las la-moon" aria-hidden=true></i></span></button></div></div></nav><div class="fixed top-0 left-0 right-0 h-0.5 bg-amber-400 z-50" style="width:0%;transition:width 50ms linear" id=reading-progress></div><div class="sticky top-12 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800"><div class="max-w-2xl mx-auto px-4 flex items-center gap-1 h-10 font-sans text-sm text-slate-500 dark:text-slate-400"><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/>~</a><span class=mx-0.5>/</span><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/>blog</a><span class=mx-0.5>/</span><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/sicp-with-python/>sicp-with-python</a><span class=mx-0.5>/</span><span class="text-slate-400 dark:text-slate-500 truncate max-w-xs">06-sequences-and-trees</span><div class="hidden cursor-pointer ml-auto" id=back-to-top><i class="las la-level-up-alt" aria-hidden=true></i></div></div></div><details class="xl:hidden mx-4 my-4 bg-slate-100 dark:bg-slate-800 rounded p-3"><summary class="cursor-pointer font-bold text-slate-900 dark:text-slate-200">目录 ▾</summary> <div class="mt-2 text-sm leading-relaxed" id=toc-list-mobile></div></details><div class="container mx-auto w-full xl:w-2/3 mt-8 mb-16 px-4 xl:px-8 flex gap-8"><aside class="hidden xl:block w-56 shrink-0"><nav class="sticky top-32 max-h-[calc(100vh-9rem)] overflow-y-auto text-sm leading-relaxed" id=toc><div class="font-bold text-slate-900 dark:text-slate-200 mb-2">目录</div><div class="border-l border-slate-200 dark:border-slate-700 pl-3" id=toc-list></div></nav></aside><article class="flex-1 min-w-0"><div class="text-base xl:text-sm text-slate-500 dark:text-slate-500">2026-02-07</div><h1 class="font-serif text-5xl xl:text-4xl text-slate-900 dark:text-slate-200 mt-2 mb-4">06. 序列与树：数据的递归结构</h1><div class="flex flex-wrap gap-2 mb-6"><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/python/>#Python</a><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/sicp/>#SICP</a><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/lian-biao/>#链表</a><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/shu/>#树</a><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/di-gui/>#递归</a><a class="px-2 py-1 text-sm rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200" href=/tags/shu-ju-jie-gou/>#数据结构</a></div><div class="prose dark:prose-invert prose-pre:rounded-none prose-headings:bg-amber-100 dark:prose-headings:bg-indigo-900 prose-headings:text-slate-800 dark:prose-headings:text-slate-300 prose-headings:font-normal prose-headings:p-2 prose-headings:w-max prose-headings:font-serif prose-2xl xl:prose-base max-w-none"><h1 id=di-liu-zhang-xu-lie-yu-shu-shu-ju-de-di-gui-jie-gou>第六章：序列与树——数据的递归结构</h1><blockquote><p>“Bad programmers worry about the code. Good programmers worry about data structures and their relationships.”<br> — Linus Torvalds</blockquote><p>在上一章，我们学会了如何定义抽象数据类型（如<code>rational</code>）。今天，我们将探索计算机科学中最基础也最重要的两种数据结构：<strong>序列 (Sequences)</strong> 和 <strong>树 (Trees)</strong>。<p>有趣的是，我们依然不依赖 Python 的类（class），而是仅用函数和简单的列表来实现它们。这能让我们看清数据结构的<strong>递归本质</strong>。<h2 id=2-3-xu-lie-sequences>2.3 序列 (Sequences)</h2><p>序列是有序元素的集合。<h3 id=2-3-1-lie-biao-tui-dao-shi-list-comprehensions>2.3.1 列表推导式 (List Comprehensions)</h3><p>Python 提供了一种极其优雅的方式来处理序列——列表推导式。它直接对应数学中的<strong>集合构建符号 (Set Builder Notation)</strong>。<p>数学写法：${x^2 \mid x \in \mathbb{N}, x < 10}$<p>Python 写法：<pre class=language-python data-lang=python><code class=language-python data-lang=python>squares = [x * x for x in range(10)]
+</code></pre><p>这也体现了<strong>声明式编程 (Declarative Programming)</strong> 的思想：告诉计算机<strong>要什么</strong>（平方），而不是<strong>怎么做</strong>（for 循环 + append）。<h3 id=2-3-2-di-gui-lie-biao-linked-lists>2.3.2 递归列表 (Linked Lists)</h3><p>Python 的内置 <code>list</code> 是基于数组实现的。但在 SICP 和函数式编程中，<strong>链表 (Linked List)</strong> 才是王道。<p>链表是一种递归定义的数据结构：<ul><li>一个链表要么是空的。<li>要么是一个<strong>首元素 (First)</strong> 和一个<strong>剩余部分 (Rest)</strong>，其中剩余部分也是一个链表。</ul><p>我们可以用嵌套的列表来模拟它：<pre class=language-python data-lang=python><code class=language-python data-lang=python>empty = 'empty'
+
+def link(first, rest):
+    """Construct a linked list from its first element and the rest."""
+    return [first, rest]
+
+def first(s):
+    """Return the first element of a linked list s."""
+    return s[0]
+
+def rest(s):
+    """Return the rest of the linked list s."""
+    return s[1]
+</code></pre><p><strong>示例</strong>： 构造序列 <code>[1, 2, 3]</code>：<pre class=language-python data-lang=python><code class=language-python data-lang=python>four_numbers = link(1, link(2, link(3, link(4, empty))))
+</code></pre><p>虽然看起来很繁琐，但它非常适合<strong>递归处理</strong>。<p><strong>递归实现 <code>len</code> 和 <code>getitem</code></strong>：<pre class=language-python data-lang=python><code class=language-python data-lang=python>def len_link(s):
+    """Return the length of linked list s."""
+    if s == empty:
+        return 0
+    return 1 + len_link(rest(s))
+
+def getitem_link(s, i):
+    """Return the element at index i of linked list s."""
+    if i == 0:
+        return first(s)
+    return getitem_link(rest(s), i - 1)
+</code></pre><p>这就是<strong>数据结构的递归定义</strong>与<strong>算法的递归实现</strong>之间的完美对应。<h3 id=2-3-3-shu-trees>2.3.3 树 (Trees)</h3><p>树是比链表更通用的递归结构。<ul><li>树有一个<strong>根节点 (Root)</strong>。<li>根节点有一组<strong>分支 (Branches)</strong>，每个分支本身也是一棵树。</ul><p><strong>实现树</strong>：<pre class=language-python data-lang=python><code class=language-python data-lang=python>def tree(root_label, branches=[]):
+    return [root_label] + list(branches)
+
+def label(t):
+    return t[0]
+
+def branches(t):
+    return t[1:]
+</code></pre><p><strong>构造一棵树</strong>：<pre class=language-python data-lang=python><code class=language-python data-lang=python>#    3
+#   / \
+#  1   2
+#     / \
+#    1   1
+t = tree(3, [tree(1), tree(2, [tree(1), tree(1)])])
+</code></pre><h3 id=2-3-4-shu-de-di-gui-chu-li>2.3.4 树的递归处理</h3><p>处理树的核心思想是：<strong>对根节点做点事，然后递归地对所有分支做同样的事。</strong><p><strong>案例 1：计算树中叶子节点 (Leaves) 的数量</strong><pre class=language-python data-lang=python><code class=language-python data-lang=python>def is_leaf(t):
+    return not branches(t)
+
+def count_leaves(t):
+    if is_leaf(t):
+        return 1
+    branch_counts = [count_leaves(b) for b in branches(t)]
+    return sum(branch_counts)
+</code></pre><p><strong>案例 2：打印树 (Pretty Print)</strong><pre class=language-python data-lang=python><code class=language-python data-lang=python>def print_tree(t, indent=0):
+    print('  ' * indent + str(label(t)))
+    for b in branches(t):
+        print_tree(b, indent + 1)
+</code></pre><p>输出：<pre class=language-text data-lang=text><code class=language-text data-lang=text>3
+  1
+  2
+    1
+    1
+</code></pre><p>这段代码虽然短，但它能处理任意深度的树。这就是递归的威力——它能让我们用有限的代码处理无限复杂的结构。<h2 id=zong-jie-yu-si-kao>总结与思考</h2><ul><li><strong>递归数据结构</strong>：链表和树本质上都是递归定义的（自己包含自己）。<li><strong>处理模式</strong>：处理递归数据结构的最佳方式就是编写递归函数。<li><strong>声明式思维</strong>：列表推导式让我们关注数据的变换，而不是循环的细节。</ul><p>在下一章，我们将进入 <strong>2.4 可变数据 (Mutable Data)</strong>。 到目前为止，我们的函数都是<strong>纯函数</strong>，数据都是<strong>不可变</strong>的。一旦引入<strong>状态 (State)</strong> 和<strong>变化 (Mutation)</strong>，编程的世界将变得更加强大，但也更加危险（因为时间成为了一个复杂的维度）。</div><nav class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-700 pt-8"><a class="block p-4 border border-slate-200 dark:border-slate-700 rounded hover:border-amber-400 transition" href=https://scp.net.cn/blog/sicp-with-python/05-data-abstraction/> <div class="text-sm text-slate-500">← 上一篇</div> <div class="font-serif text-lg mt-1 text-slate-900 dark:text-slate-200">05. 数据抽象：构建系统的防火墙</div> <div class="text-sm text-slate-500 mt-1">2026-02-07</div> </a><a class="block p-4 border border-slate-200 dark:border-slate-700 rounded hover:border-amber-400 transition text-right" href=https://scp.net.cn/blog/sicp-with-python/07-mutable-data/> <div class="text-sm text-slate-500">下一篇 →</div> <div class="font-serif text-lg mt-1 text-slate-900 dark:text-slate-200">07. 可变数据：时间、状态与同一性</div> <div class="text-sm text-slate-500 mt-1">2026-02-07</div> </a></nav><section class=mt-12 data-current-permalink=https://scp.net.cn/blog/sicp-with-python/06-sequences-and-trees/ data-current-tags=Python|SICP|链表|树|递归|数据结构 data-limit=3 data-related-container><h3 class="font-serif text-2xl text-slate-900 dark:text-slate-200 mb-4">相关阅读</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-related-list><p class="text-slate-500 text-sm col-span-full">加载中…</div></section></article><div class="hidden xl:block w-12 shrink-0"></div></div><script defer src=/js/reading.js></script>
