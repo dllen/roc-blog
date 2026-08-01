@@ -41,6 +41,10 @@ jobs:
         working-directory: boring
         run: yarn build
 
+      - name: Run tests
+        working-directory: boring
+        run: yarn test
+
       - name: Audit frontmatter
         working-directory: boring
         run: node scripts/audit-frontmatter.mjs content/blog --out _audit
@@ -80,6 +84,10 @@ jobs:
       - name: Build site with Zola
         working-directory: boring
         run: zola build -o roc-blog --force
+
+      - name: Test rendered site contracts
+        working-directory: boring
+        run: yarn test:site
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

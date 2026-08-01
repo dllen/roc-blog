@@ -25,3 +25,31 @@
         src: url('/fonts/la-brands-400-subset.woff2') format('woff2');
     }
 }
+
+.las,
+.lab {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.las {
+    font-family: 'Line Awesome';
+    font-weight: 900;
+}
+.lab {
+    font-family: 'Line Awesome Brands';
+    font-weight: 400;
+}
+.la-arrow-left::before { content: "\f060"; }
+.la-github::before { content: "\f09b"; }
+.la-home::before { content: "\f015"; }
+.la-level-up-alt::before { content: "\f3bf"; }
+.la-moon::before { content: "\f186"; }
+.la-rss::before { content: "\f09e"; }
+.la-rss-square::before { content: "\f143"; }
+.la-sun::before { content: "\f185"; }
+.la-tools::before { content: "\f7d9"; }

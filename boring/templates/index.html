@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% import "macros.html" as macros %}
+
 {% block head_extend %}
     <title>Home | {{ config.title }}</title>
 {% endblock head_extend %}
@@ -11,92 +13,47 @@
       "@type": "WebSite",
       "name": "{{ config.title }}",
       "url": "{{ config.base_url }}",
-      "description": "{{ config.description }}",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "{{ config.base_url }}/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "description": "{{ config.description }}"
     }
     </script>
 {% endblock jsonld %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto px-4">
-
-    {# Compact Hero #}
-    <div class="py-10 border-b border-slate-100 dark:border-slate-800">
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">
-            {{ config.extra.homepage_title }}
-        </h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
-            {{ config.extra.homepage_subtitle }}
-        </p>
+<div class="listing-shell">
+    <section class="editorial-hero" aria-labelledby="homepage-title">
+        <p class="eyebrow">Editorial Journal</p>
+        <h1 id="homepage-title" class="editorial-hero__title">{{ config.extra.homepage_title }}</h1>
+        <p class="editorial-hero__subtitle">{{ config.extra.homepage_subtitle }}</p>
         {% if config.extra.social %}
-            <div class="flex gap-3 text-slate-400 dark:text-slate-500">
+            <div class="editorial-hero__socials" aria-label="社交链接">
                 {% for i in config.extra.social %}
-                    <a href="{{ i.url }}" target="_blank"
-                       aria-label="{{ i.name }}"
-                       class="hover:text-amber-500 dark:hover:text-amber-400 transition text-lg">
+                    <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
+                       aria-label="{{ i.name }}" class="editorial-hero__social-link">
                         <i class="{{ i.icon }}" aria-hidden="true"></i>
                     </a>
                 {% endfor %}
             </div>
         {% endif %}
-    </div>
+    </section>
 
-    {# 文章列表 #}
     {% set blog = get_section(path='blog/_index.md') %}
     {% if blog and blog.pages %}
         {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
         {% set latest = blog.pages | sort(attribute="date", reverse=true) %}
-
-        <div class="mt-6 mb-4">
-            <span class="text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">最近更新</span>
-        </div>
-
-        <ul>
-            {% for p in latest | slice(end=limit) %}
-                <li class="border-b border-slate-100 dark:border-slate-800">
-                    <a href="{{ p.permalink | safe }}" class="block py-4 group">
-                        <div class="flex items-baseline justify-between gap-3 mb-1">
-                            <span class="text-sm font-semibold text-slate-900 dark:text-slate-100
-                                         group-hover:text-amber-600 dark:group-hover:text-amber-400 transition leading-snug">
-                                {{ p.title }}
-                            </span>
-                            <span class="text-xs text-slate-400 dark:text-slate-500 shrink-0">
-                                {{ p.extra.update_date | default(value=p.date) | date(format="%Y-%m-%d") }}
-                            </span>
-                        </div>
-                        {% set desc = p.description | default(value="") %}
-                        {% if desc %}
-                            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-2">
-                                {{ desc }}
-                            </p>
-                        {% endif %}
-                        <div class="flex items-center gap-2">
-                            {% if p.taxonomies and p.taxonomies.tags %}
-                                {% for tag in p.taxonomies.tags | slice(end=2) %}
-                                    <span class="text-xs bg-yellow-100 dark:bg-yellow-900/30 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded">
-                                        {{ tag }}
-                                    </span>
-                                {% endfor %}
-                            {% endif %}
-                            {% if p.reading_time %}
-                                <span class="text-xs text-slate-400 dark:text-slate-500">{{ p.reading_time }} min</span>
-                            {% endif %}
-                        </div>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-
-        <div class="py-6">
-            <a href="/blog/" class="text-sm text-slate-500 dark:text-slate-400
-                                    hover:text-slate-900 dark:hover:text-slate-100 transition">
-                查看全部 ({{ blog.pages | length }} 篇) →
-            </a>
-        </div>
+        <section class="listing-section" aria-labelledby="latest-heading">
+            <div class="listing-heading">
+                <p class="eyebrow">Latest writing</p>
+                <h2 id="latest-heading" class="listing-heading__title">最近更新</h2>
+            </div>
+            <ul class="article-list" data-article-list>
+                {% for p in latest | slice(end=limit) %}
+                    {{ macros::article_row(item=p, show_tags=true, show_reading_time=true) }}
+                {% endfor %}
+            </ul>
+            <div class="listing-footer">
+                <a href="/blog/" class="listing-more">查看全部 ({{ blog.pages | length }} 篇) →</a>
+            </div>
+        </section>
     {% endif %}
 </div>
 {% endblock content %}

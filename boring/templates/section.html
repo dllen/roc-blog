@@ -8,12 +8,14 @@
 
 {% block content %}
     {{ macros::header(components=section.components, is_page=false) }}
-    <div class="container mx-auto w-auto xl:w-1/2 mt-16 mb-16 px-4">
-        {% if section.description %}
-            <p class="font-sans text-3xl xl:text-base text-slate-600 dark:text-slate-400 mb-8">
-                {{ section.description }}
-            </p>
-        {% endif %}
+    <div class="listing-shell">
+        <header class="listing-page-header">
+            <p class="eyebrow">Section</p>
+            <h1 class="listing-page-title">{{ section.title }}</h1>
+            {% if section.description %}
+                <p class="listing-page-description">{{ section.description }}</p>
+            {% endif %}
+        </header>
 
         {% if paginator %}
             {% set posts = paginator.pages %}
@@ -22,54 +24,37 @@
         {% endif %}
 
         {% if posts %}
-            <div class="my-8">
-                <div class="text-6xl xl:text-2xl bg-amber-100 text-slate-800
-                    dark:bg-indigo-900 dark:text-slate-300 p-2 w-max">
-                    Posts
+            <section class="listing-section" aria-labelledby="posts-heading">
+                <div class="listing-heading">
+                    <p class="eyebrow">Archive</p>
+                    <h2 id="posts-heading" class="listing-heading__title">文章</h2>
                 </div>
-                <ul>
+                <ul class="article-list" data-article-list>
                     {% for page in posts %}
-                        <li class="text-slate-900 hover:text-slate-600
-                            dark:text-slate-400 hover:dark:text-slate-300
-                            transition my-6 xl:my-4">
-                            <a class="block" href="{{ page.permalink | safe }}">
-                                <div class="font-serif text-4xl xl:text-xl">
-                                    {{ page.title }}
-                                    {% if page.extra.password or page.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
-                                </div>
-                                <div class="text-2xl xl:text-sm text-slate-500 mt-1">
-                                    {{ page.extra.update_date | default(value=page.date) | date(format="%Y-%m-%d") }}
-                                </div>
-                                {% if page.description %}
-                                <p class="font-sans text-3xl xl:text-base text-slate-600
-                                          dark:text-slate-400 mt-1 line-clamp-2">
-                                    {{ page.description }}
-                                </p>
-                                {% endif %}
-                            </a>
-                        </li>
+                        {{ macros::article_row(item=page, show_tags=true, show_reading_time=true) }}
                     {% endfor %}
                 </ul>
-            </div>
+            </section>
 
             {% if paginator and paginator.number_pagers %}
-            <nav class="mt-12 flex gap-2 justify-center text-2xl xl:text-base">
+            <nav class="listing-pagination" aria-label="分页">
                 {% if paginator.previous %}
-                    <a href="{{ paginator.previous }}"
-                       class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
-                              dark:hover:bg-slate-600">←</a>
+                    <a href="{{ paginator.previous }}" class="listing-pagination__link" aria-label="上一页">←</a>
                 {% endif %}
-                {% set paginator_base = paginator.base | default(value="") %}
-                {% for i in range(end=paginator.number_pagers) %}
-                    <a href="{{ paginator_base }}{{ i + 1 }}/"
-                       class="px-3 py-1 {% if i == paginator.current_index | default(value=0) %}bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900{% else %}bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600{% endif %}">
-                        {{ i + 1 }}
+                {% for page_number in range(start=1, end=paginator.number_pagers + 1) %}
+                    {% if page_number == 1 %}
+                        {% set page_url = paginator.first %}
+                    {% else %}
+                        {% set page_url = paginator.base_url ~ page_number ~ "/" %}
+                    {% endif %}
+                    <a href="{{ page_url }}"
+                       class="listing-pagination__link{% if page_number == paginator.current_index %} is-current{% endif %}"
+                       {% if page_number == paginator.current_index %}aria-current="page"{% endif %}>
+                        {{ page_number }}
                     </a>
                 {% endfor %}
                 {% if paginator.next %}
-                    <a href="{{ paginator.next }}"
-                       class="px-3 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300
-                              dark:hover:bg-slate-600">→</a>
+                    <a href="{{ paginator.next }}" class="listing-pagination__link" aria-label="下一页">→</a>
                 {% endif %}
             </nav>
             {% endif %}
