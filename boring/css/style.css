@@ -36,6 +36,52 @@
   --color-danger: #f87171;
 }
 
+.las,
+.lab {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+.las {
+  font-family: "Line Awesome";
+}
+
+.lab {
+  font-family: "Line Awesome Brands";
+}
+
+.la-rss::before {
+  content: "\f09e";
+}
+
+.la-sun::before {
+  content: "\f185";
+}
+
+.la-moon::before {
+  content: "\f186";
+}
+
+.la-level-up-alt::before {
+  content: "\f3bf";
+}
+
+.la-github::before {
+  content: "\f09b";
+}
+
+.la-rss-square::before {
+  content: "\f143";
+}
+
+.la-tools::before {
+  content: "\f7d9";
+}
+
 .site-body {
   display: flex;
   min-height: 100vh;

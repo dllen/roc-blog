@@ -4,10 +4,17 @@ function persistTheme(isDark) {
     } catch {}
 }
 
+function syncThemeToggle(toggle, isDark) {
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', isDark ? '启用浅色模式' : '启用深色模式');
+}
+
 function toggleDarkMode() {
     const e = document.getElementsByTagName('html')[0];
     e.classList.toggle('dark');
-    persistTheme(e.classList.contains('dark'));
+    const isDark = e.classList.contains('dark');
+    persistTheme(isDark);
+    if (darkModeToggle) syncThemeToggle(darkModeToggle, isDark);
 }
 
 function toggleBackToTop() {
@@ -21,7 +28,10 @@ function backToTop() {
 }
 
 const darkModeToggle = document.getElementById('darkmode-toggle');
-if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
+if (darkModeToggle) {
+    syncThemeToggle(darkModeToggle, document.documentElement.classList.contains('dark'));
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+}
 
 const backToTopButton = document.getElementById('back-to-top');
 if (backToTopButton) {

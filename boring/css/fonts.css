@@ -10,11 +10,6 @@
         src: url('/fonts/CrimsonPro-subset.woff2') format('woff2');
     }
     @font-face {
-        font-family: 'JetBrains Mono';
-        font-style: normal;
-        src: url('/fonts/JetBrainsMono-subset.woff2') format('woff2');
-    }
-    @font-face {
         font-family: 'Line Awesome';
         font-style: normal;
         src: url('/fonts/la-solid-900-subset.woff2') format('woff2');

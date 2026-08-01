@@ -21,20 +21,28 @@ test('initializes without optional controls', () => {
     assert.doesNotThrow(() => dom.window.eval(mainSrc));
 });
 
-test('dark mode toggle updates the html class and persisted preference', () => {
+test('dark mode toggle updates the html class, persisted preference, and accessible state', () => {
     const dom = createDOM('<!doctype html><html><body><button id="darkmode-toggle"></button></body></html>');
     const { window } = dom;
     window.eval(mainSrc);
 
-    window.document.getElementById('darkmode-toggle').click();
+    const toggle = window.document.getElementById('darkmode-toggle');
+    assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(toggle.getAttribute('aria-label'), '启用深色模式');
+
+    toggle.click();
 
     assert.equal(window.document.documentElement.classList.contains('dark'), true);
     assert.equal(window.localStorage.getItem('is_darkmode_set'), 'true');
+    assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+    assert.equal(toggle.getAttribute('aria-label'), '启用浅色模式');
 
-    window.document.getElementById('darkmode-toggle').click();
+    toggle.click();
 
     assert.equal(window.document.documentElement.classList.contains('dark'), false);
     assert.equal(window.localStorage.getItem('is_darkmode_set'), 'false');
+    assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(toggle.getAttribute('aria-label'), '启用深色模式');
 });
 
 test('back-to-top becomes visible after scrolling and scrolls to the top when clicked', () => {

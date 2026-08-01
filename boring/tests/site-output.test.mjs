@@ -198,7 +198,7 @@ test('theme bootstrap treats an invalid saved value as no preference', async () 
     assert.equal(dom.window.document.documentElement.classList.contains('dark'), true);
 });
 
-test('homepage exposes the responsive site navigation controls', async () => {
+test('homepage exposes the responsive site navigation controls without missing icon assets', async () => {
     const { document } = (await loadOutput('index.html')).window;
 
     assert.ok(document.querySelector('[data-site-navigation]'));
@@ -206,6 +206,7 @@ test('homepage exposes the responsive site navigation controls', async () => {
     assert.equal(document.querySelectorAll('#darkmode-toggle').length, 1);
     assert.ok(document.querySelector('a[href="/blog/atom.xml"][aria-label="RSS feed"]'));
     assert.equal(document.querySelector('[data-site-brand]')?.getAttribute('aria-current'), 'page');
+    assert.equal(document.querySelector('link[href="/line-awesome/css/line-awesome.min.css"]'), null);
 });
 
 test('section navigation marks only the matching section as current', async () => {
@@ -349,6 +350,18 @@ test('homepage WebSite metadata does not advertise search', async () => {
 
     assert.doesNotMatch(html, /SearchAction/);
     assert.doesNotMatch(html, /\/search\?q=/);
+});
+
+test('source fonts only reference bundled assets', async () => {
+    const css = await readFile(new URL('../css/fonts.css', import.meta.url), 'utf8');
+    const fontDirectory = new URL('../static/fonts/', import.meta.url);
+    const fontFiles = await readdir(fontDirectory);
+    const referencedFonts = [...css.matchAll(/url\('\/fonts\/([^']+)'\)/g)].map((match) => match[1]);
+
+    assert.ok(referencedFonts.length > 0);
+    for (const font of referencedFonts) {
+        assert.ok(fontFiles.includes(font), `${font} is referenced but not bundled`);
+    }
 });
 
 for (const path of ['index.html', '404.html']) {

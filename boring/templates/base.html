@@ -38,7 +38,6 @@
             })();
         </script>
         <link rel="stylesheet" href="/css/style.css"/>
-        <link rel="stylesheet" href="/line-awesome/css/line-awesome.min.css"/>
         <script src="/js/main.js" defer></script>
         <link rel="alternate" type="application/atom+xml" title="{{ config.title }}"
               href="{{ get_url(path='blog/atom.xml', trailing_slash=false) | safe }}">
@@ -70,7 +69,8 @@
                     </a>
                     <button id="darkmode-toggle"
                             type="button"
-                            aria-label="Toggle dark mode"
+                            aria-label="启用深色模式"
+                            aria-pressed="false"
                             class="site-action">
                         <span class="hidden dark:inline"><i class="las la-sun" aria-hidden="true"></i></span>
                         <span class="inline dark:hidden"><i class="las la-moon" aria-hidden="true"></i></span>
