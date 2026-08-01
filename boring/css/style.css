@@ -113,8 +113,7 @@
 }
 
 .site-header__inner {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  display: flex;
   align-items: center;
   gap: 1.5rem;
   min-height: 4rem;
@@ -137,54 +136,103 @@
   color: var(--color-primary);
 }
 
-.site-navigation-scroll {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 1.25rem;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.site-navigation-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.site-navigation__link {
-  position: relative;
-  flex: none;
-  padding-block: 1.45rem 1.3rem;
-  color: var(--color-muted);
-  font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  line-height: 1;
-  white-space: nowrap;
-  transition: color var(--transition-duration) ease;
-}
-
-.site-navigation__link:hover,
-.site-navigation__link[aria-current="page"] {
-  color: var(--color-text);
-}
-
-.site-navigation__link[aria-current="page"]::after {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  background: var(--color-primary);
-  content: "";
-}
-
 .site-actions {
   display: flex;
   flex: none;
   align-items: center;
   gap: 0.25rem;
+  margin-left: auto;
+}
+
+.site-dropdown {
+  position: relative;
+}
+
+.site-dropdown__trigger[aria-expanded="true"] {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.site-dropdown__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 10rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card);
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--color-text) 10%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.25rem);
+  transition: opacity 150ms ease, transform 150ms ease;
+  z-index: 60;
+}
+
+.site-dropdown[open] .site-dropdown__panel,
+.site-dropdown__panel[data-open] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.site-dropdown__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem;
+  gap: 0.1rem;
+}
+
+.site-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  color: var(--color-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.site-dropdown__item:hover,
+.site-dropdown__item:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.site-dropdown__item[aria-current="page"] {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.site-dropdown__item i {
+  width: 1rem;
+  text-align: center;
+}
+
+.site-dropdown__divider {
+  height: 1px;
+  margin: 0.25rem 0.5rem;
+  background: var(--color-border);
+}
+
+.site-dropdown__actions {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem;
+  gap: 0.1rem;
+}
+
+.site-dropdown__actions .site-dropdown__item {
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
 
 .site-action {
@@ -237,7 +285,7 @@
 }
 
 .site-brand:focus-visible,
-.site-navigation__link:focus-visible,
+.site-dropdown__item:focus-visible,
 .site-action:focus-visible,
 .site-footer a:focus-visible {
   border-radius: 3px;
@@ -262,21 +310,13 @@
     text-overflow: ellipsis;
   }
 
-  .site-navigation-scroll {
-    gap: 1rem;
-    margin-inline: -0.25rem;
-    padding-inline: 0.5rem;
-    mask-image: linear-gradient(to right, transparent, #000 0.5rem, #000 calc(100% - 0.5rem), transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 0.5rem, #000 calc(100% - 0.5rem), transparent);
-  }
-
-  .site-navigation__link {
-    padding-block: 1.25rem 1.15rem;
-    font-size: 0.75rem;
-  }
-
   .site-actions {
     gap: 0;
+  }
+
+  .site-dropdown__panel {
+    right: -0.5rem;
+    min-width: 9rem;
   }
 
   .site-action {
@@ -297,7 +337,7 @@
 }
 
 .editorial-hero {
-  padding-block: clamp(2rem, 8vw, 5.5rem);
+  padding-block: 0;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -324,7 +364,7 @@
 
 .editorial-hero__title {
   max-width: 12ch;
-  font-size: clamp(2.75rem, 10vw, 5.5rem);
+  font-size: clamp(1.375rem, 5vw, 2rem);
   line-height: 0.98;
 }
 
@@ -340,7 +380,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .editorial-hero__social-link,

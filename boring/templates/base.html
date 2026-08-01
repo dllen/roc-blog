@@ -51,16 +51,33 @@
                 <a href="/" class="site-brand" data-site-brand{% if current_path is defined and current_path == "/" %} aria-current="page"{% endif %}>
                     {{ config.title }}
                 </a>
-                <div class="site-navigation-scroll" data-navigation-scroll>
-                    {% if config.extra.nav_sections %}
-                        {% for section in config.extra.nav_sections %}
-                            <a href="{{ section.url | safe }}" class="site-navigation__link"{% if current_path is defined and current_path is starting_with(section.url) %} aria-current="page"{% endif %}>
-                                {{ section.name }}
-                            </a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
                 <div class="site-actions">
+                    <div class="site-dropdown" data-dropdown>
+                        <button type="button" class="site-dropdown__trigger site-action" aria-label="导航菜单" aria-expanded="false" aria-haspopup="true">
+                            <i class="las la-arrow-left" aria-hidden="true" style="transform:rotate(180deg)"></i>
+                        </button>
+                        <div class="site-dropdown__panel" role="menu" data-dropdown-panel>
+                            <div class="site-dropdown__nav" role="group" aria-label="分类导航">
+                                {% if config.extra.nav_sections %}
+                                    {% for section in config.extra.nav_sections %}
+                                        <a href="{{ section.url | safe }}" class="site-dropdown__item" role="menuitem"{% if current_path is defined and current_path is starting_with(section.url) %} aria-current="page"{% endif %}>
+                                            {{ section.name }}
+                                        </a>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="site-dropdown__divider"></div>
+                            <div class="site-dropdown__actions" role="group" aria-label="操作">
+                                <a href="/blog/atom.xml" class="site-dropdown__item" role="menuitem">
+                                    <i class="las la-rss" aria-hidden="true"></i> RSS
+                                </a>
+                                <button type="button" class="site-dropdown__item" role="menuitem" id="darkmode-toggle-dropdown"
+                                        aria-label="切换深色模式" aria-pressed="false">
+                                    <i class="las la-moon" aria-hidden="true"></i> 深色模式
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <a href="/blog/atom.xml"
                        class="site-action"
                        aria-label="RSS feed"
