@@ -282,6 +282,17 @@ test('homepage first article uses the editorial article content contract', async
     assert.doesNotMatch(html, /prose-2xl xl:prose-base/);
 });
 
+test('real article uses the wide article layout with responsive table of contents', async () => {
+    const { dom } = await findFirstHomepageArticle();
+    const { document } = dom.window;
+
+    assert.ok(document.querySelector('[data-article-layout]'));
+    assert.ok(document.querySelector('[data-article-main]'));
+    assert.ok(document.querySelector('[data-toc-container="desktop"]'));
+    assert.ok(document.querySelector('[data-toc-container="mobile"]'));
+    assert.equal(document.querySelector('[data-empty-rail]'), null);
+});
+
 test('homepage WebSite metadata does not advertise search', async () => {
     const html = await readOutput('index.html');
 

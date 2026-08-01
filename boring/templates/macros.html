@@ -30,8 +30,8 @@
 {% endmacro article_row %}
 
 {% macro header(components, is_page) %}
-    <div class="sticky top-12 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-        <div class="max-w-2xl mx-auto px-4 flex items-center gap-1 h-10 font-sans text-sm text-slate-500 dark:text-slate-400">
+    <div class="breadcrumb-header">
+        <div class="breadcrumb-header__inner">
             <a href="/" class="hover:text-slate-900 dark:hover:text-slate-100 transition">~</a>
             {% set_global rel_url = "/" %}
             {% for component in components %}
@@ -46,9 +46,9 @@
                     <span class="text-slate-700 dark:text-slate-200">{{ component }}</span>
                 {% endif %}
             {% endfor %}
-            <div id="back-to-top" class="hidden cursor-pointer ml-auto">
+            <button id="back-to-top" class="breadcrumb-header__back-to-top hidden" type="button" aria-label="回到顶部">
                 <i class="las la-level-up-alt" aria-hidden="true"></i>
-            </div>
+            </button>
         </div>
     </div>
 {% endmacro header %}
