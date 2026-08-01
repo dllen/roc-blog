@@ -37,6 +37,14 @@ export function auditDirectory(rootDir) {
 
     if (format === 'toml') result.tomlFiles.push(rel);
 
+    // Normalize: Zola taxonomies may nest tags/categories under `taxonomies` key
+    if (!data.tags && data.taxonomies && data.taxonomies.tags) {
+      data.tags = data.taxonomies.tags;
+    }
+    if (!data.categories && data.taxonomies && data.taxonomies.categories) {
+      data.categories = data.taxonomies.categories;
+    }
+
     if (!data.title) result.missingTitle.push(rel);
     if (!data.date) result.missingDate.push(rel);
     if (!data.description) result.missingDescription.push(rel);
@@ -47,6 +55,10 @@ export function auditDirectory(rootDir) {
     // Field-level validation (only when present)
     if (data.title && String(data.title).length > TITLE_MAX) {
       result.titleTooLong.push(rel);
+    }
+    if (data.description && typeof data.description !== 'string') {
+      // description may be parsed as a nested object (e.g. from multi-line indent)
+      data.description = String(data.description);
     }
     if (data.description) {
       const len = String(data.description).length;
@@ -114,7 +126,7 @@ function walkMd(dir) {
   let entries;
   try { entries = readdirSync(dir); } catch { return out; }
   for (const name of entries) {
-    if (name.startsWith('.') || name === '_review_reports' || name === 'node_modules') continue;
+    if (name.startsWith('.') || name.startsWith('_') || name === 'node_modules') continue;
     const full = join(dir, name);
     let s;
     try { s = statSync(full); } catch { continue; }
