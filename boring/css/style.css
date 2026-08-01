@@ -122,8 +122,9 @@
 .site-brand-group {
   flex: none;
   display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0;
 }
 
 .site-brand {
@@ -140,9 +141,10 @@
 }
 
 .site-slogan {
+  margin-left: 20px;
   color: var(--color-secondary);
   font-family: var(--font-ui);
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1;
 }
@@ -327,7 +329,7 @@
   }
 
   .site-slogan {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 
   .site-actions {
