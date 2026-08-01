@@ -141,7 +141,7 @@
       const a = document.createElement('a');
       a.href = '#' + h.id;
       a.textContent = '#';
-      a.className = 'anchor-link opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition ml-2 no-underline';
+      a.className = 'anchor-link';
       a.addEventListener('click', e => {
         e.preventDefault();
         const url = window.location.origin + window.location.pathname + '#' + h.id;
@@ -154,7 +154,7 @@
       });
       // Wrap heading in a span so we can add the anchor link
       const wrapper = document.createElement('span');
-      wrapper.className = 'heading-anchor-group group';
+      wrapper.className = 'heading-anchor-group';
       h.parentNode.insertBefore(wrapper, h);
       wrapper.appendChild(h);
       wrapper.appendChild(a);
@@ -166,14 +166,14 @@
     const pres = document.querySelectorAll('article pre');
     pres.forEach(pre => {
       if (pre.querySelector(':scope > .code-copy')) return;
+      const originalText = pre.textContent;
       pre.style.position = 'relative';
-      pre.classList.add('group');
       const btn = document.createElement('button');
       btn.textContent = 'Copy';
-      btn.className = 'code-copy absolute top-2 right-2 px-2 py-1 text-xs opacity-70 group-hover:opacity-100 focus-visible:opacity-100 transition z-10';
+      btn.className = 'code-copy';
       btn.addEventListener('click', () => {
         const code = pre.querySelector('code');
-        const text = code ? code.textContent : pre.textContent;
+        const text = code ? code.textContent : originalText;
         copyToClipboard(text).then(ok => {
           btn.textContent = ok ? 'Copied ✓' : 'Failed';
           setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
@@ -190,16 +190,18 @@
     return Promise.resolve(fallback(text));
   }
   function fallback(text) {
+    const ta = document.createElement('textarea');
     try {
-      const ta = document.createElement('textarea');
       ta.value = text;
       ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch { return false; }
+      return document.execCommand('copy');
+    } catch {
+      return false;
+    } finally {
+      ta.remove();
+    }
   }
 
   // ── 5. Related articles (fetches /related-index.json) ───
@@ -251,7 +253,10 @@
   }
 
   // ── boot ───────────────────────────────────────────────
+  let booted = false;
   function boot() {
+    if (booted) return;
+    booted = true;
     initProgress();
     initToc();
     initAnchors();

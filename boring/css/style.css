@@ -912,7 +912,16 @@
 
 .anchor-link {
   flex: none;
+  margin-left: 0.5rem;
   color: var(--color-muted);
+  opacity: 0;
+  text-decoration: none;
+  transition: color 180ms ease, opacity 180ms ease;
+}
+
+.heading-anchor-group:hover .anchor-link,
+.anchor-link:focus-visible {
+  opacity: 1;
 }
 
 .anchor-link:hover,
@@ -929,13 +938,20 @@
 }
 
 .code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  padding: 0.25rem 0.5rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   border-radius: 4px;
   background: color-mix(in srgb, var(--color-text) 88%, transparent);
   color: var(--color-background);
   font-family: var(--font-ui);
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.4;
+  opacity: 0.7;
   cursor: pointer;
   transition: opacity 180ms ease, background-color 180ms ease;
 }
@@ -943,6 +959,7 @@
 .code-copy:hover,
 .code-copy:focus-visible {
   background: var(--color-text);
+  opacity: 1;
 }
 
 .article-pagination {

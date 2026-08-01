@@ -47,17 +47,24 @@ function flushPromises() {
   return new Promise(resolve => setImmediate(resolve));
 }
 
-function setupDOM(html) {
+function setupDOM(html, configureWindow = () => {}) {
   FakeIntersectionObserver.reset();
   const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/blog/test/' });
   const { window } = dom;
+  const scrollListeners = [];
+  const nativeAddEventListener = window.addEventListener.bind(window);
+  window.addEventListener = (type, listener, options) => {
+    if (type === 'scroll') scrollListeners.push({ listener, options });
+    return nativeAddEventListener(type, listener, options);
+  };
   window.IntersectionObserver = FakeIntersectionObserver;
+  configureWindow(window);
   window.eval(readingSrc);
   // jsdom doesn't fire DOMContentLoaded after eval; trigger manually
   if (window.document.readyState === 'loading') {
     window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
   }
-  return { dom, window, document: window.document };
+  return { dom, window, document: window.document, scrollListeners };
 }
 
 test('reading: jsdom setup works', () => {
@@ -240,20 +247,39 @@ test('reading: initToc retains the active heading when every heading leaves', ()
   assert.equal(document.querySelector('[data-active]').dataset.tocId, 'b');
 });
 
-test('reading: repeated DOMContentLoaded does not duplicate anchors or copy buttons', () => {
+test('reading: repeated DOMContentLoaded has no observer, fetch, or scroll-listener side effects', () => {
   const html = `<html><body>
+    <div id="reading-progress"></div>
     <article>
       <h2 id="x">Hello</h2>
       <pre><code>console.log(1)</code></pre>
     </article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+    <section data-related-container data-current-permalink="/blog/x/" data-current-tags="JS" data-limit="3">
+      <div data-related-list></div>
+    </section>
   </body></html>`;
-  const { window, document } = setupDOM(html);
+  let fetchCount = 0;
+  const { window, document, scrollListeners } = setupDOM(html, currentWindow => {
+    currentWindow.fetch = () => {
+      fetchCount += 1;
+      return new Promise(() => {});
+    };
+  });
 
+  assert.equal(FakeIntersectionObserver.instances.length, 1);
+  assert.equal(fetchCount, 1);
+  assert.equal(scrollListeners.length, 1);
+
+  window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
   window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
 
   assert.equal(document.querySelectorAll('.heading-anchor-group').length, 1);
   assert.equal(document.querySelectorAll('.anchor-link').length, 1);
   assert.equal(document.querySelectorAll('.code-copy').length, 1);
+  assert.equal(FakeIntersectionObserver.instances.length, 1);
+  assert.equal(fetchCount, 1);
+  assert.equal(scrollListeners.length, 1);
 });
 
 test('reading: initCodeCopy adds Copy button to each pre', () => {
@@ -269,7 +295,48 @@ test('reading: initCodeCopy adds Copy button to each pre', () => {
   assert.equal(buttons[0].textContent, 'Copy');
 });
 
-test('reading: copy button remains keyboard-visible and reports fallback failure', async () => {
+test('reading: plain pre copies its original text without button state', async () => {
+  const html = '<html><body><article><pre>alpha</pre></article></body></html>';
+  let copiedText = null;
+  const { document } = setupDOM(html, window => {
+    Object.defineProperty(window, 'isSecureContext', {
+      configurable: true,
+      value: true,
+    });
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async text => { copiedText = text; } },
+    });
+  });
+
+  document.querySelector('.code-copy').click();
+  await flushPromises();
+
+  assert.equal(copiedText, 'alpha');
+});
+
+test('reading: fallback removes its textarea when execCommand throws', async () => {
+  const html = '<html><body><article><pre><code>alpha</code></pre></article></body></html>';
+  const { document } = setupDOM(html, window => {
+    window.document.execCommand = () => { throw new Error('copy blocked'); };
+  });
+  const button = document.querySelector('.code-copy');
+
+  button.click();
+  await flushPromises();
+
+  assert.equal(document.querySelectorAll('textarea').length, 0);
+  assert.equal(button.textContent, 'Failed');
+});
+
+test('reading: copy button uses only the stable code-copy class', () => {
+  const html = '<html><body><article><pre><code>alpha</code></pre></article></body></html>';
+  const { document } = setupDOM(html);
+
+  assert.equal(document.querySelector('.code-copy').className, 'code-copy');
+});
+
+test('reading: copy button reports fallback failure', async () => {
   const html = `<html><body>
     <article><pre><code>console.log(1)</code></pre></article>
   </body></html>`;
@@ -278,15 +345,13 @@ test('reading: copy button remains keyboard-visible and reports fallback failure
   window.setTimeout = () => 1;
   const button = document.querySelector('.code-copy');
 
-  assert.match(button.className, /focus-visible:opacity-100/);
-  assert.ok(!button.className.includes('opacity-0'));
   button.click();
   await flushPromises();
 
   assert.equal(button.textContent, 'Failed');
 });
 
-test('reading: initAnchors adds keyboard-visible # link to each heading', () => {
+test('reading: initAnchors adds stable # links inside selectable heading wrappers', () => {
   const html = `<html><body>
     <article>
       <h2 id="x">Hello</h2>
@@ -297,8 +362,8 @@ test('reading: initAnchors adds keyboard-visible # link to each heading', () => 
   const anchors = document.querySelectorAll('.anchor-link');
   assert.equal(anchors.length, 2);
   assert.equal(anchors[0].textContent, '#');
-  assert.match(anchors[0].className, /focus-visible:opacity-100/);
-  assert.ok(anchors[0].parentElement.classList.contains('heading-anchor-group'));
+  assert.equal(anchors[0].className, 'anchor-link');
+  assert.equal(anchors[0].parentElement.className, 'heading-anchor-group');
 });
 
 test('reading: initRelated fetches index and renders top N shared-tag items', async () => {
