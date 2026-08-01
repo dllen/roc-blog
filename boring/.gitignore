@@ -1,5 +1,6 @@
 node_modules/
 public/
+roc-blog/
 _audit/*
 !_audit/.gitkeep
 static/og/*

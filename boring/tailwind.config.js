@@ -3,6 +3,19 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./templates/**/*.html", "./theme/**/*.html"],
+  safelist: [
+    'lab',
+    'las',
+    'la-arrow-left',
+    'la-github',
+    'la-home',
+    'la-level-up-alt',
+    'la-moon',
+    'la-rss',
+    'la-rss-square',
+    'la-sun',
+    'la-tools',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
