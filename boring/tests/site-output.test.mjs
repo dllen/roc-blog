@@ -209,6 +209,42 @@ test('later section navigation marks weekly as current', async () => {
     assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
 });
 
+test('section pagination uses canonical Zola URLs, one current page, and correct boundaries', async () => {
+    const pagePaths = ['blog/index.html', 'blog/page/2/index.html', 'blog/page/3/index.html'];
+    const expectedPathnames = ['/blog/', '/blog/page/2/', '/blog/page/3/'];
+
+    for (const [pageOffset, outputPath] of pagePaths.entries()) {
+        const { document } = (await loadOutput(outputPath)).window;
+        const pagination = document.querySelector('.listing-pagination');
+        const numberLinks = [...pagination.querySelectorAll('a:not([aria-label])')];
+        const currentLinks = numberLinks.filter((link) => link.getAttribute('aria-current') === 'page');
+        const previous = pagination.querySelector('a[aria-label="上一页"]');
+        const next = pagination.querySelector('a[aria-label="下一页"]');
+
+        const resolvePathname = (href) => new URL(href, `https://site-output.test${expectedPathnames[pageOffset]}`).pathname;
+
+        assert.deepEqual(
+            numberLinks.map((link) => resolvePathname(link.getAttribute('href'))),
+            expectedPathnames,
+            `${outputPath} numeric pagination URLs`
+        );
+        assert.equal(currentLinks.length, 1, `${outputPath} current numeric page count`);
+        assert.equal(currentLinks[0].textContent.trim(), String(pageOffset + 1));
+
+        if (pageOffset === 0) {
+            assert.equal(previous, null);
+        } else {
+            assert.equal(resolvePathname(previous.getAttribute('href')), expectedPathnames[pageOffset - 1]);
+        }
+
+        if (pageOffset === pagePaths.length - 1) {
+            assert.equal(next, null);
+        } else {
+            assert.equal(resolvePathname(next.getAttribute('href')), expectedPathnames[pageOffset + 1]);
+        }
+    }
+});
+
 test('homepage uses the shared editorial article list contract', async () => {
     const { document } = (await loadOutput('index.html')).window;
     const articleList = document.querySelector('[data-article-list]');
