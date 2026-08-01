@@ -85,6 +85,10 @@ jobs:
         working-directory: boring
         run: zola build -o roc-blog --force
 
+      - name: Test rendered site contracts
+        working-directory: boring
+        run: yarn test:site
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
