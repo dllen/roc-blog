@@ -833,7 +833,7 @@
   margin-block: 0.35rem 1rem;
   color: var(--color-text);
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.025em;
@@ -1270,7 +1270,7 @@
   }
 
   .article-title {
-    font-size: 1.5rem;
+    font-size: 0.75rem;
     line-height: 1.1;
   }
 
