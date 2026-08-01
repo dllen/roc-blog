@@ -141,6 +141,7 @@
 }
 
 .site-slogan {
+  margin-left: 24px;
   color: var(--color-secondary);
   font-family: var(--font-ui);
   font-size: 1.2rem;
