@@ -45,18 +45,37 @@
     }
     containers.forEach(container => { container.hidden = false; });
 
+    const headingList = Array.from(headings);
+    const explicitIdOwners = new Map();
+    document.querySelectorAll('[id]').forEach(element => {
+      const owners = explicitIdOwners.get(element.id) || [];
+      owners.push(element);
+      explicitIdOwners.set(element.id, owners);
+    });
+    const reservedIds = new Set(explicitIdOwners.keys());
     const usedIds = new Set();
-    headings.forEach(h => {
-      const base = h.id || slugify(h.textContent) || 'section';
+    const seenExplicitHeadingIds = new Set();
+    headingList.forEach(heading => {
+      const explicitId = heading.id;
+      const owners = explicitId ? explicitIdOwners.get(explicitId) || [] : [];
+      const canKeepExplicitId = explicitId &&
+        !seenExplicitHeadingIds.has(explicitId) &&
+        owners.length === 1 &&
+        owners[0] === heading;
+      const base = explicitId || slugify(heading.textContent) || 'section';
       let id = base;
-      let suffix = 2;
-      while (usedIds.has(id)) id = `${base}-${suffix++}`;
-      h.id = id;
+      if (!canKeepExplicitId || usedIds.has(id)) {
+        let suffix = 2;
+        while (reservedIds.has(id) || usedIds.has(id)) id = `${base}-${suffix++}`;
+      }
+      if (explicitId) seenExplicitHeadingIds.add(explicitId);
+      heading.id = id;
       usedIds.add(id);
+      reservedIds.add(id);
     });
 
-    const minLevel = Math.min(...Array.from(headings).map(h => +h.tagName[1]));
-    const items = Array.from(headings).map(h => ({
+    const minLevel = Math.min(...headingList.map(h => +h.tagName[1]));
+    const items = headingList.map(h => ({
       level: +h.tagName[1],
       text: h.textContent,
       id: h.id,
@@ -83,6 +102,7 @@
     });
     let activeId = null;
     function setActive(id) {
+      if (activeId === id) return;
       if (activeId) {
         (linkMap.get(activeId) || []).forEach(link => {
           link.removeAttribute('data-active');
@@ -95,12 +115,20 @@
       });
       activeId = id;
     }
+    const intersecting = new Set();
     const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) setActive(e.target.id);
+      entries.forEach(entry => {
+        if (entry.isIntersecting) intersecting.add(entry.target);
+        else intersecting.delete(entry.target);
       });
+      for (let index = headingList.length - 1; index >= 0; index--) {
+        if (intersecting.has(headingList[index])) {
+          setActive(headingList[index].id);
+          break;
+        }
+      }
     }, { rootMargin: '-30% 0% -60% 0%' });
-    headings.forEach(h => io.observe(h));
+    headingList.forEach(h => io.observe(h));
   }
 
   // ── 3. Anchor links ─────────────────────────────────────

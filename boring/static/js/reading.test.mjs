@@ -37,6 +37,10 @@ class FakeIntersectionObserver {
   trigger(element, isIntersecting = true) {
     this.callback([{ target: element, isIntersecting }], this);
   }
+
+  triggerMany(entries) {
+    this.callback(entries, this);
+  }
 }
 
 function setupDOM(html) {
@@ -145,11 +149,11 @@ test('reading: initToc assigns unique generated IDs to duplicate headings', () =
   );
 });
 
-test('reading: initToc preserves the first valid existing ID and uniquifies duplicates', () => {
+test('reading: initToc preserves an unconflicted explicit heading ID', () => {
   const html = `<html><body>
     <article>
       <h2 id="kept">First</h2>
-      <h2 id="kept">Second</h2>
+      <h2>Kept</h2>
       <h2>!!!</h2>
       <h2>!!!</h2>
     </article>
@@ -162,6 +166,74 @@ test('reading: initToc preserves the first valid existing ID and uniquifies dupl
     Array.from(headings, heading => heading.id),
     ['kept', 'kept-2', 'section', 'section-2']
   );
+});
+
+test('reading: initToc reserves later explicit heading IDs and all document IDs', () => {
+  const html = `<html><body>
+    <div id="foo"></div>
+    <div id="foo-2"></div>
+    <article>
+      <h2>Foo</h2>
+      <h2 id="foo-3">Explicit</h2>
+      <h2 id="shared">First explicit shared</h2>
+      <h2 id="shared">Second explicit shared</h2>
+    </article>
+    <aside id="shared"></aside>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+  </body></html>`;
+  const { document } = setupDOM(html);
+  const headings = document.querySelectorAll('article h2');
+
+  assert.deepEqual(
+    Array.from(headings, heading => heading.id),
+    ['foo-4', 'foo-3', 'shared-2', 'shared-3']
+  );
+  assert.equal(document.querySelectorAll('[id="foo-3"]').length, 1);
+  assert.equal(document.querySelectorAll('[id="shared"]').length, 1);
+});
+
+test('reading: initToc chooses the last intersecting heading independent of entry order', () => {
+  function activeIdFor(entries) {
+    const html = `<html><body>
+      <article>
+        <h2 id="a">First</h2>
+        <h2 id="b">Second</h2>
+      </article>
+      <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+    </body></html>`;
+    const { document } = setupDOM(html);
+    const observer = FakeIntersectionObserver.instances[0];
+    const headings = Array.from(document.querySelectorAll('article h2'));
+    observer.triggerMany(entries.map(index => ({ target: headings[index], isIntersecting: true })));
+    return document.querySelector('[data-active]').dataset.tocId;
+  }
+
+  assert.equal(activeIdFor([0, 1]), 'b');
+  assert.equal(activeIdFor([1, 0]), 'b');
+});
+
+test('reading: initToc retains the active heading when every heading leaves', () => {
+  const html = `<html><body>
+    <article>
+      <h2 id="a">First</h2>
+      <h2 id="b">Second</h2>
+    </article>
+    <nav data-toc-container="desktop"><div id="toc-list"></div></nav>
+  </body></html>`;
+  const { document } = setupDOM(html);
+  const observer = FakeIntersectionObserver.instances[0];
+  const [a, b] = document.querySelectorAll('article h2');
+
+  observer.triggerMany([
+    { target: a, isIntersecting: true },
+    { target: b, isIntersecting: true },
+  ]);
+  observer.triggerMany([
+    { target: b, isIntersecting: false },
+    { target: a, isIntersecting: false },
+  ]);
+
+  assert.equal(document.querySelector('[data-active]').dataset.tocId, 'b');
 });
 
 test('reading: initCodeCopy adds Copy button to each pre', () => {
