@@ -123,8 +123,8 @@
   flex: none;
   display: flex;
   flex-direction: row;
-  align-items: baseline;
-  gap: 0;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .site-brand {
@@ -141,12 +141,12 @@
 }
 
 .site-slogan {
-  margin-left: 20px;
   color: var(--color-secondary);
   font-family: var(--font-ui);
   font-size: 1.2rem;
   font-weight: 400;
   line-height: 1;
+  opacity: 0.75;
 }
 
 .site-brand:hover,
@@ -329,7 +329,7 @@
   }
 
   .site-slogan {
-    font-size: 0.875rem;
+    display: none;
   }
 
   .site-actions {
