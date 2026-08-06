@@ -15,7 +15,16 @@ generate_sitemap = true
 compile_sass = false
 
 # Whether to build a search index to be used later on by a JavaScript library
-build_search_index = false
+build_search_index = true
+
+[search]
+include_title = true
+include_description = true
+include_date = true
+include_path = false
+include_content = true
+truncate_content_length = 500
+index_format = "fuse_json"
 
 [markdown]
 lazy_async_image = true

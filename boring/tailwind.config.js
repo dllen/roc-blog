@@ -13,6 +13,7 @@ module.exports = {
     'la-moon',
     'la-rss',
     'la-rss-square',
+    'la-search',
     'la-sun',
     'la-tools',
   ],

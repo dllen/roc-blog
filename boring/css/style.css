@@ -82,6 +82,10 @@
   content: "\f7d9";
 }
 
+.la-search::before {
+  content: "\f002";
+}
+
 .site-body {
   display: flex;
   min-height: 100vh;

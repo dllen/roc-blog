@@ -38,6 +38,8 @@
             })();
         </script>
         <link rel="stylesheet" href="/css/style.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js" defer></script>
+        <script src="/js/search.js" defer></script>
         <script src="/js/main.js" defer></script>
         <link rel="alternate" type="application/atom+xml" title="{{ config.title }}"
               href="{{ get_url(path='blog/atom.xml', trailing_slash=false) | safe }}">
@@ -95,6 +97,13 @@
                        title="RSS feed">
                         <i class="las la-rss" aria-hidden="true"></i>
                     </a>
+                    <button id="search-trigger"
+                            type="button"
+                            aria-label="搜索 (Cmd+K)"
+                            class="site-action"
+                            title="搜索 (Cmd+K)">
+                        <i class="las la-search" aria-hidden="true"></i>
+                    </button>
                     <button id="darkmode-toggle"
                             type="button"
                             aria-label="启用深色模式"

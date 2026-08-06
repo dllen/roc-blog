@@ -27,6 +27,10 @@
         <lastmod>2025-10-25</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/blog-loopx-analysis/</loc>
+        <lastmod>2025-08-06</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/box/</loc>
         <lastmod>2024-01-15T12:13:32+05:30</lastmod>
     </url>
@@ -490,6 +494,10 @@
     <url>
         <loc>https://scp.net.cn/blog/log-system-filebeat-kafka-flink-es-clickhouse-hbase/</loc>
         <lastmod>2025-10-25</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/loopx-technical-deep-dive/</loc>
+        <lastmod>2026-08-06</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/modern-malloc-core-strategies/</loc>
@@ -1303,6 +1311,9 @@
         <loc>https://scp.net.cn/tags/circular-dependency/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/claude-code/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/claude/</loc>
     </url>
     <url>
@@ -1352,6 +1363,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/container/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/control-plane/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/controller/</loc>
@@ -1696,6 +1710,9 @@
         <loc>https://scp.net.cn/tags/kafka/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/kai-yuan-gong-ju/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/ke-bian-xing/</loc>
     </url>
     <url>
@@ -1778,6 +1795,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/logic-programming/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/loop-engineering/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/lru/</loc>

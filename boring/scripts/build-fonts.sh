@@ -43,6 +43,7 @@ for font in WorkSans-VariableFont_wght CrimsonPro-VariableFont_wght JetBrainsMon
 done
 
 LA_SOLID_CODEPOINTS=(
+  '0xf002' # search
   '0xf060' # arrow-left
   '0xf3bf' # level-up-alt
   '0xf015' # home

@@ -22,6 +22,7 @@ const iconCodepoints = new Map([
     ['la-moon', 'f186'],
     ['la-rss', 'f09e'],
     ['la-rss-square', 'f143'],
+    ['la-search', 'f002'],
     ['la-sun', 'f185'],
     ['la-tools', 'f7d9']
 ]);
