@@ -3,11 +3,9 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { parseFrontmatter } from './parse-frontmatter.mjs';
 
-const REQUIRED = ['title', 'date', 'description', 'tags'];
 const TITLE_MAX = 80;
 const DESCRIPTION_MIN = 80;
 const DESCRIPTION_MAX = 160;
-const TAGS_MIN = 1;
 const TAGS_MAX = 6;
 
 export function auditDirectory(rootDir) {
@@ -23,7 +21,6 @@ export function auditDirectory(rootDir) {
     descriptionTooLong: [],
     tagsEmpty: [],
     tagsTooMany: [],
-    allThreeMissing: [],
     atLeastOneMissing: 0,
   };
 
@@ -37,14 +34,6 @@ export function auditDirectory(rootDir) {
 
     if (format === 'toml') result.tomlFiles.push(rel);
 
-    // Normalize: Zola taxonomies may nest tags/categories under `taxonomies` key
-    if (!data.tags && data.taxonomies && data.taxonomies.tags) {
-      data.tags = data.taxonomies.tags;
-    }
-    if (!data.categories && data.taxonomies && data.taxonomies.categories) {
-      data.categories = data.taxonomies.categories;
-    }
-
     if (!data.title) result.missingTitle.push(rel);
     if (!data.date) result.missingDate.push(rel);
     if (!data.description) result.missingDescription.push(rel);
@@ -52,12 +41,10 @@ export function auditDirectory(rootDir) {
       result.missingTags.push(rel);
     }
 
-    // Field-level validation (only when present)
     if (data.title && String(data.title).length > TITLE_MAX) {
       result.titleTooLong.push(rel);
     }
     if (data.description && typeof data.description !== 'string') {
-      // description may be parsed as a nested object (e.g. from multi-line indent)
       data.description = String(data.description);
     }
     if (data.description) {
@@ -69,19 +56,10 @@ export function auditDirectory(rootDir) {
       if (data.tags.length === 0) result.tagsEmpty.push(rel);
       if (data.tags.length > TAGS_MAX) result.tagsTooMany.push(rel);
     }
-
-    // Triple-missing
-    if (!data.date && !data.description && (!data.tags || data.tags.length === 0)) {
-      result.allThreeMissing.push(rel);
-    }
   }
 
-  const missingSet = new Set([
-    ...result.missingTitle,
-    ...result.missingDate,
-    ...result.missingDescription,
-    ...result.missingTags,
-  ]);
+  // Only title and date are required
+  const missingSet = new Set([...result.missingTitle, ...result.missingDate]);
   result.atLeastOneMissing = missingSet.size;
 
   return result;
@@ -90,35 +68,29 @@ export function auditDirectory(rootDir) {
 export function formatReport(r) {
   const lines = [
     '# Frontmatter Audit Report',
-    `- 生成时间: ${new Date().toISOString()}`,
-    `- 总文章: ${r.totalFiles} · 至少缺一项: ${r.atLeastOneMissing}`,
+    `- 总文章: ${r.totalFiles} · 缺少必需项: ${r.atLeastOneMissing}`,
     '',
-    `## 缺 title (${r.missingTitle.length})`,
+    `## 缺必需项: title (${r.missingTitle.length})`,
     ...r.missingTitle.map(p => `- ${p}`),
     '',
-    `## 缺 date (${r.missingDate.length})`,
+    `## 缺必需项: date (${r.missingDate.length})`,
     ...r.missingDate.map(p => `- ${p}`),
     '',
-    `## 缺 description (${r.missingDescription.length})`,
+    `## 缺推荐项: description (${r.missingDescription.length})`,
     ...r.missingDescription.map(p => `- ${p}`),
     '',
-    `## 缺 tags (${r.missingTags.length})`,
+    `## 缺推荐项: tags (${r.missingTags.length})`,
     ...r.missingTags.map(p => `- ${p}`),
     '',
-    `## 前缀未统一为 --- (${r.tomlFiles.length})`,
-    ...r.tomlFiles.map(p => `- ${p}`),
-    '',
-    `## 三项都缺 (${r.allThreeMissing.length})`,
-    ...r.allThreeMissing.map(p => `- ${p}`),
-    '',
-    '## 字段异常',
-    `- title 超 ${TITLE_MAX} 字符: ${r.titleTooLong.length} 篇`,
-    `- description 不足 ${DESCRIPTION_MIN} 字符: ${r.descriptionTooShort.length} 篇`,
-    `- description 超 ${DESCRIPTION_MAX} 字符: ${r.descriptionTooLong.length} 篇`,
-    `- tags 数量 0: ${r.tagsEmpty.length} 篇`,
-    `- tags 数量 > ${TAGS_MAX}: ${r.tagsTooMany.length} 篇`,
+    `## 格式异常`,
+    `- title 超 ${TITLE_MAX} 字符: ${r.titleTooLong.length}`,
+    `- description 不足 ${DESCRIPTION_MIN} 字符: ${r.descriptionTooShort.length}`,
+    `- description 超 ${DESCRIPTION_MAX} 字符: ${r.descriptionTooLong.length}`,
+    `- tags 为空: ${r.tagsEmpty.length}`,
+    `- tags > ${TAGS_MAX}: ${r.tagsTooMany.length}`,
+    `- TOML 格式: ${r.tomlFiles.length}`,
   ];
-  return lines.join('\n') + '\n';
+  return lines.filter(l => !l.endsWith(': 0')).join('\n') + '\n';
 }
 
 function walkMd(dir) {
