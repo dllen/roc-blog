@@ -90,7 +90,11 @@ export function formatReport(r) {
     `- tags > ${TAGS_MAX}: ${r.tagsTooMany.length}`,
     `- TOML 格式: ${r.tomlFiles.length}`,
   ];
-  return lines.filter(l => !l.endsWith(': 0')).join('\n') + '\n';
+  // Filter out list items that are zero (but keep summary line which has ·)
+  return lines.filter(l => {
+    if (l.startsWith('- ') && !l.includes('·') && /: 0\s*$/.test(l)) return false;
+    return true;
+  }).join('\n') + '\n';
 }
 
 function walkMd(dir) {

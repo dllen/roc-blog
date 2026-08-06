@@ -34,6 +34,6 @@ test('audit CLI: exits 1 when any required field missing', () => {
   assert.equal(r.status, 1, 'expected exit 1');
   assert.match(r.stdout, /missing=2/);
   const report = readFileSync(join(outDir, 'frontmatter-audit.md'), 'utf8');
-  assert.match(report, /至少缺一项: 2/);
+  assert.match(report, /缺少必需项: 2/);
   rmSync(tmp, { recursive: true });
 });

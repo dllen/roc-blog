@@ -31,8 +31,8 @@ test('formatReport: includes summary and per-field sections', () => {
   const md = formatReport(r);
   assert.match(md, /# Frontmatter Audit Report/);
   assert.match(md, /总文章: 2/);
-  assert.match(md, /缺 description \(2\)/);
-  assert.match(md, /缺 date \(2\)/);
+  assert.match(md, /缺必需项: date \(2\)/);
+  assert.match(md, /缺推荐项: description \(2\)/);
 });
 
 test('formatReport: includes sample paths', () => {
