@@ -9,7 +9,7 @@ const projectRoot = new URL('../../', import.meta.url);
 const iconSources = [
     'templates/base.html',
     'templates/index.html',
-    'templates/macros.html',
+    'templates/components.html',
     'templates/404.html',
     'config.toml'
 ];

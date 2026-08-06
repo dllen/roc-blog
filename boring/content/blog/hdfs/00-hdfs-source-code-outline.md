@@ -27,7 +27,7 @@ Hadoop Distributed File System (HDFS) 是大数据生态系统的基石。尽管
 
 ### Phase 1: 准备与架构 (Preparation & Architecture)
 
-*   **[01. 源码编译与环境搭建]({{< ref "01-hdfs-source-code-map.md" >}})**
+*   **[01. 源码编译与环境搭建](./01-hdfs-source-code-map.md)**
     *   Hadoop 源码目录结构解析
     *   使用 Maven 编译 Hadoop
     *   IDEA 远程调试环境配置

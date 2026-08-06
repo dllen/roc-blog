@@ -20,6 +20,7 @@ taxonomies:
 ## Host网络模式
 
 ```bash
+{% raw %}
 # Create a new cgroup and assign it a classid
 mkdir /sys/fs/cgroup/net_cls/my_cgroup
 echo 0x100001 > /sys/fs/cgroup/net_cls/my_cgroup/net_cls.classid
@@ -29,6 +30,7 @@ docker run -d --name my_container my_image
 echo $(docker inspect -f '{{.State.Pid}}' my_container) > /sys/fs/cgroup/net_cls/my_cgroup/cgroup.procs
 
 # Use iptables to mark the packets based on the classid
+{% endraw %}
 iptables -t mangle -A OUTPUT -m cgroup --cgroup 0x100001 -j MARK --set-mark 1
 
 # Use tc
@@ -50,11 +52,13 @@ tc filter add dev eth0 parent 10: protocol ip prio 10 handle 1: cgroup
 ## 非Host网络模式
 
 ```bash
+{% raw %}
 # Get the PID of the container's network namespace
 PID=$(docker inspect -f '{{.State.Pid}}' <container_name_or_id>)
 
 # Enter the network namespace using nsenter
 nsenter --net=/proc/$PID/ns/net iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+{% endraw %}
 ```
 
 说明：
@@ -224,6 +228,7 @@ int main(int argc, char *argv[]) {
 ```
 
 ```bash
+{% raw %}
 # 测试
 
 # compile
@@ -237,6 +242,7 @@ PID=$(docker inspect -f '{{.State.Pid}}' <container_name_or_id>)
 
 # check
 ./nsexec -n -t PID -- /bin/sh -c 'iptables -t nat -L'
+{% endraw %}
 
 
 Chain PREROUTING (policy ACCEPT)

@@ -1,4 +1,4 @@
-{% macro article_row(item, show_tags, show_reading_time) %}
+{% component article_row(item: map, show_tags: bool, show_reading_time: bool) %}
     <li class="article-row" data-article-row>
         <a href="{{ item.permalink | safe }}" class="article-row__link">
             <div class="article-row__heading">
@@ -16,7 +16,7 @@
             {% if show_tags or show_reading_time %}
                 <div class="article-row__meta">
                     {% if show_tags and item.taxonomies and item.taxonomies.tags %}
-                        {% for tag in item.taxonomies.tags | slice(end=3) %}
+                        {% for tag in item.taxonomies.tags[:3] %}
                             <span class="tag-chip">{{ tag }}</span>
                         {% endfor %}
                     {% endif %}
@@ -27,9 +27,9 @@
             {% endif %}
         </a>
     </li>
-{% endmacro article_row %}
+{% endcomponent article_row %}
 
-{% macro header(components, is_page) %}
+{% component header(components: array, is_page: bool) %}
     <div class="breadcrumb-header">
         <div class="breadcrumb-header__inner">
             <a href="/" class="hover:text-slate-900 dark:hover:text-slate-100 transition">~</a>
@@ -51,10 +51,10 @@
             </button>
         </div>
     </div>
-{% endmacro header %}
+{% endcomponent header %}
 
 {# 上一篇 / 下一篇 (同 section 内，按 date 排序) #}
-{% macro prev_next(current) %}
+{% component prev_next(current: map) %}
   {% set_global prev_idx = -1 %}
   {% set_global next_idx = -1 %}
   {% set_global current_section = get_section(path="blog/_index.md") %}
@@ -114,10 +114,10 @@
     {% endif %}
   </nav>
   {% endif %}
-{% endmacro prev_next %}
+{% endcomponent prev_next %}
 
 {# 相关阅读 (客户端由 reading.js 计算) - 这里只输出容器 #}
-{% macro related(current, limit) %}
+{% component related(current: map, limit: integer) %}
   <section class="related-section" data-related-container data-current-permalink="{{ current.permalink | safe }}"
            data-current-tags="{{ current.taxonomies.tags | default(value=[]) | join(sep='|') }}"
            data-limit="{{ limit }}">
@@ -128,4 +128,4 @@
       <p class="related-grid__empty">加载中…</p>
     </div>
   </section>
-{% endmacro related %}
+{% endcomponent related %}

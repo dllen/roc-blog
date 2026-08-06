@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% import "macros.html" as macros %}
-
 {% block head_extend %}
     <title>{{ page.title }} | {{ config.title }}</title>
 
@@ -38,7 +36,7 @@
 {% block content %}
     <div id="reading-progress" class="reading-progress"></div>
 
-    {{ macros::header(components=page.components, is_page=true) }}
+    {{<header components={page.components} is_page={true}/>}}
 
     <div class="article-shell">
         <details class="article-toc-mobile" data-toc-container="mobile">
@@ -77,8 +75,8 @@
                     {{ page.content | safe }}
                 </div>
 
-                {{ macros::prev_next(current=page) }}
-                {{ macros::related(current=page, limit=3) }}
+                {{<prev_next current={page}/>}}
+                {{<related current={page} limit={3}/>}}
             </article>
 
             <aside class="article-toc-desktop" data-toc-container="desktop">

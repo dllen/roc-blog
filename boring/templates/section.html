@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
-{% import "macros.html" as macros %}
-
 {% block head_extend %}
     <title>{{ section.title }} | {{ config.title }}</title>
 {% endblock head_extend %}
 
 {% block content %}
-    {{ macros::header(components=section.components, is_page=false) }}
+    {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
         <header class="listing-page-header">
             <p class="eyebrow">Section</p>
@@ -31,7 +29,7 @@
                 </div>
                 <ul class="article-list" data-article-list>
                     {% for page in posts %}
-                        {{ macros::article_row(item=page, show_tags=true, show_reading_time=true) }}
+                        {{<article_row item={page} show_tags={true} show_reading_time={true}/>}}
                     {% endfor %}
                 </ul>
             </section>

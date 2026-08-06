@@ -36,16 +36,17 @@ slug: "tiwen-jiaolian"
 
 ### 通用模板
 ```txt
+{% raw %}
 [目标]
-- 论题类型：{{topic_type}}
-- 评估目标：{{assessment_goal}}
-- 结论期待：{{expected_conclusion}}
+- 论题类型：{{ topic_type }}
+- 评估目标：{{ assessment_goal }}
+- 结论期待：{{ expected_conclusion }}
 
 [上下文]
-- 背景：{{background}}
-- 涉众与影响：{{stakeholders}}
-- 约束（时间/风险/资源）：{{constraints}}
-- 现有证据与数据口径：{{evidence}}
+- 背景：{{ background }}
+- 涉众与影响：{{ stakeholders }}
+- 约束（时间/风险/资源）：{{ constraints }}
+- 现有证据与数据口径：{{ evidence }}
 
 [分析要求]
 - 术语定义与关键假设清单
@@ -57,16 +58,19 @@ slug: "tiwen-jiaolian"
 - 行动方案（负责人/里程碑/时间线）
 - 监控指标与回滚预案
 - 风险与负面效应的对称呈现
+{% endraw %}
 ```
 
 ### 变量与使用说明
-- `{{topic_type}}`：论题类型，如“是否上线”/“因果关系评估”。
-- `{{assessment_goal}}`：衡量目标，如“提升 D30 ≥ 5%”。
-- `{{expected_conclusion}}`：期望输出的结论形态，如“条件化采纳规则”。
-- `{{background}}`：业务/研究背景与触发原因。
-- `{{stakeholders}}`：涉众及影响范围（用户/客户/团队/监管）。
-- `{{constraints}}`：时间/预算/合规/技术等约束与边界。
-- `{{evidence}}`：已有数据与来源、统计口径与有效期。
+{% raw %}
+- `{{ topic_type }}`：论题类型，如”是否上线”/”因果关系评估”。
+- `{{ assessment_goal }}`：衡量目标，如”提升 D30 ≥ 5%”。
+- `{{ expected_conclusion }}`：期望输出的结论形态，如”条件化采纳规则”。
+- `{{ background }}`：业务/研究背景与触发原因。
+- `{{ stakeholders }}`：涉众及影响范围（用户/客户/团队/监管）。
+- `{{ constraints }}`：时间/预算/合规/技术等约束与边界。
+- `{{ evidence }}`：已有数据与来源、统计口径与有效期。
+{% endraw %}
 
 ### 错误处理与使用限制
 - 避免以相关性替代因果；补充替代解释并进行竞争性比较。

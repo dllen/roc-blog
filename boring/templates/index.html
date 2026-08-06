@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% import "macros.html" as macros %}
-
 {% block head_extend %}
     <title>Home | {{ config.title }}</title>
 {% endblock head_extend %}
@@ -30,8 +28,8 @@
                 <h2 id="latest-heading" class="listing-heading__title">最近更新</h2>
             </div>
             <ul class="article-list" data-article-list>
-                {% for p in latest | slice(end=limit) %}
-                    {{ macros::article_row(item=p, show_tags=true, show_reading_time=true) }}
+                {% for p in latest[:limit] %}
+                    {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
                 {% endfor %}
             </ul>
             <div class="listing-footer">

@@ -31,7 +31,7 @@ extra:
 ### Phase 1: 底层数据结构 (The Foundation)
 Redis 为了追求极致性能，造了许多“轮子”。这些数据结构是理解 Redis 的基石。
 
-*   **[01. 源码地图与环境搭建]({{< ref "01-redis-source-code-map.md" >}})**
+*   **[01. 源码地图与环境搭建](./01-redis-source-code-map.md)**
     *   源码目录概览
     *   开发环境配置 (VS Code/CLion)
     *   调试技巧

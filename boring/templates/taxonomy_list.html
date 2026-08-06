@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
-{% import "macros.html" as macros %}
-
 {% block head_extend %}
     <title>Tags | {{ config.title }}</title>
 {% endblock head_extend %}
 
 {% block content %}
-    {{ macros::header(components=["tags"], is_page=false) }}
+    {{<header components={["tags"]} is_page={false}/>}}
     <div class="listing-shell">
         <header class="listing-page-header">
             <p class="eyebrow">Index</p>

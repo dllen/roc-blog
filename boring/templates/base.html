@@ -61,7 +61,7 @@
                             <div class="site-dropdown__nav" role="group" aria-label="分类导航">
                                 {% if config.extra.nav_sections %}
                                     {% for section in config.extra.nav_sections %}
-                                        <a href="{{ section.url | safe }}" class="site-dropdown__item" role="menuitem"{% if current_path is defined and current_path is starting_with(section.url) %} aria-current="page"{% endif %}>
+                                        <a href="{{ section.url | safe }}" class="site-dropdown__item" role="menuitem"{% if current_path is defined and current_path is starting_with(pat=section.url) %} aria-current="page"{% endif %}>
                                             {{ section.name }}
                                         </a>
                                     {% endfor %}

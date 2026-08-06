@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
-{% import "macros.html" as macros %}
-
 {% block head_extend %}
     <title>#{{ term.name }} | {{ config.title }}</title>
 {% endblock head_extend %}
 
 {% block content %}
-    {{ macros::header(components=["tags", term.slug], is_page=false) }}
+    {{<header components={["tags", term.slug]} is_page={false}/>}}
     <div class="listing-shell">
         <header class="listing-page-header">
             <p class="eyebrow">Tag archive</p>
@@ -20,7 +18,7 @@
             </div>
             <ul class="article-list" data-article-list>
                 {% for page in term.pages | sort(attribute="date", reverse=true) %}
-                    {{ macros::article_row(item=page, show_tags=false, show_reading_time=true) }}
+                    {{<article_row item={page} show_tags={false} show_reading_time={true}/>}}
                 {% endfor %}
             </ul>
         </section>

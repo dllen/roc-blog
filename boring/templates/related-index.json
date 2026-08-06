@@ -6,7 +6,7 @@
 {%- if sect -%}
 {%- for p in sect.pages -%}
 {%- if p.permalink -%}
-{%- set_global entries = entries | concat(with=p.title) -%}
+{%- set_global entries = [...entries, p.title] -%}
 {%- endif -%}
 {%- endfor -%}
 {%- endif -%}
