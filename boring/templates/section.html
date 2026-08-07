@@ -7,13 +7,6 @@
 {% block content %}
     {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
-        <header class="listing-page-header">
-            <p class="eyebrow">Section</p>
-            <h1 class="listing-page-title">{{ section.title }}</h1>
-            {% if section.description %}
-                <p class="listing-page-description">{{ section.description }}</p>
-            {% endif %}
-        </header>
 
         {% if paginator %}
             {% set posts = paginator.pages %}

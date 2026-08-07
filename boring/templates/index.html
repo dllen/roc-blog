@@ -21,14 +21,13 @@
     {% set blog = get_section(path='blog/_index.md') %}
     {% if blog and blog.pages %}
         {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
-        {% set latest = blog.pages | sort(attribute="date", reverse=true) %}
         <section class="listing-section" aria-labelledby="latest-heading">
             <div class="listing-heading">
                 <p class="eyebrow">Latest writing</p>
                 <h2 id="latest-heading" class="listing-heading__title">最近更新</h2>
             </div>
-            <ul class="article-list" data-article-list>
-                {% for p in latest[:limit] %}
+            <ul class="article-list" data-article-list id="article-list" style="display:none;">
+                {% for p in blog.pages %}
                     {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
                 {% endfor %}
             </ul>
@@ -38,4 +37,20 @@
         </section>
     {% endif %}
 </div>
+<script>
+(function() {
+    var list = document.getElementById('article-list');
+    if (!list) return;
+    var items = Array.from(list.children);
+    items.sort(function(a, b) {
+        var dateA = a.querySelector('.shrink-0') ? a.querySelector('.shrink-0').textContent.trim() : '';
+        var dateB = b.querySelector('.shrink-0') ? b.querySelector('.shrink-0').textContent.trim() : '';
+        return dateB.localeCompare(dateA);
+    });
+    items.forEach(function(item) { list.appendChild(item); });
+    var limit = {{ limit }};
+    items.slice(limit).forEach(function(item) { item.style.display = 'none'; });
+    list.style.display = '';
+})();
+</script>
 {% endblock content %}
