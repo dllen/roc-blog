@@ -230,8 +230,19 @@ test('later section navigation marks weekly as current', async () => {
 });
 
 test('section pagination uses canonical Zola URLs, one current page, and correct boundaries', async () => {
-    const pagePaths = ['blog/index.html', 'blog/page/2/index.html', 'blog/page/3/index.html'];
-    const expectedPathnames = ['/blog/', '/blog/page/2/', '/blog/page/3/'];
+    const sectionOutputDirectory = new URL('../roc-blog/blog/page/', import.meta.url);
+    const pageDirents = await readdir(sectionOutputDirectory, { withFileTypes: true });
+    const pageNumbers = pageDirents
+        .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
+        .map((entry) => Number(entry.name))
+        .filter((number) => number > 1)
+        .sort((a, b) => a - b);
+
+    const pagePaths = [
+        'blog/index.html',
+        ...pageNumbers.map((number) => `blog/page/${number}/index.html`)
+    ];
+    const expectedPathnames = ['/blog/', ...pageNumbers.map((number) => `/blog/page/${number}/`)];
 
     for (const [pageOffset, outputPath] of pagePaths.entries()) {
         const { document } = (await loadOutput(outputPath)).window;
