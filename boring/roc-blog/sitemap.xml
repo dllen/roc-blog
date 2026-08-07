@@ -15,6 +15,30 @@
         <lastmod>2025-12-04T12:13:32+05:30</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/ai-agent-series-01-what-is-agent/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/ai-agent-series-02-tools-mcp/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/ai-agent-series-03-memory-rag/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/ai-agent-series-04-evaluation-evolution/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/ai-agent-series-05-future-multimodal/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/ai-era-software-engineering/</loc>
+        <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/alibaba-dragonwell-wisp-coroutine-practice/</loc>
         <lastmod>2026-02-01T12:00:00+08:00</lastmod>
     </url>
@@ -500,6 +524,10 @@
         <lastmod>2026-08-06</lastmod>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/mattpocock-skills-design-analysis/</loc>
+        <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/modern-malloc-core-strategies/</loc>
         <lastmod>2025-12-26T10:00:00+08:00</lastmod>
     </url>
@@ -525,8 +553,27 @@
         <loc>https://scp.net.cn/blog/page/3/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/blog/page/4/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/blog/paxos-in-action/</loc>
         <lastmod>2023-08-04T15:00:00+20:30</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/pi-agent-series-01-what-is-pi/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/pi-agent-series-02-tool-design/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/pi-agent-series-03-extension-skill/</loc>
+        <lastmod>2026-08-06</lastmod>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/pi-agent-series-04-design-philosophy/</loc>
+        <lastmod>2026-08-06</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/prompt-engineering-from-entry-to-master/</loc>
@@ -786,6 +833,10 @@
     </url>
     <url>
         <loc>https://scp.net.cn/blog/sicp-with-python/page/2/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/blog/skill-system-2048-full-demo/</loc>
+        <lastmod>2026-08-07</lastmod>
     </url>
     <url>
         <loc>https://scp.net.cn/blog/spec-driven-development-depth-analysis/</loc>
@@ -1170,6 +1221,9 @@
         <loc>https://scp.net.cn/tags/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/2048/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/2pc/</loc>
     </url>
     <url>
@@ -1180,6 +1234,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/ae/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/agent-runtime/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/agent/</loc>
@@ -1338,6 +1395,9 @@
         <loc>https://scp.net.cn/tags/codex/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/coding-agent/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/cognition/</loc>
     </url>
     <url>
@@ -1422,6 +1482,9 @@
         <loc>https://scp.net.cn/tags/declarative-programming/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/design-philosophy/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/design/</loc>
     </url>
     <url>
@@ -1476,6 +1539,9 @@
         <loc>https://scp.net.cn/tags/encoding/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/engineering/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/environment-model/</loc>
     </url>
     <url>
@@ -1489,6 +1555,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/etcd/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/evaluation/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/event-loop/</loc>
@@ -1513,6 +1582,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/expiration/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/extension/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/fan-xing/</loc>
@@ -1824,6 +1896,9 @@
         <loc>https://scp.net.cn/tags/master/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/matt-pocock/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/maven/</loc>
     </url>
     <url>
@@ -1861,6 +1936,12 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/monetization/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/multi-agent/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/multimodal/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/multiprocessing/</loc>
@@ -1962,10 +2043,16 @@
         <loc>https://scp.net.cn/tags/pi-pan-xing-si-wei/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/pi/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/planner/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/pointcut/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/post-training/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/producer/</loc>
@@ -2058,6 +2145,9 @@
         <loc>https://scp.net.cn/tags/ri-zhi/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/rl/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/roadmap/</loc>
     </url>
     <url>
@@ -2145,10 +2235,16 @@
         <loc>https://scp.net.cn/tags/sicp/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/skill/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/skiplist/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/snapshot/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/software-engineering/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/source-code/</loc>
@@ -2238,6 +2334,9 @@
         <loc>https://scp.net.cn/tags/tcp-ip/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/tdd/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/template-pattern/</loc>
     </url>
     <url>
@@ -2274,6 +2373,12 @@
         <loc>https://scp.net.cn/tags/tong-yi-xing/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/tool-calling/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/tool-design/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/tot/</loc>
     </url>
     <url>
@@ -2292,6 +2397,9 @@
         <loc>https://scp.net.cn/tags/type/</loc>
     </url>
     <url>
+        <loc>https://scp.net.cn/tags/typescript/</loc>
+    </url>
+    <url>
         <loc>https://scp.net.cn/tags/unification/</loc>
     </url>
     <url>
@@ -2302,6 +2410,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/valkey/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/vector-database/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/wal/</loc>
@@ -2335,6 +2446,9 @@
     </url>
     <url>
         <loc>https://scp.net.cn/tags/x/</loc>
+    </url>
+    <url>
+        <loc>https://scp.net.cn/tags/xi-lie-jiao-cheng/</loc>
     </url>
     <url>
         <loc>https://scp.net.cn/tags/xiao-xi-chuan-di/</loc>
