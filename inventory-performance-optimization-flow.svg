@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .box { fill: #F0FFF8; stroke: #12B886; stroke-width: 1.2; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">性能优化流程：缓存→批量→热点分散</text>
+
+  <rect x="60" y="80" width="260" height="80" rx="8" class="box"/>
+  <text x="80" y="110" class="text">缓存：SKU可用/锁定值，旁路写，消息刷新</text>
+
+  <rect x="360" y="80" width="260" height="80" rx="8" class="box"/>
+  <text x="380" y="110" class="text">批量：合并请求，DB批量更新与流水</text>
+
+  <rect x="660" y="80" width="260" height="80" rx="8" class="box"/>
+  <text x="680" y="110" class="text">热点分散：Key分片、队列分片、令牌桶</text>
+
+  <line x1="320" y1="120" x2="360" y2="120" class="arrow"/>
+  <line x1="620" y1="120" x2="660" y2="120" class="arrow"/>
+
+  <text x="60" y="180" class="text">指标对比：P99 85ms→28ms，QPS 12k→35k，准确率 99.98%→99.995%</text>
+</svg>
