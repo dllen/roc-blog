@@ -38,7 +38,7 @@ Linus 的逻辑不是"讨论不重要"，而是"如果你真想推动一件事�
 
 ## 二、2025，Parra 的回响
 
-2025 年 7 月，软件工程师 Andres Parra 写了一篇短文，标题就是这句话本身——"Talk is cheap. Show me the code." 他把这句内核社区的箴言延伸到了更广泛的个人成长和创业哲学中：
+2025 年 7 月，软件工程师 Andres Parra 写了一篇短文，标题就是这句话本身——["Talk is cheap. Show me the code."](https://www.byandrev.dev/posts/talk-is-cheap-show-me-the-code) 他把这句内核社区的箴言延伸到了更广泛的个人成长和创业哲学中：
 
 > "Torvalds 认识到了人类的一个基本真相：我们倾向于迷失在抽象和无穷无尽的计划中而不采取行动。"
 
@@ -52,7 +52,7 @@ Parra 的"talk is cheap, show me the code"，说的是**用行动对抗完美主
 
 ## 三、2026，Nadh 的反转
 
-2026 年 1 月，Kailash Nadh——zerodha 的技术负责人、一个在开源社区深耕多年的工程师——发表了一篇题为 **"Code is cheap. Show me the talk."** 的文章，将 Linus 的信条完全颠倒过来。
+2026 年 1 月，Kailash Nadh——zerodha 的技术负责人、一个在开源社区深耕多年的工程师——发表了一篇题为 **["Code is cheap. Show me the talk."](https://nadh.in/blog/code-is-cheap/)** 的文章，将 Linus 的信条完全颠倒过来。
 
 这是一个精心设计的反转。Nadh 不是 LLM 的狂热信徒，也不是"编码已死"的布道者。他是一位有深厚技术根基、在真实业务中使用了 LLM 的工程师。正因为如此，他的结论比任何一周前还在 push vibe-coding 的推特大 V 都更有分量。
 
@@ -192,4 +192,4 @@ LLM 做的事情，是在这个翻译链条的最末端——从设计到代码�
 
 ---
 
-*本文受到 Kailash Nadh《Code is cheap. Show me the talk》(2026) 和 Andres Parra《Talk is cheap. Show me the code》(2025) 两篇文章的启发，核心论点递进自二者之上。推荐阅读原文。*
+*本文受到 Kailash Nadh《[Code is cheap. Show me the talk.](https://nadh.in/blog/code-is-cheap/)》(2026) 和 Andres Parra《[Talk is cheap. Show me the code.](https://www.byandrev.dev/posts/talk-is-cheap-show-me-the-code)》(2025) 两篇文章的启发，核心论点递进自二者之上。推荐阅读原文。*
