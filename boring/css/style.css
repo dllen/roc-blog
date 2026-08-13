@@ -858,8 +858,8 @@
 .article-title {
   color: var(--color-text);
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
-  font-weight: 300;
+  font-size: clamp(1.25rem, 1.5rem, 2rem);
+  font-weight: 500;
   letter-spacing: -.025em;
   line-height: 1.15;
   margin-block: .5rem 1.25rem;
