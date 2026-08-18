@@ -340,7 +340,7 @@ test('article desktop grid keeps the content track fluid within the shell', asyn
     assert.match(css, /\.article-main\s*\{[^}]*max-width:\s*62\.5rem;/s);
     assert.match(
         css,
-        /@media\s*\(min-width:\s*1280px\)[\s\S]*?\.article-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+21\.5625rem;[^}]*gap:\s*clamp\(3\.5rem,\s*5vw,\s*4\.5rem\);[^}]*justify-content:\s*center;/s
+        /@media\s*\(min-width:\s*1280px\)[\s\S]*?\.article-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+clamp\(15\.5rem,\s*16vw,\s*17rem\);[^}]*gap:\s*clamp\(2rem,\s*3vw,\s*3rem\);[^}]*justify-content:\s*center;/s
     );
     assert.doesNotMatch(css, /grid-template-columns:\s*minmax\(0,\s*62\.5rem\)\s+21\.5625rem;/);
 });
