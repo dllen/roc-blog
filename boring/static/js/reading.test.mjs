@@ -274,7 +274,6 @@ test('reading: repeated DOMContentLoaded has no observer, fetch, or scroll-liste
   window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
   window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
 
-  assert.equal(document.querySelectorAll('.heading-anchor-group').length, 1);
   assert.equal(document.querySelectorAll('.anchor-link').length, 1);
   assert.equal(document.querySelectorAll('.code-copy').length, 1);
   assert.equal(FakeIntersectionObserver.instances.length, 1);
@@ -351,7 +350,7 @@ test('reading: copy button reports fallback failure', async () => {
   assert.equal(button.textContent, 'Failed');
 });
 
-test('reading: initAnchors adds stable # links inside selectable heading wrappers', () => {
+test('reading: initAnchors adds stable # links inside heading elements', () => {
   const html = `<html><body>
     <article>
       <h2 id="x">Hello</h2>
@@ -363,7 +362,8 @@ test('reading: initAnchors adds stable # links inside selectable heading wrapper
   assert.equal(anchors.length, 2);
   assert.equal(anchors[0].textContent, '#');
   assert.equal(anchors[0].className, 'anchor-link');
-  assert.equal(anchors[0].parentElement.className, 'heading-anchor-group');
+  // Anchors live directly inside the heading element (no wrapper span).
+  assert.equal(anchors[0].parentElement.tagName, 'H2');
 });
 
 test('reading: initRelated fetches index and renders top N shared-tag items', async () => {

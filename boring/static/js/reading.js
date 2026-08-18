@@ -83,8 +83,8 @@
 
     function makeHtml(items) {
       return items.map(it => {
-        const indent = (it.level - minLevel) * 12;
-        return `<a href="#${escapeHtml(it.id)}" data-toc-id="${escapeHtml(it.id)}" style="padding-left: ${indent}px;">${escapeHtml(it.text)}</a>`;
+        const offset = it.level - minLevel;
+        return `<a href="#${escapeHtml(it.id)}" data-toc-id="${escapeHtml(it.id)}" data-toc-offset="${offset}">${escapeHtml(it.text)}</a>`;
       }).join('');
     }
     const html = makeHtml(items);
@@ -115,6 +115,14 @@
       });
       activeId = id;
     }
+    const mobileDetails = document.querySelector(
+      'details.article-toc-mobile[data-toc-container="mobile"]'
+    );
+    const scheduleMobileOpen = mobileDetails
+      ? (window.requestIdleCallback
+          ? () => window.requestIdleCallback(() => { mobileDetails.open = true; }, { timeout: 800 })
+          : () => setTimeout(() => { mobileDetails.open = true; }, 200))
+      : null;
     const intersecting = new Set();
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -124,6 +132,7 @@
       for (let index = headingList.length - 1; index >= 0; index--) {
         if (intersecting.has(headingList[index])) {
           setActive(headingList[index].id);
+          if (scheduleMobileOpen) scheduleMobileOpen();
           break;
         }
       }
@@ -137,27 +146,24 @@
     if (!article) return;
     const headings = article.querySelectorAll('h2, h3, h4');
     headings.forEach(h => {
-      if (h.parentElement && h.parentElement.classList.contains('heading-anchor-group')) return;
+      if (h.querySelector(':scope > .anchor-link')) return;
       const a = document.createElement('a');
       a.href = '#' + h.id;
       a.textContent = '#';
       a.className = 'anchor-link';
+      a.setAttribute('aria-label', '复制 ' + h.textContent.trim() + ' 的链接');
+      a.setAttribute('aria-live', 'polite');
       a.addEventListener('click', e => {
         e.preventDefault();
         const url = window.location.origin + window.location.pathname + '#' + h.id;
         copyToClipboard(url).then(ok => {
           const orig = a.textContent;
-          a.textContent = ok ? 'Copied!' : 'Failed';
-          setTimeout(() => { a.textContent = orig; }, 2000);
+          a.textContent = ok ? '\u2713' : '\u2717';
+          setTimeout(() => { a.textContent = orig; }, 1500);
         });
         history.pushState(null, '', '#' + h.id);
       });
-      // Wrap heading in a span so we can add the anchor link
-      const wrapper = document.createElement('span');
-      wrapper.className = 'heading-anchor-group';
-      h.parentNode.insertBefore(wrapper, h);
-      wrapper.appendChild(h);
-      wrapper.appendChild(a);
+      h.appendChild(a);
     });
   }
 
@@ -166,17 +172,25 @@
     const pres = document.querySelectorAll('article pre');
     pres.forEach(pre => {
       if (pre.querySelector(':scope > .code-copy')) return;
+      try {
+        if (getComputedStyle(pre).position === 'static') pre.style.position = 'relative';
+      } catch (_) {
+        pre.style.position = 'relative';
+      }
       const originalText = pre.textContent;
-      pre.style.position = 'relative';
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.textContent = 'Copy';
       btn.className = 'code-copy';
+      btn.setAttribute('aria-label', '复制代码');
+      btn.setAttribute('aria-live', 'polite');
       btn.addEventListener('click', () => {
         const code = pre.querySelector('code');
         const text = code ? code.textContent : originalText;
         copyToClipboard(text).then(ok => {
+          const orig = btn.textContent;
           btn.textContent = ok ? 'Copied ✓' : 'Failed';
-          setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+          setTimeout(() => { btn.textContent = orig; }, 1500);
         });
       });
       pre.appendChild(btn);
