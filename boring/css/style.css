@@ -821,7 +821,7 @@
 }
 
 .article-toc-label {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--color-text);
   font-family: var(--font-ui);
   font-size: 0.75rem;
@@ -836,13 +836,13 @@
 
 .article-toc-list [data-toc-id] {
   display: block;
-  padding-block: 0.35rem;
+  padding-block: 0.3rem;
   border-left: 2px solid transparent;
   color: var(--color-muted);
   font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-wrap: pretty;
   transition: border-color var(--transition-duration) ease, color var(--transition-duration) ease;
 }
 
@@ -1347,9 +1347,9 @@
 
   .article-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 21.5625rem;
+    grid-template-columns: minmax(0, 1fr) clamp(15.5rem, 16vw, 17rem);
     align-items: start;
-    gap: clamp(3.5rem, 5vw, 4.5rem);
+    gap: clamp(2rem, 3vw, 3rem);
     justify-content: center;
   }
 
@@ -1365,7 +1365,7 @@
     position: sticky;
     top: 8rem;
     max-height: calc(100vh - 10rem);
-    padding-left: 1.25rem;
+    padding-left: 0.9rem;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
