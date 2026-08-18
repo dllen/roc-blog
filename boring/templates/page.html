@@ -88,5 +88,5 @@
         </div>
     </div>
 
-    <script src="/js/reading.js" defer></script>
+    <script src="{{ get_url(path='js/reading.js', cachebust=true) | safe }}" defer></script>
 {% endblock content %}

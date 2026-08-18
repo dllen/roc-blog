@@ -39,10 +39,10 @@
                 document.documentElement.classList.toggle('dark', isDark);
             })();
         </script>
-        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="{{ get_url(path='css/style.css', cachebust=true) | safe }}"/>
         <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js" defer></script>
-        <script src="/js/search.js" defer></script>
-        <script src="/js/main.js" defer></script>
+        <script src="{{ get_url(path='js/search.js', cachebust=true) | safe }}" defer></script>
+        <script src="{{ get_url(path='js/main.js', cachebust=true) | safe }}" defer></script>
         <link rel="alternate" type="application/atom+xml" title="{{ config.title }}"
               href="{{ get_url(path='blog/atom.xml', trailing_slash=false) | safe }}">
         {% block head_extend %}{% endblock %}
