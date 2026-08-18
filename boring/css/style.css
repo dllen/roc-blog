@@ -97,12 +97,9 @@
 }
 
 .skip-to-content {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
   z-index: 200;
   padding: 0.6rem 1rem;
   border-radius: 4px;
@@ -112,13 +109,12 @@
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--transition-duration) ease;
 }
 .skip-to-content:focus,
 .skip-to-content:focus-visible {
-  left: 0.75rem;
-  top: 0.75rem;
-  width: auto;
-  height: auto;
+  transform: translateY(0);
   outline: 2px solid var(--color-text);
   outline-offset: 2px;
 }
