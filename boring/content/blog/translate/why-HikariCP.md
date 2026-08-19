@@ -203,18 +203,18 @@ Another big hit incurred when you can't get your work done in a quanta is CPU ca
 
 ### 参考文档：
 
-- [https://www.linqz.io/2019/03/why-to-use-hikari-connection-pool.html](https://www.linqz.io/2019/03/why-to-use-hikari-connection-pool.html)
+- [参考链接](https://www.linqz.io/2019/03/why-to-use-hikari-connection-pool.html)
 
-- How to choose database connection pool : [https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/](https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/)
+- [How to choose database connection pool](https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/)
 
-- [http://www.programmersought.com/article/319698001/](http://www.programmersought.com/article/319698001/)
+- [参考链接](http://www.programmersought.com/article/319698001/)
 
-- How to size the Pool : [https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
+- [How to size the Pool](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
 
-- Database Down Behaviour : [https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down](https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down)
+- [Database Down Behaviour](https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down)
 
-- Performance Comparison 1 : [https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools](https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools)
+- [Performance Comparison 1](https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools)
 
-- Performance Comparison 2 : [https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard](https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard)
+- [Performance Comparison 2](https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard)
 
-- [https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/](https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/)
+- [参考链接](https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/)

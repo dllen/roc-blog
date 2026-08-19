@@ -4,7 +4,7 @@ date: 2020-03-18T12:13:38+05:30
 update_date: 2020-03-18T12:13:38+05:30
 ---
 
-原文链接: [http://antirez.com/news/101](http://antirez.com/news/101)
+[原文链接](http://antirez.com/news/101)
 
 Is Redlock safe? antirez 3539 days ago. 413703 views. Martin Kleppmann, a distributed systems researcher, yesterday published an analysis of Redlock (http://redis.io/topics/distlock), that you can find here: http://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html
 

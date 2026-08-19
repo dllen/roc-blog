@@ -13,8 +13,8 @@ taxonomies:
 - 目标：结合官方建议形成可落地的“索引优化清单”，同时明确风险与回滚策略。
 
 参考：
-- Elasticsearch 6.8 索引速度优化：[https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads)
-- Elastic Docs 索引速度优化：[https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed)
+- [Elasticsearch 6.8 索引速度优化](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads)
+- [Elastic Docs 索引速度优化](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed)
 
 ## 一页清单（Quick Wins）
 
@@ -106,6 +106,6 @@ PUT _cluster/settings
 ## 参考
 
 - Elasticsearch 6.8：Tune for indexing speed（禁用刷新与副本等）
-  - [https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads)
+  - [参考链接](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-indexing-speed.html#_disable_refresh_and_replicas_for_initial_loads)
 - Elastic Docs：Optimize indexing speed（批量、并发与退避等）
-  - [https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed)
+  - [参考链接](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/indexing-speed)

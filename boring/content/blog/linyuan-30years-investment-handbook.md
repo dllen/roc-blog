@@ -74,13 +74,13 @@ update_date: "2025-11-12"
 
 ### 引用与资料来源
 
-- 联合国《世界人口展望2024修订》数据门户（人口年龄结构与长期预测）：[https://population.un.org/wpp/](https://population.un.org/wpp/)
-- 联合国新闻稿与概要（中国人口峰值与长期趋势）：[https://www.un.org/en/UN-projects-world-population-to-peak-within-this-century](https://www.un.org/en/UN-projects-world-population-to-peak-within-this-century)
-- 国家统计局《2024年人口数据情况》发布（2025-01-17）：[https://www.stats.gov.cn/xxgk/jd/sjjd2020/202501/t20250117_1958337.html](https://www.stats.gov.cn/xxgk/jd/sjjd2020/202501/t20250117_1958337.html)
-- 世界银行 WDI 中国总和生育率（SP.DYN.TFRT.IN）：[https://data.worldbank.org/indicator/SP.DYN.TFRT.IN?locations=CN](https://data.worldbank.org/indicator/SP.DYN.TFRT.IN?locations=CN)
-- Peking University–Lancet 委员会报告（中国至2050年65岁及以上人口约3.66亿）：[https://pmc.ncbi.nlm.nih.gov/articles/PMC9801271/](https://pmc.ncbi.nlm.nih.gov/articles/PMC9801271/)
-- 《林园炒股秘籍》（王洪著，林园投资思想访谈与实战梳理）：[https://weread.qq.com/web/bookDetail/cba32a90811e752d5g0125c3](https://weread.qq.com/web/bookDetail/cba32a90811e752d5g0125c3)
-- 《复合增长》（王洪著，林园长期主义与复利方法论）：[https://weread.qq.com/web/bookDetail/93c32890811e36e74g010ce3](https://weread.qq.com/web/bookDetail/93c32890811e36e74g010ce3)
+- [联合国《世界人口展望2024修订》数据门户（人口年龄结构与长期预测）](https://population.un.org/wpp/)
+- [联合国新闻稿与概要（中国人口峰值与长期趋势）](https://www.un.org/en/UN-projects-world-population-to-peak-within-this-century)
+- [国家统计局《2024年人口数据情况》发布（2025-01-17）](https://www.stats.gov.cn/xxgk/jd/sjjd2020/202501/t20250117_1958337.html)
+- [世界银行 WDI 中国总和生育率（SP.DYN.TFRT.IN）](https://data.worldbank.org/indicator/SP.DYN.TFRT.IN?locations=CN)
+- [Peking University–Lancet 委员会报告（中国至2050年65岁及以上人口约3.66亿）](https://pmc.ncbi.nlm.nih.gov/articles/PMC9801271/)
+- [《林园炒股秘籍》（王洪著，林园投资思想访谈与实战梳理）](https://weread.qq.com/web/bookDetail/cba32a90811e752d5g0125c3)
+- [《复合增长》（王洪著，林园长期主义与复利方法论）](https://weread.qq.com/web/bookDetail/93c32890811e36e74g010ce3)
 
 > 注：本文为公开信息的学习与记录，不构成任何投资建议。引用均附权威链接，视频与演讲在后续数据库中将补充具体时间戳标注。
 

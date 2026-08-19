@@ -576,4 +576,4 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_2025
 
 [图片](https://mmbiz.qpic.cn/mmbiz_jpg/EibGwKwlgDVSAtxfEsHU78smA5HWgJYkXKbe8XAgzKeCUkjY8V3oFibDzups49VL83116NUfA3iblkn248UkBIgVA/640?wx_fmt=jpeg&from=appmsg&wxfrom=5&wx_lazy=1&tp=webp)
 
-URL: [https://mp.weixin.qq.com/s/YDxnuKVKmEOlPCu2DWg6Aw](https://mp.weixin.qq.com/s/YDxnuKVKmEOlPCu2DWg6Aw)
+[原文链接](https://mp.weixin.qq.com/s/YDxnuKVKmEOlPCu2DWg6Aw)

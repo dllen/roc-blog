@@ -342,7 +342,7 @@ Here’s an example of how GPT may tokenize a sequence:
   <img width="550" src="https://user-images.githubusercontent.com/89960/232417569-8d562792-64b5-423d-a7a2-db7513dd4d61.png" title="An example tokenization. You can experiment here: https://platform.openai.com/tokenizer ">
 </p>
 
-You can experiment with a tokenizer here: [https://platform.openai.com/tokenizer](https://platform.openai.com/tokenizer)
+You can experiment with a tokenizer here: [OpenAI Tokenizer](https://platform.openai.com/tokenizer)
 
 Different models will use different tokenizers with different levels of granularity. You could, in theory, just feed a model 0’s and 1’s – but then the model needs to learn the concept of characters from bits, and then the concept of words from characters, and so forth. Similarly, you could feed the model a stream of raw characters, but then the model needs to learn the concept of words, and punctuation, etc… and, in general, the models will perform worse.
 
@@ -1216,4 +1216,4 @@ Some of the downsides include:
 ## Additional Resources
 - :star2: [OpenAI Cookbook](https://github.com/openai/openai-cookbook) :star2:
 - :technologist: [Prompt Hacking](https://learnprompting.org/docs/category/-prompt-hacking) :technologist: 
-- :books: [Dair.ai Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) :books: 
+- :books: [Dair.ai Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) :books:

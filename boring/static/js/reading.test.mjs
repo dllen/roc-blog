@@ -366,6 +366,23 @@ test('reading: initAnchors adds stable # links inside heading elements', () => {
   assert.equal(anchors[0].parentElement.tagName, 'H2');
 });
 
+test('reading: external article links open in a new tab', () => {
+  const html = `<html><body>
+    <article><div class="article-content">
+      <a href="https://example.com/docs">Docs</a>
+      <a href="/blog/x/">Internal</a>
+      <a href="https://example.com" rel="external">Another</a>
+    </div></article>
+  </body></html>`;
+  const { document } = setupDOM(html);
+
+  document.querySelectorAll('.article-content a[href^="http"]').forEach(link => {
+    assert.equal(link.target, '_blank');
+    assert.equal(link.rel, 'noopener noreferrer');
+  });
+  assert.equal(document.querySelector('.article-content a[href="/blog/x/"]').target, '');
+});
+
 test('reading: initRelated fetches index and renders top N shared-tag items', async () => {
   const html = `<html><body>
     <section data-related-container

@@ -102,4 +102,4 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲
 有一次，我在哈佛大学演讲，我告诉学生们，给自己最欣赏的人打工。学生们听了，都自己做老板去了。找工作，一定要找自己欣赏的老板、自己欣赏的公司。男人一般很少面对工作和生活二者之间难以取舍的问题，女人经常面对这样的取舍
 
 作者：RanRan
-链接：[https://xueqiu.com/1173786903/96071052?page=2](https://xueqiu.com/1173786903/96071052?page=2)
+[链接](https://xueqiu.com/1173786903/96071052?page=2)

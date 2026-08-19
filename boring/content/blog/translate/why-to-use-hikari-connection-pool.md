@@ -68,10 +68,10 @@ Check the source code of lockless and thread safe implementation of ConcurrentBa
 
 Further Reading Material:
 
-* How to choose database connection pool : [https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/](https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/)
-* [http://www.programmersought.com/article/319698001/](http://www.programmersought.com/article/319698001/)
-* How to size the Pool : [https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
-* Database Down Behaviour : [https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down](https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down)
-* Performance Comparison 1 : [https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools](https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools)
-* Performance Comparison 2 : [https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard](https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard)
-* [https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/](https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/)
+* [How to choose database connection pool](https://techblog.topdesk.com/coding/choosing-a-database-connection-pool/)
+* [参考链接](http://www.programmersought.com/article/319698001/)
+* [How to size the Pool](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
+* [Database Down Behaviour](https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down)
+* [Performance Comparison 1](https://www.wix.engineering/blog/how-does-hikaricp-compare-to-other-connection-pools)
+* [Performance Comparison 2](https://nbsoftsolutions.com/blog/the-difficulty-of-performance-evaluation-of-hikaricp-in-dropwizard)
+* [参考链接](https://blog.jooq.org/2017/02/21/jooq-tuesdays-brett-wooldridge-shows-what-it-takes-to-write-the-fastest-java-connection-pool/)

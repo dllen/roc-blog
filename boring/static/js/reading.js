@@ -218,7 +218,17 @@
     }
   }
 
-  // ── 5. Related articles (fetches /related-index.json) ───
+  // ── 5. External article links ────────────────────────
+  function initExternalLinks() {
+    const content = document.querySelector('.article-content');
+    if (!content) return;
+    content.querySelectorAll('a[href^="http"]').forEach(link => {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    });
+  }
+
+  // ── 6. Related articles (fetches /related-index.json) ───
   function initRelated() {
     const container = document.querySelector('[data-related-container]');
     if (!container) return;
@@ -275,6 +285,7 @@
     initToc();
     initAnchors();
     initCodeCopy();
+    initExternalLinks();
     initRelated();
   }
   if (document.readyState === 'loading') {

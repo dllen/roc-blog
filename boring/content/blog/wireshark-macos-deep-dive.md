@@ -194,11 +194,11 @@ tshark -r trace.pcapng -q -z conv,tcp
 
 ### 引用与参考
 
-- Wireshark 官方下载与文档：[https://www.wireshark.org/download.html](https://www.wireshark.org/download.html) 、[https://www.wireshark.org/docs/](https://www.wireshark.org/docs/)
-- 捕获权限说明（官方 Wiki）：[https://wiki.wireshark.org/CaptureSetup/CapturePrivileges](https://wiki.wireshark.org/CaptureSetup/CapturePrivileges)
-- 二进制打包与权限原则（官方文档）：[https://www.wireshark.org/docs/wsdg_html_chunked/ChSrcBinary.html](https://www.wireshark.org/docs/wsdg_html_chunked/ChSrcBinary.html)
-- 显示过滤器参考（手册）：[https://www.wireshark.org/docs/man-pages/wireshark-filter.html](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
-- 捕获过滤器说明（Wiki）：[https://wiki.wireshark.org/CaptureFilters](https://wiki.wireshark.org/CaptureFilters)
+- [Wireshark 官方下载](https://www.wireshark.org/download.html)、[Wireshark 官方文档](https://www.wireshark.org/docs/)
+- [捕获权限说明（官方 Wiki）](https://wiki.wireshark.org/CaptureSetup/CapturePrivileges)
+- [二进制打包与权限原则（官方文档）](https://www.wireshark.org/docs/wsdg_html_chunked/ChSrcBinary.html)
+- [显示过滤器参考（手册）](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
+- [捕获过滤器说明（Wiki）](https://wiki.wireshark.org/CaptureFilters)
 
 > 注：本文技术内容提炼自内部教程文件 `.trae/documents/Wireshark_Mac_Tutorial.md` 并补充官方参考。涉及权限设置请严格遵守最小权限与安全最佳实践。
 
@@ -225,8 +225,8 @@ tshark -r trace.pcapng -q -z conv,tcp
   - 结合业务对象大小与链路特性选择拥塞控制并调优
   - 在真实流量与跨地域环境下复测，避免仅实验室结论
 - 原始出处：
-  - Comparing HTTP/3 vs. HTTP/2 Performance：[https://blog.cloudflare.com/http-3-vs-http-2/](https://blog.cloudflare.com/http-3-vs-http-2/)
-  - How to test HTTP/3 and QUIC with Firefox Nightly（含 Wireshark 验证建议）：[https://blog.cloudflare.com/how-to-test-http-3-and-quic-with-firefox-nightly/](https://blog.cloudflare.com/how-to-test-http-3-and-quic-with-firefox-nightly/)
+  - [Comparing HTTP/3 vs. HTTP/2 Performance](https://blog.cloudflare.com/http-3-vs-http-2/)
+  - [How to test HTTP/3 and QUIC with Firefox Nightly（含 Wireshark 验证建议）](https://blog.cloudflare.com/how-to-test-http-3-and-quic-with-firefox-nightly/)
 
 2) Netflix 视频流送达行为分析（第三方测试，来源：AVNetwork）
 - 案例背景（200-300字）：针对 Netflix 视频流在家庭 DSL（下行 20Mb/上行 2Mb）环境的送达特性，研究者在三层交换机镜像端口旁路接入分析设备，使用 Wireshark 捕获并分析 TCP 会话与带宽占用，评估播放器缓冲填充阶段与稳态播放阶段的带宽模式。该案例聚焦实际消费网络与主流浏览器（Windows 10 + Chrome），具备代表性与可复现性，展示了用 Conversations 与 I/O Graph 快速理解流媒体流量行为的路径。
@@ -248,7 +248,7 @@ tshark -r trace.pcapng -q -z conv,tcp
   - 用会话视角与 I/O 图表能快速刻画流媒体行为
   - 初始缓冲与稳态需求不同，应分阶段评估链路容量
   - 家庭网络抓包建议使用镜像端口/TAP 提升可见性
-- 原始出处：Byte-Sized Lesson: Analyzing Netflix’s Streaming Delivery：[https://www.avnetwork.com/features/byte-sized-lesson-analyzing-netflixs-streaming-delivery](https://www.avnetwork.com/features/byte-sized-lesson-analyzing-netflixs-streaming-delivery)
+- [Byte-Sized Lesson: Analyzing Netflix’s Streaming Delivery](https://www.avnetwork.com/features/byte-sized-lesson-analyzing-netflixs-streaming-delivery)
 
 3) 企业防火墙集群 CPHA 同步流量导致性能问题（来源：Packt 教程示例，Cisco 集群场景）
 - 案例背景（200-300字）：某企业网络出现业务抖动与高负载，使用 Wireshark 的统计工具进行分层占比分析，发现大量 Check Point 高可用集群（CPHA）同步流量与业务流混行，占据链路带宽并影响生产网络性能。该场景具有代表性：安全设备的状态同步若与业务共网段，可能生成大量管理面流量导致拥塞。
@@ -269,6 +269,6 @@ tshark -r trace.pcapng -q -z conv,tcp
   - 先用协议层级统计识别“带宽黑洞”，再定位到具体会话
   - 安全设备同步应走独立链路，避免与生产业务混行
   - Wireshark 统计工具可快速指导网络架构整改与复核
-- 原始出处：Using statistical tools in Wireshark for packet analysis（Packt）：[https://www.packtpub.com/en-us/learning/how-to-tutorials/statistical-tools-in-wireshark-for-packet-analysis](https://www.packtpub.com/en-us/learning/how-to-tutorials/statistical-tools-in-wireshark-for-packet-analysis)
+- [Using statistical tools in Wireshark for packet analysis（Packt）](https://www.packtpub.com/en-us/learning/how-to-tutorials/statistical-tools-in-wireshark-for-packet-analysis)
 
 > 转载授权与版权提示：以上案例均引用公开资料用于技术学习与评述。若需转载原文图片或大段内容，请依据原站点授权政策取得许可；本文已在每个案例处标注来源链接以便审阅与取证。

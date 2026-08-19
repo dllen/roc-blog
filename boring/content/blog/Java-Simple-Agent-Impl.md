@@ -485,7 +485,7 @@ public class AttachMain {
 
 - [谈谈Java Agent技术的实现-腾讯云开发者社区-腾讯云](https://cloud.tencent.com/developer/article/2161810)
 
-- [https://segmentfault.com/a/1190000039731381](https://segmentfault.com/a/1190000039731381)
+- [参考链接](https://segmentfault.com/a/1190000039731381)
 
 - [手把手教你Java字节码Demo](https://veryjj.github.io/2021/01/01/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0Java%E5%AD%97%E8%8A%82%E7%A0%81Demo/)
 

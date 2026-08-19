@@ -246,8 +246,8 @@ JVM 是 Java 应用的运行时基石，性能与稳定性直接决定服务的�
 - 框架特性：Spring 下注意单例与连接池、线程池、序列化策略的交互影响
 
 参考与延伸阅读：
-- GC 调优（JDK11）：[https://docs.oracle.com/javase/11/gctuning/](https://docs.oracle.com/javase/11/gctuning/)
-- G1 GC 原理与参数：[https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc.html](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc.html)
-- Unified Logging（JDK9+）：[https://docs.oracle.com/javase/9/tools/java.htm#JSWOR690](https://docs.oracle.com/javase/9/tools/java.htm#JSWOR690)
-- Async-Profiler：[https://github.com/async-profiler/async-profiler](https://github.com/async-profiler/async-profiler)
-- VisualVM：[https://visualvm.github.io/](https://visualvm.github.io/)
+- [GC 调优（JDK11）](https://docs.oracle.com/javase/11/gctuning/)
+- [G1 GC 原理与参数](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc.html)
+- [Unified Logging（JDK9+）](https://docs.oracle.com/javase/9/tools/java.htm#JSWOR690)
+- [Async-Profiler](https://github.com/async-profiler/async-profiler)
+- [VisualVM](https://visualvm.github.io/)

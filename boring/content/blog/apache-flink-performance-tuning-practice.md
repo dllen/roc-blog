@@ -243,8 +243,8 @@ env.setParallelism(4);
 ---
 
 # 参考与延伸阅读
-- Flink 官方文档：[https://nightlies.apache.org/flink/flink-docs-release-1.15/](https://nightlies.apache.org/flink/flink-docs-release-1.15/)
-- Checkpoint 与状态后端：[https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/checkpoints/](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/checkpoints/)
-- RocksDB State Backend：[https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/rocksdb/](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/rocksdb/)
-- 内存与资源：[https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/deployment/memory/](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/deployment/memory/)
-- Backpressure 监控：[https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/monitoring/back_pressure/](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/monitoring/back_pressure/)
+- [Flink 官方文档](https://nightlies.apache.org/flink/flink-docs-release-1.15/)
+- [Checkpoint 与状态后端](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/checkpoints/)
+- [RocksDB State Backend](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/rocksdb/)
+- [内存与资源](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/deployment/memory/)
+- [Backpressure 监控](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/monitoring/back_pressure/)

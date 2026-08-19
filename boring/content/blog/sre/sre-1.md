@@ -136,9 +136,9 @@ taxonomies:
 
 注：
 
-* 关于如何来定义 SLO 是一个相当复杂的事情，这个使用往往跟用户体验有直接的关系，推荐一个实际案例来展开，如何定制自己服务的 SLO。（Case Study: Implementing SLOs for a New Service - [https://www.usenix.org/conference/srecon19americas/presentation/lawson](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19americas/presentation/lawson)）
-* 推荐一篇文章，阐述请求延时的 SLO 如何指定的，具体可以参考链接《Latency SLOs Done Right》[https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_schlossnagle_latency_slides.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_schlossnagle_latency_slides.pdf)
-* 推荐一篇文章，从请求在系统运行中阐述了一些核型的 SLO 该如何制定，《How to trade off server utilization and tail latency》[https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_plenz.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_plenz.pdf)
+* 关于如何来定义 SLO 是一个相当复杂的事情，这个使用往往跟用户体验有直接的关系，推荐一个实际案例来展开，如何定制自己服务的 SLO。（[Case Study: Implementing SLOs for a New Service](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19americas/presentation/lawson)）
+* 推荐一篇文章，阐述请求延时的 SLO 如何指定的，具体可以参考链接 [《Latency SLOs Done Right》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_schlossnagle_latency_slides.pdf)
+* 推荐一篇文章，从请求在系统运行中阐述了一些核型的 SLO 该如何制定，[《How to trade off server utilization and tail latency》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_plenz.pdf)
 
 ### 2.2.2 面向 SLO 监控的设计 --- SLO 结果导向的告警，而不是原因导向的告警
 
@@ -167,19 +167,19 @@ taxonomies:
 
 SRE CONF 2019 传送门：
 
-* Conference Report：SRECON AMERICAS 2019 ： [https://noidea.dog/blog/srecon-americas-2019](https://link.zhihu.com/?target=https%3A//noidea.dog/blog/srecon-americas-2019)
-* Conference Program：SRECON Asia/Pacific 2019 ： [https://www.usenix.org/conference/srecon19asia/program](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19asia/program)
+* [Conference Report：SRECON AMERICAS 2019](https://link.zhihu.com/?target=https%3A//noidea.dog/blog/srecon-americas-2019)
+* [Conference Program：SRECON Asia/Pacific 2019](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19asia/program)
 
 推荐几篇不错的 Session：
 
-* 《Using ML to Automate Dynamic Error Categorization》来自 FaceBook [https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_davoli.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_davoli.pdf)
-* 《ML Ops and Kubeflow Pipelines》 来自 Google [https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_sato.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_sato.pdf)
-* 《NetRadar: Monitoring the datacenter network》来自 百度 [https://www.usenix.org/sites/default/files/conference/protected-files/sre19apac_slides_chen_netradar.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19apac_slides_chen_netradar.pdf)
-* 《Monitoring at LinkedIn》 来自 LinkedIn [https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_lamba.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_lamba.pdf)
-* 《Detecting service degradation and failures at scale》来自 PayPal [https://www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_narayanan.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_narayanan.pdf)
-* 《Tracing：Fast & Slow Digging into and improving your web services's performance》[https://www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_root.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_root.pdf)
-* 《Designing Resilient Data Pipelines》[https://www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_bolin.pdf](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_bolin.pdf)
-* 《Practical Instrumentation for Observability》[https://www.usenix.org/conference/srecon19asia/presentation/krabbe](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19asia/presentation/krabbe)
+* [《Using ML to Automate Dynamic Error Categorization》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_davoli.pdf) 来自 FaceBook
+* [《ML Ops and Kubeflow Pipelines》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_sato.pdf) 来自 Google
+* [《NetRadar: Monitoring the datacenter network》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19apac_slides_chen_netradar.pdf) 来自 百度
+* [《Monitoring at LinkedIn》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_lamba.pdf) 来自 LinkedIn
+* [《Detecting service degradation and failures at scale》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/srecon19apac_slides_narayanan.pdf) 来自 PayPal
+* [《Tracing：Fast & Slow Digging into and improving your web services's performance》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_root.pdf)
+* [《Designing Resilient Data Pipelines》](https://link.zhihu.com/?target=https%3A//www.usenix.org/sites/default/files/conference/protected-files/sre19amer_slides_bolin.pdf)
+* [《Practical Instrumentation for Observability》](https://link.zhihu.com/?target=https%3A//www.usenix.org/conference/srecon19asia/presentation/krabbe)
 
 ### 3.2 几个应该多花精力关注的点
 

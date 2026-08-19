@@ -11,7 +11,7 @@ taxonomies:
 
 ## 安装 ollama
 
-官网地址：[https://ollama.com/](https://ollama.com/)
+[官网地址](https://ollama.com/)
 
 GitHub 地址：[GitHub - ollama/ollama](https://github.com/ollama/ollama)
 
@@ -375,7 +375,7 @@ curl http://localhost:11434/api/generate -d '{
 
 ### LangChain
 
-参考文档：[https://python.langchain.com/docs/integrations/llms/ollama](https://python.langchain.com/docs/integrations/llms/ollama)
+[参考文档](https://python.langchain.com/docs/integrations/llms/ollama)
 
 ```python
 from langchain_community.llms import Ollama
@@ -432,7 +432,7 @@ docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-
 
 - [[译][论文] LLaMA：开放和高效的基础语言模型集（Meta/Facebook，2022）](https://arthurchiao.art/blog/llama-paper-zh/)
 
-- [https://python.langchain.com/docs/integrations/llms/ollama](https://python.langchain.com/docs/integrations/llms/ollama)
+- [参考链接](https://python.langchain.com/docs/integrations/llms/ollama)
 
 - [Ollama: Easily run LLMs locally — Klu](https://klu.ai/glossary/ollama)
 

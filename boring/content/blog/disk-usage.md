@@ -13,8 +13,8 @@ taxonomies:
 - 目标：在保证查询能力与可靠性的前提下，系统性降低磁盘使用成本，并明确权衡与风险。
 
 参考：
-- Tune for disk usage（Elasticsearch 6.8 指南）：[https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html)
-- Optimize disk usage（Elastic Docs）：[https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage)
+- [Tune for disk usage（Elasticsearch 6.8 指南）](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html)
+- [Optimize disk usage（Elastic Docs）](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage)
 
 ## 一页清单（Quick Wins）
 
@@ -172,6 +172,6 @@ PUT _cluster/settings
 ## 参考
 
 - Elasticsearch 6.8：Tune for disk usage
-  - [https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html)
+  - [参考链接](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/tune-for-disk-usage.html)
 - Elastic Docs：Optimize disk usage
-  - [https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage)
+  - [参考链接](https://www.elastic.co/docs/deploy-manage/production-guidance/optimize-performance/disk-usage)
