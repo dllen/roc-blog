@@ -121,6 +121,6 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2015沃伦
 
 作者：RanRan
 
-链接：https://xueqiu.com/1173786903/95374145
+链接：[https://xueqiu.com/1173786903/95374145](https://xueqiu.com/1173786903/95374145)
 
 来源：雪球

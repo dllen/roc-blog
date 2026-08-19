@@ -107,4 +107,4 @@ AI 不会给我完美的解决方案。结果也不会让我效率翻十倍。�
 ---
 
 *原文：Brent Fitzgerald "The Human is the Loop"*
-*链接：https://brentfitzgerald.com/posts/the-human-is-the-loop/*
+*链接：[https://brentfitzgerald.com/posts/the-human-is-the-loop/](https://brentfitzgerald.com/posts/the-human-is-the-loop/)*

@@ -147,4 +147,4 @@ min.insync.replicas=2
 - 网络与磁盘是基础设施瓶颈，Kafka 参数只是“放大器”，必须与 OS/NIC/盘配置协同优化。
 
 ## 参考资料
-- Kafka 调优十招：https://mp.weixin.qq.com/s/RyPrlIps1tWUWgQcIyiEvw
+- Kafka 调优十招：[https://mp.weixin.qq.com/s/RyPrlIps1tWUWgQcIyiEvw](https://mp.weixin.qq.com/s/RyPrlIps1tWUWgQcIyiEvw)

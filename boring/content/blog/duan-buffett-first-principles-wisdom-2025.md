@@ -61,12 +61,12 @@ update_date: "2025-11-12"
 
 # 参考与来源
 
-- [来源1] 段永平浙大见面会问答（2025-01-05）｜新浪财经：https://finance.sina.com.cn/roll/2025-01-05/doc-inecxqhr2576638.shtml
-- [来源2] 段永平浙大交流实录（要点版）｜新浪财经：https://finance.sina.com.cn/stock/stockzmt/2025-01-06/doc-inecyfep3065663.shtml
-- [来源3] 2025年浙大演讲整理｜知乎：https://zhuanlan.zhihu.com/p/17665975415
-- [来源4] 2025-11-11 对话方三文（视频汇编）｜B 站：https://www.bilibili.com/video/BV1xDkkBqE6U/
-- [来源5] 2025 伯克希尔股东大会精华｜观察者网：https://www.guancha.cn/internation/2025_05_04_774565.shtml
-- [来源6] 年会问答要点与贸易观点｜钛媒体：https://www.tmtpost.com/7555654.html
-- [来源7] 年会问答全文要点｜新浪财经：https://finance.sina.com.cn/stock/zqgd/2025-05-04/doc-inevkfsy6079193.shtml
+- [来源1] 段永平浙大见面会问答（2025-01-05）｜新浪财经：[https://finance.sina.com.cn/roll/2025-01-05/doc-inecxqhr2576638.shtml](https://finance.sina.com.cn/roll/2025-01-05/doc-inecxqhr2576638.shtml)
+- [来源2] 段永平浙大交流实录（要点版）｜新浪财经：[https://finance.sina.com.cn/stock/stockzmt/2025-01-06/doc-inecyfep3065663.shtml](https://finance.sina.com.cn/stock/stockzmt/2025-01-06/doc-inecyfep3065663.shtml)
+- [来源3] 2025年浙大演讲整理｜知乎：[https://zhuanlan.zhihu.com/p/17665975415](https://zhuanlan.zhihu.com/p/17665975415)
+- [来源4] 2025-11-11 对话方三文（视频汇编）｜B 站：[https://www.bilibili.com/video/BV1xDkkBqE6U/](https://www.bilibili.com/video/BV1xDkkBqE6U/)
+- [来源5] 2025 伯克希尔股东大会精华｜观察者网：[https://www.guancha.cn/internation/2025_05_04_774565.shtml](https://www.guancha.cn/internation/2025_05_04_774565.shtml)
+- [来源6] 年会问答要点与贸易观点｜钛媒体：[https://www.tmtpost.com/7555654.html](https://www.tmtpost.com/7555654.html)
+- [来源7] 年会问答全文要点｜新浪财经：[https://finance.sina.com.cn/stock/zqgd/2025-05-04/doc-inevkfsy6079193.shtml](https://finance.sina.com.cn/stock/zqgd/2025-05-04/doc-inevkfsy6079193.shtml)
 
 > 注：本文为公开信息的学习与记录，不构成任何投资建议。

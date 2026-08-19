@@ -158,7 +158,7 @@ Fowler 在评论里明确指出：OpenAI 的分享更强调长期可维护性，
 
 ## 5. 术语提醒：Harness Engineering ≠ Harness 公司工程博客
 
-用户给的链接里包含 https://engineering.harness.io/ ，这是 CI/CD 平台 Harness 的工程博客站点。“Harness Engineering”在那里的含义更多是公司工程实践分享，并不等同于本文讨论的“面向 AI 智能体的 harness 工程体系”。
+用户给的链接里包含 [https://engineering.harness.io/](https://engineering.harness.io/) ，这是 CI/CD 平台 Harness 的工程博客站点。“Harness Engineering”在那里的含义更多是公司工程实践分享，并不等同于本文讨论的“面向 AI 智能体的 harness 工程体系”。
 
 不过这种“同词不同义”也很有趣：CI/CD、可观测性、变更审计、验证流水线……恰恰是 AI harness 里最需要被强化和自动化的部分。
 

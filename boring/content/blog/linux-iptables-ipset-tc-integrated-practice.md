@@ -508,7 +508,7 @@ sudo iptables -t mangle -A OUTPUT -m cgroup --cgroup 0x00010010 \
 - 推行脚本化与持久化，确保在重启、变更或回滚时可控可复现
 
 参考链接：
-- iptables 文档：https://netfilter.org/
-- ipset 手册：https://ipset.netfilter.org/
-- tc 与 qdisc：https://man7.org/linux/man-pages/man8/tc.8.html
-- FQ-CoDel：https://www.bufferbloat.net/projects/codel/wiki/
+- iptables 文档：[https://netfilter.org/](https://netfilter.org/)
+- ipset 手册：[https://ipset.netfilter.org/](https://ipset.netfilter.org/)
+- tc 与 qdisc：[https://man7.org/linux/man-pages/man8/tc.8.html](https://man7.org/linux/man-pages/man8/tc.8.html)
+- FQ-CoDel：[https://www.bufferbloat.net/projects/codel/wiki/](https://www.bufferbloat.net/projects/codel/wiki/)

@@ -409,9 +409,9 @@ Raft 算法的设计理念是"易于理解"，这使得它成为分布式系统�
 
 1. [GitHub - maemual/raft-zh_cn: Raft一致性算法论文的中文翻译](https://github.com/maemual/raft-zh_cn)
 
-2. Raft 官方网站：https://raft.github.io/
+2. Raft 官方网站：[https://raft.github.io/](https://raft.github.io/)
 
-3. Raft 可视化：http://thesecretlivesofdata.com/raft/
+3. Raft 可视化：[http://thesecretlivesofdata.com/raft/](http://thesecretlivesofdata.com/raft/)
 
 4. [Raft算法原理 - codedump的网络日志](https://www.codedump.info/post/20180921-raft/)
 

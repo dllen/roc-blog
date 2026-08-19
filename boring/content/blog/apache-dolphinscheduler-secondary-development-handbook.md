@@ -168,7 +168,7 @@ public class FeishuAlertChannel implements AlertChannel {
 ---
 
 参考资料与延伸阅读：
-- Apache DolphinScheduler GitHub：https://github.com/apache/dolphinscheduler
+- Apache DolphinScheduler GitHub：[https://github.com/apache/dolphinscheduler](https://github.com/apache/dolphinscheduler)
 - 官方文档与 QuickStart（不同版本入口可能不同，请以官方文档为准）
 - Helm Chart 与 K8s 部署示例（社区维护）
 

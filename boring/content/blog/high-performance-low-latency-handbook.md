@@ -108,7 +108,7 @@ tldr: 原则、模式、工具与调优清单，帮助构建低延迟系统
 
 ## 参考资料
 
-- Patterns 与资源集合：https://github.com/penberg/awesome-low-latency
+- Patterns 与资源集合：[https://github.com/penberg/awesome-low-latency](https://github.com/penberg/awesome-low-latency)
 - Linux 性能工具：`perf`、`bcc`、`sysstat`、`flamegraph`、`async-profiler`
 - 压测工具：`wrk`、`fortio`、`hey`、`iperf3`
 - 序列化：`flatbuffers`、`capnproto`、`protobuf`（谨慎考虑层级与可选字段）

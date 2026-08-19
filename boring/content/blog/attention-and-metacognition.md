@@ -133,11 +133,11 @@ reading_time = 15
 
 ## 参考来源
 
-- 陈皓，《如何超过大多数人》，CoolShell，2019：https://coolshell.cn/articles/19464.html
+- 陈皓，《如何超过大多数人》，CoolShell，2019：[https://coolshell.cn/articles/19464.html](https://coolshell.cn/articles/19464.html)
 - 李笑来，《坐享其成》，2017：
-  - 为什么要用“坐享”这个词？：https://lixiaolai.com/books/zuoxiangqicheng/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%9D%90%E4%BA%AB%E8%BF%99%E4%B8%AA%E8%AF%8D
-  - 什么是元认知能力？：https://lixiaolai.com/books/zuoxiangqicheng/%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E8%AE%A4%E7%9F%A5%E8%83%BD%E5%8A%9B
-  - 如何开始坐享？：https://lixiaolai.com/books/zuoxiangqicheng/%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%9D%90%E4%BA%AB
-  - 总结：https://lixiaolai.com/books/zuoxiangqicheng/%E6%80%BB%E7%BB%93
+  - 为什么要用“坐享”这个词？：[https://lixiaolai.com/books/zuoxiangqicheng/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%9D%90%E4%BA%AB%E8%BF%99%E4%B8%AA%E8%AF%8D](https://lixiaolai.com/books/zuoxiangqicheng/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%9D%90%E4%BA%AB%E8%BF%99%E4%B8%AA%E8%AF%8D)
+  - 什么是元认知能力？：[https://lixiaolai.com/books/zuoxiangqicheng/%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E8%AE%A4%E7%9F%A5%E8%83%BD%E5%8A%9B](https://lixiaolai.com/books/zuoxiangqicheng/%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E8%AE%A4%E7%9F%A5%E8%83%BD%E5%8A%9B)
+  - 如何开始坐享？：[https://lixiaolai.com/books/zuoxiangqicheng/%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%9D%90%E4%BA%AB](https://lixiaolai.com/books/zuoxiangqicheng/%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%9D%90%E4%BA%AB)
+  - 总结：[https://lixiaolai.com/books/zuoxiangqicheng/%E6%80%BB%E7%BB%93](https://lixiaolai.com/books/zuoxiangqicheng/%E6%80%BB%E7%BB%93)
 
 > 本文是对公开内容的读书笔记与个人提炼，不构成医学、心理治疗或职业建议。引用内容请以原文为准。

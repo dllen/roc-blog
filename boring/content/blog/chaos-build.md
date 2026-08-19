@@ -100,28 +100,28 @@ taxonomies:
 ## 参考资料
 
 - ChaosBlade 项目与规范
-  - 官方仓库与 CLI 文档：https://github.com/chaosblade-io/chaosblade
-  - 规范定义（Golang）：https://github.com/chaosblade-io/chaosblade-spec-go
-  - OS 场景实现：https://github.com/chaosblade-io/chaosblade-exec-os
-  - Docker 场景实现：https://github.com/chaosblade-io/chaosblade-exec-docker
-  - CRI 场景实现：https://github.com/chaosblade-io/chaosblade-exec-cri
-  - JVM 场景实现：https://github.com/chaosblade-io/chaosblade-exec-jvm
-  - C++ 场景实现：https://github.com/chaosblade-io/chaosblade-exec-cplus
-  - Kubernetes Operator（CRD）：https://github.com/chaosblade-io/chaosblade-operator
+  - 官方仓库与 CLI 文档：[https://github.com/chaosblade-io/chaosblade](https://github.com/chaosblade-io/chaosblade)
+  - 规范定义（Golang）：[https://github.com/chaosblade-io/chaosblade-spec-go](https://github.com/chaosblade-io/chaosblade-spec-go)
+  - OS 场景实现：[https://github.com/chaosblade-io/chaosblade-exec-os](https://github.com/chaosblade-io/chaosblade-exec-os)
+  - Docker 场景实现：[https://github.com/chaosblade-io/chaosblade-exec-docker](https://github.com/chaosblade-io/chaosblade-exec-docker)
+  - CRI 场景实现：[https://github.com/chaosblade-io/chaosblade-exec-cri](https://github.com/chaosblade-io/chaosblade-exec-cri)
+  - JVM 场景实现：[https://github.com/chaosblade-io/chaosblade-exec-jvm](https://github.com/chaosblade-io/chaosblade-exec-jvm)
+  - C++ 场景实现：[https://github.com/chaosblade-io/chaosblade-exec-cplus](https://github.com/chaosblade-io/chaosblade-exec-cplus)
+  - Kubernetes Operator（CRD）：[https://github.com/chaosblade-io/chaosblade-operator](https://github.com/chaosblade-io/chaosblade-operator)
 
 - Chaosblade-box 平台
-  - 平台仓库与部署说明：https://github.com/chaosblade-io/chaosblade-box
+  - 平台仓库与部署说明：[https://github.com/chaosblade-io/chaosblade-box](https://github.com/chaosblade-io/chaosblade-box)
 
 - 监控与告警（Prometheus 生态）
-  - PromQL 基础与语法：https://prometheus.io/docs/prometheus/latest/querying/basics/
-  - Alertmanager 文档：https://prometheus.io/docs/alerting/latest/alertmanager/
-  - Redis Exporter（指标项）：https://github.com/oliver006/redis_exporter
-  - MySQLd Exporter（指标项）：https://github.com/prometheus/mysqld_exporter
-  - Node Exporter（节点指标）：https://github.com/prometheus/node_exporter
-  - kube-state-metrics（K8s 对象指标）：https://github.com/kubernetes/kube-state-metrics
+  - PromQL 基础与语法：[https://prometheus.io/docs/prometheus/latest/querying/basics/](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+  - Alertmanager 文档：[https://prometheus.io/docs/alerting/latest/alertmanager/](https://prometheus.io/docs/alerting/latest/alertmanager/)
+  - Redis Exporter（指标项）：[https://github.com/oliver006/redis_exporter](https://github.com/oliver006/redis_exporter)
+  - MySQLd Exporter（指标项）：[https://github.com/prometheus/mysqld_exporter](https://github.com/prometheus/mysqld_exporter)
+  - Node Exporter（节点指标）：[https://github.com/prometheus/node_exporter](https://github.com/prometheus/node_exporter)
+  - kube-state-metrics（K8s 对象指标）：[https://github.com/kubernetes/kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
 
 - 社区文章
-  - https://zhuanlan.zhihu.com/p/598323365
-  - https://mp.weixin.qq.com/s?__biz=Mzg3MzgxMjc3NA==&mid=2247484031&idx=1&sn=4bfc81c1ee268dc0c8d529a4b5fc9949
+  - [https://zhuanlan.zhihu.com/p/598323365](https://zhuanlan.zhihu.com/p/598323365)
+  - [https://mp.weixin.qq.com/s?__biz=Mzg3MzgxMjc3NA==&mid=2247484031&idx=1&sn=4bfc81c1ee268dc0c8d529a4b5fc9949](https://mp.weixin.qq.com/s?__biz=Mzg3MzgxMjc3NA==&mid=2247484031&idx=1&sn=4bfc81c1ee268dc0c8d529a4b5fc9949)
   - [混沌工程之 ChaosBlade 利刃出鞘 - 掘金](https://juejin.cn/post/7266092256372998196)
   - [ChaosBlade Tool 故障注入百宝箱 - 掘金](https://juejin.cn/post/7267919801779470397)

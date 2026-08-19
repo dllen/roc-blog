@@ -191,22 +191,22 @@ pacificA通过契约(lease)的方式来进行primary和secondary间的互相检�
 
 ## 参考资料
 
-- https://www.zhihu.com/question/59320850/answer/1578135865
+- [https://www.zhihu.com/question/59320850/answer/1578135865](https://www.zhihu.com/question/59320850/answer/1578135865)
 
 - [PacificA算法分析-腾讯云开发者社区-腾讯云](https://cloud.tencent.com/developer/article/1530515)
 
-- https://blog.51cto.com/u_15060462/2649440
+- [https://blog.51cto.com/u_15060462/2649440](https://blog.51cto.com/u_15060462/2649440)
 
 - [PacificA协议 - holidays - 博客园](https://www.cnblogs.com/holidays/p/pacificA.html)
 
-- https://helloyoubeautifulthing.net/blog/2019/01/31/pacifica-notes/
+- [https://helloyoubeautifulthing.net/blog/2019/01/31/pacifica-notes/](https://helloyoubeautifulthing.net/blog/2019/01/31/pacifica-notes/)
 
 - [小米开源分布式KV存储系统Pegasus - 掘金](https://juejin.cn/post/6844903504964747278)
 
-- https://zhuanlan.zhihu.com/p/260005664
+- [https://zhuanlan.zhihu.com/p/260005664](https://zhuanlan.zhihu.com/p/260005664)
 
 - [GitHub - apache/incubator-pegasus: Apache Pegasus - A horizontally scalable, strongly consistent and high-performance key-value store](https://github.com/apache/incubator-pegasus)
 
-- https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf
+- [https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf](https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf)
 
-- http://bos.itdks.com/2e8c552646f44c66b038cb76fd728167.pdf
+- [http://bos.itdks.com/2e8c552646f44c66b038cb76fd728167.pdf](http://bos.itdks.com/2e8c552646f44c66b038cb76fd728167.pdf)

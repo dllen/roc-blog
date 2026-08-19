@@ -447,12 +447,12 @@ Docker的网络为容器与其他容器、宿主机之间的通信提供了灵�
 
 - [Networking with standalone containers | Docker Docs](https://docs.docker.com/network/network-tutorial-standalone/)
 
-- https://github.com/containers/podman/blob/main/docs/tutorials/basic_networking.md
+- [https://github.com/containers/podman/blob/main/docs/tutorials/basic_networking.md](https://github.com/containers/podman/blob/main/docs/tutorials/basic_networking.md)
 
-- https://docs.podman.io/en/latest/markdown/podman-network-create.1.html
+- [https://docs.podman.io/en/latest/markdown/podman-network-create.1.html](https://docs.podman.io/en/latest/markdown/podman-network-create.1.html)
 
 - [Networking overview | Docker Docs](https://docs.docker.com/network/)
 
-- https://medium.com/@prajwal.chin/understanding-docker-dns-2ed4b070a0
+- [https://medium.com/@prajwal.chin/understanding-docker-dns-2ed4b070a0](https://medium.com/@prajwal.chin/understanding-docker-dns-2ed4b070a0)
 
 - [docker网络模式 · Docker -- 从入门到实战](http://docker.baoshu.red/network/mode.html)

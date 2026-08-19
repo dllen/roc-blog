@@ -81,77 +81,77 @@ slug: "building-ai-agents"
 
 ## 学习路径与资源清单
 ### Videos
-- LLM Introduction: https://www.youtube.com/watch?v=zjkBMFhNj_g
-- LLMs from Scratch: https://www.youtube.com/watch?v=9vM4p9NN0Ts
-- Agentic AI Overview (Stanford): https://www.youtube.com/watch?v=kJLiOGle3Lw
-- Building and Evaluating Agents: https://www.youtube.com/watch?v=d5EltXhbcfA
-- Building Effective Agents: https://www.youtube.com/watch?v=D7_ipDqhtwk
-- Building Agents with MCP: https://www.youtube.com/watch?v=kQmXtrmQ5Zg
-- Building an Agent from Scratch: https://www.youtube.com/watch?v=xzXdLRUyjUg
-- Philo Agents: https://www.youtube.com/playlist?list=PLacQJwuclt_sV-tfZmpT1Ov6jldHl30NR
+- LLM Introduction: [https://www.youtube.com/watch?v=zjkBMFhNj_g](https://www.youtube.com/watch?v=zjkBMFhNj_g)
+- LLMs from Scratch: [https://www.youtube.com/watch?v=9vM4p9NN0Ts](https://www.youtube.com/watch?v=9vM4p9NN0Ts)
+- Agentic AI Overview (Stanford): [https://www.youtube.com/watch?v=kJLiOGle3Lw](https://www.youtube.com/watch?v=kJLiOGle3Lw)
+- Building and Evaluating Agents: [https://www.youtube.com/watch?v=d5EltXhbcfA](https://www.youtube.com/watch?v=d5EltXhbcfA)
+- Building Effective Agents: [https://www.youtube.com/watch?v=D7_ipDqhtwk](https://www.youtube.com/watch?v=D7_ipDqhtwk)
+- Building Agents with MCP: [https://www.youtube.com/watch?v=kQmXtrmQ5Zg](https://www.youtube.com/watch?v=kQmXtrmQ5Zg)
+- Building an Agent from Scratch: [https://www.youtube.com/watch?v=xzXdLRUyjUg](https://www.youtube.com/watch?v=xzXdLRUyjUg)
+- Philo Agents: [https://www.youtube.com/playlist?list=PLacQJwuclt_sV-tfZmpT1Ov6jldHl30NR](https://www.youtube.com/playlist?list=PLacQJwuclt_sV-tfZmpT1Ov6jldHl30NR)
 
 ### Repos
-- GenAI Agents: https://github.com/nirdiamant/GenAI_Agents
-- Microsoft's AI Agents for Beginners: https://github.com/microsoft/ai-agents-for-beginners
-- Prompt Engineering Guide: https://lnkd.in/gJjGbxQr
-- Hands-On Large Language Models: https://lnkd.in/dxaVF86w
-- AI Agents for Beginners: https://github.com/microsoft/ai-agents-for-beginners
-- GenAI Agents: https://lnkd.in/dEt72MEy
-- Made with ML: https://lnkd.in/d2dMACMj
-- Hands-On AI Engineering: https://github.com/Sumanth077/Hands-On-AI-Engineering
-- Awesome Generative AI Guide: https://lnkd.in/dJ8gxp3a
-- Designing Machine Learning Systems: https://lnkd.in/dEx8sQJK
-- Machine Learning for Beginners (Microsoft): https://lnkd.in/dBj3BAEY
-- LLM Course: https://github.com/mlabonne/llm-course
+- GenAI Agents: [https://github.com/nirdiamant/GenAI_Agents](https://github.com/nirdiamant/GenAI_Agents)
+- Microsoft's AI Agents for Beginners: [https://github.com/microsoft/ai-agents-for-beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- Prompt Engineering Guide: [https://lnkd.in/gJjGbxQr](https://lnkd.in/gJjGbxQr)
+- Hands-On Large Language Models: [https://lnkd.in/dxaVF86w](https://lnkd.in/dxaVF86w)
+- AI Agents for Beginners: [https://github.com/microsoft/ai-agents-for-beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- GenAI Agents: [https://lnkd.in/dEt72MEy](https://lnkd.in/dEt72MEy)
+- Made with ML: [https://lnkd.in/d2dMACMj](https://lnkd.in/d2dMACMj)
+- Hands-On AI Engineering: [https://github.com/Sumanth077/Hands-On-AI-Engineering](https://github.com/Sumanth077/Hands-On-AI-Engineering)
+- Awesome Generative AI Guide: [https://lnkd.in/dJ8gxp3a](https://lnkd.in/dJ8gxp3a)
+- Designing Machine Learning Systems: [https://lnkd.in/dEx8sQJK](https://lnkd.in/dEx8sQJK)
+- Machine Learning for Beginners (Microsoft): [https://lnkd.in/dBj3BAEY](https://lnkd.in/dBj3BAEY)
+- LLM Course: [https://github.com/mlabonne/llm-course](https://github.com/mlabonne/llm-course)
 
 ### Guides
-- Google's Agent Whitepaper: https://lnkd.in/gFvCfbSN
-- Google's Agent Companion: https://lnkd.in/gfmCrgAH
-- Building Effective Agents (Anthropic): https://lnkd.in/gRWKANS4
-- Claude Code Agentic Coding Practices: https://lnkd.in/gs99zyCf
-- OpenAI's Practical Guide to Building Agents: https://lnkd.in/guRfXsFK
+- Google's Agent Whitepaper: [https://lnkd.in/gFvCfbSN](https://lnkd.in/gFvCfbSN)
+- Google's Agent Companion: [https://lnkd.in/gfmCrgAH](https://lnkd.in/gfmCrgAH)
+- Building Effective Agents (Anthropic): [https://lnkd.in/gRWKANS4](https://lnkd.in/gRWKANS4)
+- Claude Code Agentic Coding Practices: [https://lnkd.in/gs99zyCf](https://lnkd.in/gs99zyCf)
+- OpenAI's Practical Guide to Building Agents: [https://lnkd.in/guRfXsFK](https://lnkd.in/guRfXsFK)
 
 ### Books
-- Understanding Deep Learning: https://udlbook.github.io/udlbook/
-- Building an LLM from Scratch: https://lnkd.in/g2YGbnWS
-- The LLM Engineering Handbook: https://lnkd.in/gWUT2EXe
-- AI Agents: The Definitive Guide - Nicole Koenigstein: https://lnkd.in/dJ9wFNMD
-- Building Applications with AI Agents - Michael Albada: https://lnkd.in/dSs8srk5
-- AI Agents with MCP - Kyle Stratis: https://lnkd.in/dR22bEiZ
-- AI Engineering (O’Reilly): https://www.oreilly.com/library/view/ai-engineering/9781098166298/
+- Understanding Deep Learning: [https://udlbook.github.io/udlbook/](https://udlbook.github.io/udlbook/)
+- Building an LLM from Scratch: [https://lnkd.in/g2YGbnWS](https://lnkd.in/g2YGbnWS)
+- The LLM Engineering Handbook: [https://lnkd.in/gWUT2EXe](https://lnkd.in/gWUT2EXe)
+- AI Agents: The Definitive Guide - Nicole Koenigstein: [https://lnkd.in/dJ9wFNMD](https://lnkd.in/dJ9wFNMD)
+- Building Applications with AI Agents - Michael Albada: [https://lnkd.in/dSs8srk5](https://lnkd.in/dSs8srk5)
+- AI Agents with MCP - Kyle Stratis: [https://lnkd.in/dR22bEiZ](https://lnkd.in/dR22bEiZ)
+- AI Engineering (O’Reilly): [https://www.oreilly.com/library/view/ai-engineering/9781098166298/](https://www.oreilly.com/library/view/ai-engineering/9781098166298/)
 
 ### Papers
-- ReAct: https://lnkd.in/gRBH3ZRq
-- Generative Agents: https://lnkd.in/gsDCUsWm
-- Toolformer: https://lnkd.in/gyzrege6
-- Chain-of-Thought Prompting: https://lnkd.in/gaK5CXzD
-- Tree of Thoughts: https://lnkd.in/gRJdv_iU
-- Reflexion: https://lnkd.in/gGFMgjUj
-- Retrieval-Augmented Generation Survey: https://lnkd.in/gGUqkkyR
+- ReAct: [https://lnkd.in/gRBH3ZRq](https://lnkd.in/gRBH3ZRq)
+- Generative Agents: [https://lnkd.in/gsDCUsWm](https://lnkd.in/gsDCUsWm)
+- Toolformer: [https://lnkd.in/gyzrege6](https://lnkd.in/gyzrege6)
+- Chain-of-Thought Prompting: [https://lnkd.in/gaK5CXzD](https://lnkd.in/gaK5CXzD)
+- Tree of Thoughts: [https://lnkd.in/gRJdv_iU](https://lnkd.in/gRJdv_iU)
+- Reflexion: [https://lnkd.in/gGFMgjUj](https://lnkd.in/gGFMgjUj)
+- Retrieval-Augmented Generation Survey: [https://lnkd.in/gGUqkkyR](https://lnkd.in/gGUqkkyR)
 
 ### Courses
-- HuggingFace's Agent Course: https://lnkd.in/gmTftTXV
-- MCP with Anthropic: https://lnkd.in/geffcwdq
-- Building Vector Databases with Pinecone: https://lnkd.in/gCS4sd7Y
-- Vector Databases from Embeddings to Apps: https://lnkd.in/gm9HR6_2
-- Agent Memory: https://lnkd.in/gNFpC542
-- Building and Evaluating RAG apps: https://lnkd.in/g2qC9-mh
-- Building Browser Agents: https://lnkd.in/gsMmCifQ
-- LLMOps: https://lnkd.in/g7bHU37w
-- Evaluating AI Agents: https://lnkd.in/gHJtwF5s
-- Computer Use with Anthropic: https://lnkd.in/gMUWg7Fa
-- Multi-Agent Use: https://lnkd.in/gU9DY9kj
-- Improving LLM Accuracy: https://lnkd.in/gsE-4FvY
-- Agent Design Patterns: https://lnkd.in/gzKvx5A4
-- Multi Agent Systems: https://lnkd.in/gUayts9s
+- HuggingFace's Agent Course: [https://lnkd.in/gmTftTXV](https://lnkd.in/gmTftTXV)
+- MCP with Anthropic: [https://lnkd.in/geffcwdq](https://lnkd.in/geffcwdq)
+- Building Vector Databases with Pinecone: [https://lnkd.in/gCS4sd7Y](https://lnkd.in/gCS4sd7Y)
+- Vector Databases from Embeddings to Apps: [https://lnkd.in/gm9HR6_2](https://lnkd.in/gm9HR6_2)
+- Agent Memory: [https://lnkd.in/gNFpC542](https://lnkd.in/gNFpC542)
+- Building and Evaluating RAG apps: [https://lnkd.in/g2qC9-mh](https://lnkd.in/g2qC9-mh)
+- Building Browser Agents: [https://lnkd.in/gsMmCifQ](https://lnkd.in/gsMmCifQ)
+- LLMOps: [https://lnkd.in/g7bHU37w](https://lnkd.in/g7bHU37w)
+- Evaluating AI Agents: [https://lnkd.in/gHJtwF5s](https://lnkd.in/gHJtwF5s)
+- Computer Use with Anthropic: [https://lnkd.in/gMUWg7Fa](https://lnkd.in/gMUWg7Fa)
+- Multi-Agent Use: [https://lnkd.in/gU9DY9kj](https://lnkd.in/gU9DY9kj)
+- Improving LLM Accuracy: [https://lnkd.in/gsE-4FvY](https://lnkd.in/gsE-4FvY)
+- Agent Design Patterns: [https://lnkd.in/gzKvx5A4](https://lnkd.in/gzKvx5A4)
+- Multi Agent Systems: [https://lnkd.in/gUayts9s](https://lnkd.in/gUayts9s)
 
 ### Newsletters
-- Gradient Ascent: https://lnkd.in/gZbZAeQW
-- DecodingML by Paul: https://lnkd.in/gpZPgk7J
-- Deep (Learning) Focus by Cameron: https://lnkd.in/gTUNcUVE
-- NeoSage by Shivani: https://blog.neosage.io/
-- Jam with AI by Shirin and Shantanu: https://lnkd.in/gQXJzuV8
-- Data Hustle by Sai: https://lnkd.in/gZpdTTYD
+- Gradient Ascent: [https://lnkd.in/gZbZAeQW](https://lnkd.in/gZbZAeQW)
+- DecodingML by Paul: [https://lnkd.in/gpZPgk7J](https://lnkd.in/gpZPgk7J)
+- Deep (Learning) Focus by Cameron: [https://lnkd.in/gTUNcUVE](https://lnkd.in/gTUNcUVE)
+- NeoSage by Shivani: [https://blog.neosage.io/](https://blog.neosage.io/)
+- Jam with AI by Shirin and Shantanu: [https://lnkd.in/gQXJzuV8](https://lnkd.in/gQXJzuV8)
+- Data Hustle by Sai: [https://lnkd.in/gZpdTTYD](https://lnkd.in/gZpdTTYD)
 
 ## 落地建议
 - 从“单一工具+单目标”的微型代理开始（如浏览器抓取与总结），先打通端到端闭环。
