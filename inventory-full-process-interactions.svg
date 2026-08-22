@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="520" viewBox="0 0 1080 520">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .box { fill: #FFF6F6; stroke: #D93025; stroke-width: 1.2; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">库存全流程管理交互图</text>
+
+  <rect x="60" y="80" width="220" height="100" rx="8" class="box"/>
+  <text x="80" y="110" class="text">订单系统</text>
+
+  <rect x="320" y="80" width="220" height="100" rx="8" class="box"/>
+  <text x="340" y="110" class="text">库存中台</text>
+
+  <rect x="580" y="80" width="220" height="100" rx="8" class="box"/>
+  <text x="600" y="110" class="text">规则引擎/调度</text>
+
+  <rect x="840" y="80" width="220" height="100" rx="8" class="box"/>
+  <text x="860" y="110" class="text">仓库WMS</text>
+
+  <!-- Arrows -->
+  <line x1="280" y1="130" x2="320" y2="130" class="arrow"/>
+  <text x="140" y="125" class="text">下单/取消</text>
+
+  <line x1="540" y1="130" x2="580" y2="130" class="arrow"/>
+  <text x="400" y="125" class="text">锁定/扣减</text>
+
+  <line x1="800" y1="130" x2="840" y2="130" class="arrow"/>
+  <text x="660" y="125" class="text">分仓/发货</text>
+
+  <!-- Feedback lines -->
+  <line x1="840" y1="170" x2="580" y2="170" class="arrow"/>
+  <text x="660" y="165" class="text">回写发货状态</text>
+
+  <line x1="580" y1="210" x2="320" y2="210" class="arrow"/>
+  <text x="400" y="205" class="text">回写库存变更</text>
+
+  <line x1="320" y1="250" x2="60" y2="250" class="arrow"/>
+  <text x="140" y="245" class="text">订单状态更新</text>
+</svg>
