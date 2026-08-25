@@ -8,7 +8,7 @@ Roc's Blog — a Chinese-language technical blog powered by [Zola](https://www.g
 
 - **Live site**: `https://scp.net.cn`
 - **Theme**: `boring/` (a Zola theme forked from [ssiyad/boring](https://github.com/ssiyad/boring))
-- **Content**: 77+ long-form technical articles in Chinese, organized under `boring/content/blog/`
+- **Content**: 280+ 篇中文技术文章，位于 `boring/content/blog/` 下
 
 ## Common commands
 
@@ -28,10 +28,10 @@ cd boring && yarn watch        # postcss --watch
 # Build static site
 cd boring && bash build.sh     # zola build -o roc-blog + optional encrypt step
 
-# Run all tests (Node.js native test runner)
+# Run unit tests (Node.js native test runner; scripts + static/js — excludes site-output)
 cd boring && yarn test
 
-# Run only site-output tests
+# Run the site-output integration test (requires a prior `zola build`)
 cd boring && yarn test:site
 
 # Audit article frontmatter
@@ -42,24 +42,34 @@ cd boring && yarn audit
 
 ### Content model
 
-Articles live as flat `.md` files in `boring/content/blog/`, with some organized into Zola subsections (subdirectories like `flink/`, `spring/`, `redis/`, etc. — each with its own `_index.md`). The blog root `_index.md` enables pagination (20 posts/page) and sorting by `update_date`.
+Articles live as flat `.md` files in `boring/content/blog/`, with some organized into Zola subsections (subdirectories like `flink/`, `spring/`, `redis/`, etc. — each with its own `_index.md`). The blog root `_index.md` enables pagination (20 posts/page) and sorts by `date` (`sort_by = "date"`).
 
-Article frontmatter uses **TOML** (`+++` delimiters), not YAML:
+Article frontmatter uses **YAML** (`---` delimiters). TOML (`+++`) is legacy — the repo has been migrated via `scripts/migrate-toml-to-yaml.mjs`, and `yarn audit` flags any remaining TOML files:
 
-```toml
-+++
-title = "文章标题"
-date = 2023-01-01
-[taxonomies]
-tags = ["Kafka", "分布式"]
-[extra]
-update_date = 2025-01-01
-# Optional encryption:
-password = "secret"
-password_hint = "提示文案"
-remember_days = 7
-+++
+```yaml
+---
+title: "文章标题"
+date: 2026-08-25
+description: "80–160 字摘要（推荐）"
+taxonomies:
+  tags: ["Kafka", "分布式"]     # 最多 6 个
+extra:
+  update_date: 2026-08-25      # 列表页显示此日期，缺省回退到 date
+# 可选加密：
+# password = "secret"
+# password_hint = "提示文案"
+# remember_days = 7
+---
 ```
+
+**Frontmatter 关键规则**（踩坑点）：
+
+- **文章页**（非 `_index.md`）的标签必须写在 `taxonomies.tags`——主题只读 `page.taxonomies.tags`，写 `extra.tags` 不会渲染。
+- **分节索引 `_index.md` 不支持 `taxonomies` 字段**（`zola build` 会报 `unknown field taxonomies`）；分节级标签只能放 `extra`（惰性元数据，不渲染，属正常）。
+- 排序固定按 `date`；`extra.update_date` 只影响列表页**显示**的日期，不会改变排序。
+- `yarn audit` 硬性要求：`title` 与 `date` 必填（缺失则 CI 失败）；`description` 80–160 字符、`tags` 1–6 个为推荐项。
+
+**站点导航**：顶栏分类菜单来自 `config.toml` 的 `[extra] nav_sections`。新增一个内容分区需要两处配合——① 建目录 + 该目录的 `_index.md`，② 在 `nav_sections` 里登记（否则不显示在导航）。站点只注册了 `tags` 这一个 taxonomy（`config.toml` 的 `[[taxonomies]]`）。
 
 ### Theme structure (`boring/`)
 
@@ -102,6 +112,8 @@ All JS is vanilla ES5/ES6, loaded via `<script defer>`:
 | `audit-frontmatter.mjs` | Validates article frontmatter completeness, outputs markdown report |
 | `inject-jsonld.mjs` | Injects structured data (JSON-LD) into built HTML |
 | `migrate-tags.mjs` | Batch tag migration/cleanup tool |
+| `migrate-toml-to-yaml.mjs` | One-off migration: converts legacy TOML (`+++`) frontmatter to YAML (`---`) |
+| `seed-section-meta.mjs` | Seeds `_index.md` metadata for new content subsections |
 
 ### Build & deploy
 
