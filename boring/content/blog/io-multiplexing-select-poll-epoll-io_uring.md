@@ -2,7 +2,7 @@
 title: "从 select、poll、epoll 到 io_uring：Linux I/O 多路复用的演进之路"
 date: "2025-08-22"
 description: "深入解析 Linux I/O 多路复用技术的演进历程：从最早的 select/poll 到 epoll 的 O(1) 高效模型，再到 io_uring 的异步 I/O 新范式，探讨各代技术的设计思路、性能差异与适用场景。"
-extra:
+taxonomies:
   tags: ["Linux", "I/O", "Network", "Performance", "System Programming"]
 ---
 
