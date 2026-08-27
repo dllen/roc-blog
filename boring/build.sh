@@ -2,7 +2,7 @@
 set -e
 cd "$(dirname "$0")"
 
-zola build -o roc-blog
+zola build -o roc-blog --force
 
 # Optional: encrypt posts whose frontmatter contains `password`.
 # Failures here do NOT block deployment — plain posts must still publish.
