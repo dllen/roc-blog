@@ -57,6 +57,7 @@ homepage_img_url = "/index-image.png"
 homepage_latest_limit = 10
 
 nav_sections = [
+  { name = "分类",         url = "/blog/sections/" },
   { name = "Spring 源码",  url = "/blog/spring/" },
   { name = "Redis",        url = "/blog/redis/" },
   { name = "Kafka",        url = "/blog/kafka/" },

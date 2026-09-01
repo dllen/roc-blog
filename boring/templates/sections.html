@@ -7,5 +7,40 @@
 {% block content %}
     {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
+        <section class="listing-section" aria-labelledby="sections-heading">
+            <div class="listing-heading">
+                <p class="eyebrow">Directory</p>
+                <h2 id="sections-heading" class="listing-heading__title">{{ section.title }}</h2>
+                {% if section.description %}
+                    <p class="listing-heading__description">{{ section.description }}</p>
+                {% endif %}
+            </div>
+
+            <div class="sections-grid">
+                {% set blog = get_section(path="blog/_index.md") %}
+                {% for subsection_path in blog.subsections %}
+                    {% set subsection = get_section(path=subsection_path) %}
+                    {% if subsection %}
+                    <a href="{{ subsection.permalink | safe }}" class="section-card">
+                        <div class="section-card__header">
+                            <h3 class="section-card__title">{{ subsection.title }}</h3>
+                            <span class="section-card__count">{{ subsection.pages | length }} 篇</span>
+                        </div>
+                        {% if subsection.description %}
+                            <p class="section-card__description">{{ subsection.description }}</p>
+                        {% endif %}
+                        {% set sorted_pages = subsection.pages | sort(attribute="date") | reverse %}
+                        {% if sorted_pages %}
+                            {% set latest = sorted_pages | first %}
+                            <div class="section-card__latest">
+                                <span class="section-card__latest-label">最新：</span>
+                                <span class="section-card__latest-title">{{ latest.title }}</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
     </div>
 {% endblock content %}

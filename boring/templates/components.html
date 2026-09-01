@@ -1,8 +1,7 @@
 {% component article_row(item: map, show_tags: bool, show_reading_time: bool) %}
-    {% set path_parts = item.path | split(pat="/") %}
     {% set sec = "" %}
-    {% if path_parts | length >= 2 %}
-        {% set sec = path_parts[1] %}
+    {% if item.components | length >= 3 %}
+        {% set sec = item.components[1] %}
     {% endif %}
     <li class="article-row" data-article-row data-section="{{ sec | safe }}" data-tags="{{ item.taxonomies.tags | default(value=[]) | join(sep=",") | safe }}">
         <a href="{{ item.permalink | safe }}" class="article-row__link">
