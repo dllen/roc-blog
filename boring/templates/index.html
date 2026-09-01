@@ -21,6 +21,38 @@
     {% set blog = get_section(path='blog/_index.md') %}
     {% if blog and blog.pages %}
         {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
+
+        {# Filter bar #}
+        <div class="filter-bar" id="filter-bar" style="display:none;">
+            <div class="filter-dropdown" id="filter-section">
+                <button type="button" class="filter-dropdown__trigger" aria-expanded="false" aria-haspopup="listbox" aria-label="筛选分类">
+                    <span class="filter-dropdown__label">全部分类</span>
+                    <i class="las la-chevron-down filter-dropdown__arrow" aria-hidden="true"></i>
+                </button>
+                <div class="filter-dropdown__panel" role="listbox">
+                    <div class="filter-dropdown__search-wrapper">
+                        <input type="text" class="filter-dropdown__search" placeholder="搜索分类..." autocomplete="off">
+                    </div>
+                    <div class="filter-dropdown__options" data-filter-options="section"></div>
+                </div>
+            </div>
+
+            <div class="filter-dropdown" id="filter-tag">
+                <button type="button" class="filter-dropdown__trigger" aria-expanded="false" aria-haspopup="listbox" aria-label="筛选标签">
+                    <span class="filter-dropdown__label">全部标签</span>
+                    <i class="las la-chevron-down filter-dropdown__arrow" aria-hidden="true"></i>
+                </button>
+                <div class="filter-dropdown__panel" role="listbox">
+                    <div class="filter-dropdown__search-wrapper">
+                        <input type="text" class="filter-dropdown__search" placeholder="搜索标签..." autocomplete="off">
+                    </div>
+                    <div class="filter-dropdown__options" data-filter-options="tag"></div>
+                </div>
+            </div>
+
+            <button type="button" class="filter-clear" id="filter-clear" style="display:none;">清除筛选</button>
+        </div>
+
         <section class="listing-section" aria-labelledby="latest-heading">
             <div class="listing-heading">
                 <p class="eyebrow">Latest writing</p>
@@ -42,15 +74,140 @@
     var list = document.getElementById('article-list');
     if (!list) return;
     var items = Array.from(list.children);
+
+    // Sort by date desc
     items.sort(function(a, b) {
         var dateA = a.querySelector('.shrink-0') ? a.querySelector('.shrink-0').textContent.trim() : '';
         var dateB = b.querySelector('.shrink-0') ? b.querySelector('.shrink-0').textContent.trim() : '';
         return dateB.localeCompare(dateA);
     });
     items.forEach(function(item) { list.appendChild(item); });
+
     var limit = {{ limit }};
     items.slice(limit).forEach(function(item) { item.style.display = 'none'; });
     list.style.display = '';
+
+    // Build filter options
+    var sections = {}, tags = {};
+    items.forEach(function(item) {
+        var sec = item.getAttribute('data-section') || '';
+        var tagStr = item.getAttribute('data-tags') || '';
+        if (sec) sections[sec] = true;
+        tagStr.split(',').forEach(function(t) {
+            t = t.trim();
+            if (t) tags[t] = true;
+        });
+    });
+
+    // Show filter bar only if there are filters
+    var sectionKeys = Object.keys(sections);
+    var tagKeys = Object.keys(tags);
+    var filterBar = document.getElementById('filter-bar');
+    if (filterBar && (sectionKeys.length > 1 || tagKeys.length > 0)) {
+        filterBar.style.display = '';
+
+        // Render options
+        var secOptions = document.querySelector('[data-filter-options="section"]');
+        var tagOptions = document.querySelector('[data-filter-options="tag"]');
+
+        function makeOption(value, label) {
+            return '<button type="button" class="filter-dropdown__option" role="option" data-value="' +
+                value + '">' + label + '</button>';
+        }
+
+        var secHtml = makeOption('', '全部分类');
+        sectionKeys.sort().forEach(function(s) {
+            secHtml += makeOption(s, s);
+        });
+        if (secOptions) secOptions.innerHTML = secHtml;
+
+        var tagHtml = makeOption('', '全部标签');
+        tagKeys.sort().forEach(function(t) {
+            tagHtml += makeOption(t, t);
+        });
+        if (tagOptions) tagHtml = tagHtml;
+        // tagOptions.innerHTML = tagHtml; // skip for now
+
+        // Filter logic
+        var activeSection = '', activeTag = '';
+        function applyFilter() {
+            var count = 0;
+            items.forEach(function(item) {
+                var sec = item.getAttribute('data-section') || '';
+                var tagStr = (item.getAttribute('data-tags') || '').split(',');
+                var matchSection = !activeSection || sec === activeSection;
+                var matchTag = !activeTag || tagStr.indexOf(activeTag) >= 0;
+                var show = matchSection && matchTag;
+                item.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            var clearBtn = document.getElementById('filter-clear');
+            if (clearBtn) clearBtn.style.display = (activeSection || activeTag) ? '' : 'none';
+        }
+
+        // Dropdown toggle
+        document.querySelectorAll('.filter-dropdown').forEach(function(dd) {
+            var trigger = dd.querySelector('.filter-dropdown__trigger');
+            var panel = dd.querySelector('.filter-dropdown__panel');
+            var options = dd.querySelector('.filter-dropdown__options');
+            var searchInput = dd.querySelector('.filter-dropdown__search');
+            var label = dd.querySelector('.filter-dropdown__label');
+            var isOpen = false;
+
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isOpen = !isOpen;
+                trigger.setAttribute('aria-expanded', isOpen);
+                panel.classList.toggle('is-open', isOpen);
+                if (isOpen && searchInput) searchInput.focus();
+            });
+
+            options.addEventListener('click', function(e) {
+                var opt = e.target.closest('.filter-dropdown__option');
+                if (!opt) return;
+                var val = opt.getAttribute('data-value') || '';
+                var text = opt.textContent;
+                if (label) label.textContent = text;
+                activeSection = val;
+                applyFilter();
+                isOpen = false;
+                panel.classList.remove('is-open');
+                trigger.setAttribute('aria-expanded', 'false');
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    var q = this.value.toLowerCase();
+                    options.querySelectorAll('.filter-dropdown__option').forEach(function(opt) {
+                        var match = !q || opt.textContent.toLowerCase().indexOf(q) >= 0;
+                        opt.style.display = match ? '' : 'none';
+                    });
+                });
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.filter-dropdown')) {
+                document.querySelectorAll('.filter-dropdown__panel.is-open').forEach(function(p) {
+                    p.classList.remove('is-open');
+                    var trigger = p.closest('.filter-dropdown').querySelector('.filter-dropdown__trigger');
+                    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                });
+            }
+        });
+
+        var clearBtn = document.getElementById('filter-clear');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                activeSection = '';
+                activeTag = '';
+                document.querySelectorAll('.filter-dropdown__label').forEach(function(l) {
+                    l.textContent = l.closest('.filter-dropdown').querySelector('[data-value=""]').textContent;
+                });
+                applyFilter();
+            });
+        }
+    }
 })();
 </script>
 {% endblock content %}
