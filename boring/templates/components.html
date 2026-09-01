@@ -10,23 +10,24 @@
                     {{ item.title }}
                     {% if item.extra.password or item.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
                 </h2>
-                <time class="article-row__date" datetime="{{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}">
-                    {{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}
-                </time>
+                <div class="article-row__date-group">
+                    <time class="article-row__date" datetime="{{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}">
+                        {{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}
+                    </time>
+                    {% if show_reading_time and item.reading_time %}
+                        <span aria-hidden="true">·</span>
+                        <span class="article-row__reading-time">{{ item.reading_time }} min read</span>
+                    {% endif %}
+                </div>
             </div>
             {% if item.description %}
                 <p class="article-row__description">{{ item.description }}</p>
             {% endif %}
-            {% if show_tags or show_reading_time %}
+            {% if show_tags and item.taxonomies and item.taxonomies.tags %}
                 <div class="article-row__meta">
-                    {% if show_tags and item.taxonomies and item.taxonomies.tags %}
-                        {% for tag in item.taxonomies.tags[:3] %}
-                            <span class="tag-chip">{{ tag }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    {% if show_reading_time and item.reading_time %}
-                        <span class="article-row__reading-time">{{ item.reading_time }} min read</span>
-                    {% endif %}
+                    {% for tag in item.taxonomies.tags[:3] %}
+                        <span class="tag-chip">{{ tag }}</span>
+                    {% endfor %}
                 </div>
             {% endif %}
         </a>

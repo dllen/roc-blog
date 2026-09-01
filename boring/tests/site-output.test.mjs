@@ -336,7 +336,7 @@ test('rendered Markdown images use native lazy loading and async decoding', asyn
 test('article desktop grid keeps the content track fluid within the shell', async () => {
     const css = await readFile(sourceStylesheet, 'utf8');
 
-    assert.match(css, /\.article-shell\s*\{[^}]*max-width:\s*82\.5rem;/s);
+    assert.match(css, /\.article-shell\s*\{[^}]*max-width:\s*var\(--site-shell\);/s);
     assert.match(css, /\.article-main\s*\{[^}]*max-width:\s*62\.5rem;/s);
     assert.match(
         css,
