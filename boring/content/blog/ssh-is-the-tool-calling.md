@@ -1,11 +1,11 @@
 ---
 title: "Agent 的工具调用，90% 是 1996 年的 SSH"
-date: 2026-09-01
+date: 2026-09-02
 description: "Tool Calling 是 Agent 的核心能力之一。但如果你仔细看它的本质——发送指令、执行命令、返回结果——会发现这不过是 Linux 早就解决过的问题。SSH 远程执行、管道传输、CGI 脚本，这些 1996 年的技术，早已蕴含了 Tool Calling 所有的设计要素。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "SSH", "Tool Calling", "MCP"]
 extra:
-  update_date: 2026-09-01
+  update_date: 2026-09-02
 ---
 
 上篇聊了 Agent 的"基础设施"——systemd、namespace、日志——本质上都是 Linux 早已解决的问题。有读者问：那 Tool Calling 呢？Agent 调用外部工具，这个能力在 Linux 里有没有对应物？

@@ -1,11 +1,11 @@
 ---
 title: "Agent 的记忆，90% 是 1996 年的文件系统"
-date: 2026-09-01
+date: 2026-09-03
 description: "Agent 的长期记忆靠 RAG，短期记忆靠 context window。但如果你仔细看它的本质——持久化、检索、过期、压缩——你会发现这不过是 Linux 文件系统在几十年前就解决过的问题。/var/log、/tmp、crontab，这些目录和机制早已蕴含了 Agent 记忆系统的所有设计要素。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "RAG", "Memory", "文件系统"]
 extra:
-  update_date: 2026-09-01
+  update_date: 2026-09-03
 ---
 
 前两篇聊了 Agent 的"基础设施"和"工具调用"——分别对应 Linux 的进程管理和 SSH 远程执行。有读者接着问：那 Agent 的"记忆"呢？

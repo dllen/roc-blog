@@ -1,11 +1,11 @@
 ---
 title: "Agent 的评估，90% 是 1996 年的日志分析"
-date: 2026-09-01
+date: 2026-09-04
 description: "Agent 评估是 Agent 落地最难的问题之一：怎么知道一个 Agent 好不好？怎么量化它的进步？Benchmark、RLHF、自动化测试，这些听起来很新。但如果你仔细看，它们不过是 Linux 早就解决过的问题——日志分析、回归测试、SRE 的 SLO。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "评估", "测试", "SRE", "Observability"]
 extra:
-  update_date: 2026-09-01
+  update_date: 2026-09-04
 ---
 
 前两篇聊了 Agent 的"基础设施"和"工具调用"，第三篇聊了"记忆"。有读者继续追问：Agent 的评估呢？怎么知道一个 Agent 好不好、怎么量化它的进步？

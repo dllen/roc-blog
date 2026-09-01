@@ -1,11 +1,11 @@
 ---
-title: "Agent 的安全，90% 是 1996 年的 SELinux"
-date: 2026-09-01
+title: "Agent 的安全，90% 是 1998 年的 SELinux"
+date: 2026-09-06
 description: "Agent 安全是当下的热门话题：prompt injection、数据隔离、工具滥用。但如果你仔细看，这些问题的本质——强制访问控制、白名单、审计追溯——Linux 早在 1998 年就给出了完整答案。SELinux 的 MLS/MCS、seccomp、namespace，比大多数 Agent 安全方案早了 20 年。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "安全", "SELinux", "seccomp", "AppArmor"]
 extra:
-  update_date: 2026-09-01
+  update_date: 2026-09-06
 ---
 
 写完 Agent 编排，有读者问：Agent 安全呢？
