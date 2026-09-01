@@ -16,6 +16,7 @@ const iconSources = [
 
 const iconCodepoints = new Map([
     ['la-arrow-left', 'f060'],
+    ['la-chevron-down', 'f078'],
     ['la-github', 'f09b'],
     ['la-home', 'f015'],
     ['la-level-up-alt', 'f3bf'],

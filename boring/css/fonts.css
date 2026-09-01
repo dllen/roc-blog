@@ -45,6 +45,7 @@
     font-weight: 400;
 }
 .la-arrow-left::before { content: "\f060"; }
+.la-chevron-down::before { content: "\f078"; }
 .la-github::before { content: "\f09b"; }
 .la-home::before { content: "\f015"; }
 .la-level-up-alt::before { content: "\f3bf"; }

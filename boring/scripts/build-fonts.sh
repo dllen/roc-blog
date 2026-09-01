@@ -45,6 +45,7 @@ done
 LA_SOLID_CODEPOINTS=(
   '0xf002' # search
   '0xf060' # arrow-left
+  '0xf078' # chevron-down
   '0xf3bf' # level-up-alt
   '0xf015' # home
   '0xf185' # sun
