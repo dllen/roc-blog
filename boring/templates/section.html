@@ -8,6 +8,33 @@
     {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
 
+        {# Section description #}
+        {% if section.description %}
+        <div class="section-description">
+            <p>{{ section.description }}</p>
+        </div>
+        {% endif %}
+
+        {# Sub-sections grid #}
+        {% if section.subsections %}
+        <div class="sections-grid">
+            {% for subsection_path in section.subsections %}
+                {% set subsection = get_section(path=subsection_path) %}
+                {% if subsection %}
+                <a href="{{ subsection.permalink | safe }}" class="section-card">
+                    <div class="section-card__header">
+                        <h3 class="section-card__title">{{ subsection.title }}</h3>
+                        <span class="section-card__count">{{ subsection.pages | length }} 篇</span>
+                    </div>
+                    {% if subsection.description %}
+                        <p class="section-card__description">{{ subsection.description }}</p>
+                    {% endif %}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% if paginator %}
             {% set posts = paginator.pages %}
         {% else %}
