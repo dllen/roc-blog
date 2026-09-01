@@ -33,7 +33,16 @@
                     <div class="filter-dropdown__search-wrapper">
                         <input type="text" class="filter-dropdown__search" placeholder="搜索分类..." autocomplete="off">
                     </div>
-                    <div class="filter-dropdown__options" data-filter-options="section"></div>
+                    <div class="filter-dropdown__options" data-filter-options="section">
+                        <button type="button" class="filter-dropdown__option" role="option" data-value="">全部分类</button>
+                        {% for sub in blog.subsections %}
+                            {% set sect = get_section(path=sub) %}
+                            {% if sect and sect.pages %}
+                                {% set sec_slug = sect.components | last %}
+                                <button type="button" class="filter-dropdown__option" role="option" data-value="{{ sec_slug }}">{{ sect.title }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
@@ -46,7 +55,13 @@
                     <div class="filter-dropdown__search-wrapper">
                         <input type="text" class="filter-dropdown__search" placeholder="搜索标签..." autocomplete="off">
                     </div>
-                    <div class="filter-dropdown__options" data-filter-options="tag"></div>
+                    <div class="filter-dropdown__options" data-filter-options="tag">
+                        <button type="button" class="filter-dropdown__option" role="option" data-value="">全部标签</button>
+                        {% set tags_tax = get_taxonomy(kind='tags') %}
+                        {% for tag in tags_tax.items %}
+                            <button type="button" class="filter-dropdown__option" role="option" data-value="{{ tag.name }}">{{ tag.name }}</button>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
@@ -62,6 +77,14 @@
                 {% for p in blog.pages %}
                     {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
                 {% endfor %}
+                {% for sub in blog.subsections %}
+                    {% set sect = get_section(path=sub) %}
+                    {% if sect %}
+                        {% for p in sect.pages %}
+                            {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </ul>
             <div class="listing-footer">
                 <a href="/blog/" class="listing-more">查看全部 ({{ blog.pages | length }} 篇) →</a>
@@ -75,10 +98,12 @@
     if (!list) return;
     var items = Array.from(list.children);
 
-    // Sort by date desc
+    // 按 date 降序排序（读取 time[datetime]）
     items.sort(function(a, b) {
-        var dateA = a.querySelector('.shrink-0') ? a.querySelector('.shrink-0').textContent.trim() : '';
-        var dateB = b.querySelector('.shrink-0') ? b.querySelector('.shrink-0').textContent.trim() : '';
+        var tA = a.querySelector('time');
+        var tB = b.querySelector('time');
+        var dateA = tA ? (tA.getAttribute('datetime') || tA.textContent.trim()) : '';
+        var dateB = tB ? (tB.getAttribute('datetime') || tB.textContent.trim()) : '';
         return dateB.localeCompare(dateA);
     });
     items.forEach(function(item) { list.appendChild(item); });
@@ -87,54 +112,26 @@
     items.slice(limit).forEach(function(item) { item.style.display = 'none'; });
     list.style.display = '';
 
-    // Build filter options
-    var sections = {}, tags = {};
-    items.forEach(function(item) {
-        var sec = item.getAttribute('data-section') || '';
-        var tagStr = item.getAttribute('data-tags') || '';
-        if (sec) sections[sec] = true;
-        tagStr.split(',').forEach(function(t) {
-            t = t.trim();
-            if (t) tags[t] = true;
-        });
-    });
-
-    var sectionKeys = Object.keys(sections);
-    var tagKeys = Object.keys(tags);
     var filterBar = document.getElementById('filter-bar');
-    if (filterBar && (sectionKeys.length > 0 || tagKeys.length > 0)) {
+    if (filterBar) {
         filterBar.style.display = '';
-
         var state = { section: '', tag: '' };
 
-        function makeOption(value, label) {
-            return '<button type="button" class="filter-dropdown__option" role="option" data-value="' +
-                value + '">' + label + '</button>';
-        }
-
-        function renderOptions(container, allLabel, keys) {
-            var html = makeOption('', allLabel);
-            keys.sort().forEach(function(k) { html += makeOption(k, k); });
-            container.innerHTML = html;
-        }
-
-        renderOptions(document.querySelector('[data-filter-options="section"]'), '全部分类', sectionKeys);
-        renderOptions(document.querySelector('[data-filter-options="tag"]'), '全部标签', tagKeys);
-
-        // Filter logic
         function applyFilter() {
-            items.forEach(function(item) {
+            var hasFilter = !!(state.section || state.tag);
+            items.forEach(function(item, idx) {
                 var sec = item.getAttribute('data-section') || '';
                 var tagStr = (item.getAttribute('data-tags') || '').split(',');
                 var matchSection = !state.section || sec === state.section;
                 var matchTag = !state.tag || tagStr.indexOf(state.tag) >= 0;
-                item.style.display = (matchSection && matchTag) ? '' : 'none';
+                var match = matchSection && matchTag;
+                var show = match && (hasFilter || idx < limit);
+                item.style.display = show ? '' : 'none';
             });
             var clearBtn = document.getElementById('filter-clear');
-            if (clearBtn) clearBtn.style.display = (state.section || state.tag) ? '' : 'none';
+            if (clearBtn) clearBtn.style.display = hasFilter ? '' : 'none';
         }
 
-        // Dropdown toggle
         document.querySelectorAll('.filter-dropdown').forEach(function(dd) {
             var trigger = dd.querySelector('.filter-dropdown__trigger');
             var panel = dd.querySelector('.filter-dropdown__panel');
@@ -149,7 +146,11 @@
                 isOpen = !isOpen;
                 trigger.setAttribute('aria-expanded', isOpen);
                 panel.classList.toggle('is-open', isOpen);
-                if (isOpen && searchInput) searchInput.focus();
+                if (isOpen && searchInput) {
+                    searchInput.value = '';
+                    options.querySelectorAll('.filter-dropdown__option').forEach(function(o) { o.style.display = ''; });
+                    searchInput.focus();
+                }
             });
 
             options.addEventListener('click', function(e) {
