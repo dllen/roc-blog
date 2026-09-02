@@ -98,7 +98,7 @@ taxonomies:
 
 传统做法里需求和设计是两个团队、两个阶段：分析师把想法写成需求，设计师再把需求解析回设计。作者承认这种分离是为了问责，但认为它慢且有损耗。
 
-替代方案是让 Claude 读取已接受的 intent.md，在组织的品牌、安全、合规、UX skill 约束下一次产出需求和设计规格，并把有问题的地方标出来。产品负责人只审不写。
+替代方案是让 Claude 读取已接受的 intent.md，在组织的品牌、安全、合规、UX skill 约束下次产出需求和设计规格，并把有问题的地方标出来。产品负责人只审不写。
 
 文章给出了一条演进路径：
 
@@ -336,10 +336,3 @@ Claude 以自己的身份加入 Slack 事故频道，每个新事故都有一个
 ---
 
 > **系列阅读**：本文是「AI 原生 SDLC」三篇系列的第一篇，聚焦 Anthropic 单份手册的深度拆解。后续两篇分别从个体工程师视角和四报告交叉比较两个方向展开：**[《智能体工程模式：代码免费时代的软件工程实践》](/blog/agentic-engineering-patterns-simon-willison/)**、**[《AI Native SDLC 如何重构软件开发》](/blog/ai-native-sdlc-four-reports-synthesis/)**。
-
----
-
-## 相关资源推荐
-
-- <https://x.com/shao__meng/status/2094027833505144919>
-- <https://x.com/shao__meng/status/2093990789584236857?s=20>
