@@ -72,6 +72,8 @@ nav_sections = [
   { name = "Prompt",       url = "/blog/prompt/" },
   { name = "Weekly",       url = "/blog/weekly/" },
   { name = "Tutorial",     url = "/blog/tutorial/" },
+  { name = "C/C++",        url = "/blog/cpp/" },
+  { name = "基础设施",     url = "/blog/infra/" },
 ]
 
 # Refer https://support.google.com/analytics/answer/9539598?hl=en
