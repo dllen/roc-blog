@@ -1,6 +1,7 @@
 ---
 title: "缺字段文章"
-tags: []
+taxonomies:
+  tags: []
 ---
 
 正文。

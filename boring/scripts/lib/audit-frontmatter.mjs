@@ -31,13 +31,14 @@ export function auditDirectory(rootDir) {
     const rel = relative(rootDir, filePath);
     const source = readFileSync(filePath, 'utf8');
     const { format, data } = parseFrontmatter(source);
+    const tags = data.taxonomies?.tags;
 
     if (format === 'toml') result.tomlFiles.push(rel);
 
     if (!data.title) result.missingTitle.push(rel);
     if (!data.date) result.missingDate.push(rel);
     if (!data.description) result.missingDescription.push(rel);
-    if (!data.tags || !Array.isArray(data.tags) || data.tags.length === 0) {
+    if (!tags || !Array.isArray(tags) || tags.length === 0) {
       result.missingTags.push(rel);
     }
 
@@ -52,9 +53,9 @@ export function auditDirectory(rootDir) {
       if (len < DESCRIPTION_MIN) result.descriptionTooShort.push(rel);
       if (len > DESCRIPTION_MAX) result.descriptionTooLong.push(rel);
     }
-    if (Array.isArray(data.tags)) {
-      if (data.tags.length === 0) result.tagsEmpty.push(rel);
-      if (data.tags.length > TAGS_MAX) result.tagsTooMany.push(rel);
+    if (Array.isArray(tags)) {
+      if (tags.length === 0) result.tagsEmpty.push(rel);
+      if (tags.length > TAGS_MAX) result.tagsTooMany.push(rel);
     }
   }
 
