@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <style>
+    .title { font: bold 28px sans-serif; fill: #1f2d3d; }
+    .label { font: 18px sans-serif; fill: #1f2d3d; }
+    .node { fill: #eef8f1; stroke: #3e8e41; stroke-width: 2; }
+  </style>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"/>
+  <text x="40" y="50" class="title">GC Lifecycle & Flow</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3e8e41" />
+    </marker>
+  </defs>
+
+  <rect x="70" y="120" width="250" height="120" class="node"/>
+  <text x="85" y="160" class="label">Object Allocation</text>
+
+  <rect x="380" y="120" width="250" height="120" class="node"/>
+  <text x="395" y="160" class="label">Minor GC (Young)</text>
+
+  <rect x="690" y="120" width="250" height="120" class="node"/>
+  <text x="705" y="160" class="label">Promotion to Old</text>
+
+  <rect x="1000" y="120" width="250" height="120" class="node"/>
+  <text x="1015" y="160" class="label">Major/Full GC</text>
+
+  <!-- arrows -->
+  <line x1="320" y1="180" x2="380" y2="180" stroke="#3e8e41" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="630" y1="180" x2="690" y2="180" stroke="#3e8e41" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="940" y1="180" x2="1000" y2="180" stroke="#3e8e41" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- pause budget note -->
+  <text x="380" y="300" class="label">G1 Pause Target: MaxGCPauseMillis</text>
+  <text x="380" y="330" class="label">Concurrent Mark Trigger: IHOP (InitiatingHeapOccupancyPercent)</text>
+</svg>

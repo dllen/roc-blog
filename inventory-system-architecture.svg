@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="520" viewBox="0 0 1080 520">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .box { fill: #F7FAFF; stroke: #2F6FEB; stroke-width: 1.2; }
+    .svc { fill: #E8F0FF; stroke: #2F6FEB; }
+    .text { font: 600 13px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .desc { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #555; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker>
+  </defs>
+  <text x="20" y="30" class="title">库存中台微服务架构（Golang）</text>
+
+  <!-- API Gateway -->
+  <rect x="60" y="80" width="280" height="70" rx="8" class="box"/>
+  <text x="80" y="110" class="text">api-gateway / BFF (REST/GraphQL)</text>
+  <text x="80" y="128" class="desc">接入订单/促销/风控/运营</text>
+
+  <!-- Core services row -->
+  <rect x="40" y="180" width="1000" height="140" rx="10" class="box"/>
+  <text x="60" y="205" class="text">核心服务 (gRPC)</text>
+
+  <rect x="60" y="220" width="180" height="80" rx="8" class="svc"/>
+  <text x="75" y="245" class="text">inventory-service</text>
+  <text x="75" y="265" class="desc">原子动作/状态机</text>
+
+  <rect x="260" y="220" width="180" height="80" rx="8" class="svc"/>
+  <text x="275" y="245" class="text">lock-service</text>
+  <text x="275" y="265" class="desc">分布式锁/租约</text>
+
+  <rect x="460" y="220" width="180" height="80" rx="8" class="svc"/>
+  <text x="475" y="245" class="text">flow-service</text>
+  <text x="475" y="265" class="desc">流水/对账/审计</text>
+
+  <rect x="660" y="220" width="180" height="80" rx="8" class="svc"/>
+  <text x="675" y="245" class="text">rule-engine</text>
+  <text x="675" y="265" class="desc">分仓/调度策略</text>
+
+  <rect x="860" y="220" width="180" height="80" rx="8" class="svc"/>
+  <text x="875" y="245" class="text">sync-service</text>
+  <text x="875" y="265" class="desc">WMS同步/回写</text>
+
+  <!-- Storage/Infra -->
+  <rect x="40" y="350" width="1000" height="120" rx="10" class="box"/>
+  <text x="60" y="375" class="text">存储与基础设施</text>
+  <text x="60" y="395" class="desc">MySQL 主从 / Redis 缓存 / Kafka 事件流 / Object Storage</text>
+
+  <!-- Arrows -->
+  <line x1="200" y1="150" x2="150" y2="220" class="arrow"/>
+  <line x1="200" y1="150" x2="350" y2="220" class="arrow"/>
+  <line x1="200" y1="150" x2="550" y2="220" class="arrow"/>
+  <line x1="200" y1="150" x2="750" y2="220" class="arrow"/>
+  <line x1="200" y1="150" x2="950" y2="220" class="arrow"/>
+
+  <line x1="150" y1="300" x2="150" y2="380" class="arrow"/>
+  <line x1="350" y1="300" x2="350" y2="380" class="arrow"/>
+  <line x1="550" y1="300" x2="550" y2="380" class="arrow"/>
+  <line x1="750" y1="300" x2="750" y2="380" class="arrow"/>
+  <line x1="950" y1="300" x2="950" y2="380" class="arrow"/>
+</svg>

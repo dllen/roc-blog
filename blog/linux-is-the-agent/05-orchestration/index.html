@@ -1,0 +1,248 @@
+<!doctype html><html class=scroll-smooth lang=zh-CN><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/favicon.svg rel=icon type=image/svg+xml><link href=/favicon.svg rel=apple-touch-icon><script>(function () {
+                var systemDark = false;
+                try {
+                    if (typeof window.matchMedia === 'function') {
+                        systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+                    }
+                } catch (error) {
+                    systemDark = false;
+                }
+                var isDark = systemDark;
+                try {
+                    var savedTheme = localStorage.getItem('is_darkmode_set');
+                    if (savedTheme === 'true') isDark = true;
+                    if (savedTheme === 'false') isDark = false;
+                } catch (error) {
+                    isDark = systemDark;
+                }
+                document.documentElement.classList.toggle('dark', isDark);
+            })();</script><link href="https://scp.net.cn/css/style.css?h=370f02ec064e984998d4" rel=stylesheet><script defer src=https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js></script><script src="https://scp.net.cn/js/search.js?h=925a86bafc87e86c7793" defer></script><script src="https://scp.net.cn/js/main.js?h=18d9a71a2031d82c34d4" defer></script><link href=https://scp.net.cn/blog/atom.xml rel=alternate title=码农的自留地 type=application/atom+xml><title>Agent 的编排，90% 是 1976 年的 Makefile | 码农的自留地</title><meta content=article property=og:type><meta content="Agent 的编排，90% 是 1976 年的 Makefile" property=og:title><meta content="多 Agent 协作、任务依赖图、工作流引擎——这些听起来是 2024 年的新技术。但如果你仔细看，它们不过是 Makefile 在 1976 年就解决过的问题：拓扑排序、增量执行、并行调度、失败传播。" property=og:description><meta content=/og/05-orchestration.png property=og:image><meta content=https://scp.net.cn/blog/linux-is-the-agent/05-orchestration/ property=og:url><meta content=码农的自留地 property=og:site_name><meta content=summary_large_image name=twitter:card><meta content="Agent 的编排，90% 是 1976 年的 Makefile" name=twitter:title><meta content="多 Agent 协作、任务依赖图、工作流引擎——这些听起来是 2024 年的新技术。但如果你仔细看，它们不过是 Makefile 在 1976 年就解决过的问题：拓扑排序、增量执行、并行调度、失败传播。" name=twitter:description><meta content=/og/05-orchestration.png name=twitter:image><script type=application/ld+json>
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Agent 的编排，90% 是 1976 年的 Makefile",
+      "datePublished": "2026-09-05",
+      "dateModified": "2026-09-05",
+      "description": "多 Agent 协作、任务依赖图、工作流引擎——这些听起来是 2024 年的新技术。但如果你仔细看，它们不过是 Makefile 在 1976 年就解决过的问题：拓扑排序、增量执行、并行调度、失败传播。",
+      "keywords": "AI, LLM, Agent, Linux, Makefile, 工作流, 编排, DAG",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://scp.net.cn/blog/linux-is-the-agent/05-orchestration/" },
+      "author": { "@type": "Person", "name": "roc" }
+    }
+    </script><body class=site-body><a class=skip-to-content href=#main-content>跳到主要内容</a><header class=site-header><nav class="site-shell site-header__inner" aria-label=主导航 data-site-navigation><div class=site-brand-group data-site-brand><a class=site-brand href=/>码农的自留地</a><span class=site-slogan>Less is more!</span></div><div class=site-actions><div class=site-dropdown data-dropdown><button class="site-dropdown__trigger site-action" aria-expanded=false aria-haspopup=true aria-label=导航菜单 type=button><i class="las la-arrow-left" aria-hidden=true style=transform:rotate(180deg)></i></button><div class=site-dropdown__panel data-dropdown-panel role=menu><div aria-label=分类导航 class=site-dropdown__nav role=group><a class=site-dropdown__item href=/blog/sections/ role=menuitem> 分类 </a><a class=site-dropdown__item href=/blog/spring/ role=menuitem> Spring 源码 </a><a class=site-dropdown__item href=/blog/redis/ role=menuitem> Redis </a><a class=site-dropdown__item href=/blog/kafka/ role=menuitem> Kafka </a><a class=site-dropdown__item href=/blog/flink/ role=menuitem> Flink </a><a class=site-dropdown__item href=/blog/zookeeper/ role=menuitem> ZooKeeper </a><a class=site-dropdown__item href=/blog/hbase/ role=menuitem> HBase </a><a class=site-dropdown__item href=/blog/hdfs/ role=menuitem> HDFS </a><a class=site-dropdown__item href=/blog/translate/ role=menuitem> 翻译 </a><a class=site-dropdown__item href=/blog/speech/ role=menuitem> 演讲 </a><a class=site-dropdown__item href=/blog/reading/ role=menuitem> 阅读 </a><a class=site-dropdown__item href=/blog/sre/ role=menuitem> SRE </a><a class=site-dropdown__item href=/blog/prompt/ role=menuitem> Prompt </a><a class=site-dropdown__item href=/blog/weekly/ role=menuitem> Weekly </a><a class=site-dropdown__item href=/blog/tutorial/ role=menuitem> Tutorial </a><a class=site-dropdown__item href=/blog/cpp/ role=menuitem> C/C++ </a><a class=site-dropdown__item href=/blog/infra/ role=menuitem> 基础设施 </a></div><div class=site-dropdown__divider></div><div aria-label=操作 class=site-dropdown__actions role=group><a class=site-dropdown__item href=/blog/atom.xml role=menuitem> <i class="las la-rss" aria-hidden=true></i> RSS </a><button aria-label=切换深色模式 aria-pressed=false class=site-dropdown__item id=darkmode-toggle-dropdown role=menuitem type=button><i class="las la-moon" aria-hidden=true></i> 深色模式</button></div></div></div><a rel="noopener noreferrer" aria-label=GitHub class=site-action href=https://github.com/dllen target=_blank title=GitHub> <i class="lab la-github" aria-hidden=true></i> </a><a aria-label="RSS / Blog" rel="noopener noreferrer" title="RSS / Blog" class=site-action href=https://deepthink.global/ target=_blank> <i class="las la-rss-square" aria-hidden=true></i> </a><a aria-label="Tools Site" rel="noopener noreferrer" title="Tools Site" class=site-action href=https://bb4bb.me/ target=_blank> <i class="las la-tools" aria-hidden=true></i> </a><a aria-label="RSS feed" title="RSS feed" class=site-action href=/blog/atom.xml> <i class="las la-rss" aria-hidden=true></i> </a><button aria-label="搜索 (Cmd+K)" title="搜索 (Cmd+K)" class=site-action id=search-trigger type=button><i class="las la-search" aria-hidden=true></i></button><button aria-label=启用深色模式 aria-pressed=false class=site-action id=darkmode-toggle type=button><span class="hidden dark:inline"><i class="las la-sun" aria-hidden=true></i></span> <span class="inline dark:hidden"><i class="las la-moon" aria-hidden=true></i></span></button></div></nav></header><main class=site-main id=main-content><div class=reading-progress id=reading-progress></div><div class=breadcrumb-header><div class=breadcrumb-header__inner><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/>~</a><span class=mx-0.5>/</span><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/>blog</a><span class=mx-0.5>/</span><a class="hover:text-slate-900 dark:hover:text-slate-100 transition" href=/blog/linux-is-the-agent/>linux-is-the-agent</a><span class=mx-0.5>/</span><span class="text-slate-400 dark:text-slate-500 truncate max-w-xs">05-orchestration</span><button class="breadcrumb-header__back-to-top hidden" aria-label=回到顶部 id=back-to-top type=button><i class="las la-level-up-alt" aria-hidden=true></i></button></div></div><div class=article-shell><details class=article-toc-mobile data-toc-container=mobile><summary class=article-toc-mobile__summary>目录</summary> <div class=article-toc-list id=toc-list-mobile></div></details><div class=article-layout data-article-layout><article class=article-main data-article-main><header class=article-hero><div class=article-meta><time datetime=2026-09-05>2026-09-05</time><span aria-hidden=true>·</span><span>7 min read</span></div><h1 class=article-title>Agent 的编排，90% 是 1976 年的 Makefile</h1><div class=article-tags><a class=tag-chip href=/tags/ai/>#AI</a><a class=tag-chip href=/tags/llm/>#LLM</a><a class=tag-chip href=/tags/agent/>#Agent</a><a class=tag-chip href=/tags/linux/>#Linux</a><a class=tag-chip href=/tags/makefile/>#Makefile</a><a class=tag-chip href=/tags/gong-zuo-liu/>#工作流</a><a class=tag-chip href=/tags/bian-pai/>#编排</a><a class=tag-chip href=/tags/dag/>#DAG</a></div></header><div class=article-content><p>前四篇聊了 Agent 的基础设施、工具调用、记忆和评估。有读者继续问：多 Agent 协作呢？<p>这是目前最热门的方向之一——Multi-Agent System、Agent Workflow、Orchestration。框架们画着复杂的架构图，节点连着节点，Agent 调用 Agent，看起来像是全新的问题。<p>但如果把多 Agent 协作的核心逻辑拆开来看：定义任务、解决依赖、并行执行、处理失败——这正是 Makefile 在 47 年前（1976 年）就定义好的问题域。<p>本文把多 Agent 编排还原到 Makefile，看看这套“老古董“能给现代 Agent 工作流带来什么启发。<hr><h2 id=1-duo-agent-xie-zuo-de-ben-zhi-ren-wu-yi-lai-tu>1. 多 Agent 协作的本质：任务依赖图</h2><p>多 Agent 系统要解决的核心问题是：<strong>哪些任务可以并行，哪些必须等待前置任务完成？</strong><p>Makefile 给出了标准答案——<strong>有向无环图（DAG）</strong>：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=make><span class=giallo-l><span style=color:#616e88># Makefile 声明了任务之间的依赖关系</span></span>
+<span class=giallo-l><span style=color:#616e88># 最终目标：build</span></span>
+<span class=giallo-l><span style=color:#616e88># build 依赖：main.o lib.o</span></span>
+<span class=giallo-l><span style=color:#616e88># main.o 依赖：main.c</span></span>
+<span class=giallo-l><span style=color:#616e88># lib.o 依赖：lib.c</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>build</span><span style=color:#eceff4>:</span><span> main.o lib.o</span></span>
+<span class=giallo-l><span>    gcc -o build main.o lib.o</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>main.o</span><span style=color:#eceff4>:</span><span> main.c</span></span>
+<span class=giallo-l><span>    gcc -c main.c</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>lib.o</span><span style=color:#eceff4>:</span><span> lib.c</span></span>
+<span class=giallo-l><span>    gcc -c lib.c</span></span></code></pre><p>对应的依赖图：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>main.c ──→ main.o ──┐</span></span>
+<span class=giallo-l><span>                       ├──→ build</span></span>
+<span class=giallo-l><span>lib.c ──→ lib.o ──┘</span></span></code></pre><p>多 Agent 协作的 DAG 是一样的逻辑，只是节点从“编译目标“变成了“Agent 任务“：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=yaml><span class=giallo-l><span style=color:#616e88># Multi-Agent workflow 定义</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>workflow</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  tasks</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>    research</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> researcher</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      description</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>研究竞品功能</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      output</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> research_report.json</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#8fbcbb>    design</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> designer</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      description</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>基于研究报告设计方案</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      depends_on</span><span style=color:#eceff4>: [</span><span style=color:#a3be8c>research</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      input</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> research_report.json</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#8fbcbb>    implement</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> coder</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      description</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>实现设计方案</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      depends_on</span><span style=color:#eceff4>: [</span><span style=color:#a3be8c>design</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#8fbcbb>    test</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> tester</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      description</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>编写测试用例</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>      depends_on</span><span style=color:#eceff4>: [</span><span style=color:#a3be8c>implement</span><span style=color:#eceff4>]</span></span></code></pre><p>对应的 DAG：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>research ──→ design ──→ implement ──→ test</span></span></code></pre><p>Makefile 解决的是“C 代码怎么编译“，Multi-Agent 解决的是“任务怎么协作“。但底层的图结构完全相同。<hr><h2 id=2-tuo-bu-pai-xu-jue-ding-zhi-xing-shun-xu>2. 拓扑排序：决定执行顺序</h2><p>Makefile 有一个关键算法：<strong>拓扑排序</strong>——把依赖图转成线性执行顺序，保证每个节点在它的依赖之后执行。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># make 内部做拓扑排序，保证：</span></span>
+<span class=giallo-l><span style=color:#616e88># 1. main.o 和 lib.o 在 build 之前</span></span>
+<span class=giallo-l><span style=color:#616e88># 2. main.c 和 lib.c 在各自 .o 之前</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make -n</span><span style=color:#616e88>  # -n = dry run，看执行顺序</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build main.o lib.o</span></span></code></pre><p>Multi-Agent 工作流引擎也在做同样的事：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 拓扑排序实现（Agent 工作流引擎的内部逻辑）</span></span>
+<span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> topological_sort</span><span style=color:#eceff4>(</span><span>tasks</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#616e88>    # 计算每个任务的入度（有多少前置依赖）</span></span>
+<span class=giallo-l><span>    in_degree</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> {</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>:</span><span style=color:#88c0d0> len</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>.</span><span>depends_on</span><span style=color:#eceff4>)</span><span style=color:#81a1c1> for</span><span> task</span><span style=color:#81a1c1> in</span><span> tasks</span><span style=color:#eceff4>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    # 从入度为 0 的任务开始（没有前置依赖）</span></span>
+<span class=giallo-l><span>    queue</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> [</span><span>task</span><span style=color:#81a1c1> for</span><span> task</span><span style=color:#81a1c1> in</span><span> tasks</span><span style=color:#81a1c1> if</span><span> in_degree</span><span style=color:#eceff4>[</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l><span>    sorted_order</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> []</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    while</span><span> queue</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>        task</span><span style=color:#81a1c1> =</span><span> queue</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>pop</span><span style=color:#eceff4>(</span><span style=color:#b48ead>0</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span>        sorted_order</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>append</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>        # 这个任务完成后，依赖它的任务入度减 1</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        for</span><span> dependent</span><span style=color:#81a1c1> in</span><span> task</span><span style=color:#eceff4>.</span><span>dependents</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>            in_degree</span><span style=color:#eceff4>[</span><span>dependent</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> -=</span><span style=color:#b48ead> 1</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            if</span><span> in_degree</span><span style=color:#eceff4>[</span><span>dependent</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> ==</span><span style=color:#b48ead> 0</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>                queue</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>append</span><span style=color:#eceff4>(</span><span>dependent</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    return</span><span> sorted_order</span></span></code></pre><p><strong>关键认知</strong>：Multi-Agent 工作流引擎的核心算法，和 GNU Make 共享同一个祖先——拓扑排序。理解了 Makefile，就理解了 Agent 编排器的核心逻辑。<hr><h2 id=3-zeng-liang-zhi-xing-zhi-zhong-suan-bian-hua-de-bu-fen>3. 增量执行：只重算变化的部分</h2><p>Makefile 的精髓是<strong>增量编译</strong>：如果 main.c 没变，就不需要重新编译 main.o；如果 main.o 和 lib.o 没变，就不需要重新链接 build。<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># main.c 未修改 → make 跳过编译步骤</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make</span></span>
+<span class=giallo-l><span style=color:#88c0d0>make:</span><span style=color:#eceff4> '</span><span style=color:#a3be8c>build</span><span style=color:#eceff4>'</span><span style=color:#a3be8c> is up to date.</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># touch main.c 修改时间 → main.o 重新编译，但 lib.o 跳过</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> touch main.c</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span><span style=color:#616e88>        # main.c 变了，重新编译</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build main.o lib.o</span><span style=color:#616e88>  # 重新链接</span></span>
+<span class=giallo-l><span style=color:#616e88># lib.c 没变，lib.o 没有重新编译</span></span></code></pre><p>Multi-Agent 工作流也可以做<strong>增量执行</strong>：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 检查任务输出是否仍然有效</span></span>
+<span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> task_needs_rerun</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>,</span><span> cached_outputs</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span> task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#81a1c1> not in</span><span> cached_outputs</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return True</span><span style=color:#616e88>  # 从未执行过，必须跑</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    cached</span><span style=color:#81a1c1> =</span><span> cached_outputs</span><span style=color:#eceff4>[</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    # 输入变了（前置任务的输出变了）→ 需要重跑</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span> dep_id</span><span style=color:#81a1c1> in</span><span> task</span><span style=color:#eceff4>.</span><span>depends_on</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        if</span><span> cached_outputs</span><span style=color:#eceff4>[</span><span>dep_id</span><span style=color:#eceff4>].</span><span>checksum</span><span style=color:#81a1c1> !=</span><span> cached</span><span style=color:#eceff4>.</span><span>inputs_checksum</span><span style=color:#eceff4>[</span><span>dep_id</span><span style=color:#eceff4>]:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>            return True</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88>    # 任务定义变了（prompt、agent 配置变了）→ 需要重跑</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    if</span><span> task</span><span style=color:#eceff4>.</span><span>definition_checksum</span><span style=color:#81a1c1> !=</span><span> cached</span><span style=color:#eceff4>.</span><span>task_definition_checksum</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#81a1c1>        return True</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    return False</span><span style=color:#616e88>  # 所有输入未变，跳过</span></span></code></pre><p>这比“每次都全量重跑“高效得多。当工作流有 50 个任务、其中只有 1 个 prompt 改了，全量重跑是浪费——增量执行只需要跑那 1 个任务和它的下游。<hr><h2 id=4-bing-xing-diao-du-j-can-shu>4. 并行调度：-j 参数</h2><p>Makefile 的 <code>-j</code> 参数开启并行编译：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 串行：一步一步来</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> time make</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span><span style=color:#616e88>     # 2 秒</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span><span style=color:#616e88>      # 2 秒</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build ...</span><span style=color:#616e88>  # 1 秒</span></span>
+<span class=giallo-l><span style=color:#616e88># 总计：5 秒</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 并行 -j4：4 个任务同时跑</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> time make -j4</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span><span style=color:#eceff4> &</span><span style=color:#616e88>   # 进程 1</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span><span style=color:#eceff4> &</span><span style=color:#616e88>    # 进程 2</span></span>
+<span class=giallo-l><span style=color:#88c0d0>wait</span><span style=color:#616e88>              # 等两个进程完成</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build ...</span><span style=color:#616e88>  # 1 秒</span></span>
+<span class=giallo-l><span style=color:#616e88># 总计：3 秒</span></span></code></pre><p>Multi-Agent 工作流引擎的并行调度也是同样的原理——没有依赖的任务同时跑：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 并行调度：按层执行 DAG</span></span>
+<span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> execute_workflow_parallel</span><span style=color:#eceff4>(</span><span>workflow</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span>    layers</span><span style=color:#81a1c1> =</span><span style=color:#88c0d0> topological_layers</span><span style=color:#eceff4>(</span><span>workflow</span><span style=color:#eceff4>)</span><span style=color:#616e88>  # 按层级划分任务</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span> layer</span><span style=color:#81a1c1> in</span><span> layers</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#616e88>        # 这一层的任务彼此没有依赖，可以并行</span></span>
+<span class=giallo-l><span>        tasks_in_layer</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> [</span><span>workflow</span><span style=color:#eceff4>.</span><span>tasks</span><span style=color:#eceff4>[</span><span style=color:#88c0d0>id</span><span style=color:#eceff4>]</span><span style=color:#81a1c1> for</span><span style=color:#88c0d0> id</span><span style=color:#81a1c1> in</span><span> layer</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>        with</span><span> concurrent</span><span style=color:#eceff4>.</span><span>futures</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>ThreadPoolExecutor</span><span style=color:#eceff4>(</span><span>max_workers</span><span style=color:#81a1c1>=</span><span style=color:#88c0d0>len</span><span style=color:#eceff4>(</span><span>tasks_in_layer</span><span style=color:#eceff4>))</span><span style=color:#81a1c1> as</span><span> executor</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>            futures</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> {</span></span>
+<span class=giallo-l><span>                executor</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>submit</span><span style=color:#eceff4>(</span><span>execute_task</span><span style=color:#eceff4>,</span><span> task</span><span style=color:#eceff4>):</span><span> task</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                for</span><span> task</span><span style=color:#81a1c1> in</span><span> tasks_in_layer</span></span>
+<span class=giallo-l><span style=color:#eceff4>            }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#81a1c1>            for</span><span> future</span><span style=color:#81a1c1> in</span><span> concurrent</span><span style=color:#eceff4>.</span><span>futures</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>as_completed</span><span style=color:#eceff4>(</span><span>futures</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span>                task</span><span style=color:#81a1c1> =</span><span> futures</span><span style=color:#eceff4>[</span><span>future</span><span style=color:#eceff4>]</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                try</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>                    result</span><span style=color:#81a1c1> =</span><span> future</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>result</span><span style=color:#eceff4>()</span></span>
+<span class=giallo-l><span>                    workflow</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>save_output</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>,</span><span> result</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>                except</span><span style=color:#8fbcbb> Exception</span><span style=color:#81a1c1> as</span><span> e</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>                    workflow</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>mark_failed</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>,</span><span> e</span><span style=color:#eceff4>)</span></span></code></pre><pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=plain><span class=giallo-l><span>Layer 1: research          ← 没有依赖，最先跑</span></span>
+<span class=giallo-l><span>Layer 2: design, planning   ← 都可以等 research 完成</span></span>
+<span class=giallo-l><span>Layer 3: implement, review  ← 可以并行，各自依赖不同的上游</span></span>
+<span class=giallo-l><span>Layer 4: test, deploy      ← 最后跑</span></span></code></pre><p>Makefile 的 <code>-j</code> 教会 Agent 编排器：并行不是无脑多线程，而是尊重依赖图的拓扑结构——只有在拓扑序允许的情况下，才把没有依赖的任务放进同一个调度批次。<hr><h2 id=5-shi-bai-chuan-bo-delete-on-error-he-k>5. 失败传播：.DELETE_ON_ERROR 和 -k</h2><p>Makefile 遇到编译错误，默认会停止整个流程。但如果加了 <code>-k</code>（keep going），会在当前任务失败后继续跑其他不依赖失败任务的目标：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 默认行为：失败即停</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span><span style=color:#616e88>        # 成功</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span><span style=color:#616e88>         # 失败 ✗</span></span>
+<span class=giallo-l><span style=color:#616e88># 停止，不会执行链接</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># -k 模式：失败后继续其他不相关目标</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make -k</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span><span style=color:#616e88>        # 成功</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span><span style=color:#616e88>         # 失败 ✗</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build main.o</span><span style=color:#616e88>  # 继续（lib.o 失败了，但 main.o 成功了）</span></span></code></pre><p>Multi-Agent 工作流也有类似的策略：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 失败处理策略</span></span>
+<span class=giallo-l><span style=color:#81a1c1>class</span><span style=color:#8fbcbb> FailureStrategy</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    STOP_ON_FIRST_FAILURE</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>stop</span><span style=color:#eceff4>"</span><span style=color:#616e88>      # 默认：遇到失败就停</span></span>
+<span class=giallo-l><span>    CONTINUE_INDEPENDENT</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>keep-going</span><span style=color:#eceff4>"</span><span style=color:#616e88>  # -k 模式：失败后继续独立任务</span></span>
+<span class=giallo-l><span>    COMPENSATE</span><span style=color:#81a1c1> =</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>compensate</span><span style=color:#eceff4>"</span><span style=color:#616e88>            # 失败后执行补偿操作（回滚）</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 实际执行</span></span>
+<span class=giallo-l><span style=color:#81a1c1>if</span><span> strategy</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>stop</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    raise</span><span style=color:#88c0d0> WorkflowError</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"Task </span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c> failed, stopping"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>elif</span><span> strategy</span><span style=color:#81a1c1> ==</span><span style=color:#eceff4> "</span><span style=color:#a3be8c>keep-going</span><span style=color:#eceff4>":</span></span>
+<span class=giallo-l><span style=color:#616e88>    # 标记失败，但继续跑其他不依赖此任务的目标</span></span>
+<span class=giallo-l><span>    workflow</span><span style=color:#eceff4>.</span><span style=color:#88c0d0>mark_skippable</span><span style=color:#eceff4>(</span><span>task</span><span style=color:#eceff4>.</span><span>id</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    continue</span></span></code></pre><p><strong>关键区别</strong>：Makefile 的 <code>-k</code> 适合编译（lib.o 失败了，但 build 还能用 main.o 继续链接），但 Multi-Agent 工作流需要更谨慎——有些任务失败意味着整个工作流的结果不可信，即使其他任务“成功“了。<hr><h2 id=6-bian-liang-he-mo-ban-dry-yuan-ze>6. 变量和模板：DRY 原则</h2><p>Makefile 支持变量和函数，减少重复：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=make><span class=giallo-l><span style=color:#616e88># 变量</span></span>
+<span class=giallo-l><span>CC</span><span style=color:#eceff4> =</span><span> gcc</span></span>
+<span class=giallo-l><span>CFLAGS</span><span style=color:#eceff4> =</span><span> -Wall -O2</span></span>
+<span class=giallo-l><span>TARGET</span><span style=color:#eceff4> =</span><span> build</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 通配符</span></span>
+<span class=giallo-l><span>SOURCES</span><span style=color:#eceff4> =</span><span style=color:#81a1c1> $(</span><span style=color:#88c0d0>wildcard</span><span style=color:#a3be8c> *.c</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l><span>OBJECTS</span><span style=color:#eceff4> =</span><span style=color:#81a1c1> $(</span><span>SOURCES:.c=.o</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 模式匹配</span></span>
+<span class=giallo-l><span style=color:#88c0d0>%.o</span><span style=color:#eceff4>:</span><span> %.c</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    $(</span><span>CC</span><span style=color:#81a1c1>) $(</span><span>CFLAGS</span><span style=color:#81a1c1>)</span><span> -c </span><span style=color:#81a1c1>$&lt;</span><span> -o </span><span style=color:#81a1c1>$@</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#616e88># 函数</span></span>
+<span class=giallo-l><span style=color:#81a1c1>define</span><span> run_test</span></span>
+<span class=giallo-l><span>    python test_</span><span style=color:#81a1c1>$(</span><span>1</span><span style=color:#81a1c1>)</span><span>.py</span></span>
+<span class=giallo-l><span style=color:#81a1c1>endef</span></span></code></pre><p>Multi-Agent 工作流也可以用模板减少重复：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=yaml><span class=giallo-l><span style=color:#616e88># 工作流模板</span></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span style=color:#8fbcbb> name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> standard_agent_task</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  retry</span><span style=color:#eceff4>:</span><span style=color:#b48ead> 3</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  timeout</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> 300s</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  on_failure</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> log_and_notify</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span style=color:#8fbcbb> name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> research_agent</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  extends</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> standard_agent_task</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> researcher</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  prompt_template</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>templates/research_prompt.j2</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#eceff4>-</span><span style=color:#8fbcbb> name</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> analysis_agent</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  extends</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> standard_agent_task</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  agent</span><span style=color:#eceff4>:</span><span style=color:#a3be8c> analyst</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  prompt_template</span><span style=color:#eceff4>: "</span><span style=color:#a3be8c>templates/analysis_prompt.j2</span><span style=color:#eceff4>"</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  depends_on</span><span style=color:#eceff4>: [</span><span style=color:#a3be8c>research_agent</span><span style=color:#eceff4>]</span></span></code></pre><p>DRY（Don’t Repeat Yourself）在 Makefile 里是最佳实践，在 Agent 工作流里也是——把通用的重试策略、超时配置、错误处理提取成模板，比每个任务单独定义要可靠得多。<hr><h2 id=7-wei-mu-biao-phony-he-gong-zuo-liu-ru-kou>7. 伪目标：.PHONY 和工作流入口</h2><p>Makefile 有 <code>.PHONY</code> 目标——不是真正的文件，只是用来触发一系列操作：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=make><span class=giallo-l><span style=color:#616e88># phony target：不是生成文件，而是触发一组操作</span></span>
+<span class=giallo-l><span style=color:#88c0d0>.PHONY</span><span style=color:#eceff4>:</span><span> clean test install</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>clean</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    rm -f *.o </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>test</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    pytest tests/</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#88c0d0>install</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span>    cp </span><span style=color:#81a1c1>$(</span><span>TARGET</span><span style=color:#81a1c1>)</span><span> /usr/local/bin/</span></span></code></pre><p>Multi-Agent 工作流的“入口任务“就是伪目标：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=yaml><span class=giallo-l><span style=color:#8fbcbb>workflow</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>  entrypoints</span><span style=color:#eceff4>:</span></span>
+<span class=giallo-l><span style=color:#8fbcbb>    full_pipeline</span><span style=color:#eceff4>:</span><span style=color:#616e88>  # 触发完整工作流</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> research</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> design</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> implement</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> test</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#8fbcbb>    fast_pipeline</span><span style=color:#eceff4>:</span><span style=color:#616e88>  # 快速验证（跳过耗时的 research）</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> mock_research</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> design</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> implement</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> test</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#8fbcbb>    ci_pipeline</span><span style=color:#eceff4>:</span><span style=color:#616e88>  # CI 用（不跑实现，只跑评估）</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> research</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> design</span></span>
+<span class=giallo-l><span style=color:#eceff4>      -</span><span style=color:#a3be8c> evaluate_design</span></span></code></pre><p><code>.PHONY</code> 教会 Agent 编排器：工作流不只是 DAG，还需要有入口点——用户/系统触发工作流的方式，和 DAG 本身是正交的。<hr><h2 id=8-diao-shi-make-n-he-dry-run>8. 调试：make -n 和 dry-run</h2><p>Makefile 有一个极其有用的调试模式：<code>-n</code>（dry-run），只打印会执行的操作，但不真正执行：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=shellscript><span class=giallo-l><span style=color:#616e88># 看 make 会做什么，但不真正做</span></span>
+<span class=giallo-l><span style=color:#88c0d0>$</span><span style=color:#a3be8c> make -n</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c main.c</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -c lib.c</span></span>
+<span class=giallo-l><span style=color:#88c0d0>gcc</span><span style=color:#a3be8c> -o build main.o lib.o</span></span></code></pre><p>Multi-Agent 工作流也应该有 dry-run 模式：<pre class=giallo style=color:#d8dee9;background-color:#2e3440><code data-lang=python><span class=giallo-l><span style=color:#616e88># 工作流 dry-run：模拟执行，不真正调用 Agent</span></span>
+<span class=giallo-l><span style=color:#81a1c1>def</span><span style=color:#88c0d0> dry_run</span><span style=color:#eceff4>(</span><span>workflow</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    print</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>=== Workflow Dry Run ===</span><span style=color:#eceff4>")</span></span>
+<span class=giallo-l><span style=color:#81a1c1>    for</span><span> task</span><span style=color:#81a1c1> in</span><span style=color:#88c0d0> topological_sort</span><span style=color:#eceff4>(</span><span>workflow</span><span style=color:#eceff4>.</span><span>tasks</span><span style=color:#eceff4>):</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        print</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"[DRY] </span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>agent</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c>: </span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>description</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c>"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        print</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"  Input: </span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>input</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c>"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        print</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"  Output: (simulated)"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        print</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"  Cost: (simulated: $</span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>estimated_cost</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c>)"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>        print</span><span style=color:#eceff4>(</span><span style=color:#81a1c1>f</span><span style=color:#a3be8c>"  Duration: (simulated: </span><span style=color:#ebcb8b>{</span><span>task</span><span style=color:#eceff4>.</span><span>estimated_duration</span><span style=color:#ebcb8b>}</span><span style=color:#a3be8c>s)"</span><span style=color:#eceff4>)</span></span>
+<span class=giallo-l><span style=color:#88c0d0>    print</span><span style=color:#eceff4>("</span><span style=color:#a3be8c>=== Dry Run Complete ===</span><span style=color:#eceff4>")</span></span></code></pre><p>Dry-run 是工作流安全性的关键保证——在上线之前看清楚“这次工作流会做什么“，避免意外触发昂贵的 API 调用或不可逆的操作。<hr><h2 id=9-cong-makefile-neng-xue-dao-shen-me>9. 从 Makefile 能学到什么</h2><p>把 Makefile 和 Multi-Agent 编排对照下来，核心设计原则其实很清晰：<p><strong>DAG 是核心抽象</strong>：任务之间的依赖关系就是有向无环图，拓扑排序决定执行顺序。这是最简洁、最通用的工作流模型。<p><strong>增量优于全量</strong>：不要每次都重新跑整个工作流。检查输入是否变化、任务定义是否变化，只重跑必要的部分。<p><strong>并行要尊重拓扑</strong>：<code>-j</code> 参数不是万能的，只有在没有依赖的任务之间才能并行。Multi-Agent 工作流的并行调度也是同理。<p><strong>失败策略要明确</strong>：是遇到失败就停（默认），还是继续跑独立任务（<code>-k</code>），还是执行补偿操作？不同的场景需要不同的策略。<p><strong>Dry-run 是安全网</strong>：在上线之前看清楚执行计划，避免意外。Makefile 的 <code>-n</code> 用了几十年，Multi-Agent 工作流也需要同样的机制。<p><strong>模板减少重复</strong>：把通用的模式提取成模板（重试、超时、错误处理），比每个任务单独定义更可靠、更易维护。<hr><h2 id=jie-yu-makefile-yi-jing-hui-da-liao-gong-zuo-liu-de-he-xin-wen-ti>结语：Makefile 已经回答了工作流的核心问题</h2><p>1976 年，Stuart Feldman 写下了第一个 Make。它解决的是“当几百个源文件需要按正确顺序编译时，怎么自动化这个过程“。<p>2024 年，Agent 框架们画着 Multi-Agent 架构图。它们解决的是“当几十个 Agent 任务需要按正确顺序协作时，怎么自动化这个过程“。<p>Makefile 的答案：依赖图（DAG）、拓扑排序、增量执行、并行调度、失败传播。<p>Multi-Agent 工作流的答案：完全一样的。<p>理解了 Makefile，就理解了 Agent 编排器的核心逻辑。剩下的只是把“编译 C 代码“翻译成“调度 Agent 任务“——表层语言变了，底层的计算模型没有变。<p>Makefile 已经 47 岁了，但它仍然是软件工程里最优雅的工作流定义语言之一。Multi-Agent 编排器们，与其花时间发明新概念，不如好好读一读 Make 的源码——里面藏着你需要的答案。</div><nav aria-label=文章分页 class=article-pagination><a class=article-pagination__card href=https://scp.net.cn/blog/linux-is-the-agent/04-evaluation/> <div class=article-pagination__label>← 上一篇</div> <div class=article-pagination__title>Agent 的评估，90% 是 1996 年的日志分析</div> <div class=article-pagination__meta>2026-09-04</div> </a><a class="article-pagination__card article-pagination__card--next" href=https://scp.net.cn/blog/linux-is-the-agent/06-security/> <div class=article-pagination__label>下一篇 →</div> <div class=article-pagination__title>Agent 的安全，90% 是 1998 年的 SELinux</div> <div class=article-pagination__meta>2026-09-06</div> </a></nav><section class=related-section data-current-permalink=https://scp.net.cn/blog/linux-is-the-agent/05-orchestration/ data-current-tags=AI|LLM|Agent|Linux|Makefile|工作流|编排|DAG data-limit=3 data-related-container><h3 class=related-section__title>相关阅读</h3><div class=related-grid data-related-list><p class=related-grid__empty>加载中…</div></section></article><aside class=article-toc-desktop data-toc-container=desktop><nav aria-label=文章目录 class=article-toc><div class=article-toc-label>目录</div><div class=article-toc-list id=toc-list></div></nav></aside></div></div><script src="https://scp.net.cn/js/reading.js?h=e33d581bed990ed6f741" defer></script></main><footer class=site-footer><div class="site-shell site-footer__inner"><span>© 2026 码农的自留地</span><nav aria-label="Footer navigation" class=site-footer__navigation><a href=/>首页</a><a href=/tags/>标签</a><a href=/blog/atom.xml>RSS</a></nav></div></footer>

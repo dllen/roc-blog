@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="480" viewBox="0 0 1080 480">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .lane { fill: #F7FAFF; stroke: #2F6FEB; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">核心服务调用时序（Lock→Reduce→Outbox→Kafka）</text>
+
+  <rect x="40" y="70" width="220" height="360" rx="8" class="lane"/><text x="60" y="92" class="text">api-gateway</text>
+  <rect x="300" y="70" width="220" height="360" rx="8" class="lane"/><text x="320" y="92" class="text">inventory-service</text>
+  <rect x="560" y="70" width="220" height="360" rx="8" class="lane"/><text x="580" y="92" class="text">MySQL</text>
+  <rect x="820" y="70" width="220" height="360" rx="8" class="lane"/><text x="840" y="92" class="text">Kafka/OutboxWorker</text>
+
+  <text x="60" y="130" class="text">POST /lock</text>
+  <line x1="160" y1="130" x2="300" y2="130" class="arrow"/>
+  <text x="320" y="150" class="text">Tx: FOR UPDATE + Update + InsertLock + InsertFlow + InsertOutbox</text>
+  <line x1="420" y1="170" x2="560" y2="170" class="arrow"/>
+  <text x="580" y="170" class="text">事务提交</text>
+
+  <text x="60" y="230" class="text">POST /reduce</text>
+  <line x1="160" y1="230" x2="300" y2="230" class="arrow"/>
+  <text x="320" y="250" class="text">Tx: 幂等检查 + Update + Flow + Outbox</text>
+  <line x1="420" y1="270" x2="560" y2="270" class="arrow"/>
+
+  <text x="840" y="320" class="text">OutboxWorker发布到Kafka(Exactly-once via idempotent key)</text>
+</svg>
