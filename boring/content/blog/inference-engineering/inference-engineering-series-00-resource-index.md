@@ -9,7 +9,7 @@ taxonomies:
 
 # AI 学习系列 · Inference Engineering 第二期素材盘点
 
-> **本文性质**：今天 (2026-09-09) 剪藏进 `Clippings/` 的 **11 篇素材** 的归并 / 定级 / 编排笔记，决定每个文件归入哪个子系列、是否需要再加工、优先级如何。
+> **本文性质**：今天 (2026-09-09) 从剪藏目录（vault `Clippings/`）抓取的 **11 篇素材** 的归并 / 定级 / 编排笔记，决定每个文件归入哪个子系列、是否需要再加工、优先级如何。
 > **本文不是文章本身**，而是后续 4 个新子系列的**总索引 + 编辑决策记录**——避免下次再看到同一份素材时重新判断。
 > **风格沿用** [Inference Engineering 学习路线总结](@/blog/inference-engineering/inference-engineering-series-00-roadmap-summary.md)：长文 + 翻译/导读 + 中文工程视角 + 结构化对照表 + 工程师笔记。
 
@@ -28,7 +28,7 @@ taxonomies:
 
 加上已经完成的 **系列-01（路线图）+ 系列-02（KV Cache）**，整个 **Inference Engineering 大系列** 6 卷结构全部完成——可以作为长期公众号 / 博客 / 内部培训的核心素材。
 
-**第二期共产出 20 个新文件**（4 系列 × {3 篇 Vault 长文 + 1 篇公众号凝缩版 + 1 个配图大纲}），合计约 5,860 行；详见各子系列文末 footer 与 [控制中心/资料入口/README#01-知识库—核心学习笔记](#)。
+**第二期共产出 20 个新文件**（4 系列 × {3 篇 Vault 长文 + 1 篇公众号凝缩版 + 1 个配图大纲}），合计约 5,860 行；详见各子系列文末 footer 与本站 README（一级知识库 01-知识库 / AI与编程 / Inference-Engineering 子目录索引）。
 
 ## 〇补、SVG 配图升级（2026-09-09 第二轮）
 
@@ -36,10 +36,10 @@ taxonomies:
 
 | 系列 | SVG 数 | 目录 | 累计大小 |
 |---|---|---|---|
-| 系列-03 Paged Attention | 4 | [控制中心/运行结果/当前笔记/Inference-Engineering-第二期-配图/03-PagedAttention/](#) | 57 KB |
-| 系列-04 Guided Decoding | 3 | [控制中心/运行结果/当前笔记/Inference-Engineering-第二期-配图/04-GuidedDecoding/](#) | 24 KB |
-| 系列-05 Distributed Training | 4 | [控制中心/运行结果/当前笔记/Inference-Engineering-第二期-配图/05-DistributedTraining/](#) | 34 KB |
-| 系列-06 Post-Training 101 | 6 | [控制中心/运行结果/当前笔记/Inference-Engineering-第二期-配图/06-PostTraining/](#) | 36 KB |
+| 系列-03 Paged Attention | 4 | [/img/inference-engineering/series-03-paged-attention/](/img/inference-engineering/series-03-paged-attention/) | 57 KB |
+| 系列-04 Guided Decoding | 3 | [/img/inference-engineering/series-04-guided-decoding/](/img/inference-engineering/series-04-guided-decoding/) | 24 KB |
+| 系列-05 Distributed Training | 4 | [/img/inference-engineering/series-05-distributed-training/](/img/inference-engineering/series-05-distributed-training/) | 34 KB |
+| 系列-06 Post-Training 101 | 6 | [/img/inference-engineering/series-06-post-training/](/img/inference-engineering/series-06-post-training/) | 36 KB |
 | **合计** | **17** | | **151 KB** |
 
 **SVG 设计规范（沿用系列-02 风格）**：暗色背景 `#1A1F2E` + 暖橙 `#F59E42` / 砖红 `#E04E3D` / 雾蓝 `#9CA9BD` 8 色板；`viewBox` + `width="100%" height="auto"` 适配公众号；统一 `defs/marker` 箭头定义；`role="img"` + `<title>` + `<desc>` 无障碍；中文 `"PingFang SC", "Microsoft YaHei"`、数字 `JetBrains Mono` 字体回退链。
@@ -293,10 +293,10 @@ Inference Engineering 大系列（持续更新）
 
 - [x] 创建 `系列-03-A-PagedAttention-上篇.md` 与对应公众号文（**已完成 2026-09-09**）
 - [x] 写完系列-03 后回填本笔记的"已完成"状态（**已回填**）
-- [x] 把 5 篇未加工长文移动到 `控制中心/运行结果/当前笔记/` 内同步完成（**已完成——4 系列全部落地 5 篇**）
-- [x] 在 [wiki/index](#) 中同步本次新增的 4 个系列锚点（**暂缓——系列草稿仍在 当前笔记/，等正式迁移到 01-知识库/AI与编程/Inference-Engineering/ 时再做**）
-- [x] 把本笔记链接到 `控制中心/运行结果/当前笔记/README.md`（**已追加**）
-- [x] 在 `控制中心/资料入口/tmp_links索引/` 中追加 4 个素材链接（**已追加**）
+- [x] 把 5 篇未加工长文落地到「当前笔记」目录同步完成（**已完成——4 系列全部落地 5 篇**）
+- [x] 在知识图谱索引中同步本次新增的 4 个系列锚点（**暂缓——系列草稿仍在「当前笔记」目录，等正式迁移到「01-知识库/AI与编程/Inference-Engineering/」时再做**）
+- [x] 在「当前笔记」README.md 中追加本笔记索引（**已追加**）
+- [x] 在「素材链接索引」目录追加 4 个素材链接（**已追加**）
 
 ---
 
@@ -306,10 +306,10 @@ Inference Engineering 大系列（持续更新）
 |---|---|
 | 笔记位置 | [AI-学习系列-Inference-Engineering-第二期素材盘点](@/blog/inference-engineering/inference-engineering-series-00-resource-index.md) |
 | 生成时间 | 2026-09-09 |
-| 素材范围 | `Clippings/` 目录下今天创建的全部 11 个文件 |
+| 素材范围 | 剪藏目录（`Clippings/`）下今天创建的全部 11 个文件 |
 | 核心素材字数合计 | 约 240K（含 6 篇重复切片 ~21K）→ 净可用素材约 235K |
 | 风格沿用 | [Inference Engineering 学习路线总结](@/blog/inference-engineering/inference-engineering-series-00-roadmap-summary.md) / [系列-02-A-KVCache-上篇](@/blog/inference-engineering/inference-engineering-series-02-a-kvcache.md) |
-| 系列大目录 | [控制中心/资料入口/README#02-课程体系](#)（AI-LLM 教程）相邻，定位不同：本文是 **Inference Engineering 大系列**，课程体系目录下是 **基础数学→神经网络→LLM 原理** |
+| 系列大目录 | 本站 README（一级分类 02-课程体系下"AI-LLM 教程"）相邻，定位不同：本文是 **Inference Engineering 大系列**，课程体系目录下是 **基础数学→神经网络→LLM 原理** |
 
 ### 文件 → 系列 → 状态 一览
 
