@@ -34,12 +34,12 @@ taxonomies:
 
 第二轮升级把 4 个 `公众号文-XX-配图大纲.md` 里的 ASCII art / Mermaid 描述升级为 **真实 SVG 图片**：
 
-| 系列 | SVG 数 | 目录 | 累计大小 |
+| 系列 | SVG 数 | 封面图 | 累计大小 |
 |---|---|---|---|
-| 系列-03 Paged Attention | 4 | [/img/inference-engineering/series-03-paged-attention/](/img/inference-engineering/series-03-paged-attention/) | 57 KB |
-| 系列-04 Guided Decoding | 3 | [/img/inference-engineering/series-04-guided-decoding/](/img/inference-engineering/series-04-guided-decoding/) | 24 KB |
-| 系列-05 Distributed Training | 4 | [/img/inference-engineering/series-05-distributed-training/](/img/inference-engineering/series-05-distributed-training/) | 34 KB |
-| 系列-06 Post-Training 101 | 6 | [/img/inference-engineering/series-06-post-training/](/img/inference-engineering/series-06-post-training/) | 36 KB |
+| 系列-03 Paged Attention | 4 | [03-01-cover-block-table.svg](/img/inference-engineering/series-03-paged-attention/03-01-cover-block-table.svg) | 57 KB |
+| 系列-04 Guided Decoding | 3 | [04-01-cover-three-step-pipeline.svg](/img/inference-engineering/series-04-guided-decoding/04-01-cover-three-step-pipeline.svg) | 24 KB |
+| 系列-05 Distributed Training | 4 | [05-01-cover-355-years-gpu-progression.svg](/img/inference-engineering/series-05-distributed-training/05-01-cover-355-years-gpu-progression.svg) | 34 KB |
+| 系列-06 Post-Training 101 | 6 | [06-01-cover-lifecycle-five-rewards.svg](/img/inference-engineering/series-06-post-training/06-01-cover-lifecycle-five-rewards.svg) | 36 KB |
 | **合计** | **17** | | **151 KB** |
 
 **SVG 设计规范（沿用系列-02 风格）**：暗色背景 `#1A1F2E` + 暖橙 `#F59E42` / 砖红 `#E04E3D` / 雾蓝 `#9CA9BD` 8 色板；`viewBox` + `width="100%" height="auto"` 适配公众号；统一 `defs/marker` 箭头定义；`role="img"` + `<title>` + `<desc>` 无障碍；中文 `"PingFang SC", "Microsoft YaHei"`、数字 `JetBrains Mono` 字体回退链。
