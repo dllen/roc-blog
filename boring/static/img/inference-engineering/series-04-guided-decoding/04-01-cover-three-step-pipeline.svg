@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="auto" role="img">
+  <title>Guided Decoding · Token Mask 流水线</title>
+  <desc>为什么你的 Agent 总返回畸形 JSON — 三步流水线封面图</desc>
+  <defs>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#D1D5DB"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#F59E42"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" fill="#1A1F2E"/>
+
+  <!-- Top Title -->
+  <text x="450" y="52" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="28" font-weight="bold" fill="#F5F0E8">Guided Decoding · Token Mask 流水线</text>
+  <text x="450" y="80" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#9CA9BD">为什么你的 Agent 总返回畸形 JSON</text>
+
+  <!-- Horizontal divider line -->
+  <line x1="50" y1="105" x2="850" y2="105" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ============ Three Step Boxes ============ -->
+  <!-- Step 1: Schema → DFA (left) -->
+  <rect x="80" y="145" width="200" height="140" rx="12" ry="12" fill="#9CA9BD" stroke="#6B7280" stroke-width="2"/>
+  <text x="180" y="185" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" font-weight="bold" fill="#1A1F2E">步骤 1</text>
+  <text x="180" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" font-weight="bold" fill="#1A1F2E">Schema → DFA</text>
+  <text x="180" y="235" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1A1F2E">JSON Schema / Regex</text>
+  <text x="180" y="255" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1A1F2E">编译成有限状态自动机</text>
+  <text x="180" y="275" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">QAF ⼀→ DFA</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="280" y1="215" x2="360" y2="215" stroke="#D1D5DB" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <text x="320" y="205" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#D1D5DB">每步耗时 &lt;5ms</text>
+
+  <!-- Step 2: Token Mask (center, highlighted) -->
+  <rect x="370" y="130" width="200" height="170" rx="12" ry="12" fill="#F59E42" stroke="#E04E3D" stroke-width="4"/>
+  <text x="470" y="175" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" font-weight="bold" fill="#1A1F2E">步骤 2</text>
+  <text x="470" y="200" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="17" font-weight="bold" fill="#1A1F2E">Token Mask</text>
+  <text x="470" y="225" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#1A1F2E">Bitmask 生成</text>
+  <text x="470" y="248" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1A1F2E">DFA 当前状态</text>
+  <text x="470" y="268" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1A1F2E">合法 token = 1</text>
+  <text x="470" y="288" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1A1F2E">非法 token = 0</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="570" y1="215" x2="650" y2="215" stroke="#D1D5DB" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <text x="610" y="205" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#D1D5DB">每步耗时 &lt;5ms</text>
+
+  <!-- Step 3: Logits 屏蔽采样 (right) -->
+  <rect x="660" y="145" width="200" height="140" rx="12" ry="12" fill="#E04E3D" stroke="#1A1F2E" stroke-width="2"/>
+  <text x="760" y="185" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" font-weight="bold" fill="#F5F0E8">步骤 3</text>
+  <text x="760" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" font-weight="bold" fill="#F5F0E8">Logits 屏蔽采样</text>
+  <text x="760" y="235" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">非法 token 概率 → 0</text>
+  <text x="760" y="255" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">只从合法集合采样</text>
+  <text x="760" y="275" text-anchor="middle" font-family="monospace" font-size="11" fill="#F5F0E8">→ 合法 JSON</text>
+
+  <!-- ============ Bottom Data Cards ============ -->
+  <!-- Divider -->
+  <line x1="50" y1="330" x2="850" y2="330" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- Card 1: 无约束 -->
+  <rect x="100" y="350" width="220" height="110" rx="10" ry="10" fill="#2D3548"/>
+  <text x="210" y="388" text-anchor="middle" font-family="monospace" font-size="42" font-weight="bold" fill="#6B7280">61.1%</text>
+  <text x="210" y="418" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">无约束（最差）</text>
+  <text x="210" y="440" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#6B7280">GitHub_medium 复杂 Schema</text>
+
+  <!-- Card 2: XGrammar -->
+  <rect x="340" y="350" width="220" height="110" rx="10" ry="10" fill="#2D3548"/>
+  <text x="450" y="388" text-anchor="middle" font-family="monospace" font-size="42" font-weight="bold" fill="#F59E42">85.2%</text>
+  <text x="450" y="418" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">SGLang + XGrammar</text>
+  <text x="450" y="440" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#F59E42">动态 schema 场景</text>
+
+  <!-- Card 3: LLGuidance (highlighted) -->
+  <rect x="580" y="350" width="220" height="110" rx="10" ry="10" fill="#2D3548" stroke="#E04E3D" stroke-width="2"/>
+  <text x="690" y="388" text-anchor="middle" font-family="monospace" font-size="48" font-weight="bold" fill="#E04E3D">88.1%</text>
+  <text x="690" y="418" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">SGLang + LLGuidance</text>
+  <text x="690" y="440" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">最优推荐</text>
+
+  <!-- ============ Bottom Info Bar ============ -->
+  <rect x="0" y="485" width="900" height="50" fill="#2D3548"/>
+  <text x="450" y="515" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#F5F0E8" opacity="0.85">GitHub_medium 动态复杂 Schema · 88.1% vs 61.1% = 能用 vs 不能用</text>
+
+  <!-- ============ Step Labels at Bottom ============ -->
+  <text x="180" y="580" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">Step 1</text>
+  <text x="470" y="580" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">Step 2</text>
+  <text x="760" y="580" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">Step 3</text>
+
+  <!-- Color legend bottom-right corner -->
+  <rect x="740" y="540" width="8" height="8" rx="2" fill="#9CA9BD"/>
+  <text x="754" y="548" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="9" fill="#9CA9BD">Schema/DFA</text>
+  <rect x="808" y="540" width="8" height="8" rx="2" fill="#F59E42"/>
+  <text x="822" y="548" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="9" fill="#F59E42">Token Mask</text>
+  <rect x="748" y="556" width="8" height="8" rx="2" fill="#E04E3D"/>
+  <text x="762" y="564" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="9" fill="#E04E3D">Logits</text>
+</svg>

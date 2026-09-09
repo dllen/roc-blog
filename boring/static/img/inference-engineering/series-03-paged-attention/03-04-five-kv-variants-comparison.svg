@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550" width="100%" height="auto" role="img" aria-label="Five KV Cache Variants Comparison">
+  <title>五种 KV 压缩机制对照表</title>
+  <desc>MHA / MQA / GQA / MLA / GTA-GLA 五种 KV 压缩机制对比：KV 占比、质量损失、代表模型</desc>
+
+  <defs>
+    <linearGradient id="kvBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="kvArrow" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#9CA9BD"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="900" height="550" fill="url(#kvBg)"/>
+
+  <!-- 标题 -->
+  <text x="450" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="24" font-weight="bold" fill="#F5F0E8">KV 压缩机制 · 五种方案横向对比</text>
+  <text x="450" y="60" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#9CA9BD">Llama-2/3 默认 GQA · DeepSeek-V2/V3 采用 MLA</text>
+
+  <!-- ===== 5 个卡片 ===== -->
+  <!-- 每卡宽 160，间距 12，總寬 = 5*160 + 4*12 = 848，居中偏移 = (900-848)/2 = 26 -->
+
+  <!-- ===== 卡片 1: MHA ===== -->
+  <g transform="translate(26, 80)">
+    <!-- 卡片背景 -->
+    <rect width="160" height="360" rx="10" fill="#2D3548" stroke="#9CA9BD" stroke-width="1.5"/>
+
+    <!-- 顶部标签 -->
+    <rect x="0" y="0" width="160" height="40" rx="10" fill="#9CA9BD"/>
+    <rect x="0" y="20" width="160" height="20" fill="#2D3548"/>
+    <text x="80" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="18" font-weight="bold" fill="#1A1F2E">MHA</text>
+
+    <!-- 示意图：8 Q heads, 8 KV heads -->
+    <g transform="translate(80, 95)">
+      <!-- Q heads 列 -->
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">Q Heads</text>
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#9CA9BD"/>
+      </g>
+
+      <!-- 箭头 1:1 -->
+      <line x1="-5" y1="67" x2="5" y2="67" stroke="#9CA9BD" stroke-width="2" marker-end="url(#kvArrow)"/>
+
+      <!-- KV heads 列 -->
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">KV Heads</text>
+      <g transform="translate(10, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#F59E42"/>
+      </g>
+    </g>
+
+    <!-- 比值 -->
+    <text x="80" y="248" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" font-weight="bold" fill="#F5F0E8">1 : 1</text>
+
+    <!-- 分隔线 -->
+    <line x1="15" y1="260" x2="145" y2="260" stroke="#6B7280" stroke-width="1"/>
+
+    <!-- KV 占比 -->
+    <text x="80" y="285" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">KV 占比</text>
+    <text x="80" y="315" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F5F0E8">1×</text>
+
+    <!-- 质量损失 -->
+    <text x="80" y="338" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">质量损失</text>
+    <text x="80" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#F5F0E8">0%</text>
+  </g>
+
+  <!-- ===== 卡片 2: MQA ===== -->
+  <g transform="translate(198, 80)">
+    <rect width="160" height="360" rx="10" fill="#2D3548" stroke="#9CA9BD" stroke-width="1.5"/>
+
+    <rect x="0" y="0" width="160" height="40" rx="10" fill="#9CA9BD"/>
+    <rect x="0" y="20" width="160" height="20" fill="#2D3548"/>
+    <text x="80" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="18" font-weight="bold" fill="#1A1F2E">MQA</text>
+
+    <!-- 示意图：8 Q heads, 1 KV head -->
+    <g transform="translate(80, 95)">
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">Q Heads</text>
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#9CA9BD"/>
+      </g>
+
+      <!-- 箭头 8:1 -->
+      <line x1="-5" y1="67" x2="5" y2="67" stroke="#9CA9BD" stroke-width="2" marker-end="url(#kvArrow)"/>
+
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">KV Heads</text>
+      <g transform="translate(10, 55)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#F59E42"/>
+      </g>
+    </g>
+
+    <text x="80" y="248" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" font-weight="bold" fill="#F5F0E8">8 : 1</text>
+
+    <line x1="15" y1="260" x2="145" y2="260" stroke="#6B7280" stroke-width="1"/>
+
+    <text x="80" y="285" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">KV 占比</text>
+    <text x="80" y="315" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F5F0E8">1/64</text>
+
+    <text x="80" y="338" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">质量损失</text>
+    <text x="80" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#E04E3D">1-3%</text>
+  </g>
+
+  <!-- ===== 卡片 3: GQA（高亮） ===== -->
+  <g transform="translate(370, 80)">
+    <!-- 高亮边框 -->
+    <rect width="160" height="360" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="3"/>
+    <!-- 顶部暖橙背景 -->
+    <rect x="0" y="0" width="160" height="40" rx="10" fill="#F59E42"/>
+    <rect x="0" y="20" width="160" height="20" fill="#2D3548"/>
+    <text x="80" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="18" font-weight="bold" fill="#1A1F2E">GQA ⭐</text>
+
+    <!-- 示意图：8 Q heads, 2 KV heads -->
+    <g transform="translate(80, 95)">
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">Q Heads</text>
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#9CA9BD"/>
+      </g>
+
+      <line x1="-5" y1="67" x2="5" y2="67" stroke="#F59E42" stroke-width="2.5" marker-end="url(#kvArrow)"/>
+
+      <text x="0" y="-30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">KV Heads</text>
+      <g transform="translate(10, 36)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#F59E42"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#F59E42"/>
+      </g>
+    </g>
+
+    <text x="80" y="248" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" font-weight="bold" fill="#F59E42">4 : 1</text>
+
+    <line x1="15" y1="260" x2="145" y2="260" stroke="#F59E42" stroke-width="1.5"/>
+
+    <text x="80" y="285" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">KV 占比</text>
+    <text x="80" y="315" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F59E42">8/64</text>
+
+    <text x="80" y="338" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">质量损失</text>
+    <text x="80" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#F59E42">&lt;1%</text>
+  </g>
+
+  <!-- ===== 卡片 4: MLA ===== -->
+  <g transform="translate(542, 80)">
+    <rect width="160" height="360" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="6,3"/>
+
+    <rect x="0" y="0" width="160" height="40" rx="10" fill="#9CA9BD"/>
+    <rect x="0" y="20" width="160" height="20" fill="#2D3548"/>
+    <text x="80" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="18" font-weight="bold" fill="#1A1F2E">MLA</text>
+
+    <!-- 示意图：latent 向量压缩 -->
+    <g transform="translate(80, 115)">
+      <text x="0" y="-50" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">Q Heads</text>
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#9CA9BD"/>
+      </g>
+
+      <!-- 压缩到 latent -->
+      <text x="0" y="60" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="9" fill="#9CA9BD">↓ 压缩</text>
+      <line x1="-5" y1="72" x2="5" y2="72" stroke="#9CA9BD" stroke-width="2" marker-end="url(#kvArrow)"/>
+
+      <text x="0" y="85" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">Latent</text>
+      <g transform="translate(10, 95)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#F59E42" opacity="0.7"/>
+      </g>
+    </g>
+
+    <text x="80" y="248" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" font-weight="bold" fill="#F5F0E8">≈ 7%</text>
+
+    <line x1="15" y1="260" x2="145" y2="260" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+
+    <text x="80" y="285" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">KV 占比</text>
+    <text x="80" y="315" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F5F0E8">~7%</text>
+
+    <text x="80" y="338" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">质量损失</text>
+    <text x="80" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#F5F0E8">极小</text>
+  </g>
+
+  <!-- ===== 卡片 5: GTA/GLA ===== -->
+  <g transform="translate(714, 80)">
+    <rect width="160" height="360" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="6,3"/>
+
+    <rect x="0" y="0" width="160" height="40" rx="10" fill="#9CA9BD"/>
+    <rect x="0" y="20" width="160" height="20" fill="#2D3548"/>
+    <text x="80" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="bold" fill="#1A1F2E">GTA/GLA</text>
+
+    <!-- 示意图：线性注意力 -->
+    <g transform="translate(80, 115)">
+      <text x="0" y="-50" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">Q Heads</text>
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="18" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="36" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="54" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="72" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="90" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="108" width="20" height="14" rx="2" fill="#9CA9BD"/>
+        <rect x="0" y="126" width="20" height="14" rx="2" fill="#9CA9BD"/>
+      </g>
+
+      <text x="0" y="60" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="9" fill="#9CA9BD">↓ 线性</text>
+      <line x1="-5" y1="72" x2="5" y2="72" stroke="#9CA9BD" stroke-width="2" marker-end="url(#kvArrow)"/>
+
+      <text x="0" y="85" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">Linear</text>
+      <g transform="translate(10, 95)">
+        <rect x="0" y="0" width="20" height="14" rx="2" fill="#F59E42" opacity="0.7"/>
+      </g>
+    </g>
+
+    <text x="80" y="248" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" font-weight="bold" fill="#F5F0E8">≈ MLA</text>
+
+    <line x1="15" y1="260" x2="145" y2="260" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+
+    <text x="80" y="285" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">KV 占比</text>
+    <text x="80" y="315" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F5F0E8">~7%</text>
+
+    <text x="80" y="338" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">质量损失</text>
+    <text x="80" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#F5F0E8">极小</text>
+  </g>
+
+  <!-- ===== 代表模型标注 ===== -->
+  <g transform="translate(26, 455)">
+    <!-- MHA -->
+    <text x="80" y="0" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">代表模型</text>
+    <text x="80" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">BERT</text>
+    <text x="80" y="36" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">基准</text>
+  </g>
+
+  <g transform="translate(198, 455)">
+    <text x="80" y="0" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">代表模型</text>
+    <text x="80" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">Falcon, PaLM</text>
+    <text x="80" y="36" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">已不主流</text>
+  </g>
+
+  <g transform="translate(370, 455)">
+    <text x="80" y="0" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F59E42">代表模型</text>
+    <text x="80" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#F59E42">Llama-2/3, Qwen-2.5</text>
+    <text x="80" y="36" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">当前主流 ⭐</text>
+  </g>
+
+  <g transform="translate(542, 455)">
+    <text x="80" y="0" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">代表模型</text>
+    <text x="80" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">DeepSeek-V2/V3</text>
+    <text x="80" y="36" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">架构级优化</text>
+  </g>
+
+  <g transform="translate(714, 455)">
+    <text x="80" y="0" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">代表模型</text>
+    <text x="80" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#F5F0E8">新模型</text>
+    <text x="80" y="36" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">新兴</text>
+  </g>
+
+  <!-- ===== 底部说明 ===== -->
+  <rect x="0" y="510" width="900" height="40" fill="#2D3548"/>
+  <text x="450" y="535" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">GQA = 当前主流；MLA = 架构级优化（DeepSeek-V2/V3）；其他正在研究</text>
+
+</svg>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head_extend %}
+    <title>{{ section.title }} | {{ config.title }}</title>
+{% endblock head_extend %}
+
+{% block content %}
+    {{<header components={section.components} is_page={false}/>}}
+
+    <div class="article-shell">
+        <div class="article-layout" data-article-layout>
+            <article class="article-main" data-article-main>
+                <header class="article-hero">
+                    <h1 class="article-title">{{ section.title }}</h1>
+                    {% if section.description %}
+                        <p class="article-lead">{{ section.description }}</p>
+                    {% endif %}
+                </header>
+
+                <div class="article-content">
+                    {{ section.content | safe }}
+                </div>
+
+                {# Auto-list of posts in this section (paginated) #}
+                {% if paginator %}
+                    {% set posts = paginator.pages %}
+                {% else %}
+                    {% set posts = section.pages %}
+                {% endif %}
+
+                {% if posts %}
+                <section class="listing-section" aria-labelledby="all-posts-heading">
+                    <div class="listing-heading">
+                        <p class="eyebrow">All Posts</p>
+                        <h2 id="all-posts-heading" class="listing-heading__title">本系列全部文章（{{ posts | length }} 篇）</h2>
+                    </div>
+                    <ul class="article-list" data-article-list>
+                        {% for page in posts %}
+                            {{<article_row item={page} show_tags={true} show_reading_time={true}/>}}
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+{% endblock content %}
