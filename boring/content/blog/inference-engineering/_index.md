@@ -89,6 +89,6 @@ template: "inference-engineering.html"
 
 ## 📚 关联系列
 
-- [Agent Skills 系列教程](@/blog/agent-skills-series-01-2026-build-modular-ai-cli.md) — 设计 AI 技能接口的工程实践
-- [AI Agent 系列教程](@/blog/ai-agent-series-01-2026-foundations.md) — Agent 系统构建基础
+- [Agent Skills 系列教程](@/blog/agent-skills-series-01-agents-have-no-memory.md) — AI 智能体没有持久记忆,Skill 模块化的工程实践
+- [AI Agent 系列教程](@/blog/ai-agent-series-01-what-is-agent.md) — 从 Agent 定义 / Tools/MCP / Memory/RAG / Evaluation 到多模态未来
 - [Tutorial 合集](/blog/tutorial/) — 跨主题工程实践教程
