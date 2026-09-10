@@ -188,25 +188,25 @@ Inference Engineering 大系列（持续更新）
 │   ├── [系列-02-B-KVCache-中篇](@/blog/inference-engineering/inference-engineering-series-02-b-kvcache.md)（TTFT + 修复）
 │   └── [系列-02-C-KVCache-下篇](@/blog/inference-engineering/inference-engineering-series-02-c-kvcache.md)（显存代价 + 救兵）
 │
-├── [系列-03] Paged Attention & Attention 内存效率 待写
-│   ├── 上篇：Paged Attention 机制（为什么 / block table / 碎片）
-│   ├── 中篇：vLLM 实现 + 2-3x 吞吐数据复现
-│   └── 下篇：MQA/GQA/MLA/GTA 横向 + 配套（continuous batching / spec decoding / quantisation）
+├── [系列-03] Paged Attention & Attention 内存效率 已完成
+│   ├── [系列-03-A · PagedAttention 上篇](@/blog/inference-engineering/inference-engineering-series-03-a-paged-attention.md)（Block Table 与碎片治理）
+│   ├── [系列-03-B · PagedAttention 中篇](@/blog/inference-engineering/inference-engineering-series-03-b-paged-attention.md)（vLLM 实现 + 吞吐数据）
+│   └── [系列-03-C · PagedAttention 下篇](@/blog/inference-engineering/inference-engineering-series-03-c-paged-attention.md)（MQA/GQA/MLA 横向 + 配套技术）
 │
-├── [系列-04] Guided Decoding · 结构化生成 待写
-│   ├── 上篇：Why 结构化输出（Agent / tool-call 刚需）
-│   ├── 中篇：2×2 benchmark（XGrammar × vLLM/SGLang）
-│   └── 下篇：选型决策表 + Function Call 场景实践
+├── [系列-04] Guided Decoding · 结构化生成 已完成
+│   ├── [系列-04-A · Guided Decoding 上篇](@/blog/inference-engineering/inference-engineering-series-04-a-guided-decoding.md)（Why 结构化输出）
+│   ├── [系列-04-B · Guided Decoding 中篇](@/blog/inference-engineering/inference-engineering-series-04-b-guided-decoding.md)（2×2 benchmark 全图）
+│   └── [系列-04-C · Guided Decoding 下篇](@/blog/inference-engineering/inference-engineering-series-04-c-guided-decoding.md)（选型决策表 + 实践）
 │
-├── [系列-05] Distributed Training · 从单卡到集群 待写
-│   ├── 上篇：单卡账本 + 三件省钱武器（checkpoint / accum / mixed prec）
-│   ├── 中篇：DP + ZeRO-1/2/3 + 通信原语
-│   └── 下篇：Ray Train 实战 + Pipeline/Tensor/Sequence 预告
+├── [系列-05] Distributed Training · 从单卡到集群 已完成
+│   ├── [系列-05-A · Distributed Training 上篇](@/blog/inference-engineering/inference-engineering-series-05-a-distributed-training.md)（单卡账本 + 三件省钱武器）
+│   ├── [系列-05-B · Distributed Training 中篇](@/blog/inference-engineering/inference-engineering-series-05-b-distributed-training.md)（DP + ZeRO-1/2/3）
+│   └── [系列-05-C · Distributed Training 下篇](@/blog/inference-engineering/inference-engineering-series-05-c-distributed-training.md)（Ray Train 实战 + 预告）
 │
-└── [系列-06] Post-Training 101 · 从 base 到 instruct 待写
-    ├── 上篇：SFT 全景（数据 / loss / batch）
-    ├── 中篇：RL 五大奖励族（RLHF / RLAIF / RLVR / PRM / Rubric）
-    └── 下篇：算法矩阵（PPO/GRPO/DPO）+ 评估体系
+└── [系列-06] Post-Training 101 · 从 base 到 instruct 已完成
+    ├── [系列-06-A · Post-Training 上篇](@/blog/inference-engineering/inference-engineering-series-06-a-post-training.md)（SFT 全景）
+    ├── [系列-06-B · Post-Training 中篇](@/blog/inference-engineering/inference-engineering-series-06-b-post-training.md)（RL 五大奖励族）
+    └── [系列-06-C · Post-Training 下篇](@/blog/inference-engineering/inference-engineering-series-06-c-post-training.md)（算法矩阵 + 评估体系）
 ```
 
 > **Mermaid 依赖图**：

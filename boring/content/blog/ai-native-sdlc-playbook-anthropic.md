@@ -336,3 +336,5 @@ Claude 以自己的身份加入 Slack 事故频道，每个新事故都有一个
 ---
 
 > **系列阅读**：本文是「AI 原生 SDLC」三篇系列的第一篇，聚焦 Anthropic 单份手册的深度拆解。后续两篇分别从个体工程师视角和四报告交叉比较两个方向展开：**[《智能体工程模式：代码免费时代的软件工程实践》](/blog/agentic-engineering-patterns-simon-willison/)**、**[《AI Native SDLC 如何重构软件开发》](/blog/ai-native-sdlc-four-reports-synthesis/)**。
+
+> **相关系列**：Anthropic 这套治理框架需要工具落地——**[Agent Skills 系列教程](/blog/agent-skills-series-01-agents-have-no-memory/)** 从 skill 编写、灰盒模块、深模块三个维度演示如何把 SDLC 原则固化为可复用的 Agent 工具；**[Inference Engineering 系列](/blog/inference-engineering/inference-engineering-series-00-roadmap-summary/)** 则补齐 AI 推理优化的知识地图。

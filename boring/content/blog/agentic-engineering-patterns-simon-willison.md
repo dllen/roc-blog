@@ -195,6 +195,8 @@ Simon Willison 这份指南的持久价值，不在于任何一条 prompt，而�
 
 对已经在用 Claude Code、Codex 的工程师，我建议从优先级表里的前三条开始——它们便宜到没有不做的理由，却恰好是"用 AI 而不是被 AI 用"的分水岭。
 
+> **相关系列**：Willison 这套个体手艺需要系统化落地——**[Agent Skills 系列教程](/blog/agent-skills-series-01-agents-have-no-memory/)** 把 skill 编写、灰盒模块、深模块三件事打通；**[Anthropic AI 原生 SDLC 手册解读](/blog/ai-native-sdlc-playbook-anthropic/)** 则从组织治理视角补齐了"个体手艺之上还需要什么"。
+
 ---
 
 > **系列阅读**：本文是「AI 原生 SDLC」三篇系列的第二篇，从个体工程师视角展开。前一篇拆解组织层面的蓝图：**[《从 intent.md 到闭环：AI 原生软件开发的六个阶段、一条制品链、几道审批门》](/blog/ai-native-sdlc-playbook-anthropic/)**；下一篇横向比较四家机构的报告：**[《AI Native SDLC 如何重构软件开发》](/blog/ai-native-sdlc-four-reports-synthesis/)**。
