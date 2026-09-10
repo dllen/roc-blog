@@ -73,6 +73,7 @@ nav_sections = [
   { name = "Weekly",       url = "/blog/weekly/" },
   { name = "Tutorial",     url = "/blog/tutorial/" },
   { name = "AI 推理工程",   url = "/blog/inference-engineering/" },
+  { name = "AI Agent 工程", url = "/blog/ai-agent/" },
   { name = "C/C++",        url = "/blog/cpp/" },
   { name = "基础设施",     url = "/blog/infra/" },
 ]
