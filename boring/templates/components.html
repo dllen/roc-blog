@@ -8,7 +8,7 @@
             <div class="article-row__heading">
                 <h2 class="article-row__title">
                     {{ item.title }}
-                    {% if item.extra.password or item.password %}<span class="post-locked-badge" title="加密文章" aria-label="加密文章">🔒</span>{% endif %}
+                    {% if item.extra.password or item.password %}<svg class="post-locked-badge" viewBox="0 0 24 24" aria-label="加密文章" role="img" width="16" height="16"><path fill="currentColor" d="M17 8V7a5 5 0 0 0-10 0v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-1zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V7a2.1 2.1 0 1 1 4.2 0v1z"/></svg>{% endif %}
                 </h2>
                 <div class="article-row__date-group">
                     <time class="article-row__date" datetime="{{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}">
