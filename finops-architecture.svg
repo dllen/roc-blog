@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <style>
+    .box{fill:#f7fafc;stroke:#2d3748;stroke-width:2}
+    .title{font-family:Arial,sans-serif;font-size:16px;fill:#1a202c;font-weight:bold}
+    .text{font-family:Arial,sans-serif;font-size:14px;fill:#2d3748}
+    .note{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#2d3748;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Sources -->
+  <rect x="40" y="40" width="320" height="130" class="box"/>
+  <text x="60" y="70" class="title">数据源</text>
+  <text x="60" y="95" class="text">账单(CUR/Export)、用量、资源清单、标签</text>
+  <text x="60" y="120" class="note">AWS/Azure/GCP/第三方</text>
+
+  <!-- Ingest -->
+  <rect x="400" y="40" width="280" height="130" class="box"/>
+  <text x="420" y="70" class="title">采集与导入</text>
+  <text x="420" y="95" class="text">ETL/Streaming/Schedule</text>
+  <text x="420" y="120" class="note">Glue/DBT/Dataflow</text>
+
+  <!-- Warehouse -->
+  <rect x="720" y="40" width="420" height="130" class="box"/>
+  <text x="740" y="70" class="title">数据仓与模型</text>
+  <text x="740" y="95" class="text">BigQuery/Snowflake/Redshift</text>
+  <text x="740" y="120" class="note">统一口径/维表/度量</text>
+
+  <!-- Apps Row -->
+  <rect x="40" y="220" width="340" height="150" class="box"/>
+  <text x="60" y="250" class="title">可视化看板</text>
+  <text x="60" y="275" class="text">Looker/QuickSight/Power BI</text>
+  <text x="60" y="300" class="note">成本/预算/趋势</text>
+
+  <rect x="420" y="220" width="320" height="150" class="box"/>
+  <text x="440" y="250" class="title">预算与告警</text>
+  <text x="440" y="275" class="text">预算阈值/异常检测</text>
+  <text x="440" y="300" class="note">Budgets/Anomaly Detection</text>
+
+  <rect x="780" y="220" width="360" height="150" class="box"/>
+  <text x="800" y="250" class="title">优化建议引擎</text>
+  <text x="800" y="275" class="text">规格/折扣/关停/分层</text>
+  <text x="800" y="300" class="note">规则与自动化</text>
+
+  <!-- Governance -->
+  <rect x="40" y="410" width="1100" height="200" class="box"/>
+  <text x="60" y="440" class="title">治理与合规</text>
+  <text x="60" y="465" class="text">标签策略/准入/配额/策略</text>
+  <text x="60" y="490" class="note">SCP/Azure Policy/OrgPolicy/审计</text>
+
+  <!-- Arrows -->
+  <line x1="360" y1="105" x2="400" y2="105" class="arrow"/>
+  <line x1="680" y1="105" x2="720" y2="105" class="arrow"/>
+  <line x1="600" y1="170" x2="600" y2="220" class="arrow"/>
+  <line x1="960" y1="170" x2="960" y2="220" class="arrow"/>
+  <line x1="600" y1="370" x2="600" y2="410" class="arrow"/>
+</svg>

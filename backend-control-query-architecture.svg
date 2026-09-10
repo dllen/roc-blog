@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <style>
+    .box{fill:#f8fafc;stroke:#2d3748;stroke-width:2}
+    .title{font-family:Arial,sans-serif;font-size:16px;fill:#1a202c;font-weight:bold}
+    .text{font-family:Arial,sans-serif;font-size:14px;fill:#2d3748}
+    .note{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#2d3748;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Query API -->
+  <rect x="40" y="40" width="260" height="120" class="box"/>
+  <text x="60" y="70" class="title">Query API</text>
+  <text x="60" y="95" class="text">SQL / DSL / WS</text>
+  <text x="60" y="115" class="note">Auth / Rate Limit</text>
+
+  <!-- Router -->
+  <rect x="340" y="40" width="240" height="120" class="box"/>
+  <text x="360" y="70" class="title">Router</text>
+  <text x="360" y="95" class="text">代价估算 / 路由 / 降级</text>
+  <text x="360" y="115" class="note">缓存命中优先</text>
+
+  <!-- Cache -->
+  <rect x="620" y="40" width="220" height="120" class="box"/>
+  <text x="640" y="70" class="title">Cache</text>
+  <text x="640" y="95" class="text">Redis / CH MV</text>
+  <text x="640" y="115" class="note">Key=归一化查询+时间窗</text>
+
+  <!-- Engines -->
+  <rect x="40" y="220" width="340" height="150" class="box"/>
+  <text x="60" y="250" class="title">SQL Engine</text>
+  <text x="60" y="275" class="text">Trino/Presto → ES/CH/HBase</text>
+  <text x="60" y="300" class="note">跨源/并行/分页</text>
+
+  <rect x="420" y="220" width="320" height="150" class="box"/>
+  <text x="440" y="250" class="title">DSL Engine</text>
+  <text x="440" y="275" class="text">Lucene/KQL → ES</text>
+  <text x="440" y="300" class="note">检索/过滤/聚合</text>
+
+  <!-- Backends -->
+  <rect x="780" y="220" width="360" height="150" class="box"/>
+  <text x="800" y="250" class="title">Backends</text>
+  <text x="800" y="275" class="text">Elasticsearch / ClickHouse / HBase</text>
+  <text x="800" y="300" class="note">索引/分片/副本</text>
+
+  <!-- Observability -->
+  <rect x="40" y="420" width="1100" height="220" class="box"/>
+  <text x="60" y="450" class="title">Observability</text>
+  <text x="60" y="475" class="text">Metrics / Logs / Traces</text>
+  <text x="60" y="500" class="note">p95 ES ≤ 300ms / p95 CH ≤ 2s / Avail ≥ 99.9%</text>
+
+  <!-- Arrows -->
+  <line x1="300" y1="100" x2="340" y2="100" class="arrow"/>
+  <line x1="580" y1="100" x2="620" y2="100" class="arrow"/>
+  <line x1="750" y1="100" x2="750" y2="220" class="arrow"/>
+  <line x1="260" y1="310" x2="420" y2="310" class="arrow"/>
+  <line x1="740" y1="295" x2="780" y2="295" class="arrow"/>
+  <line x1="400" y1="360" x2="400" y2="420" class="arrow"/>
+  <line x1="780" y1="360" x2="780" y2="420" class="arrow"/>
+</svg>
