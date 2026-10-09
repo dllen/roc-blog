@@ -20,9 +20,25 @@
 
         {% set adsense_id = config.extra.google_adsense_client_id %}
         {% if adsense_id %}
+            <!-- Google AdSense: Consent Mode v2 default-denied BEFORE adsbygoogle.js loads -->
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ ad_storage: 'denied' });
+            </script>
             <!-- Google AdSense -->
             <meta name="google-adsense-account" content="{{ adsense_id }}">
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_id }}" crossorigin="anonymous"></script>
+            <!-- Ad unit slot IDs (filled after AdSense approval). Consumed by static/js/consent.js -->
+            <script id="adsense-config" type="application/json">
+                {
+                    "client": "{{ adsense_id }}",
+                    "slots": {
+                        "articleIntro": "{{ config.extra.adsense_ad_slot_intro | default(value='') }}",
+                        "articleRelated": "{{ config.extra.adsense_ad_slot_related | default(value='') }}",
+                        "home": "{{ config.extra.adsense_ad_slot_home | default(value='') }}"
+                    }
+                }
+            </script>
         {% endif %}
 
         <script>
@@ -51,6 +67,9 @@
         <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js" defer></script>
         <script src="{{ get_url(path='js/search.js', cachebust=true) | safe }}" defer></script>
         <script src="{{ get_url(path='js/main.js', cachebust=true) | safe }}" defer></script>
+        {% if config.extra.google_adsense_client_id %}
+            <script src="{{ get_url(path='js/consent.js', cachebust=true) | safe }}" defer></script>
+        {% endif %}
         <link rel="alternate" type="application/atom+xml" title="{{ config.title }}"
               href="{{ get_url(path='blog/atom.xml', trailing_slash=false) | safe }}">
         {% block head_extend %}{% endblock %}
@@ -124,6 +143,28 @@
                 </nav>
             </div>
         </footer>
+        {% if config.extra.google_adsense_client_id %}
+            <aside id="consent-banner"
+                   class="consent-banner"
+                   role="region"
+                   aria-label="广告与隐私偏好"
+                   aria-live="polite">
+                <div class="consent-banner__inner site-shell">
+                    <div class="consent-banner__text">
+                        <p class="consent-banner__title">广告与隐私</p>
+                        <p class="consent-banner__body">本站使用 Google AdSense 展示广告。您可以选择接受个性化广告（基于您的兴趣展示相关广告）或仅显示非个性化广告。</p>
+                    </div>
+                    <div class="consent-banner__actions">
+                        <button type="button"
+                                class="consent-banner__btn consent-banner__btn--accept"
+                                data-consent-accept>接受</button>
+                        <button type="button"
+                                class="consent-banner__btn consent-banner__btn--reject"
+                                data-consent-reject>拒绝</button>
+                    </div>
+                </div>
+            </aside>
+        {% endif %}
         {% block body_extra %}{% endblock %}
     </body>
 </html>

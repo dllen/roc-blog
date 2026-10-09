@@ -84,6 +84,12 @@ google_analytics_measurement_id = ""
 # Google AdSense publisher ID (ca-pub-...); empty disables ads
 google_adsense_client_id = "ca-pub-3563451416072185"
 
+# Google AdSense ad unit slot IDs (assigned after AdSense approval).
+# Leave empty to suppress that slot. Each slot renders an <ins class="adsbygoogle">.
+adsense_ad_slot_intro = ""        # injected after first <h2> in article body
+adsense_ad_slot_related = ""      # static, before related-posts block on article pages
+adsense_ad_slot_home = ""         # injected after the 4th row in homepage article list
+
 # Refer https://icons8.com/line-awesome for list of icons
 # Both `url` and `icon` should be set for each entry
 [[extra.social]]

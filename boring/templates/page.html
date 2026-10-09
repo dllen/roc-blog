@@ -75,6 +75,17 @@
                     {{ page.content | safe }}
                 </div>
 
+                {% if config.extra.google_adsense_client_id and config.extra.adsense_ad_slot_related %}
+                    <div class="ad-slot ad-slot--article-end">
+                        <ins class="adsbygoogle ad-slot--article-end-ins"
+                             style="display:block"
+                             data-ad-client="{{ config.extra.google_adsense_client_id }}"
+                             data-ad-slot="{{ config.extra.adsense_ad_slot_related }}"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                    </div>
+                {% endif %}
+
                 {{<prev_next current={page}/>}}
                 {{<related current={page} limit={3}/>}}
             </article>
