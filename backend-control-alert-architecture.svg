@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <style>
+    .box{fill:#f8fafc;stroke:#2d3748;stroke-width:2}
+    .title{font-family:Arial,sans-serif;font-size:16px;fill:#1a202c;font-weight:bold}
+    .text{font-family:Arial,sans-serif;font-size:14px;fill:#2d3748}
+    .note{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#2d3748;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Rule Store -->
+  <rect x="40" y="40" width="260" height="120" class="box"/>
+  <text x="60" y="70" class="title">Rule Store</text>
+  <text x="60" y="95" class="text">PostgreSQL + KV</text>
+  <text x="60" y="115" class="note">版本/审计/灰度</text>
+
+  <!-- Evaluator -->
+  <rect x="340" y="40" width="260" height="120" class="box"/>
+  <text x="360" y="70" class="title">Evaluator (Flink)</text>
+  <text x="360" y="95" class="text">事件时间窗口/去重/聚合</text>
+  <text x="360" y="115" class="note">Exactly-Once</text>
+
+  <!-- Topics -->
+  <rect x="640" y="40" width="260" height="120" class="box"/>
+  <text x="660" y="70" class="title">Kafka</text>
+  <text x="660" y="95" class="text">alerts-input / alerts-output</text>
+  <text x="660" y="115" class="note">DLQ / 重试</text>
+
+  <!-- Notifier -->
+  <rect x="940" y="40" width="220" height="120" class="box"/>
+  <text x="960" y="70" class="title">Notifier</text>
+  <text x="960" y="95" class="text">Email / SMS / Webhook</text>
+  <text x="960" y="115" class="note">签名/重试/合并</text>
+
+  <!-- Streams -->
+  <rect x="40" y="220" width="340" height="150" class="box"/>
+  <text x="60" y="250" class="title">Streams</text>
+  <text x="60" y="275" class="text">logs / metrics / traces</text>
+  <text x="60" y="300" class="note">多源/去重键</text>
+
+  <!-- Suppression -->
+  <rect x="420" y="220" width="320" height="150" class="box"/>
+  <text x="440" y="250" class="title">Suppression</text>
+  <text x="440" y="275" class="text">合并/静默/限流</text>
+  <text x="440" y="300" class="note">降噪策略</text>
+
+  <!-- Observability -->
+  <rect x="780" y="220" width="360" height="150" class="box"/>
+  <text x="800" y="250" class="title">Observability</text>
+  <text x="800" y="275" class="text">Metrics/Logs/Events</text>
+  <text x="800" y="300" class="note">p95 ≤ 5s / Avail ≥ 99.9%</text>
+
+  <!-- Arrows -->
+  <line x1="300" y1="100" x2="340" y2="100" class="arrow"/>
+  <line x1="600" y1="100" x2="640" y2="100" class="arrow"/>
+  <line x1="900" y1="100" x2="940" y2="100" class="arrow"/>
+  <line x1="200" y1="295" x2="420" y2="295" class="arrow"/>
+  <line x1="740" y1="295" x2="780" y2="295" class="arrow"/>
+</svg>

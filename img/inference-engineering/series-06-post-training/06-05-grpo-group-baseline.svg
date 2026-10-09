@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>GRPO Group Baseline - Critic-Free 组均值示意</title>
+  <desc>GRPO 算法无需 Critic，组均值就是 Baseline 的示意图</desc>
+  <defs>
+    <linearGradient id="bgGrad5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="500" fill="url(#bgGrad5)"/>
+
+  <!-- Header -->
+  <text x="450" y="42" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="22" font-weight="700" fill="#F5F0E8">GRPO · Critic-Free · 组均值就是 Baseline</text>
+
+  <!-- Prompt box -->
+  <g transform="translate(55,65)">
+    <rect x="0" y="0" width="790" height="52" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="25" y="32" font-family="'Noto Sans SC',sans-serif" font-size="13" fill="#9CA9BD">Prompt:</text>
+    <text x="95" y="32" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">"Solve 2+3=?"</text>
+    <!-- Tag -->
+    <rect x="700" y="14" width="70" height="24" rx="12" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="735" y="30" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#9CA9BD">K=4</text>
+  </g>
+
+  <!-- 4 answer cards -->
+  <g transform="translate(55,140)">
+    <!-- Card A: 5 -> reward 1.0 -->
+    <rect x="0" y="0" width="180" height="130" rx="10" fill="#2D3548" stroke="#E04E3D" stroke-width="1.5"/>
+    <text x="90" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#E04E3D">回答 A</text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" fill="#F5F0E8">"5"</text>
+    <line x1="20" y1="68" x2="160" y2="68" stroke="#3D4558" stroke-width="1"/>
+    <text x="90" y="88" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">reward = 1.0</text>
+    <!-- Advantage tag -->
+    <rect x="40" y="100" width="100" height="22" rx="11" fill="#E04E3D"/>
+    <text x="90" y="116" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#F5F0E8">+0.55 ↑ 强化</text>
+
+    <!-- Card B: 6 -> reward 0.0 -->
+    <rect x="200" y="0" width="180" height="130" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="290" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#9CA9BD">回答 B</text>
+    <text x="290" y="55" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" fill="#F5F0E8">"6"</text>
+    <line x1="220" y1="68" x2="360" y2="68" stroke="#3D4558" stroke-width="1"/>
+    <text x="290" y="88" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">reward = 0.0</text>
+    <rect x="240" y="100" width="100" height="22" rx="11" fill="#3D4558" stroke="#6B7280" stroke-width="1"/>
+    <text x="290" y="116" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#9CA9BD">-0.45 ↓ 弱化</text>
+
+    <!-- Card C: 2+3=5 -> reward 0.8 -->
+    <rect x="400" y="0" width="180" height="130" rx="10" fill="#2D3548" stroke="#E04E3D" stroke-width="1.5"/>
+    <text x="490" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#E04E3D">回答 C</text>
+    <text x="490" y="55" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="16" font-weight="800" fill="#F5F0E8">"2+3=5"</text>
+    <line x1="420" y1="68" x2="560" y2="68" stroke="#3D4558" stroke-width="1"/>
+    <text x="490" y="88" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">reward = 0.8</text>
+    <rect x="440" y="100" width="100" height="22" rx="11" fill="#E04E3D"/>
+    <text x="490" y="116" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#F5F0E8">+0.35 ↑ 强化</text>
+
+    <!-- Card D: 7 -> reward 0.0 -->
+    <rect x="600" y="0" width="180" height="130" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="690" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#9CA9BD">回答 D</text>
+    <text x="690" y="55" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" fill="#F5F0E8">"7"</text>
+    <line x1="620" y1="68" x2="760" y2="68" stroke="#3D4558" stroke-width="1"/>
+    <text x="690" y="88" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">reward = 0.0</text>
+    <rect x="640" y="100" width="100" height="22" rx="11" fill="#3D4558" stroke="#6B7280" stroke-width="1"/>
+    <text x="690" y="116" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#9CA9BD">-0.45 ↓ 弱化</text>
+  </g>
+
+  <!-- Group Mean dashed separator -->
+  <line x1="55" y1="295" x2="845" y2="295" stroke="#6B7280" stroke-width="1" stroke-dasharray="6,4"/>
+  <g transform="translate(55,305)">
+    <rect x="0" y="0" width="790" height="50" rx="8" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="395" y="32" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" fill="#9CA9BD">
+      Group Mean = (1.0 + 0.0 + 0.8 + 0.0) / 4 = <tspan font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="800" fill="#E04E3D">0.45</tspan>
+    </text>
+  </g>
+
+  <!-- Bottom key insight -->
+  <rect x="55" y="395" width="790" height="60" rx="10" fill="#F59E42" opacity="0.12" stroke="#F59E42" stroke-width="1.5"/>
+  <text x="450" y="425" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="16" font-weight="700" fill="#F59E42">关键：不需要 Critic，组均值就是 Baseline</text>
+  <text x="450" y="445" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">Advantage = reward - group_mean → 用相对比较做信用分配</text>
+</svg>

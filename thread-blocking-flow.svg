@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <style>
+    .title { font: bold 28px sans-serif; fill: #1f2d3d; }
+    .label { font: 18px sans-serif; fill: #1f2d3d; }
+    .node { fill: #f0f7ff; stroke: #2c3e50; stroke-width: 2; }
+  </style>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"/>
+  <text x="40" y="50" class="title">Thread Blocking & Queue Amplification</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2c3e50" />
+    </marker>
+  </defs>
+
+  <rect x="80" y="120" width="250" height="120" class="node"/>
+  <text x="100" y="160" class="label">Incoming Requests</text>
+
+  <rect x="380" y="120" width="250" height="120" class="node"/>
+  <text x="400" y="160" class="label">Thread Pool</text>
+
+  <rect x="680" y="120" width="250" height="120" class="node"/>
+  <text x="700" y="160" class="label">Sync I/O / Remote Call</text>
+
+  <rect x="980" y="120" width="250" height="120" class="node"/>
+  <text x="1000" y="160" class="label">Queue Wait / Timeout</text>
+
+  <line x1="330" y1="180" x2="380" y2="180" stroke="#2c3e50" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="630" y1="180" x2="680" y2="180" stroke="#2c3e50" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="930" y1="180" x2="980" y2="180" stroke="#2c3e50" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <text x="380" y="300" class="label">Tune core/max threads & queue size</text>
+  <text x="380" y="330" class="label">Prefer async I/O to reduce blocking</text>
+  <text x="380" y="360" class="label">Align pool limits with downstream capacity</text>
+</svg>

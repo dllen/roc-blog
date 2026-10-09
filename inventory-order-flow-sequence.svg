@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="520" viewBox="0 0 1080 520">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .lane { fill: #F0F6FF; stroke: #2F6FEB; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">销售下单库存状态变迁时序</text>
+
+  <!-- Lanes -->
+  <rect x="40" y="70" width="220" height="420" rx="8" class="lane"/>
+  <text x="60" y="92" class="text">订单系统</text>
+
+  <rect x="300" y="70" width="220" height="420" rx="8" class="lane"/>
+  <text x="320" y="92" class="text">inventory-service</text>
+
+  <rect x="560" y="70" width="220" height="420" rx="8" class="lane"/>
+  <text x="580" y="92" class="text">lock-service / Redis</text>
+
+  <rect x="820" y="70" width="220" height="420" rx="8" class="lane"/>
+  <text x="840" y="92" class="text">flow-service / Kafka</text>
+
+  <!-- Sequence steps -->
+  <text x="60" y="130" class="text">提交订单</text>
+  <line x1="160" y1="130" x2="300" y2="130" class="arrow"/>
+  <text x="320" y="130" class="text">校验并行锁状态</text>
+  <line x1="420" y1="150" x2="560" y2="150" class="arrow"/>
+  <text x="580" y="150" class="text">TryLock(token, TTL)</text>
+
+  <text x="320" y="200" class="text">FOR UPDATE锁行，available→locked</text>
+  <line x1="420" y1="220" x2="840" y2="220" class="arrow"/>
+  <text x="860" y="220" class="text">写流水与Outbox(inventory.lock)</text>
+
+  <text x="60" y="260" class="text">支付成功</text>
+  <line x1="160" y1="260" x2="300" y2="260" class="arrow"/>
+  <text x="320" y="260" class="text">锁幂等检查，locked→total扣减</text>
+  <line x1="420" y1="280" x2="840" y2="280" class="arrow"/>
+  <text x="860" y="280" class="text">写流水与Outbox(inventory.reduce)</text>
+
+  <text x="60" y="320" class="text">支付失败/超时</text>
+  <line x1="160" y1="320" x2="300" y2="320" class="arrow"/>
+  <text x="320" y="320" class="text">locked→available回滚</text>
+
+  <text x="60" y="380" class="text">发货与完成</text>
+  <line x1="160" y1="380" x2="840" y2="380" class="arrow"/>
+  <text x="860" y="380" class="text">对账与流水审计</text>
+</svg>

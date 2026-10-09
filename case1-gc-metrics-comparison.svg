@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <style>
+    .title { font: bold 28px sans-serif; fill: #1f2d3d; }
+    .label { font: 18px sans-serif; fill: #1f2d3d; }
+    .bar1 { fill: #ffadad; }
+    .bar2 { fill: #9bf6ff; }
+    .axis { stroke: #888; stroke-width: 2; }
+  </style>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"/>
+  <text x="40" y="50" class="title">Case 1: GC Metrics Comparison (Before vs After)</text>
+
+  <!-- Axes -->
+  <line x1="80" y1="620" x2="1200" y2="620" class="axis"/>
+  <line x1="80" y1="120" x2="80" y2="620" class="axis"/>
+
+  <!-- Bars: p95 latency (ms) -->
+  <text x="120" y="110" class="label">p95 Latency</text>
+  <rect x="120" y="200" width="120" height="400" class="bar1"/>
+  <text x="130" y="190" class="label">2500ms (Before)</text>
+  <rect x="260" y="420" width="120" height="180" class="bar2"/>
+  <text x="270" y="410" class="label">200ms (After)</text>
+
+  <!-- Bars: Full GC count per hour -->
+  <text x="460" y="110" class="label">Full GC Count /h</text>
+  <rect x="460" y="260" width="120" height="340" class="bar1"/>
+  <text x="470" y="250" class="label">90 (Before)</text>
+  <rect x="600" y="580" width="120" height="20" class="bar2"/>
+  <text x="610" y="570" class="label">2 (After)</text>
+
+  <!-- Bars: OldGen peak utilization -->
+  <text x="800" y="110" class="label">OldGen Peak Utilization</text>
+  <rect x="800" y="160" width="120" height="440" class="bar1"/>
+  <text x="810" y="150" class="label">92% (Before)</text>
+  <rect x="940" y="380" width="120" height="220" class="bar2"/>
+  <text x="950" y="370" class="label">65% (After)</text>
+</svg>
