@@ -18,6 +18,13 @@
             </script>
         {% endif %}
 
+        {% set adsense_id = config.extra.google_adsense_client_id %}
+        {% if adsense_id %}
+            <!-- Google AdSense -->
+            <meta name="google-adsense-account" content="{{ adsense_id }}">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_id }}" crossorigin="anonymous"></script>
+        {% endif %}
+
         <script>
             (function () {
                 var systemDark = false;

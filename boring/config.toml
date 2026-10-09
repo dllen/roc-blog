@@ -81,6 +81,9 @@ nav_sections = [
 # Refer https://support.google.com/analytics/answer/9539598?hl=en
 google_analytics_measurement_id = ""
 
+# Google AdSense publisher ID (ca-pub-...); empty disables ads
+google_adsense_client_id = "ca-pub-3563451416072185"
+
 # Refer https://icons8.com/line-awesome for list of icons
 # Both `url` and `icon` should be set for each entry
 [[extra.social]]
