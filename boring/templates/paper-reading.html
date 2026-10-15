@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block head_extend %}
+    <title>{{ section.title }} | {{ config.title }}</title>
+{% endblock head_extend %}
+
+{% block content %}
+    {{<header components={section.components} is_page={false}/>}}
+
+    <div class="article-shell">
+        <div class="article-layout" data-article-layout>
+            <article class="article-main" data-article-main>
+                <header class="article-hero">
+                    <p class="eyebrow">论文阅读 · Paper Reading</p>
+                    <h1 class="article-title">{{ section.title }}</h1>
+                    {% if section.description %}
+                        <p class="article-lead">{{ section.description }}</p>
+                    {% endif %}
+                </header>
+
+                <div class="article-content">
+                    {{ section.content | safe }}
+                </div>
+
+                {# ----- 三组折叠块 ----- #}
+                {% set methodology_slugs = [
+                    "paper-reading-best-practices"
+                ] %}
+                {% set classic_slugs = [
+                    "transformer-explained-in-detail",
+                    "alphafold-cracking-life-code",
+                    "gan-explained-in-detail",
+                    "dqn-explained-in-detail",
+                    "alexnet-deep-learning-revival",
+                    "paxos-in-action",
+                    "raft-iml-js",
+                    "pacifica"
+                ] %}
+                {% set recent_slugs = [
+                    "ai-stories-for-everyone",
+                    "agensh-1024-self-organizing-agents",
+                    "autocompact-context-compression",
+                    "autogym-auto-generated-training-ground",
+                    "casd-distill-skills-from-logs",
+                    "clm-context-language-models",
+                    "critical-state-rl",
+                    "evoontology-data-agent-evolving-ontology",
+                    "gavel-graph-world-model",
+                    "harness-zero-distill-into-weights",
+                    "hysparse2-prefill-optimization",
+                    "jaz-minimalist-agent-framework",
+                    "jev-277x-cheaper-judge",
+                    "jev-mem-memory-controller",
+                    "scientisttwo-autonomous-research-agent",
+                    "self-organizing-agent-teams",
+                    "sift-fast-tree-search-self-improvement",
+                    "skillgym-skill-training-ground",
+                    "taste-bench-ai-taste",
+                    "wfm-wiki-memory-retrieval",
+                    "xyeval-agent-bad-advice"
+                ] %}
+
+                <section class="paper-groups" aria-label="论文分组索引">
+                    {# 📘 方法论(默认展开) #}
+                    <details class="paper-group" open>
+                        <summary class="paper-group__summary">
+                            <span class="paper-group__title">📘 方法论</span>
+                            <span class="paper-group__count">1 篇 · 必读</span>
+                        </summary>
+                        <div class="paper-group__body">
+                            <div class="sections-grid">
+                                {% for slug in methodology_slugs %}
+                                    {% for page in section.pages %}
+                                        {% if page.slug == slug %}
+                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                                <div class="section-card__header">
+                                                    <h3 class="section-card__title">{{ page.title }}</h3>
+                                                    <span class="section-card__count">方法论</span>
+                                                </div>
+                                                {% if page.description %}
+                                                    <p class="section-card__description">{{ page.description }}</p>
+                                                {% endif %}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+
+                    {# 📚 经典论文详细版(默认收起) #}
+                    <details class="paper-group">
+                        <summary class="paper-group__summary">
+                            <span class="paper-group__title">📚 经典论文详细版</span>
+                            <span class="paper-group__count">8 篇 · 奠基作品</span>
+                        </summary>
+                        <div class="paper-group__body">
+                            <div class="sections-grid">
+                                {% for slug in classic_slugs %}
+                                    {% for page in section.pages %}
+                                        {% if page.slug == slug %}
+                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                                <div class="section-card__header">
+                                                    <h3 class="section-card__title">{{ page.title }}</h3>
+                                                    <span class="section-card__count">经典</span>
+                                                </div>
+                                                {% if page.description %}
+                                                    <p class="section-card__description">{{ page.description }}</p>
+                                                {% endif %}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+
+                    {# 🚀 近期 LLM/Agent 论文(默认收起) #}
+                    <details class="paper-group">
+                        <summary class="paper-group__summary">
+                            <span class="paper-group__title">🚀 近期 LLM/Agent 论文</span>
+                            <span class="paper-group__count">21 篇 · 第一性原理</span>
+                        </summary>
+                        <div class="paper-group__body">
+                            <div class="sections-grid">
+                                {% for slug in recent_slugs %}
+                                    {% for page in section.pages %}
+                                        {% if page.slug == slug %}
+                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                                <div class="section-card__header">
+                                                    <h3 class="section-card__title">{{ page.title }}</h3>
+                                                    <time class="section-card__count" datetime="{{ page.date | date(format="%Y-%m-%d") }}">
+                                                        {{ page.date | date(format="%Y-%m-%d") }}
+                                                    </time>
+                                                </div>
+                                                {% if page.description %}
+                                                    <p class="section-card__description">{{ page.description }}</p>
+                                                {% endif %}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+                </section>
+            </article>
+        </div>
+    </div>
+{% endblock content %}

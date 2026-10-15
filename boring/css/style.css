@@ -2041,3 +2041,83 @@ kbd {
   display: block;
   min-height: 90px;
 }
+
+/* ----- Paper Reading 折叠分组 ----- */
+.paper-groups {
+  margin-top: 2.5rem;
+}
+
+.paper-group {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  background: var(--color-card);
+  overflow: hidden;
+  transition: border-color var(--transition-duration) ease;
+}
+
+.paper-group[open] {
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+.paper-group__summary {
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  list-style: none;
+  padding: 1rem 1.25rem;
+  transition: background-color var(--transition-duration) ease;
+}
+
+.paper-group__summary::-webkit-details-marker {
+  display: none;
+}
+
+.paper-group__summary::before {
+  content: "\25B8";
+  display: inline-block;
+  margin-right: 0.6rem;
+  color: var(--color-primary);
+  font-size: 1rem;
+  transition: transform var(--transition-duration) ease;
+}
+
+.paper-group[open] > .paper-group__summary::before {
+  transform: rotate(90deg);
+}
+
+.paper-group__summary:hover {
+  background: var(--color-surface);
+}
+
+.paper-group__summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.paper-group__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.paper-group__count {
+  color: var(--color-muted);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.paper-group__body {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.paper-group__body .sections-grid {
+  margin-top: 1.25rem;
+}
