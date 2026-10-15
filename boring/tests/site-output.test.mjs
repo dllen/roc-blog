@@ -198,6 +198,46 @@ test('theme bootstrap treats an invalid saved value as no preference', async () 
     assert.equal(dom.window.document.documentElement.classList.contains('dark'), true);
 });
 
+test('section navigation marks only the matching group as current', async () => {
+    const { document } = (await loadOutput('blog/spring/index.html')).window;
+    const topLevel = [
+        ...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item, [data-site-navigation] [data-site-nav] button.site-nav__item'),
+    ];
+    const dropdownItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-dropdown__item')];
+
+    const currentTopLevel = topLevel.filter((el) => el.getAttribute('aria-current') === 'page');
+    const currentChildren = dropdownItems.filter((el) => el.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentTopLevel.length, 1, 'exactly one top-level nav entry must be marked current');
+    assert.equal(currentChildren.length, 1, 'exactly one dropdown child must be marked current');
+    assert.equal(currentChildren[0].getAttribute('href'), '/blog/spring/');
+    assert.ok(
+        topLevel.filter((el) => el !== currentTopLevel[0]).every((el) => !el.hasAttribute('aria-current')),
+        'non-current top-level entries must not be marked current'
+    );
+    assert.ok(
+        dropdownItems.filter((el) => el !== currentChildren[0]).every((el) => !el.hasAttribute('aria-current')),
+        'non-current dropdown children must not be marked current'
+    );
+});
+
+test('later section navigation marks weekly as current', async () => {
+    const { document } = (await loadOutput('blog/weekly/index.html')).window;
+    const topLevel = [
+        ...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item, [data-site-navigation] [data-site-nav] button.site-nav__item'),
+    ];
+    const dropdownItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-dropdown__item')];
+
+    const currentTopLevel = topLevel.filter((el) => el.getAttribute('aria-current') === 'page');
+    const currentChildren = dropdownItems.filter((el) => el.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentTopLevel.length, 1);
+    assert.equal(currentChildren.length, 1);
+    assert.equal(currentChildren[0].getAttribute('href'), '/blog/weekly/');
+    assert.ok(topLevel.filter((el) => el !== currentTopLevel[0]).every((el) => !el.hasAttribute('aria-current')));
+    assert.ok(dropdownItems.filter((el) => el !== currentChildren[0]).every((el) => !el.hasAttribute('aria-current')));
+});
+
 test('homepage exposes the responsive site navigation controls without missing icon assets', async () => {
     const { document } = (await loadOutput('index.html')).window;
 
@@ -207,26 +247,43 @@ test('homepage exposes the responsive site navigation controls without missing i
     assert.ok(document.querySelector('a[href="/blog/atom.xml"][aria-label="RSS feed"]'));
     assert.equal(document.querySelector('[data-site-brand]')?.getAttribute('aria-current'), 'page');
     assert.equal(document.querySelector('link[href="/line-awesome/css/line-awesome.min.css"]'), null);
+    assert.ok(document.querySelector('#mobile-nav-toggle'), 'mobile nav toggle must exist');
+    assert.ok(document.querySelector('#site-mobile-drawer'), 'mobile drawer must exist');
 });
 
-test('section navigation marks only the matching section as current', async () => {
-    const { document } = (await loadOutput('blog/spring/index.html')).window;
-    const links = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
-    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+test('top-level nav groups collapse the previous flat list into 5 group triggers', async () => {
+    const { document } = (await loadOutput('index.html')).window;
+    const flatItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
+    const groupTriggers = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] button.site-nav__item')];
+    const dropdownPanels = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] .site-dropdown__panel')];
+    const dropdownItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-dropdown__item')];
 
-    assert.equal(currentLinks.length, 1);
-    assert.equal(currentLinks[0].getAttribute('href'), '/blog/spring/');
-    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+    assert.equal(flatItems.length, 1, 'only the standalone 分类 link must remain a plain nav item');
+    assert.equal(flatItems[0].getAttribute('href'), '/blog/sections/');
+    assert.equal(groupTriggers.length, 4, 'four group triggers must be present (后端/AI/翻译/其他)');
+    assert.equal(dropdownPanels.length, 4, 'each group must render a dropdown panel');
+    assert.equal(dropdownItems.length, 19, 'all 19 grouped sections must be reachable as dropdown children');
+    assert.equal(
+        groupTriggers.every((el) => el.getAttribute('aria-expanded') === 'false'),
+        true,
+        'all group triggers must start collapsed'
+    );
+    assert.equal(
+        groupTriggers.every((el) => el.getAttribute('aria-haspopup') === 'true'),
+        true,
+        'all group triggers must declare aria-haspopup'
+    );
 });
 
-test('later section navigation marks weekly as current', async () => {
-    const { document } = (await loadOutput('blog/weekly/index.html')).window;
-    const links = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
-    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+test('group triggers hide dropdown panels until clicked open', async () => {
+    const { document } = (await loadOutput('index.html')).window;
+    const panels = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] .site-dropdown__panel')];
 
-    assert.equal(currentLinks.length, 1);
-    assert.equal(currentLinks[0].getAttribute('href'), '/blog/weekly/');
-    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+    assert.equal(
+        panels.every((panel) => !panel.hasAttribute('data-open')),
+        true,
+        'every dropdown panel must start without data-open'
+    );
 });
 
 test('sections landing page does not link to itself', async () => {
@@ -313,23 +370,30 @@ test('paper-reading sample article is reachable with rendered content', async ()
     );
 });
 
-test('paper-reading is registered in the global site navigation', async () => {
+test('paper-reading is registered in the global site navigation as a dropdown child', async () => {
     const { document } = (await loadOutput('index.html')).window;
-    const navLinks = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
-    const paperReadingLink = navLinks.find((link) => link.getAttribute('href') === '/blog/paper-reading/');
+    const dropdownItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-dropdown__item')];
+    const paperReadingLink = dropdownItems.find((link) => link.getAttribute('href') === '/blog/paper-reading/');
 
-    assert.ok(paperReadingLink, 'homepage nav must include a paper-reading entry');
+    assert.ok(paperReadingLink, 'homepage nav must include paper-reading as a dropdown item');
     assert.equal(paperReadingLink.textContent.trim(), '论文阅读');
 });
 
-test('section navigation marks paper-reading as current on its own page', async () => {
+test('section navigation marks paper-reading group as current on its own page', async () => {
     const { document } = (await loadOutput('blog/paper-reading/index.html')).window;
-    const links = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
-    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+    const topLevel = [
+        ...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item, [data-site-navigation] [data-site-nav] button.site-nav__item'),
+    ];
+    const dropdownItems = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-dropdown__item')];
 
-    assert.equal(currentLinks.length, 1);
-    assert.equal(currentLinks[0].getAttribute('href'), '/blog/paper-reading/');
-    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+    const currentTopLevel = topLevel.filter((el) => el.getAttribute('aria-current') === 'page');
+    const currentChildren = dropdownItems.filter((el) => el.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentTopLevel.length, 1, 'exactly one group trigger must be marked current');
+    assert.equal(currentChildren.length, 1, 'exactly one dropdown child must be marked current');
+    assert.equal(currentChildren[0].getAttribute('href'), '/blog/paper-reading/');
+    assert.ok(topLevel.filter((el) => el !== currentTopLevel[0]).every((el) => !el.hasAttribute('aria-current')));
+    assert.ok(dropdownItems.filter((el) => el !== currentChildren[0]).every((el) => !el.hasAttribute('aria-current')));
 });
 
 test('section pagination uses canonical Zola URLs, one current page, and correct boundaries', async () => {

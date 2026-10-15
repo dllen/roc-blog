@@ -87,15 +87,54 @@
                 <nav aria-label="主导航" class="site-nav" data-site-nav>
                     {% if config.extra.nav_sections %}
                         {% for section in config.extra.nav_sections %}
-                            <a href="{{ section.url | safe }}"
-                               class="site-nav__item"
-                               {% if current_path is defined and current_path is starting_with(pat=section.url) %} aria-current="page"{% endif %}>
-                                {{ section.name }}
-                            </a>
+                            {% if section.children %}
+                                <div class="site-dropdown site-nav__dropdown" data-dropdown>
+                                    {% set_global group_current = false %}
+                                    {% for child in section.children %}
+                                        {% if current_path is defined and current_path is starting_with(pat=child.url) %}
+                                            {% set_global group_current = true %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <button type="button"
+                                            class="site-nav__item site-dropdown__trigger"
+                                            aria-haspopup="true"
+                                            aria-expanded="false"
+                                            {% if group_current %}aria-current="page"{% endif %}>
+                                        <span class="site-nav__item-label">{{ section.name }}</span>
+                                        <span class="site-dropdown__caret" aria-hidden="true">▾</span>
+                                    </button>
+                                    <div class="site-dropdown__panel">
+                                        <nav class="site-dropdown__nav" aria-label="{{ section.name }}">
+                                            {% for child in section.children %}
+                                                <a href="{{ child.url | safe }}"
+                                                   class="site-dropdown__item"
+                                                   {% if current_path is defined and current_path is starting_with(pat=child.url) %}aria-current="page"{% endif %}>
+                                                    {{ child.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </nav>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <a href="{{ section.url | safe }}"
+                                   class="site-nav__item"
+                                   {% if current_path is defined and current_path is starting_with(pat=section.url) %}aria-current="page"{% endif %}>
+                                    {{ section.name }}
+                                </a>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </nav>
                 <div class="site-actions">
+                    <button id="mobile-nav-toggle"
+                            type="button"
+                            class="site-action site-nav__toggle"
+                            aria-label="打开导航"
+                            aria-controls="site-mobile-drawer"
+                            aria-expanded="false">
+                        <span class="site-nav__toggle-icon" aria-hidden="true" data-icon-open>☰</span>
+                        <span class="site-nav__toggle-icon" aria-hidden="true" data-icon-close hidden>✕</span>
+                    </button>
                     {% if config.extra.social %}
                         {% for i in config.extra.social %}
                             <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
@@ -129,6 +168,37 @@
                     </button>
                 </div>
             </nav>
+            <div id="site-mobile-drawer" class="site-mobile-drawer" data-mobile-nav hidden>
+                <nav class="site-mobile-drawer__nav" aria-label="移动导航">
+                    {% if config.extra.nav_sections %}
+                        {% for section in config.extra.nav_sections %}
+                            {% if section.children %}
+                                <div class="site-mobile-drawer__group">
+                                    <p class="site-mobile-drawer__heading">{{ section.name }}</p>
+                                    <ul class="site-mobile-drawer__list">
+                                        {% for child in section.children %}
+                                            <li>
+                                                <a href="{{ child.url | safe }}"
+                                                   class="site-mobile-drawer__item"
+                                                   {% if current_path is defined and current_path is starting_with(pat=child.url) %}aria-current="page"{% endif %}>
+                                                    {{ child.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <a href="{{ section.url | safe }}"
+                                   class="site-mobile-drawer__item site-mobile-drawer__item--standalone"
+                                   {% if current_path is defined and current_path is starting_with(pat=section.url) %}aria-current="page"{% endif %}>
+                                    {{ section.name }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </nav>
+            </div>
+            <div id="site-mobile-drawer-backdrop" class="site-mobile-drawer-backdrop" data-mobile-nav-backdrop hidden></div>
         </header>
         <main id="main-content" class="site-main">
             {% block content %}{% endblock %}

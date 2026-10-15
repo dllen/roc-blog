@@ -71,6 +71,57 @@ function initDropdowns() {
     });
 }
 
+function initMobileNav() {
+    var toggle = document.getElementById('mobile-nav-toggle');
+    var drawer = document.getElementById('site-mobile-drawer');
+    var backdrop = document.getElementById('site-mobile-drawer-backdrop');
+    if (!toggle || !drawer) return;
+
+    var iconOpen = toggle.querySelector('[data-icon-open]');
+    var iconClose = toggle.querySelector('[data-icon-close]');
+
+    function setOpen(isOpen) {
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.setAttribute('aria-label', isOpen ? '关闭导航' : '打开导航');
+        if (isOpen) {
+            drawer.removeAttribute('hidden');
+            drawer.setAttribute('data-open', '');
+            if (backdrop) backdrop.removeAttribute('hidden');
+        } else {
+            drawer.setAttribute('hidden', '');
+            drawer.removeAttribute('data-open');
+            if (backdrop) backdrop.setAttribute('hidden', '');
+        }
+        if (iconOpen) iconOpen.hidden = isOpen;
+        if (iconClose) iconClose.hidden = !isOpen;
+    }
+
+    toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    if (backdrop) {
+        backdrop.addEventListener('click', function () {
+            setOpen(false);
+        });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    // Close drawer after navigating to a drawer link (so the new page renders without it).
+    drawer.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            setOpen(false);
+        });
+    });
+}
+
 function init() {
     var darkModeToggle = document.getElementById('darkmode-toggle');
     if (darkModeToggle) {
@@ -85,6 +136,7 @@ function init() {
     }
 
     initDropdowns();
+    initMobileNav();
 
     var backToTopButton = document.getElementById('back-to-top');
     if (backToTopButton) {

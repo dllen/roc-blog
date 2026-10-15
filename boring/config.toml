@@ -57,26 +57,46 @@ homepage_img_url = "/index-image.png"
 homepage_latest_limit = 10
 
 nav_sections = [
-  { name = "分类",         url = "/blog/sections/" },
-  { name = "Spring 源码",  url = "/blog/spring/" },
-  { name = "Redis",        url = "/blog/redis/" },
-  { name = "Kafka",        url = "/blog/kafka/" },
-  { name = "Flink",        url = "/blog/flink/" },
-  { name = "ZooKeeper",    url = "/blog/zookeeper/" },
-  { name = "HBase",        url = "/blog/hbase/" },
-  { name = "HDFS",         url = "/blog/hdfs/" },
-  { name = "翻译",         url = "/blog/translate/" },
-  { name = "演讲",         url = "/blog/speech/" },
-  { name = "阅读",         url = "/blog/reading/" },
-  { name = "SRE",          url = "/blog/sre/" },
-  { name = "Prompt",       url = "/blog/prompt/" },
-  { name = "Weekly",       url = "/blog/weekly/" },
-  { name = "Tutorial",     url = "/blog/tutorial/" },
-  { name = "AI 推理工程",   url = "/blog/inference-engineering/" },
-  { name = "AI Agent 工程", url = "/blog/ai-agent/" },
-  { name = "论文阅读",     url = "/blog/paper-reading/" },
-  { name = "C/C++",        url = "/blog/cpp/" },
-  { name = "基础设施",     url = "/blog/infra/" },
+  { name = "分类", url = "/blog/sections/" },
+  {
+    name = "后端与基础设施",
+    children = [
+      { name = "Spring 源码",   url = "/blog/spring/" },
+      { name = "Redis",         url = "/blog/redis/" },
+      { name = "Kafka",         url = "/blog/kafka/" },
+      { name = "Flink",         url = "/blog/flink/" },
+      { name = "ZooKeeper",     url = "/blog/zookeeper/" },
+      { name = "HBase",         url = "/blog/hbase/" },
+      { name = "HDFS",          url = "/blog/hdfs/" },
+      { name = "C/C++",         url = "/blog/cpp/" },
+      { name = "基础设施",      url = "/blog/infra/" },
+    ],
+  },
+  {
+    name = "AI 工程",
+    children = [
+      { name = "AI 推理工程",    url = "/blog/inference-engineering/" },
+      { name = "AI Agent 工程", url = "/blog/ai-agent/" },
+      { name = "Prompt",        url = "/blog/prompt/" },
+      { name = "论文阅读",      url = "/blog/paper-reading/" },
+    ],
+  },
+  {
+    name = "翻译·演讲·阅读",
+    children = [
+      { name = "翻译",          url = "/blog/translate/" },
+      { name = "演讲",          url = "/blog/speech/" },
+      { name = "阅读",          url = "/blog/reading/" },
+    ],
+  },
+  {
+    name = "其他",
+    children = [
+      { name = "SRE",           url = "/blog/sre/" },
+      { name = "Weekly",        url = "/blog/weekly/" },
+      { name = "Tutorial",      url = "/blog/tutorial/" },
+    ],
+  },
 ]
 
 # Refer https://support.google.com/analytics/answer/9539598?hl=en

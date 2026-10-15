@@ -85,3 +85,173 @@ test('localStorage access errors do not break initialization or dark mode clicks
     assert.doesNotThrow(() => window.document.getElementById('darkmode-toggle').click());
     assert.equal(window.document.documentElement.classList.contains('dark'), true);
 });
+
+test('nav dropdown trigger toggles aria-expanded and panel visibility', () => {
+    const html = `
+        <!doctype html><html><body>
+        <div class="site-dropdown" data-dropdown>
+            <button class="site-dropdown__trigger" aria-haspopup="true" aria-expanded="false">trigger</button>
+            <div class="site-dropdown__panel"></div>
+        </div>
+        </body></html>`;
+    const dom = createDOM(html);
+    const { window } = dom;
+    window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    const trigger = window.document.querySelector('.site-dropdown__trigger');
+    const panel = window.document.querySelector('.site-dropdown__panel');
+
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(panel.hasAttribute('data-open'), false);
+
+    trigger.click();
+
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+    assert.equal(panel.hasAttribute('data-open'), true);
+
+    trigger.click();
+
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(panel.hasAttribute('data-open'), false);
+});
+
+test('nav dropdown closes on outside click and Escape', () => {
+    const html = `
+        <!doctype html><html><body>
+        <div class="site-dropdown" data-dropdown>
+            <button class="site-dropdown__trigger" aria-haspopup="true" aria-expanded="false">trigger</button>
+            <div class="site-dropdown__panel"></div>
+        </div>
+        <p id="outside">outside</p>
+        </body></html>`;
+    const dom = createDOM(html);
+    const { window } = dom;
+    window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    const trigger = window.document.querySelector('.site-dropdown__trigger');
+    const panel = window.document.querySelector('.site-dropdown__panel');
+
+    trigger.click();
+    assert.equal(panel.hasAttribute('data-open'), true);
+
+    window.document.getElementById('outside').dispatchEvent(new window.Event('click', { bubbles: true }));
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(panel.hasAttribute('data-open'), false);
+
+    trigger.click();
+    assert.equal(panel.hasAttribute('data-open'), true);
+
+    window.document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape' }));
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(panel.hasAttribute('data-open'), false);
+});
+
+test('mobile nav toggle opens and closes the drawer, swapping icons', () => {
+    const html = `
+        <!doctype html><html><body>
+        <button id="mobile-nav-toggle" type="button" aria-controls="site-mobile-drawer" aria-expanded="false" aria-label="打开导航">
+            <i data-icon-open></i>
+            <i data-icon-close hidden></i>
+        </button>
+        <div id="site-mobile-drawer" class="site-mobile-drawer" data-mobile-nav hidden></div>
+        <div id="site-mobile-drawer-backdrop" data-mobile-nav-backdrop hidden></div>
+        </body></html>`;
+    const dom = createDOM(html);
+    const { window } = dom;
+    window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    const toggle = window.document.getElementById('mobile-nav-toggle');
+    const drawer = window.document.getElementById('site-mobile-drawer');
+    const backdrop = window.document.getElementById('site-mobile-drawer-backdrop');
+    const iconOpen = window.document.querySelector('[data-icon-open]');
+    const iconClose = window.document.querySelector('[data-icon-close]');
+
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(drawer.hasAttribute('hidden'), true);
+    assert.equal(backdrop.hasAttribute('hidden'), true);
+    assert.equal(iconOpen.hidden, false);
+    assert.equal(iconClose.hidden, true);
+
+    toggle.click();
+
+    assert.equal(toggle.getAttribute('aria-expanded'), 'true');
+    assert.equal(toggle.getAttribute('aria-label'), '关闭导航');
+    assert.equal(drawer.hasAttribute('hidden'), false);
+    assert.equal(drawer.hasAttribute('data-open'), true);
+    assert.equal(backdrop.hasAttribute('hidden'), false);
+    assert.equal(iconOpen.hidden, true);
+    assert.equal(iconClose.hidden, false);
+
+    toggle.click();
+
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(drawer.hasAttribute('hidden'), true);
+    assert.equal(backdrop.hasAttribute('hidden'), true);
+});
+
+test('mobile drawer closes when the backdrop is clicked or Escape is pressed', () => {
+    const html = `
+        <!doctype html><html><body>
+        <button id="mobile-nav-toggle" type="button" aria-controls="site-mobile-drawer" aria-expanded="false">
+            <i data-icon-open></i>
+            <i data-icon-close hidden></i>
+        </button>
+        <div id="site-mobile-drawer" data-mobile-nav hidden></div>
+        <div id="site-mobile-drawer-backdrop" data-mobile-nav-backdrop hidden></div>
+        </body></html>`;
+    const dom = createDOM(html);
+    const { window } = dom;
+    window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    const toggle = window.document.getElementById('mobile-nav-toggle');
+    const drawer = window.document.getElementById('site-mobile-drawer');
+    const backdrop = window.document.getElementById('site-mobile-drawer-backdrop');
+
+    toggle.click();
+    assert.equal(drawer.hasAttribute('hidden'), false);
+
+    backdrop.dispatchEvent(new window.Event('click'));
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(drawer.hasAttribute('hidden'), true);
+    assert.equal(backdrop.hasAttribute('hidden'), true);
+
+    toggle.click();
+    assert.equal(drawer.hasAttribute('hidden'), false);
+
+    window.document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape' }));
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(drawer.hasAttribute('hidden'), true);
+});
+
+test('mobile drawer closes when a drawer link is clicked', () => {
+    const html = `
+        <!doctype html><html><body>
+        <button id="mobile-nav-toggle" type="button" aria-controls="site-mobile-drawer" aria-expanded="false">
+            <i data-icon-open></i>
+            <i data-icon-close hidden></i>
+        </button>
+        <div id="site-mobile-drawer" data-mobile-nav hidden>
+            <a href="/blog/spring/">Spring 源码</a>
+        </div>
+        <div id="site-mobile-drawer-backdrop" data-mobile-nav-backdrop hidden></div>
+        </body></html>`;
+    const dom = createDOM(html);
+    const { window } = dom;
+    window.eval(mainSrc);
+    window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    const toggle = window.document.getElementById('mobile-nav-toggle');
+    const drawer = window.document.getElementById('site-mobile-drawer');
+    const link = drawer.querySelector('a');
+
+    toggle.click();
+    assert.equal(drawer.hasAttribute('hidden'), false);
+
+    link.click();
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(drawer.hasAttribute('hidden'), true);
+});
