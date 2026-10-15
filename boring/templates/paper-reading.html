@@ -72,7 +72,7 @@
                                 {% for slug in methodology_slugs %}
                                     {% for page in section.pages %}
                                         {% if page.slug == slug %}
-                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                            <a href="{{ page.permalink | safe }}" class="section-card" data-section="paper-reading">
                                                 <div class="section-card__header">
                                                     <h3 class="section-card__title">{{ page.title }}</h3>
                                                     <span class="section-card__count">方法论</span>
@@ -99,7 +99,7 @@
                                 {% for slug in classic_slugs %}
                                     {% for page in section.pages %}
                                         {% if page.slug == slug %}
-                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                            <a href="{{ page.permalink | safe }}" class="section-card" data-section="paper-reading">
                                                 <div class="section-card__header">
                                                     <h3 class="section-card__title">{{ page.title }}</h3>
                                                     <span class="section-card__count">经典</span>
@@ -126,7 +126,7 @@
                                 {% for slug in recent_slugs %}
                                     {% for page in section.pages %}
                                         {% if page.slug == slug %}
-                                            <a href="{{ page.permalink | safe }}" class="section-card">
+                                            <a href="{{ page.permalink | safe }}" class="section-card" data-section="paper-reading">
                                                 <div class="section-card__header">
                                                     <h3 class="section-card__title">{{ page.title }}</h3>
                                                     <time class="section-card__count" datetime="{{ page.date | date(format="%Y-%m-%d") }}">

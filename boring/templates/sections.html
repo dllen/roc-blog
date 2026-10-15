@@ -22,7 +22,7 @@
                     {% set subsection = get_section(path=subsection_path) %}
                     {# Skip self-reference: this page is itself a subsection of blog #}
                     {% if subsection and subsection.permalink != section.permalink %}
-                    <a href="{{ subsection.permalink | safe }}" class="section-card">
+                    <a href="{{ subsection.permalink | safe }}" class="section-card" data-section="{{ subsection.components[1] | safe }}">
                         <div class="section-card__header">
                             <h3 class="section-card__title">{{ subsection.title }}</h3>
                             <span class="section-card__count">{{ subsection.pages | length }} 篇</span>

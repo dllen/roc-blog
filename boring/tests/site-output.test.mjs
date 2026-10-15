@@ -240,6 +240,33 @@ test('sections landing page does not link to itself', async () => {
     assert.equal(selfReferences.length, 0, 'sections landing must not contain a card linking back to itself');
 });
 
+test('sections landing exposes data-section slugs for future filtering', async () => {
+    const { document } = (await loadOutput('blog/sections/index.html')).window;
+    const sectionCards = [...document.querySelectorAll('a.section-card[href]')];
+
+    assert.equal(sectionCards.length, 22, '22 non-self subsections must remain after the self-ref guard');
+
+    const cardsWithDataSection = sectionCards.filter((card) => card.getAttribute('data-section'));
+    assert.equal(cardsWithDataSection.length, sectionCards.length, 'every section card must declare data-section');
+
+    const slugs = cardsWithDataSection.map((card) => card.getAttribute('data-section'));
+    assert.ok(slugs.every((slug) => /^[a-z][a-z0-9-]*$/.test(slug)), 'data-section values must be kebab-case slugs');
+    assert.equal(new Set(slugs).size, slugs.length, 'data-section values must be unique across cards');
+    assert.ok(!slugs.includes('sections'), 'data-section values must omit the self-reference slug');
+});
+
+test('paper-reading landing exposes data-section=paper-reading on every article card', async () => {
+    const { document } = (await loadOutput('blog/paper-reading/index.html')).window;
+    const sectionCards = [...document.querySelectorAll('a.section-card[href]')]
+        .filter((link) => new URL(link.getAttribute('href'), document.baseURI).pathname.startsWith('/blog/paper-reading/'));
+
+    assert.equal(sectionCards.length, 30);
+    assert.ok(
+        sectionCards.every((card) => card.getAttribute('data-section') === 'paper-reading'),
+        'every paper-reading article card must declare data-section=paper-reading'
+    );
+});
+
 test('paper-reading landing renders 30 article cards across 3 collapsible groups', async () => {
     const { document } = (await loadOutput('blog/paper-reading/index.html')).window;
 
