@@ -20,7 +20,8 @@
                 {% set blog = get_section(path="blog/_index.md") %}
                 {% for subsection_path in blog.subsections %}
                     {% set subsection = get_section(path=subsection_path) %}
-                    {% if subsection %}
+                    {# Skip self-reference: this page is itself a subsection of blog #}
+                    {% if subsection and subsection.permalink != section.permalink %}
                     <a href="{{ subsection.permalink | safe }}" class="section-card">
                         <div class="section-card__header">
                             <h3 class="section-card__title">{{ subsection.title }}</h3>

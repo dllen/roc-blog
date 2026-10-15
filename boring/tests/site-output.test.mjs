@@ -229,6 +229,17 @@ test('later section navigation marks weekly as current', async () => {
     assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
 });
 
+test('sections landing page does not link to itself', async () => {
+    const { document } = (await loadOutput('blog/sections/index.html')).window;
+    const sectionCards = [...document.querySelectorAll('a.section-card[href]')];
+    const selfReferences = sectionCards.filter(
+        (link) => link.getAttribute('href') === document.querySelector('link[rel="canonical"]')?.getAttribute('href')
+            || link.getAttribute('href') === '/blog/sections/'
+    );
+
+    assert.equal(selfReferences.length, 0, 'sections landing must not contain a card linking back to itself');
+});
+
 test('section pagination uses canonical Zola URLs, one current page, and correct boundaries', async () => {
     const sectionOutputDirectory = new URL('../roc-blog/blog/page/', import.meta.url);
     const pageDirents = await readdir(sectionOutputDirectory, { withFileTypes: true });
