@@ -240,6 +240,71 @@ test('sections landing page does not link to itself', async () => {
     assert.equal(selfReferences.length, 0, 'sections landing must not contain a card linking back to itself');
 });
 
+test('paper-reading landing renders 30 article cards across 3 collapsible groups', async () => {
+    const { document } = (await loadOutput('blog/paper-reading/index.html')).window;
+
+    assert.equal(
+        document.querySelector('h1.article-title')?.textContent?.trim(),
+        '通俗易懂讲论文',
+        'paper-reading landing must show series title as article hero'
+    );
+
+    const groups = [...document.querySelectorAll('details.paper-group')];
+    assert.equal(groups.length, 3, 'paper-reading landing must expose exactly 3 paper-group collapsibles');
+
+    const findGroup = (needle) => groups.find((g) => g.querySelector('.paper-group__title')?.textContent?.includes(needle));
+    const methodologyGroup = findGroup('方法论');
+    const classicGroup = findGroup('经典论文详细版');
+    const recentGroup = findGroup('近期 LLM/Agent 论文');
+
+    assert.ok(methodologyGroup?.hasAttribute('open'), 'methodology group must default to open');
+    assert.ok(!classicGroup?.hasAttribute('open'), 'classic group must default to closed');
+    assert.ok(!recentGroup?.hasAttribute('open'), 'recent group must default to closed');
+
+    assert.equal(methodologyGroup.querySelectorAll('a.section-card[href]').length, 1, 'methodology group must list 1 paper');
+    assert.equal(classicGroup.querySelectorAll('a.section-card[href]').length, 8, 'classic group must list 8 papers');
+    assert.equal(recentGroup.querySelectorAll('a.section-card[href]').length, 21, 'recent group must list 21 papers');
+
+    const totalCards = [...document.querySelectorAll('a.section-card[href]')]
+        .filter((link) => new URL(link.getAttribute('href'), document.baseURI).pathname.startsWith('/blog/paper-reading/'))
+        .length;
+    assert.equal(totalCards, 30, 'paper-reading landing must list exactly 30 article cards in total');
+});
+
+test('paper-reading sample article is reachable with rendered content', async () => {
+    const { document } = (await loadOutput('blog/paper-reading/transformer-explained-in-detail/index.html')).window;
+
+    assert.ok(document.querySelector('main#main-content'), 'article page must have main landmark');
+    assert.ok(
+        document.querySelector('article.article-main h1.article-title')?.textContent?.includes('Transformer'),
+        'article title must include the paper name'
+    );
+    assert.equal(
+        document.querySelector('meta[property="og:type"]')?.getAttribute('content'),
+        'article',
+        'paper-reading articles must declare og:type=article for rich social previews'
+    );
+});
+
+test('paper-reading is registered in the global site navigation', async () => {
+    const { document } = (await loadOutput('index.html')).window;
+    const navLinks = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
+    const paperReadingLink = navLinks.find((link) => link.getAttribute('href') === '/blog/paper-reading/');
+
+    assert.ok(paperReadingLink, 'homepage nav must include a paper-reading entry');
+    assert.equal(paperReadingLink.textContent.trim(), '论文阅读');
+});
+
+test('section navigation marks paper-reading as current on its own page', async () => {
+    const { document } = (await loadOutput('blog/paper-reading/index.html')).window;
+    const links = [...document.querySelectorAll('[data-site-navigation] [data-site-nav] a.site-nav__item')];
+    const currentLinks = links.filter((link) => link.getAttribute('aria-current') === 'page');
+
+    assert.equal(currentLinks.length, 1);
+    assert.equal(currentLinks[0].getAttribute('href'), '/blog/paper-reading/');
+    assert.ok(links.filter((link) => link !== currentLinks[0]).every((link) => !link.hasAttribute('aria-current')));
+});
+
 test('section pagination uses canonical Zola URLs, one current page, and correct boundaries', async () => {
     const sectionOutputDirectory = new URL('../roc-blog/blog/page/', import.meta.url);
     const pageDirents = await readdir(sectionOutputDirectory, { withFileTypes: true });
