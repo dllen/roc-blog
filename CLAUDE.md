@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Roc's Blog — a Chinese-language technical blog powered by [Zola](https://www.getzola.org/) (v0.23+), deployed to Cloudflare Pages. The site uses a custom "boring" theme with Tailwind CSS, vanilla JS, and the `editorial` warm-toned color palette.
+Roc's Blog — a Chinese-language technical blog powered by [Zola](https://www.getzola.org/) (v0.23+). The site uses a custom "boring" theme with Tailwind CSS, vanilla JS, and the `editorial` warm-toned color palette. CI force-pushes the built site to the `release` branch via `peaceiris/actions-gh-pages`; cache headers live in `boring/static/_headers` (Cloudflare Pages / Netlify format).
 
 - **Live site**: `https://scp.net.cn`
 - **Theme**: `boring/` (a Zola theme forked from [ssiyad/boring](https://github.com/ssiyad/boring))
@@ -117,9 +117,9 @@ All JS is vanilla ES5/ES6, loaded via `<script defer>`:
 
 ### Build & deploy
 
-- **CI** (`.github/workflows/build.yml`): on push/PR to `main` — builds fonts, runs PostCSS, runs tests, audits frontmatter
-- **Deploy**: Cloudflare Pages with build command `cd boring && zola build`, output directory `boring/public`
-- **Local build script** (`build.sh`): `zola build -o roc-blog` then optional `encrypt-posts.mjs` (non-blocking on failure)
+- **CI** (`.github/workflows/build.yml`): on push/PR to `main` — builds fonts, runs PostCSS, runs tests, audits frontmatter, then `peaceiris/actions-gh-pages` force-pushes `boring/roc-blog/` to the `release` branch
+- **Deploy**: release branch serves the site; cache headers live in `boring/static/_headers` (Cloudflare Pages / Netlify format)
+- **Local build script** (`build.sh`): `zola build -o roc-blog --force` then optional `encrypt-posts.mjs` (non-blocking on failure)
 
 ### Tests
 
