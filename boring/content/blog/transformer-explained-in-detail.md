@@ -294,19 +294,19 @@ Google 在两个翻译任务上做了实验：
 ### 进化路线图
 
 ```
-Transformer (2017) — Google
+Transformer (2017), Google
     ↓
-GPT-1 (2018) — OpenAI：Transformer 解码器-only，单向语言模型
+GPT-1 (2018), OpenAI：Transformer 解码器-only，单向语言模型
     ↓
-BERT (2018) — Google：Transformer 编码器-only，双向理解
+BERT (2018), Google：Transformer 编码器-only，双向理解
     ↓
-GPT-2 (2019) — OpenAI：放大规模，展示强大生成能力
+GPT-2 (2019), OpenAI：放大规模，展示强大生成能力
     ↓
-GPT-3 (2020) — OpenAI：1750 亿参数，涌现惊人能力
+GPT-3 (2020), OpenAI：1750 亿参数，涌现惊人能力
     ↓
-ChatGPT (2022.11) — OpenAI：对话界面，引发全球 AI 热潮
+ChatGPT (2022.11), OpenAI：对话界面，引发全球 AI 热潮
     ↓
-GPT-4 (2023) — 多模态，逻辑推理大幅提升
+GPT-4 (2023), 多模态，逻辑推理大幅提升
 ```
 
 所有这些大模型的"祖先"，都是 2017 年 Google 发布的这篇论文。

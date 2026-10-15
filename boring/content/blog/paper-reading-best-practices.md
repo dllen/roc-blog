@@ -354,8 +354,8 @@ extra:
 
 **关联文档**：
 
-- [Inference Engineering 系列](https://scp.net.cn/blog/) — 用本方法论选论文 + 复现
-- [Agent 平台调研](https://scp.net.cn/blog/) — 用本方法论做 Agent 平台调研
+- [Inference Engineering 系列](https://scp.net.cn/blog/), 用本方法论选论文 + 复现
+- [Agent 平台调研](https://scp.net.cn/blog/), 用本方法论做 Agent 平台调研
 - 「通俗易懂讲论文」14 篇精读示例
 
 **维护者**：roc-blog  
