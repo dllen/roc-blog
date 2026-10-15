@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="auto" role="img">
+  <title>Post-Training Lifecycle - 后训练生命周期与五大奖励族</title>
+  <desc>为什么 ChatGPT 听懂人话，而 GPT-3 只会续写 — 封面图</desc>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280"/>
+    </marker>
+    <marker id="arr2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E42"/>
+    </marker>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Top title -->
+  <text x="450" y="52" text-anchor="middle" font-family="'Noto Sans SC','Source Han Sans SC',sans-serif" font-size="30" font-weight="700" fill="#F5F0E8">为什么 ChatGPT 听懂人话</text>
+  <text x="450" y="80" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#9CA9BD">Why your base model only continues, but ChatGPT follows instructions</text>
+
+  <!-- Divider -->
+  <line x1="100" y1="100" x2="800" y2="100" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- 4 boxes -->
+  <g transform="translate(60,125)">
+    <!-- Box 1: Base Model -->
+    <rect x="0" y="0" width="165" height="90" rx="8" fill="#2D3548" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="82" y="36" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="600" fill="#9CA9BD">Base Model</text>
+    <text x="82" y="56" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">预训练（续写）</text>
+    <text x="82" y="76" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="10" fill="#6B7280">Trillion tokens</text>
+
+    <!-- Arrow 1→2 -->
+    <line x1="165" y1="45" x2="205" y2="45" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <!-- Box 2: SFT (highlighted) -->
+    <rect x="210" y="0" width="165" height="90" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="2"/>
+    <text x="292" y="36" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="600" fill="#1A1F2E">SFT</text>
+    <text x="292" y="56" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#1A1F2E">有监督微调（学指令）</text>
+    <text x="292" y="76" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="10" fill="#1A1F2E" opacity="0.7">10K-100K pairs</text>
+
+    <!-- Arrow 2→3 -->
+    <line x1="375" y1="45" x2="415" y2="45" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <!-- Box 3: RL -->
+    <rect x="420" y="0" width="165" height="90" rx="8" fill="#2D3548" stroke="#9CA9BD" stroke-width="1.5"/>
+    <text x="502" y="36" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="600" fill="#9CA9BD">RL</text>
+    <text x="502" y="56" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">强化学习（学更好）</text>
+    <text x="502" y="76" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="10" fill="#9CA9BD">KL 正则化</text>
+
+    <!-- Arrow 3→4 -->
+    <line x1="585" y1="45" x2="625" y2="45" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <!-- Box 4: Instruct Model (highlighted) -->
+    <rect x="630" y="0" width="165" height="90" rx="8" fill="#E04E3D" stroke="#E04E3D" stroke-width="2"/>
+    <text x="712" y="36" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="600" fill="#F5F0E8">Instruct</text>
+    <text x="712" y="56" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="800" fill="#F5F0E8">听话助手</text>
+    <text x="712" y="76" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="10" fill="#F5F0E8" opacity="0.8">Ready to serve</text>
+  </g>
+
+  <!-- SFT annotation below box 2 -->
+  <text x="352" y="232" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#F59E42">10K-100K 高质量 pairs · 数据质量 &gt; 一切</text>
+
+  <!-- RL annotation below box 3 -->
+  <text x="502" y="232" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">五大奖励族：RLHF/RLAIF/RLVR/PRM/Rubric</text>
+
+  <!-- Divider -->
+  <line x1="100" y1="250" x2="800" y2="250" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- Five reward family tags -->
+  <text x="450" y="278" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">五大 Reward 族</text>
+
+  <g transform="translate(0,295)">
+    <!-- Tag 1: RLHF -->
+    <rect x="75" y="0" width="140" height="52" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="145" y="22" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">RLHF</text>
+    <text x="145" y="40" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">人类偏好</text>
+
+    <!-- Tag 2: RLAIF -->
+    <rect x="235" y="0" width="140" height="52" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="305" y="22" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">RLAIF</text>
+    <text x="305" y="40" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">AI 反馈</text>
+
+    <!-- Tag 3: RLVR -->
+    <rect x="395" y="0" width="140" height="52" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="465" y="22" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F59E42">RLVR</text>
+    <text x="465" y="40" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">可验证奖励</text>
+
+    <!-- Tag 4: PRM -->
+    <rect x="555" y="0" width="140" height="52" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="625" y="22" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">PRM</text>
+    <text x="625" y="40" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">过程奖励</text>
+
+    <!-- Tag 5: Rubric -->
+    <rect x="715" y="0" width="110" height="52" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="770" y="22" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Rubric</text>
+    <text x="770" y="40" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">评分卡</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="555" width="900" height="45" fill="#F5F0E8" opacity="0.06"/>
+  <text x="450" y="582" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">Post-Training = 从"续写"到"听话"的桥梁</text>
+</svg>

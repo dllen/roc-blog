@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="auto" role="img">
+  <title>Distributed Training 封面图 — 355年GPU集群递进</title>
+  <desc>为什么GPT-3在单卡上要跑355年 — 从单卡到集群的分布式训练演进</desc>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F5F0E8"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E42"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E04E3D"/>
+    </marker>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Title area -->
+  <text x="450" y="48" text-anchor="middle" font-family="'Noto Serif SC', 'Source Han Serif CN', serif" font-size="30" font-weight="700" fill="#F5F0E8" letter-spacing="1">为什么 GPT-3 在单卡上要跑 355 年</text>
+  <text x="450" y="74" text-anchor="middle" font-family="'Noto Sans SC', 'Source Han Sans CN', sans-serif" font-size="14" fill="#9CA9BD" letter-spacing="3">Distributed Training · 从单卡到集群</text>
+
+  <!-- Divider line -->
+  <line x1="100" y1="90" x2="800" y2="90" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ====== LEFT: Big 355 number ====== -->
+  <text x="160" y="205" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="130" font-weight="900" fill="#E04E3D">355</text>
+  <text x="160" y="235" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="15" fill="#F5F0E8">年</text>
+  <text x="160" y="262" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#9CA9BD">GPT-3 175B · 单卡 A100 80GB</text>
+
+  <!-- ====== RIGHT: 4 GPU blocks (descending size, left to right) ====== -->
+
+  <!-- Block 1: DP (largest) -->
+  <rect x="300" y="112" width="110" height="170" rx="8" fill="#6B7280"/>
+  <text x="355" y="148" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="14" font-weight="700" fill="#F5F0E8">DP</text>
+  <text x="355" y="168" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#F5F0E8">16Ψ bytes/卡</text>
+  <text x="355" y="188" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#E0E0E0">全部复制</text>
+  <text x="355" y="212" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#F5F0E8">5B</text>
+  <text x="355" y="230" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#C0C0C0">可训上限</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="412" y1="197" x2="440" y2="197" stroke="#F5F0E8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="426" y="190" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F59E42">↓</text>
+
+  <!-- Block 2: ZeRO-1 -->
+  <rect x="444" y="124" width="100" height="150" rx="8" fill="#F59E42"/>
+  <text x="494" y="160" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="14" font-weight="700" fill="#1A1F2E">ZeRO-1</text>
+  <text x="494" y="180" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1A1F2E">4.2Ψ</text>
+  <text x="494" y="200" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#1A1F2E">Optimizer分片</text>
+  <text x="494" y="222" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#1A1F2E">19B</text>
+  <text x="494" y="240" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#4A3010">可训上限</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="546" y1="199" x2="572" y2="199" stroke="#F5F0E8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="559" y="192" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F59E42">↓</text>
+
+  <!-- Block 3: ZeRO-2 -->
+  <rect x="576" y="136" width="90" height="130" rx="8" fill="#F59E42"/>
+  <text x="621" y="168" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="13" font-weight="700" fill="#1A1F2E">ZeRO-2</text>
+  <text x="621" y="187" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#1A1F2E">2.2Ψ</text>
+  <text x="621" y="205" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#1A1F2E">+Gradient分片</text>
+  <text x="621" y="224" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="700" fill="#1A1F2E">36B</text>
+  <text x="621" y="242" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#4A3010">可训上限</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="668" y1="201" x2="693" y2="201" stroke="#F5F0E8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="680" y="194" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#E04E3D">↓</text>
+
+  <!-- Block 4: ZeRO-3/FSDP (smallest, highlighted) -->
+  <rect x="697" y="150" width="82" height="110" rx="8" fill="#E04E3D" stroke="#FF7060" stroke-width="2"/>
+  <text x="738" y="180" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="12" font-weight="700" fill="#F5F0E8">ZeRO-3</text>
+  <text x="738" y="194" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#FFD0C0">FSDP</text>
+  <text x="738" y="214" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#F5F0E8">0.25Ψ</text>
+  <text x="738" y="232" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#FFD0C0">全量分片</text>
+  <text x="738" y="252" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="700" fill="#F5F0E8">320B</text>
+
+  <!-- ====== BOTTOM INFO BAR ====== -->
+  <rect x="0" y="550" width="900" height="50" fill="#2D3548"/>
+  <text x="450" y="574" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="14" fill="#F5F0E8">
+    <tspan font-family="'JetBrains Mono', monospace" fill="#E04E3D" font-weight="700">355年</tspan>
+    <tspan fill="#9CA9BD"> → </tspan>
+    <tspan font-family="'JetBrains Mono', monospace" fill="#F59E42" font-weight="700">几天</tspan>
+    <tspan fill="#9CA9BD">  |  用并行换时间  |  DP → ZeRO → FSDP → Ray Train</tspan>
+  </text>
+</svg>

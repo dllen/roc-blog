@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>Ray Train 架构图</title>
+  <desc>Ray Train 5 API架构 — 8 GPUs across 3 Nodes with TorchTrainer and Checkpoint Manager</desc>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#D1D5DB"/>
+    </marker>
+    <marker id="arr-gray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#D1D5DB"/>
+    </marker>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="url(#bgGrad4)"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="22" font-weight="700" fill="#F5F0E8" letter-spacing="1">Ray Train 5 API · 8 GPUs × 3 Nodes</text>
+  <line x1="80" y1="52" x2="820" y2="52" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ====== TOP: Ray Train Driver ====== -->
+  <rect x="280" y="68" width="340" height="56" rx="10" fill="#F59E42" stroke="#FFD080" stroke-width="2"/>
+  <text x="450" y="95" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="15" font-weight="700" fill="#1A1F2E">Ray Train Driver</text>
+  <text x="450" y="115" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1A1F2E">TorchTrainer.fit()</text>
+
+  <!-- Connector lines: Driver → 8 workers (top row) -->
+  <line x1="350" y1="124" x2="155" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="400" y1="124" x2="255" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="450" y1="124" x2="355" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="500" y1="124" x2="455" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="550" y1="124" x2="555" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="500" y1="124" x2="655" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="550" y1="124" x2="755" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="550" y1="124" x2="855" y2="180" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+
+  <!-- ====== MIDDLE: 8 Workers (4 cols x 2 rows) ====== -->
+
+  <!-- Worker node dims -->
+  <!-- Row 1: Node 0: W0 W1,  Node 1: W2 W3 -->
+  <!-- Row 2: Node 1: W4 W5,  Node 2: W6 W7 -->
+  <!-- But we'll do 4 cols: W0 W1 W2 W3 (row1) / W4 W5 W6 W7 (row2) -->
+  <!-- x positions for 4 workers per row: 100, 255, 405, 555 / 655, 755, 855 centered -->
+
+  <!-- Row 1 workers -->
+  <!-- W0 -->
+  <rect x="100" y="185" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="150" y="208" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 0</text>
+  <text x="150" y="225" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="150" y="242" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 0 · Node 0</text>
+
+  <!-- W1 -->
+  <rect x="220" y="185" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="270" y="208" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 1</text>
+  <text x="270" y="225" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="270" y="242" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 1 · Node 0</text>
+
+  <!-- W2 -->
+  <rect x="340" y="185" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="390" y="208" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 2</text>
+  <text x="390" y="225" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="390" y="242" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 2 · Node 1</text>
+
+  <!-- W3 -->
+  <rect x="460" y="185" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="510" y="208" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 3</text>
+  <text x="510" y="225" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="510" y="242" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 3 · Node 1</text>
+
+  <!-- Row 2 workers -->
+  <!-- W4 -->
+  <rect x="100" y="265" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="150" y="288" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 4</text>
+  <text x="150" y="305" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="150" y="322" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 4 · Node 1</text>
+
+  <!-- W5 -->
+  <rect x="220" y="265" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="270" y="288" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 5</text>
+  <text x="270" y="305" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="270" y="322" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 5 · Node 2</text>
+
+  <!-- W6 -->
+  <rect x="340" y="265" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="390" y="288" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 6</text>
+  <text x="390" y="305" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="390" y="322" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 6 · Node 2</text>
+
+  <!-- W7 -->
+  <rect x="460" y="265" width="100" height="65" rx="8" fill="#374151" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="510" y="288" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" font-weight="700" fill="#9CA9BD">Worker 7</text>
+  <text x="510" y="305" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">FSDP</text>
+  <text x="510" y="322" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280">GPU 7 · Node 2</text>
+
+  <!-- Node labels (left side) -->
+  <text x="85" y="208" text-anchor="end" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#4B5563">Node 0</text>
+  <text x="85" y="225" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="9" fill="#4B5563">2 GPU</text>
+  <text x="85" y="288" text-anchor="end" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#4B5563">Node 1</text>
+  <text x="85" y="305" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="9" fill="#4B5563">4 GPU</text>
+  <text x="85" y="368" text-anchor="end" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#4B5563">Node 2</text>
+  <text x="85" y="385" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="9" fill="#4B5563">2 GPU</text>
+
+  <!-- Connector lines: Workers → Checkpoint (downward) -->
+  <line x1="150" y1="330" x2="150" y2="360" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="270" y1="330" x2="270" y2="360" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="390" y1="330" x2="390" y2="360" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <line x1="510" y1="330" x2="510" y2="360" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+  <!-- converge to single line -->
+  <line x1="150" y1="360" x2="510" y2="360" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="330" y1="360" x2="330" y2="385" stroke="#D1D5DB" stroke-width="1" marker-end="url(#arr-gray)"/>
+
+  <!-- ====== BOTTOM: Checkpoint Manager ====== -->
+  <rect x="200" y="388" width="260" height="58" rx="10" fill="#E04E3D" stroke="#FF7060" stroke-width="2"/>
+  <text x="330" y="415" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="14" font-weight="700" fill="#F5F0E8">Checkpoint Manager</text>
+  <text x="330" y="436" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#FFD0C0">ray.train.Checkpoint</text>
+  <text x="330" y="452" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#FFD0C0">容错 · 自动恢复</text>
+
+  <!-- ====== RIGHT: 5 API list ====== -->
+  <rect x="620" y="68" width="240" height="380" rx="10" fill="#2D3548"/>
+  <text x="740" y="96" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">5 个最小 API</text>
+  <line x1="635" y1="106" x2="845" y2="106" stroke="#4B5563" stroke-width="0.5"/>
+
+  <!-- API items -->
+  <rect x="635" y="115" width="210" height="32" rx="5" fill="#374151"/>
+  <text x="740" y="135" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#F59E42">1. ScalingConfig</text>
+
+  <rect x="635" y="155" width="210" height="32" rx="5" fill="#374151"/>
+  <text x="740" y="175" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#F59E42">2. TorchTrainer</text>
+
+  <rect x="635" y="195" width="210" height="32" rx="5" fill="#374151"/>
+  <text x="740" y="215" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F5F0E8">3. prepare_model(fsdp)</text>
+
+  <rect x="635" y="235" width="210" height="32" rx="5" fill="#374151"/>
+  <text x="740" y="255" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#9CA9BD">4. Checkpoint</text>
+
+  <rect x="635" y="275" width="210" height="32" rx="5" fill="#374151"/>
+  <text x="740" y="295" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#9CA9BD">5. ray.train.report()</text>
+
+  <!-- Flow arrow: ScalingConfig → TorchTrainer -->
+  <line x1="740" y1="147" x2="740" y2="155" stroke="#F59E42" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <!-- Flow arrow: TorchTrainer → prepare_model -->
+  <line x1="740" y1="187" x2="740" y2="195" stroke="#F59E42" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <!-- Flow arrow: prepare_model → Checkpoint -->
+  <line x1="740" y1="227" x2="740" y2="235" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Flow arrow: Checkpoint → report -->
+  <line x1="740" y1="267" x2="740" y2="275" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Summary note below API list -->
+  <text x="740" y="330" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">PyTorch FSDP 原生集成</text>
+  <text x="740" y="348" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">自动分片 · 通信隐藏</text>
+  <text x="740" y="366" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="10" fill="#6B7280">弹性容错 · Checkpoint</text>
+</svg>

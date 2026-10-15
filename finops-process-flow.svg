@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <style>
+    .box{fill:#f8fafc;stroke:#2d3748;stroke-width:2}
+    .title{font-family:Arial,sans-serif;font-size:16px;fill:#1a202c;font-weight:bold}
+    .text{font-family:Arial,sans-serif;font-size:14px;fill:#2d3748}
+    .note{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#2d3748;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Steps Row 1 -->
+  <rect x="40" y="60" width="220" height="120" class="box"/>
+  <text x="60" y="90" class="title">发现</text>
+  <text x="60" y="115" class="text">资产/账单/用量</text>
+
+  <rect x="300" y="60" width="220" height="120" class="box"/>
+  <text x="320" y="90" class="title">基线</text>
+  <text x="320" y="115" class="text">口径/维表/指标</text>
+
+  <rect x="560" y="60" width="220" height="120" class="box"/>
+  <text x="580" y="90" class="title">预算</text>
+  <text x="580" y="115" class="text">分层与阈值</text>
+
+  <rect x="820" y="60" width="220" height="120" class="box"/>
+  <text x="840" y="90" class="title">监控</text>
+  <text x="840" y="115" class="text">告警与异常</text>
+
+  <!-- Steps Row 2 -->
+  <rect x="180" y="240" width="240" height="120" class="box"/>
+  <text x="200" y="270" class="title">优化</text>
+  <text x="200" y="295" class="text">建议生成与执行</text>
+
+  <rect x="500" y="240" width="240" height="120" class="box"/>
+  <text x="520" y="270" class="title">治理</text>
+  <text x="520" y="295" class="text">策略/准入/配额</text>
+
+  <rect x="820" y="240" width="240" height="120" class="box"/>
+  <text x="840" y="270" class="title">复盘</text>
+  <text x="840" y="295" class="text">评审/基线更新</text>
+
+  <!-- Arrows -->
+  <line x1="260" y1="120" x2="300" y2="120" class="arrow"/>
+  <line x1="520" y1="120" x2="560" y2="120" class="arrow"/>
+  <line x1="780" y1="120" x2="820" y2="120" class="arrow"/>
+  <line x1="930" y1="180" x2="930" y2="240" class="arrow"/>
+  <line x1="420" y1="300" x2="500" y2="300" class="arrow"/>
+  <line x1="740" y1="300" x2="820" y2="300" class="arrow"/>
+  <line x1="840" y1="360" x2="360" y2="360" class="arrow"/>
+</svg>

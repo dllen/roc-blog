@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <style>
+    .title { font: bold 28px sans-serif; fill: #1f2d3d; }
+    .label { font: 18px sans-serif; fill: #1f2d3d; }
+    .box { fill: #fff0f0; stroke: #c0392b; stroke-width: 2; }
+    .fix { fill: #eef9ff; stroke: #2980b9; stroke-width: 2; }
+  </style>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"/>
+  <text x="40" y="50" class="title">Spring Singleton Cache Leak (Strong Reference) & Fix</text>
+
+  <defs>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c0392b" />
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2980b9" />
+    </marker>
+  </defs>
+
+  <!-- Problem side -->
+  <rect x="80" y="120" width="500" height="220" class="box"/>
+  <text x="100" y="160" class="label">Spring Singleton Bean</text>
+  <text x="100" y="190" class="label">Holds Map<String, Object> (no TTL, no size limit)</text>
+  <text x="100" y="220" class="label">Strong reference prevents GC</text>
+
+  <rect x="80" y="360" width="500" height="120" class="box"/>
+  <text x="100" y="400" class="label">ThreadLocal not removed => ClassLoader leak risk</text>
+
+  <!-- Fix side -->
+  <rect x="700" y="120" width="500" height="220" class="fix"/>
+  <text x="720" y="160" class="label">Use Caffeine Cache</text>
+  <text x="720" y="190" class="label">TTL + maximumSize + weak/soft values</text>
+  <text x="720" y="220" class="label">Metrics to monitor hit rate</text>
+
+  <rect x="700" y="360" width="500" height="120" class="fix"/>
+  <text x="720" y="400" class="label">ThreadLocal cleanup: remove() in finally</text>
+
+  <!-- arrows -->
+  <line x1="580" y1="230" x2="700" y2="230" stroke="#c0392b" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <line x1="580" y1="420" x2="700" y2="420" stroke="#2980b9" stroke-width="3" marker-end="url(#arrow-blue)"/>
+</svg>
