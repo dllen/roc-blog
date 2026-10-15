@@ -1,6 +1,6 @@
 # AGENTS.md — Roc's Blog
 
-Zola (v0.23+) static site for a Chinese tech blog, themed with a custom `boring/` fork (Tailwind + vanilla JS). Deployed to Cloudflare Pages; CI in `.github/workflows/build.yml`. Content lives at `boring/content/blog/*.md` (YAML frontmatter, dated articles, sectioned into Zola subsections). All toolchain commands run from `boring/`, never the repo root.
+Zola (v0.23+) static site for a Chinese tech blog, themed with a custom `boring/` fork (Tailwind + vanilla JS). CI in `.github/workflows/build.yml` builds and force-pushes the site to the `release` branch via `peaceiris/actions-gh-pages`; cache policy lives in `boring/static/_headers` (Cloudflare Pages / Netlify format). Content lives at `boring/content/blog/*.md` (YAML frontmatter, dated articles, sectioned into Zola subsections). All toolchain commands run from `boring/`, never the repo root.
 
 ## Dev environment
 
@@ -25,7 +25,7 @@ yarn test:site     # integration: asserts on built HTML in roc-blog/  (run `zola
 yarn audit         # frontmatter completeness report → boring/_audit/frontmatter-audit.md
 ```
 
-Full CI mock (mirrors `.github/workflows/build.yml`, skips deploy): `bash scripts/ci-local.sh` from repo root.
+Local build mock (mirrors `.github/workflows/build.yml` build steps including `cleanup-og.mjs`; **skips `yarn test` and `yarn test:site`** — run those manually before pushing): `bash scripts/ci-local.sh` from repo root.
 
 ## Conventions
 
@@ -34,7 +34,7 @@ Full CI mock (mirrors `.github/workflows/build.yml`, skips deploy): `bash script
 - **Section `_index.md`**: must NOT contain `taxonomies` (`zola build` errors). Section-level tags belong in `extra` (lazy metadata, not rendered).
 - **New subsection**: create a directory under `boring/content/blog/<name>/` with its own `_index.md` AND register it in `config.toml` under `[extra] nav_sections`, otherwise it won't appear in the nav.
 - **CSS pipeline**: edit `boring/css/style.css` only. PostCSS chain (config in `boring/postcss.config.js`): `postcss-import` → `tailwindcss/nesting` → `tailwindcss` (scans `templates/**/*.html`) → `autoprefixer` → `cssnano`. Never hand-edit the generated `static/css/style.css`.
-- **JS**: vanilla ES5/ES6, loaded via `<script defer>`. Site-wide: `main.js` (dark mode, nav, back-to-top), `search.js` (Fuse.js). Article pages: `reading.js` (progress bar, TOC, code-copy).
+- **JS**: vanilla ES5/ES6, loaded via `<script defer>`. Site-wide: `main.js` (dark mode, nav, back-to-top), `search.js` (Fuse.js), `consent.js` (AdSense consent banner + slot injection; needs `google_adsense_client_id` + ad-slot IDs in `config.toml`). Article pages: `reading.js` (progress bar, TOC, code-copy).
 - **Tailwind palette**: `editorial` (cream `#FBFAF7` bg, amber `#A16207` primary, stone text). Dark mode = `class` strategy.
 - **Optional encryption**: `password` / `password_hint` / `remember_days` in frontmatter → encrypted at build by `encrypt-posts.mjs`, decrypted client-side via StaticShield. Title/description/date stay plaintext so listings render.
 - **Commit/lint conventions**: covered by `.trunk/` config; CI does NOT run trunk, it runs `yarn test` + `yarn audit`.
@@ -44,7 +44,7 @@ Full CI mock (mirrors `.github/workflows/build.yml`, skips deploy): `bash script
 - **Don't run yarn / zola from repo root** — every script assumes `boring/` as cwd; the site URL and relative paths break otherwise.
 - **`yarn test:site` requires a fresh `zola build -o roc-blog --force`** — the integration test reads from `boring/roc-blog/`. If output dir is missing the test fails immediately.
 - **`yarn build` does two things in order**: precomputes `related-index.json` BEFORE postcss. If postcss changes fail, the related index may be stale for that run — re-run `yarn build:index` (or full `yarn build`).
-- **`boring/roc-blog/` vs `boring/public/`**: `zola build` alone writes to `public/`; the project convention uses `-o roc-blog` so the output name matches the deploy dir. Cloudflare Pages build config also expects `boring/public` — they differ; CI uses `roc-blog`, raw `zola` uses `public`. Don't mix them.
+- **`boring/roc-blog/` vs `boring/public/`**: `zola build` alone writes to `public/`; the project convention uses `-o roc-blog` so the output name matches the deploy dir. CI deploys from `boring/roc-blog`; raw `zola` (e.g. `zola serve`) writes to `public/`. The two dirs can drift — always run the full `zola build -o roc-blog --force` before `yarn test:site`.
 - **Generated artifacts not to hand-edit**: `static/css/style.css`, `static/og/*.png`, `static/related-index.json`, `roc-blog/**`. Source-of-truth files live one level up or in `scripts/`.
 - **Leftover files in `boring/`** (all gitignored, but visible): `.hugo_build.lock` (pre-Zola), `yarn-error.log`, `startup.log` — never treat as source.
 - **Port 1111 in use**: `start.sh` calls `pkill zola` first; if another process holds 1111, `zola serve` will pick the next free port and log it.
