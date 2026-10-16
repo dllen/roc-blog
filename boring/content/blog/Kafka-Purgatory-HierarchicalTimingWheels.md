@@ -5,6 +5,8 @@ update_date: 2023-11-12T23:01:58+05:30
 description: "How can we efficiently keep track of tens of thousands of requests that are being asynchronously satisfied by other activity in the cluster?"
 taxonomies:
   tags: [kafka, TimeingWheel]
+tldr: "How can we efficiently keep track of tens of thousands of requests that are being asynchronously satisfied by other activity in the cluster?"
+keywords: ["Apache", "Kafka", "Purgatory", "and", "Hierarchical", "Timing", "Wheels", "kafka"]
 ---
 
 Kafka 中有很多HTTP请求需要处理，例如：生产者 ack=all、消费者 min.bytes=1 、集群内部 broker 之间通信，需要跟踪这些请求的状态（成功、失败、超时）；
@@ -63,11 +65,11 @@ To satisfy these requirements, we designed a new purgatory implementation based 
 
 A simple timing wheel is a circular list of buckets of timer tasks. Let u be the time unit. A timing wheel with size **n** has **n** buckets and can hold timer tasks in **n * u** time interval. Each bucket holds timer tasks that fall into the corresponding time range. At the beginning, the first bucket holds tasks for **[0, u)**, the second bucket holds tasks for **[u, 2u)**, …, the **n**-th bucket for **[u * (n -1), u * n)**. Every interval of time unit **u**, the timer ticks and moved to the next bucket then expire all timer tasks in it. So, the timer never inserts a task into the bucket for the current time since it is already expired. The timer immediately runs the expired task. The emptied bucket is then available for the next round, so if the current bucket is for the time t, it becomes the bucket for **[t + u * n, t + (n + 1) * u)** after a tick. A timing wheel has O(1) cost for insert/delete (start-timer/stop-timer) whereas priority queue based timers, such as _java.util.concurrent.DelayQueue_ and _java.util.Timer_, have O(log n) insert/delete cost. Note that neither _DelayQueue_ or _Timer_ supports random delete.
 
-![](https://cdn.confluent.io/wp-content/uploads/2016/08/TimingWheels1.png)
+![Kafka 单层时间轮结构示意：n 个桶覆盖 n*u 时间区间，每 tick 推进一个桶](https://cdn.confluent.io/wp-content/uploads/2016/08/TimingWheels1.png)
 
 A major drawback of a simple timing wheel is that it assumes that a timer request is within the time interval of **n * u** from the current time. If a timer request is out of this interval, it is an overflow. A hierarchical timing wheel deals with such overflows. It is a hierarchically organized timing wheels that delegate overflows to upper level wheels. The lowest level has the finest time resolution. Time resolutions become coarser as we move up the hierarchy. If the resolution of a wheel at one level is **u** and the size is **n**, the resolutions should be **n * u** in the second level, **n2 * u** in the third level, and so on. At each level overflows are delegated to the wheel in one level higher. When the wheel in the higher level ticks, it reinsert timer tasks to the lower level. An overflow wheel can be created on-demand. When a bucket in an overflow bucket expires, all tasks in it are reinserted into the timer recursively. The tasks are then moved to the finer grain wheels or be executed. The insert (start-timer) cost is O(m) where **m** is the number of wheels, which is usually very small compared to the number of requests in the system, and the delete (stop-timer) cost is still O(1).
 
-![](https://cdn.confluent.io/wp-content/uploads/2016/08/TimingWheels2.png)
+![Kafka 层级时间轮结构示意：低层分辨率高，上层分辨率按 n 倍递增，溢出委托上级](https://cdn.confluent.io/wp-content/uploads/2016/08/TimingWheels2.png)
 
 ### Doubly Linked List for Buckets in Timing Wheels
 
@@ -104,13 +106,13 @@ Requests are actively completed by a separate thread. Requests that are supposed
 
 The JVM heap size is set to 200m to reproduce a memory tight situation.
 
-The result shows a dramatic difference in a high enqueue rate area. As the target rate increases, both implementations keep up with the requests initially. However, in low timeout scenario the old implementation was saturated around 40000 RPS (request per second), whereas the new implementation didn’t show any significant performance degradation, and in high timeout scenario the old implementation was saturated around 25000 RPS, whereas the new implementation was saturated 105000 RPS in this benchmark.![](https://cdn.confluent.io/wp-content/uploads/2016/08/enq_rate.png)
+The result shows a dramatic difference in a high enqueue rate area. As the target rate increases, both implementations keep up with the requests initially. However, in low timeout scenario the old implementation was saturated around 40000 RPS (request per second), whereas the new implementation didn’t show any significant performance degradation, and in high timeout scenario the old implementation was saturated around 25000 RPS, whereas the new implementation was saturated 105000 RPS in this benchmark.![Kafka 旧实现 vs 新实现的 enqueue 吞吐量对比：高超时场景下新实现饱和于 105000 RPS，旧实现仅 25000 RPS](https://cdn.confluent.io/wp-content/uploads/2016/08/enq_rate.png)
 
-Also, CPU usage is significantly better in the new implementation. Note that the old implementation does not have data point higher than ~40000 RPS due to its scalability limit. Also notice that its CPU time saturates around 1.2 while it is steadily going up in the new implementation. It indicate that the old implementation may be hitting a concurrency issue due to synchronizations.![](https://cdn.confluent.io/wp-content/uploads/2016/08/cms_time.png)
+Also, CPU usage is significantly better in the new implementation. Note that the old implementation does not have data point higher than ~40000 RPS due to its scalability limit. Also notice that its CPU time saturates around 1.2 while it is steadily going up in the new implementation. It indicate that the old implementation may be hitting a concurrency issue due to synchronizations.![CMS 收集器 GC 时间随 enqueue rate 的变化：新实现保持平稳，旧实现 40000 RPS 后无法继续测试](https://cdn.confluent.io/wp-content/uploads/2016/08/cms_time.png)
 
-Finally, we measured total GC time (milliseconds) for _ParNew collection_ and _CMS collection_. There isn’t much difference in the old implementation and the new implementation in the region of enqueue rate that the old implementation can sustain. Again note that old implementation does not have data point higher than ~40000 RPS due to its scalability limit.![](https://cdn.confluent.io/wp-content/uploads/2016/08/parnew_time.png)
+Finally, we measured total GC time (milliseconds) for _ParNew collection_ and _CMS collection_. There isn’t much difference in the old implementation and the new implementation in the region of enqueue rate that the old implementation can sustain. Again note that old implementation does not have data point higher than ~40000 RPS due to its scalability limit.![ParNew 收集器 GC 时间随 enqueue rate 的变化：旧实现在低 RPS 下已接近 OOM 边界](https://cdn.confluent.io/wp-content/uploads/2016/08/parnew_time.png)
 
-![](https://cdn.confluent.io/wp-content/uploads/2016/08/cms_time.png)
+![CMS 收集器 GC 时间随 enqueue rate 的变化：新实现保持平稳，旧实现 40000 RPS 后无法继续测试](https://cdn.confluent.io/wp-content/uploads/2016/08/cms_time.png)
 
 Summary
 -------

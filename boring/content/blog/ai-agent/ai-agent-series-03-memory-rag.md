@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "RAG", "Memory", "Vector Database", "Python", "系列教程"]
 series: "AI Agent 系列教程"
 series_order: 3
+keywords: ["Agent", "的记忆", "RAG、知识库与一个能记住你的问答", "AI", "LLM", "RAG", "Memory", "Vector Database"]
 ---
 
 > 本文是 **AI Agent 系列教程** 第 3 篇。基于李博杰《深入理解 AI Agent》第 2-3 章改编。上一篇我们给 Agent 装了多个工具。但有一个问题——关了进程，什么都忘了。今天解决这个。

@@ -3,6 +3,8 @@ title: "Apache Kafka, Purgatory 与分层时间轮 (Hierarchical Timing Wheels)"
 date: "2015-10-28"
 description: "深入解析 Apache Kafka 基于分层时间轮重构请求炼狱 (Request Purgatory) 的设计原理。"
 original_url: "https://www.confluent.io/blog/apache-kafka-purgatory-hierarchical-timing-wheels/"
+tldr: "深入解析 Apache Kafka 基于分层时间轮重构请求炼狱 (Request Purgatory) 的设计原理。"
+keywords: ["Apache", "Kafka", "Purgatory", "与分层时间轮", "Hierarchical", "Timing", "Wheels"]
 ---
 
 # Apache Kafka, Purgatory 与分层时间轮

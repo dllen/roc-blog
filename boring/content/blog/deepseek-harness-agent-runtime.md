@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Harness Engineering", "Tool Calling", "DeepSeek"]
 extra:
   update_date: 2026-08-31T12:00:00+08:00
+tldr: "本文基于 dsh 0.1.1-rc.2 源码阅读，拆解 DeepSeek Harness 两个「反直觉」模式：PTC 让模型写程序把多次工具往返压成一次，创造模式让模型在运行中动态装卸插件；再往下挖到底层 Cordis 框架的时间/空间两个维度，最后讨论 dsh 面向「持续学习」的运行时设计与它距离成熟产品的距离。"
+keywords: ["拆解", "DeepSeek", "Harness", "PTC", "把五次工具往返压成一次", "「创造模式」让模型自造工具", "AI", "LLM"]
 ---
 
 DeepSeek 发布 Harness（下文简称 dsh）那天，很多人拉到本地跑起来的第一反应是：界面怎么这么像 Codex？单从 UI 上看不出什么差异。但一个「和 Codex 长得差不多」的东西，为什么值得 DeepSeek 专门做一套？

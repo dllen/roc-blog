@@ -5,6 +5,7 @@ description: "9节点Inference Engineering路线图，涵盖算力/显存/量化
 tldr: "做AI应用的人很多，做让AI跑得起来/跑得便宜/跑得稳的人很少——2026年Inference Engineer是大厂百万年薪都招不到的稀缺工种。"
 taxonomies:
   tags: ["LLM", "Inference", "Inference Engineering", "学习路线", "资源整理"]
+keywords: ["Inference", "Engineering", "学习路线总结", "LLM", "Inference Engineering", "学习路线", "资源整理"]
 ---
 
 # Inference Engineering 学习路线总结

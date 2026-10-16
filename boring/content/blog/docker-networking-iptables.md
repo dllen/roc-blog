@@ -2,9 +2,14 @@
 title: "容器不同网络模式下iptables配置"
 date: 2024-01-14T11:01:38+05:30
 update_date: 2024-01-14T11:01:38+05:30
+description: "对比 Docker bridge / host / none / overlay 等网络模式下的 iptables 规则差异，解析容器网络隔离、端口转发与跨主机通信的底层实现原理。"
 taxonomies:
   tags: [linux, iptables, docker]
+tldr: "对比 Docker bridge / host / none / overlay 等网络模式下的 iptables 规则差异，解析容器网络隔离、端口转发与跨主机通信的底层实现原理。"
+keywords: ["容器不同网络模式下iptables配置", "linux", "iptables", "docker"]
 ---
+
+Docker 默认 bridge、host、none 等网络模式对应不同的 iptables 规则集。本文聚焦网络隔离与流量转发两个最常见的运维场景，给出可在生产环境直接复用的命令片段。
 
 ## 容器的网络模式
 

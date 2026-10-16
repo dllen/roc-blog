@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Pi", "Extension", "Skill", "Architecture", "TypeScript", "系列教程"]
 series: "Pi Agent 系列教程"
 series_order: 3
+keywords: ["Pi", "的能力外置", "为什么", "\"不内建", "\"比", "\"内建", "\"更强大", "AI"]
 ---
 
 > 本文是 **Pi Agent 系列教程**第 3 篇。基于张汉东《[pi 的设计艺术](https://zhanghandong.github.io/pi-book/)》第 15-18 章改编。上一篇拆解了 Pi 的工具设计哲学——约束即保护。今天看向 Pi 最反直觉的设计：**几乎所有行业认为"Agent 框架该有"的功能，Pi 都没有内建。** 但它用三个回调组合出了所有功能。

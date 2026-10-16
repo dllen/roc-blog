@@ -5,9 +5,11 @@ update_date: 2023-11-11T09:01:58+05:30
 description: "How To Ask Questions The Smart Way 《提问的智慧》中文版"
 taxonomies:
   tags: [认知升级]
+tldr: "How To Ask Questions The Smart Way 《提问的智慧》中文版"
+keywords: ["How", "To", "Ask", "Questions", "The", "Smart", "Way", "认知升级"]
 ---
 
-[原文链接](https://github.com/tvvocold/How-To-Ask-Questions-The-Smart-Way) ![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/how-to-ask.png)
+[原文链接](https://github.com/tvvocold/How-To-Ask-Questions-The-Smart-Way) ![《提问的智慧》原文封面 / 文章头图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/how-to-ask.png)
 
 # 提问的智慧
 

@@ -7,6 +7,8 @@ taxonomies:
   tags: [Flink, 性能调优]
 extra:
   reading_time: 15
+tldr: "面向生产的 Flink 性能调优：资源配置、Checkpoint、状态后端、反压与数据倾斜。"
+keywords: ["Apache", "Flink", "任务性能调优实践手册", "性能调优"]
 ---
 
 # 技术背景介绍

@@ -1,10 +1,13 @@
 ---
 title: "模型训练崩了可以重来，人崩了怎么重启？"
 date: 2026-02-07T12:00:00+08:00
+description: "《Human Re-boot》读书笔记：人类重启时代的能力栈迁移，谈个人技能树更新与终身学习策略。"
 draft: false
 taxonomies:
   tags: ["Naval Ravikant", "Kevin Kelly", "Burnout", "Wisdom", "Career", "Life"]
 categories: ["Reading"]
+tldr: "编者按 ： 这是一个关于“重启”的讨论。当我们在硅谷的 Hacker News 上看到那份《硅谷老哥血泪自救指南》时，我们意识到这不仅仅是一个职业倦怠（Burnout）的问题，而是一个关于人类如何在加速的“技术元素”（Technium）中保持生物性本质的哲学命题。"
+keywords: ["模型训练崩了可以重来", "人崩了怎么重启？", "Naval Ravikant", "Kevin Kelly", "Burnout", "Wisdom", "Career", "Life"]
 ---
 
 > **编者按**： 这是一个关于“重启”的讨论。当我们在硅谷的 Hacker News 上看到那份[《硅谷老哥血泪自救指南》](https://news.ycombinator.com/item?id=38433302)时，我们意识到这不仅仅是一个职业倦怠（Burnout）的问题，而是一个关于人类如何在加速的“技术元素”（Technium）中保持生物性本质的哲学命题。

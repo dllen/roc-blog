@@ -1,10 +1,13 @@
 +++
 title = "当代码不再值钱：从 Linus 到 LLM，一个行业信条的两次反转"
 date = 2026-08-11
+description = "沿着 Linus Torvalds 的 \"Talk is cheap. Show me the code\" 到 Andres Parra 的回响，再到 Kailash Nadh 的 \"Code is cheap. Show me the talk\"，论证 LLM 时代判断力比写代码本身更稀缺。"
 [taxonomies]
 tags = ["LLM", "软件工程", "技术思考", "AI"]
 [extra]
 update_date = 2026-08-11
+tldr = "沿着 Linus Torvalds 的 \"Talk is cheap. Show me the code\" 到 Andres Parra 的回响，再到 Kailash Nadh 的 \"Code is cheap. Show me the talk\"，论证 LLM 时代判断力比写代码本身更稀缺。"
+keywords = ["当代码不再值钱", "Linus", "LLM", "一个行业信条的两次反转", "软件工程", "技术思考", "AI"]
 +++
 
 2026 年，一个中国后端工程师的日常大概是这样的：上午用 Cursor 搭完一个部门内部工具的完整后台——CRUD 接口、权限校验、Dockerfile 打包、甚至 Github Actions 一键生成；下午参加需求评审，发现产品经理想做的功能去年其实做过一次，相关代码散落在三个微服务里，没人记得为什么这么设计，而负责那段代码的同事半年前转岗了。

@@ -4,6 +4,8 @@ date: "2025-08-22"
 description: "深入解析 Linux I/O 多路复用技术的演进历程：从最早的 select/poll 到 epoll 的 O(1) 高效模型，再到 io_uring 的异步 I/O 新范式，探讨各代技术的设计思路、性能差异与适用场景。"
 taxonomies:
   tags: ["Linux", "I/O", "Network", "Performance", "System Programming"]
+tldr: "深入解析 Linux I/O 多路复用技术的演进历程：从最早的 select/poll 到 epoll 的 O(1) 高效模型，再到 io_uring 的异步 I/O 新范式，探讨各代技术的设计思路、性能差异与适用场景。"
+keywords: ["select、poll、epoll", "io_uring", "Linux", "多路复用的演进之路", "I/O", "Network", "Performance", "System Programming"]
 ---
 
 在构建高性能服务器时，I/O 多路复用是一个核心话题。从最早期的 `select`、`poll`，到 Linux 特有的 `epoll`，再到最近引入的 `io_uring`，每代技术都在解决前一代的瓶颈。本文梳理这条演进路径，帮助你在实际工程中做出合理的技术选型。

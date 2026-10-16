@@ -7,6 +7,7 @@ taxonomies:
   tags: ["AI", "Agent Skills", "Claude", "工程效率", "系列教程"]
 series: "Agent Skills 系列教程"
 series_order: 3
+keywords: ["Skill", "设计最佳实践", "分层架构、命名约定与「三句话的力量」", "AI", "Agent Skills", "Claude", "工程效率", "系列教程"]
 ---
 
 > 本文是 **Agent Skills 系列教程**第 3 篇。前两篇把「为什么」和「往哪改」讲完了：第 1 篇说 Agent 是没有记忆的新人，codebase 结构决定它的输出质量；第 2 篇说结构该怎么改——深模块把接口做窄，灰盒模块把「人定接口、AI 管实现、测试锁行为」固定下来。这一篇进入实操，回答一个更直接的问题：**skill 这个工具，到底该怎么写才是一个好 skill？** 答案落在三条规则上——分层架构、命名约定，以及「skill 不必长」的克制。

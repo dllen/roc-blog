@@ -6,6 +6,8 @@ taxonomies:
   tags: ["SICP", "Summary", "Computer Science", "Philosophy"]
 categories: ["SICP-Python"]
 description: "SICP Python 系列完结篇。回顾我们走过的旅程，从函数抽象到分布式系统，探讨编程的本质：控制复杂性。"
+tldr: "SICP Python 系列完结篇。回顾我们走过的旅程，从函数抽象到分布式系统，探讨编程的本质：控制复杂性。"
+keywords: ["Epilogue", "编程的本质与未来", "SICP", "Summary", "Computer Science", "Philosophy"]
 ---
 
 # Epilogue: 编程的本质与未来

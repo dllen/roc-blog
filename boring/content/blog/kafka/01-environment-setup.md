@@ -1,10 +1,22 @@
 ---
 title: "Kafka 源码阅读：01. 环境搭建与源码编译"
 date: 2026-01-15T10:00:00+08:00
+description: "Kafka 3.x 源码编译环境搭建（JDK 11+ / Gradle / Scala）全流程：源码获取、IDEA 导入、可运行 Demo 调试配置。"
 taxonomies:
   tags: [Kafka, Source Code, Build, Gradle]
 weight: 1
+tldr: "1. 准备工作 JDK : JDK 8 或 11 (Kafka 3."
+keywords: ["Kafka", "源码阅读", "01.", "环境搭建与源码编译", "Source Code", "Build", "Gradle"]
 ---
+## 0. 本章定位
+
+Kafka 源码阅读：01. 环境搭建与源码编译：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
+
+建议在源码根目录运行 gradle task 构建，并通过 IDEA 的 Run Configuration 启动 Kafka 进程，结合日志观察启动流程。Kafka 3.x 默认 KRaft 模式，无需依赖 ZooKeeper，从源码 build 到单 broker 启动只需几分钟。
 
 ## 1. 准备工作
 *   **JDK**: JDK 8 或 11 (Kafka 3.x 推荐 JDK 11+)

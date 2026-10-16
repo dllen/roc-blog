@@ -1,8 +1,11 @@
 +++
 title = "1999_段永平"
 date = 1999-01-01
+description = "1999 年段永平讲话合集：从步步高创业到价值投资转型，谈企业经营与人生选择的底层逻辑。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_1999_段永平.md"
+tldr = "段永平：遵循本分，用平常心迎接21世纪 21世纪来了，似乎世界就要发生巨大变化，似乎赶英超美就要实现，似乎."
+keywords = ["1999_段永平"]
 +++
 
 # 段永平：遵循本分，用平常心迎接21世纪

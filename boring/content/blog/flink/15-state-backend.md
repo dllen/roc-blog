@@ -5,9 +5,20 @@ description: "HeapStateBackend 与 RocksDBStateBackend 的源码对比与选型�
 taxonomies:
   tags: [Flink, Source Code, StateBackend, RocksDB]
 weight: 15
+tldr: "HeapStateBackend 与 RocksDBStateBackend 的源码对比与选型建议。"
+keywords: ["Flink", "源码阅读", "15.", "StateBackend", "Source Code", "RocksDB"]
 ---
 
 StateBackend 决定了 Flink 状态数据的存储方式。
+
+
+
+
+
+
+## 0. 本章定位
+
+StateBackend 决定 Flink 状态大小上限与性能。HashMapStateBackend 走 JVM Heap + CopyOnWriteStateTable（快但 GC 压力大，受限于 Heap 大小）；RocksDBStateBackend 走堆外 + 磁盘 + LSM-Tree（支持 TB 级，慢但可扩）。生产选型：作业 State < 1GB 用 HashMap（快），> 10GB 必须 RocksDB。本章讲 Backend 接口、序列化器、增量 checkpoint 配置（state.backend.incremental），是调优 Flink 大状态作业的必修。
 
 ## 1. HashMapStateBackend (Heap)
 *   **存储**: 状态存储在 JVM 堆内存的 Java 对象中（通常是 `CopyOnWriteStateTable`）。

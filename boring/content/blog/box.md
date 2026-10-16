@@ -2,14 +2,18 @@
 title: "从CSS盒模型理解能力圈"
 date: 2024-01-15T12:13:32+05:30
 update_date: 2025-12-14T12:13:32+05:30
-description: "The art of css box model."
+description: "用 CSS 盒模型四要素（content / padding / border / margin）类比个人能力圈：核心能力是 content、缓冲空间是 padding、边界认知是 border、对外影响是 margin。少用 margin、多充实 content。"
 taxonomies:
   tags: [随笔]
+tldr: "用 CSS 盒模型四要素（content / padding / border / margin）类比个人能力圈：核心能力是 content、缓冲空间是 padding、边界认知是 border、对外影响是 margin。少用 margin、多充实 content。"
+keywords: ["从CSS盒模型理解能力圈", "随笔"]
 ---
+
+CSS 盒模型看似前端常识，其四层结构（content / padding / border / margin）恰好对应个人能力圈的四个关键维度：内核能力、缓冲空间、边界认知、对外影响。把这个映射固定下来，日常决策就有了可复用的视觉锚点。
 
 ### CSS 盒子模型速览
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/box-model.png)
+![CSS 盒模型示意图：content / padding / border / margin 四层结构](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/box-model.png)
 
 - content：核心内容与能力本身
 - padding：为内容预留的缓冲与弹性空间
@@ -35,6 +39,8 @@ taxonomies:
 > 能力圈的大小不是关键，重要的是要清楚它的边界。
 >
 > 不要用 Margin！不要用 Margin！不要用 Margin！
+
+盒模型思维与段永平"做对的事、把事做对"互为表里：把"对的事"想清楚，是定义 border；把"事做对"打磨到位，是充实 content。两件事不在同一时间尺度上——前者要节制，后者要持续。这也是为什么"少用 margin、多充实 content"看起来简单，真做起来十年起步。复利在 content 里，不在 margin 里。
 
 ### 行动建议
 

@@ -1,8 +1,10 @@
 +++
 title = "2008巴菲特答Emory与Austin大学商学院学生问巴菲特答"
 date = 2008-01-01
+description = "2008 年 Emory 与 UT Austin 商学院学生问答：金融危机中巴菲特谈恐慌买入、市场波动本质、长期持有心态。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲特答Emory与Austin大学商学院学生问巴菲特答.md"
+tldr = "Q: 巴菲特答 Emory 与 Austin 大学商学院学生问？"
 +++
 
 **Q:** 巴菲特答 Emory 与 Austin 大学商学院学生问？

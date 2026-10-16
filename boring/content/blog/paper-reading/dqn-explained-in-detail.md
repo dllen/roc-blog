@@ -6,6 +6,8 @@ taxonomies:
   tags: ["DQN", "强化学习", "深度学习", "经典论文", "DeepMind"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "DeepMind 2015 年 DQN(发表于 Nature):深度 Q 网络 + 经验回放 + 目标网络三招合一,让 AI 仅凭像素和分数自学 57 款 Atari 游戏,43% 超过人类中位数;深度学习与强化学习合流的起点。"
+keywords: ["DQN", "详解", "让机器自己学会通关", "强化学习", "深度学习", "经典论文", "DeepMind"]
 ---
 
 ## 一句话故事

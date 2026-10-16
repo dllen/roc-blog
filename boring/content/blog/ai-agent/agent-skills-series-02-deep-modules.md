@@ -7,6 +7,7 @@ taxonomies:
   tags: ["AI", "Agent Skills", "Claude", "软件设计", "系列教程"]
 series: "Agent Skills 系列教程"
 series_order: 2
+keywords: ["深模块与灰盒模块", "AI", "在你划定的边界内干活", "Agent Skills", "Claude", "软件设计", "系列教程"]
 ---
 
 > 本文是 **Agent Skills 系列教程**第 2 篇。第 1 篇回答了一个前置问题：Agent 是「没有记忆的新人」，决定它产出好坏的首先是 codebase 结构，而不是 prompt。这一篇把问题往前推一步——结构具体该怎么改。答案落在两条设计原则：**深模块**和**灰盒模块**。本文仍然不写任何 skill 文件，先把这两条哲学讲透；第 3 篇再谈 skill 这个工具如何把它们固化下来。

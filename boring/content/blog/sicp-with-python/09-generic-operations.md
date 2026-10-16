@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Python", "SICP", "泛型", "多态", "接口", "魔术方法"]
 categories: ["SICP-Python"]
 description: "SICP 2.7 深入解析：从 `__str__` 与 `__repr__` 的区别切入，探讨 Python 的通用接口设计。如何实现跨越不同数据类型的泛型函数 (Generic Functions)？"
+tldr: "SICP 2.7 深入解析：从 `__str__` 与 `__repr__` 的区别切入，探讨 Python 的通用接口设计。如何实现跨越不同数据类型的泛型函数 (Generic Functions)？"
+keywords: ["09.", "对象抽象", "接口与泛型操作", "Python", "SICP", "泛型", "多态", "接口"]
 ---
 
 # 第九章：对象抽象——通用接口与泛型操作

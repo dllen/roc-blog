@@ -1,12 +1,26 @@
 ---
 title: "Spring 源码阅读：12. 参数解析与返回值处理"
 date: 2026-01-14T10:00:00+08:00
+description: "Spring MVC 参数解析源码解析：HandlerMethodArgumentResolver 体系、@RequestParam / @PathVariable / @RequestBody 解析。"
 taxonomies:
   tags: [Spring, Source Code, MVC, ArgumentResolver]
 weight: 12
+tldr: "Controller 的方法签名千变万化（ , , , ..."
+keywords: ["Spring", "源码阅读", "12.", "参数解析与返回值处理", "Source Code", "MVC", "ArgumentResolver"]
 ---
+## 0. 本章定位
+
+Spring 源码阅读：12. 参数解析与返回值处理：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 Controller 的方法签名千变万化（`HttpServletRequest`, `@RequestParam`, `@RequestBody`, `User`...），Spring 是如何把 HTTP 请求参数绑定到这些方法参数上的？
+
+HandlerMethodArgumentResolver 解析 @RequestParam / @PathVariable / @RequestBody 等注解参数，是 Spring MVC 参数绑定的核心。
+
+自定义参数解析器需实现 supportsParameter + resolveArgument 两方法，并通过 WebMvcConfigurer 注册。
 
 ## 1. `HandlerMethodArgumentResolver`
 

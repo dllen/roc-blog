@@ -2,6 +2,9 @@
 title: "How to Write a Javaagent"
 date: 2021-03-18T12:13:38+05:30
 update_date: 2021-03-18T12:13:38+05:30
+description: "Java Agent 是 JVM 提供的字节码增强机制，基于 JVMTI 与 JPLISAgent 实现在类加载前或运行期修改字节码；本文从 Instrumentation API 原理、premain / agentmain 接入方式，到 APM 与热部署的典型应用场景系统讲解。"
+tldr: "Java Agent 是 JVM 提供的字节码增强机制，基于 JVMTI 与 JPLISAgent 实现在类加载前或运行期修改字节码；本文从 Instrumentation API 原理、premain / agentmain 接入方式，到 APM 与热部署的典型应用场景系统讲解。"
+keywords: ["How", "to", "Write", "Javaagent"]
 ---
 
 ## 什么是Java Agent技术
@@ -24,7 +27,7 @@ Java Agent本质上可以理解为一个插件，该插件就是一个精心提�
 
 - 混沌工程：jvm-sandbox 等
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png)
+![Java Agent 技术栈总览：JVMTI → JPLISAgent → Instrumentation API → ClassFileTransformer](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/java-agent-overview-min.png)
 
 #### 实现Agent启动方法
 

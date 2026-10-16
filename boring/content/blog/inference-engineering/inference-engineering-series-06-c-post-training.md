@@ -5,6 +5,7 @@ description: "SFT 是基础，RL 是升华——但用哪种 RL 算法决定了�
 tldr: "PPO=完整RLHF·GRPO=critic-free工程最优·DPO=便宜稳定·REINFORCE=最基础 · Auto Eval=有答案时·LLM Judge=开放生成·Human Eval=Gold Standard"
 taxonomies:
   tags: ["LLM", "PostTraining", "PPO", "GRPO", "DPO", "RL算法", "评估体系", "系列教程"]
+keywords: ["Post-Training", "101", "下篇", "算法矩阵与评估体系", "LLM", "PostTraining", "PPO", "GRPO"]
 ---
 
 # 系列-06 · Post-Training 101 · 从 base 到 instruct（下）：算法矩阵 + 评估体系

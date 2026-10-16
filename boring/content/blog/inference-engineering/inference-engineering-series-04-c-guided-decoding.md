@@ -5,6 +5,7 @@ description: "3 条 if-then 工程师级选型规则：重复 schema → XGramma
 tldr: "规则1：重复 schema >80% → XGrammar + SGLang（只慢 8%）· 规则2：动态/复杂 schema → LLGuidance + SGLang（正确率 88%）· 规则3：永远选 SGLang"
 taxonomies:
   tags: ["LLM", "Guided-Decoding", "结构化输出", "选型", "XGrammar", "LLGuidance", "SGLang", "系列教程"]
+keywords: ["Guided", "Decoding", "选型决策表", "条规则终结选择困难", "下篇", "LLM", "Guided-Decoding", "结构化输出"]
 ---
 
 # Guided Decoding 选型决策表：3 条规则终结选择困难（下篇）

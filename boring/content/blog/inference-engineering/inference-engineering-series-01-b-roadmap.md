@@ -5,6 +5,7 @@ description: "9节点路线图中篇，涵盖Inference Optimization五大武器�
 tldr: "Continuous Batching是GPU利用率从30%→70%+的关键开关；选引擎优先级vLLM > SGLang > TensorRT-LLM，TGI在2026已被边缘化。"
 taxonomies:
   tags: ["LLM", "Inference", "vLLM", "TensorRT", "路线图", "系列教程"]
+keywords: ["步走完", "LLM", "推理工程", "怎么让模型跑得快", "怎么选引擎", "Prefill", "Decode", "怎么拆"]
 ---
 
 # 9 步走完 LLM 推理工程（中）：怎么让模型跑得快 / 怎么选引擎 / Prefill 与 Decode 怎么拆

@@ -5,6 +5,8 @@ description: "HDFS 最复杂的流程之一。解析 DFSOutputStream, DataStream
 taxonomies:
   tags: [Hadoop, HDFS, Client, Write]
 weight: 13
+tldr: "HDFS 最复杂的流程之一。解析 DFSOutputStream, DataStreamer, Packet 队列与 Pipeline 恢复机制。"
+keywords: ["HDFS", "源码阅读", "13.", "文件写入流程", "Write", "Path", "Hadoop", "Client"]
 ---
 
 `FileSystem.create()` 返回的是 `FSDataOutputStream`，其底层包装了 `DFSOutputStream`。

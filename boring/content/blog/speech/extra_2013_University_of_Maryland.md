@@ -1,8 +1,10 @@
 +++
 title = "2013_University_of_Maryland"
 date = 2013-01-01
+description = "2013 年巴菲特马里兰大学演讲补充：完整版讲稿与现场 Q&A，含芒格参与点评的实录。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_2013_University_of_Maryland.md"
+tldr = "Warren Buffett’s Meeting with University of Maryland MBA Students – November 15, 2013 December 8th, 2013 by dkass under Uncategorized."
 +++
 
 Warren Buffett’s Meeting with University of Maryland MBA Students – November 15, 2013

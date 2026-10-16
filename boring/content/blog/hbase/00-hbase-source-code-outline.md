@@ -5,6 +5,8 @@ description: "Apache HBase 源码阅读系列大纲。从 Master 启动到 Regio
 taxonomies:
   tags: [HBase, Source Code, Outline, Roadmap]
 weight: 0
+tldr: "Apache HBase 源码阅读系列大纲。从 Master 启动到 RegionServer 读写，从 LSM Tree 到 WAL 机制，全链路源码解析。"
+keywords: ["HBase", "源码阅读", "00.", "阅读大纲与学习路线", "Source Code", "Outline", "Roadmap"]
 ---
 
 Apache HBase 是基于 Hadoop 的分布式、可扩展的大数据存储系统。本系列将基于 HBase 2.x+ 源码，深入剖析其底层原理。

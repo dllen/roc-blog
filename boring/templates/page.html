@@ -3,6 +3,12 @@
 {% block head_extend %}
     <title>{{ page.title }} | {{ config.title }}</title>
 
+    <!-- Meta description (Google reads this directly; do not skip) -->
+    <meta name="description" content="{{ page.description | default(value=page.content | striptags | truncate(length=160)) }}">
+
+    <!-- Canonical URL (avoid duplicate-content penalty) -->
+    <link rel="canonical" href="{{ page.permalink | safe }}">
+
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ page.title }}">
@@ -28,8 +34,18 @@
       "dateModified": "{{ page.update_date | default(value=page.date) }}",
       "description": "{{ page.description | default(value='') }}",
       "keywords": "{{ page.taxonomies.tags | default(value=[]) | join(sep=', ') }}",
+      "image": "{{ page.extra.og_image | default(value='/og/' ~ page.slug ~ '.png') }}",
       "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ page.permalink | safe }}" },
-      "author": { "@type": "Person", "name": "roc" }
+      "author": {
+        "@type": "Person",
+        "name": "{{ page.extra.author | default(value='roc') }}",
+        "url": "{{ config.base_url }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ config.title }}",
+        "url": "{{ config.base_url }}"
+      }
     }
     </script>
     {% endblock jsonld %}

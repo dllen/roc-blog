@@ -1,9 +1,12 @@
 ---
 title: "HBase 源码阅读：01. 源码编译与环境搭建"
 date: 2026-01-12T10:00:00+08:00
+description: "HBase 源码阅读环境搭建：JDK 11+ / Maven 3.6+ / Hadoop 3.x，从源码获取到 IDEA 单机调试的完整流程与常见坑。"
 taxonomies:
   tags: [HBase, Source Code, Build, Environment]
 weight: 1
+tldr: "阅读源码的第一步是能够自己编译并运行代码。本文介绍如何编译 HBase 2."
+keywords: ["HBase", "源码阅读", "01.", "源码编译与环境搭建", "Source Code", "Build", "Environment"]
 ---
 
 阅读源码的第一步是能够自己编译并运行代码。本文介绍如何编译 HBase 2.x 源码并在 IntelliJ IDEA 中搭建调试环境。

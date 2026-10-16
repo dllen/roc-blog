@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "运维", "基础设施", "安全"]
 extra:
   update_date: 2026-09-01
+tldr: "给 Agent 单独建用户叫身份隔离，chmod 一下叫最小权限，systemd 守护进程叫 Agent Runtime——本文把 AI Agent 领域那些听起来高大上的术语，还原成 Linux 运维里早已存在的老办法，并解释为什么这套思路是 Agent 安全的根基。"
+keywords: ["AI", "Agent", "的基础设施", "90%", "1996", "年的", "Linux", "LLM"]
 ---
 
 真正玩过 Linux 的人，现在看很多 AI Agent 教程，心情其实挺复杂的。

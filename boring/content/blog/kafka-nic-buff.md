@@ -2,9 +2,11 @@
 title: "Kafka & Nic Buffer"
 date: 2025-08-19T12:13:32+05:30
 update_date: 2025-08-19T12:13:32+05:30
-description: "Kafka 写入和读取数据时涉及多层缓存的复杂交互过程"
+description: "Kafka 网卡 Buffer 调优：网卡的 RX/TX ring buffer、IRQ 亲和性、TCP 缓冲区与 Kafka 高吞吐场景的最佳配置。"
 taxonomies:
   tags: [kafka]
+tldr: "NIC buffer（网卡缓冲区）是网络接口卡（Network Interface Card）中用于临时存储数据的内存区域。"
+keywords: ["Kafka", "Nic", "Buffer", "kafka"]
 ---
 
 

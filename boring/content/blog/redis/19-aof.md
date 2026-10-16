@@ -5,6 +5,8 @@ description: "AOF 如何保证数据不丢失？三种刷盘策略的实现原�
 taxonomies:
   tags: [Redis, Source Code, Persistence, AOF]
 weight: 19
+tldr: "AOF 如何保证数据不丢失？三种刷盘策略的实现原理，以及 AOF 重写 (Rewrite) 机制。"
+keywords: ["Redis", "源码阅读", "19.", "AOF", "日志持久化", "Source Code", "Persistence"]
 ---
 
 AOF (Append Only File) 通过记录 Redis 执行的每一条**写命令**来实现持久化。

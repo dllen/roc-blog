@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Python", "SICP", "面向对象", "继承", "多态", "消息传递"]
 categories: ["SICP-Python"]
 description: "SICP 2.5 深入解析：从消息传递（Message Passing）的本质出发，剖析类（Class）与实例（Instance）的关系。探讨继承与多态如何实现代码复用与接口统一。"
+tldr: "SICP 2.5 深入解析：从消息传递（Message Passing）的本质出发，剖析类（Class）与实例（Instance）的关系。探讨继承与多态如何实现代码复用与接口统一。"
+keywords: ["08.", "面向对象编程", "万物皆对象", "Python", "SICP", "面向对象", "继承", "多态"]
 ---
 
 # 第八章：面向对象编程——万物皆对象

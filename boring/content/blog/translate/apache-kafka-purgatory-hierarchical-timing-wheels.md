@@ -3,6 +3,8 @@ title: "Apache Kafka, Purgatory, and Hierarchical Timing Wheels"
 date: "2015-10-28"
 description: "A deep dive into the redesign of Apache Kafka's request purgatory using Hierarchical Timing Wheels."
 original_url: "https://www.confluent.io/blog/apache-kafka-purgatory-hierarchical-timing-wheels/"
+tldr: "A deep dive into the redesign of Apache Kafka's request purgatory using Hierarchical Timing Wheels."
+keywords: ["Apache", "Kafka", "Purgatory", "and", "Hierarchical", "Timing", "Wheels"]
 ---
 
 # Apache Kafka, Purgatory, and Hierarchical Timing Wheels

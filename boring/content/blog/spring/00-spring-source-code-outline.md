@@ -5,6 +5,8 @@ description: "结合《Expert One-on-One J2EE Development without EJB》，规�
 taxonomies:
   tags: [Spring, Source Code, Outline, Rod Johnson]
 weight: 0
+tldr: "结合《Expert One-on-One J2EE Development without EJB》，规划 Spring 源码阅读路线。从 POJO 编程模型到 Spring Boot 自动装配。"
+keywords: ["Spring", "源码阅读", "00.", "阅读大纲与学习路线", "Source Code", "Outline", "Rod Johnson"]
 ---
 
 Spring Framework 的诞生源于 Rod Johnson 在 2002 年出版的经典著作 **《Expert One-on-One J2EE Development without EJB》**。这本书不仅批判了当时 EJB 的臃肿与复杂，更提出了一套基于 **POJO (Plain Old Java Object)** 的轻量级开发理念，这正是 Spring 框架的雏形。

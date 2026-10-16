@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Critical-State RL", "强化学习", "AI Agent", "工具调用", "Salesforce"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "Salesforce AI Research 用嵌套采样在多轮工具调用中找到真正的「关键调用」,只对那一轮做强化学习更新,BFCL v4 提升约 14 个百分点;训练所有轮次反而帮倒忙,因为大部分奖励变化是延续噪声。"
+keywords: ["Critical-State", "RL", "详解", "多轮工具调用", "只训练那一次关键调用", "Critical-State RL", "强化学习", "AI Agent"]
 ---
 
 ## 一句话总结

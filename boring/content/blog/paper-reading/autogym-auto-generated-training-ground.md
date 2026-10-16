@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AutoGym", "RL", "训练环境", "AI Agent", "LLM"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "DAIR AI 蓝图先行 gym 自动生成框架:从领域种子出发,先定义有效解空间/环境要求/验证标准再生成环境,确保可解性内建;主动课程机制随模型能力自动调整难度;摆脱手工设计 + LLM 裁判不可靠的两大痛点。"
+keywords: ["AutoGym", "详解", "从零生成完整的", "RL", "训练场", "训练环境", "AI Agent", "LLM"]
 ---
 
 ## 一句话总结

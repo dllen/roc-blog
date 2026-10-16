@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Python", "SICP", "算法", "复杂度", "大O表示法", "记忆化"]
 categories: ["SICP-Python"]
 description: "SICP 2.8 核心内容：如何衡量程序的效率？从斐波那契数列的递归噩梦说起，探讨记忆化 (Memoization) 技术，并深入理解算法的增长阶数 (Orders of Growth) 与大 O 表示法。"
+tldr: "SICP 2.8 核心内容：如何衡量程序的效率？从斐波那契数列的递归噩梦说起，探讨记忆化 (Memoization) 技术，并深入理解算法的增长阶数 (Orders of Growth) 与大 O 表示法。"
+keywords: ["11.", "算法效率", "增长阶数与大O表示法", "Python", "SICP", "算法", "复杂度", "大O表示法"]
 ---
 
 # 第十一章：算法效率——增长阶数与大O表示法

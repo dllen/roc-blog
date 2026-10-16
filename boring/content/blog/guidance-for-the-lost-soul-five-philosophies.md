@@ -1,10 +1,13 @@
 ---
 title: "给迷惘一代的哲学药方：当尼采、佛陀与老子在十字路口相遇"
 date: 2026-02-03T14:00:00+08:00
+description: "给迷茫者的五种人生哲学：斯多葛、存在主义、佛学、儒家、实用主义，对比核心观点与现代应用。"
 draft: false
 taxonomies:
   tags: ["Philosophy", "Life Guide", "Nietzsche", "Buddhism", "Confucianism", "Taoism", "Christianity"]
 categories: ["Thinking", "Life"]
+tldr: "在这个充满不确定性的时代，“迷惘”似乎成了我们共同的底色。 我们在“内卷”与“躺平”之间反复横跳，在技术的加速与精神的空虚中不知所措。"
+keywords: ["给迷惘一代的哲学药方", "当尼采、佛陀与老子在十字路口相遇", "Philosophy", "Life Guide", "Nietzsche", "Buddhism", "Confucianism", "Taoism"]
 ---
 
 在这个充满不确定性的时代，“迷惘”似乎成了我们共同的底色。

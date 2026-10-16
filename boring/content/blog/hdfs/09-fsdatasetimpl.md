@@ -5,6 +5,8 @@ description: "深入 DataNode 内部的 FsDatasetImpl，解析 HDFS 如何在本
 taxonomies:
   tags: [Hadoop, HDFS, DataNode, Storage]
 weight: 9
+tldr: "深入 DataNode 内部的 FsDatasetImpl，解析 HDFS 如何在本地文件系统上组织 Block。"
+keywords: ["HDFS", "源码阅读", "09.", "存储管理", "FsDatasetImpl", "Hadoop", "DataNode", "Storage"]
 ---
 
 `FsDatasetImpl` 是 DataNode 端管理磁盘数据的核心类，实现了 `FsDatasetSpi` 接口。

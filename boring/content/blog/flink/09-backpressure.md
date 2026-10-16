@@ -5,9 +5,26 @@ description: "Credit-based Flow Control 详解。Flink 如何优雅地处理下�
 taxonomies:
   tags: [Flink, Source Code, Backpressure, Flow Control]
 weight: 9
+tldr: "Credit-based Flow Control 详解。Flink 如何优雅地处理下游消费不过来的情况。"
+keywords: ["Flink", "源码阅读", "09.", "反压机制", "Backpressure", "Source Code", "Flow Control"]
 ---
 
 反压是流处理系统的生命线。如果下游处理慢，上游必须减速，否则会 OOM。
+
+
+
+
+
+
+
+
+## 实战建议
+
+建议配合 Flink Web UI 的 Backpressure 面板使用：在出现反压时先看 Subtask 级别定位瓶颈算子，再回到本章机制调参。
+
+## 0. 本章定位
+
+背压是流处理系统的生命线：下游处理慢时上游必须减速，否则 OOM。本章对比旧版 TCP 滑动窗口反压（已弃用，多路复用会导致整个 TM 阻塞）与新版 Credit-Based 反压（精细到 Task 级别）。新版机制：下游根据自身缓冲余量发 Credit 给上游，上游按 Credit 数量发数据。生产环境调优 web.backpressure.delay-between-samples（背压检测间隔）、taskmanager.network.memory.buffer-per-channel（每通道缓冲数）必读本章。
 
 ## 1. 旧版反压 (TCP 基于)
 早期 Flink 依赖 TCP 的滑动窗口机制。

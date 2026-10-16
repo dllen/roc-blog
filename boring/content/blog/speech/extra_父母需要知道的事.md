@@ -1,8 +1,11 @@
 +++
 title = "父母需要知道的事"
 date = 2024-01-24
+description = "父母需要知道的事：依恋理论与儿童心理发展综述，谈安全感、独立性、共情能力与早期教育的关键窗口。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_父母需要知道的事.md"
+tldr = "父母需要知道的事 日本作家伊坂幸太郎在《一首小夜曲》中有一句话：“ 一想到为人父母居然不用经过考试，就觉得真是太可怕了 ”。"
+keywords = ["父母需要知道的事"]
 +++
 
 # 父母需要知道的事
@@ -76,7 +79,7 @@ original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_父�
 
 “大女儿三个月睡整觉，到七个月时开始半夜闹，十五个月非常严重时采取了哭声免疫法，两天纠正”。**这是马伊琍 2012 年发的一条微博节选。**
 
-![](https://wx4.sinaimg.cn/large/006Jqfrtly1gwjl0lfowlj30u00jt77h.jpg)
+![父母需要知道的事 — 文章配图 / 儿童依恋主题封面](https://wx4.sinaimg.cn/large/006Jqfrtly1gwjl0lfowlj30u00jt77h.jpg)
 
 马伊琍对哭声免疫法的思考。
 

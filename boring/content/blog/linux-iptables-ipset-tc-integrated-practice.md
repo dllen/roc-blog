@@ -5,6 +5,8 @@ update_date: "2025-10-25T10:00:00+08:00"
 description: "以可操作的完整案例讲解防火墙过滤与带宽控制的组合方案，覆盖命令参数、验证与最佳实践。"
 taxonomies:
   tags: ["Linux", "网络", "iptables", "ipset", "tc", "流量控制", "防火墙"]
+tldr: "以可操作的完整案例讲解防火墙过滤与带宽控制的组合方案，覆盖命令参数、验证与最佳实践。"
+keywords: ["Linux", "iptables、ipset", "tc", "的综合应用实践", "网络", "iptables", "ipset", "流量控制"]
 ---
 
 # 引言

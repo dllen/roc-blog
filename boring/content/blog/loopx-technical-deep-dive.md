@@ -5,6 +5,7 @@ description: "深入解析 LoopX 的架构设计、能力边界与最佳实践�
 tldr: "LoopX 不替代 Agent Runtime，而是在 Agent 之上叠加一层本地控制面——让目标、门控、待办、证据、限额和交接跨会话保持稳定，适合多天、多轮、多 Agent 的复杂工程与研究场景。"
 taxonomies:
   tags: ["AI Agent", "Loop Engineering", "Control Plane", "LLM", "Claude Code", "开源工具"]
+keywords: ["LoopX", "技术深度解析", "为长程", "AI", "Agent", "构建可管理的本地控制面", "AI Agent", "Loop Engineering"]
 ---
 
 当一个需求需要横跨三天、三个会话、三个 Agent 才能完成时，"在 Chat 里写提示词"彻底不够用了。

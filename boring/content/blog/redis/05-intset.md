@@ -5,6 +5,8 @@ description: "Redis Set 类型的底层优化。当集合中只有整数时，Re
 taxonomies:
   tags: [Redis, Source Code, Data Structure, IntSet]
 weight: 5
+tldr: "Redis Set 类型的底层优化。当集合中只有整数时，Redis 如何用 IntSet 节省内存？什么是编码升级？"
+keywords: ["Redis", "源码阅读", "05.", "IntSet", "整数集合", "Source Code", "Data Structure"]
 ---
 
 当我们在 Redis 中创建一个 Set，并且只往里面塞整数（例如 `SADD myset 1 2 3`），Redis 底层并不会立刻创建一个庞大的 HashTable，而是使用一种名为 **IntSet (整数集合)** 的特殊结构。

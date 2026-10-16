@@ -1,9 +1,12 @@
 ---
 title: "Docker 网络模式"
 date: 2024-01-21T12:13:30+05:30
+description: "Docker 网络模式深度解析：bridge / host / none / overlay 模式下的 veth pair、网桥、iptables 规则与跨主机通信。"
 update_date: 2024-01-21T12:13:30+05:30
 taxonomies:
   tags: [Docker]
+tldr: "Docker 包括一个网络系统，用于管理容器、 Docker 主机和外部世界之间的通信。"
+keywords: ["Docker", "网络模式"]
 ---
 
 Docker 包括一个网络系统，用于管理容器、 Docker 主机和外部世界之间的通信。支持几种不同的网络类型，支持不同的使用场景。

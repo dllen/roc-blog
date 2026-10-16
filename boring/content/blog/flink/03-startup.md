@@ -5,9 +5,16 @@ description: "Flink Cluster 的启动流程，从 Entrypoint 到 Dispatcher 和 
 taxonomies:
   tags: [Flink, Source Code, Startup, ClusterEntrypoint]
 weight: 3
+tldr: "Flink Cluster 的启动流程，从 Entrypoint 到 Dispatcher 和 ResourceManager 的初始化。"
+keywords: ["Flink", "源码阅读", "03.", "启动流程详解", "Source Code", "Startup", "ClusterEntrypoint"]
 ---
 
 Flink 支持多种部署模式（Standalone, YARN, K8s），但启动流程大同小异。我们以 **Standalone Session** 模式为例。
+
+
+## 0. 本章定位
+
+Flink 启动流程跨多进程（Client → JM → TM），看似复杂实则一层 RPC 调用而已。本章以 Standalone Session 模式为切入，理解 ClusterEntrypoint / Dispatcher / ResourceManager 三大入口类的协作后，YARN / K8s 模式只是换个 ResourceManager 实现。
 
 ## 1. 入口类：ClusterEntrypoint
 Flink Master 进程的入口类通常是 `ClusterEntrypoint` 的子类。

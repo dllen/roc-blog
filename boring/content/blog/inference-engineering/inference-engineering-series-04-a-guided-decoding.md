@@ -5,6 +5,7 @@ description: "Guided Decoding 通过 DFA → Token Mask → Logits 三步，对 
 tldr: "Guided Decoding = DFA 编译 + Token Mask + Logits 屏蔽 · 无约束正确率 61% → 有约束 100% · XGrammar 预计算缓存 vs LLGuidance 懒编译动态"
 taxonomies:
   tags: ["LLM", "Guided-Decoding", "结构化输出", "XGrammar", "LLGuidance", "SGLang", "系列教程"]
+keywords: ["为什么你的", "Agent", "总返回畸形", "JSON", "Guided", "Decoding", "是什么", "上篇"]
 ---
 
 # 为什么你的 Agent 总返回畸形 JSON：Guided Decoding 是什么（上篇）

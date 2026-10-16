@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Harness Engineering", "Python", "系列教程"]
 series: "AI Agent 系列教程"
 series_order: 1
+keywords: ["Agent", "是什么？——", "一个公式、一个类比、一个能跑的", "Demo", "AI", "LLM", "Harness Engineering", "Python"]
 ---
 
 > 本文是 **AI Agent 系列教程** 第 1 篇。基于李博杰《深入理解 AI Agent》改编，用费曼学习法（概念 → 类比 → 动手）带你从零理解 Agent。

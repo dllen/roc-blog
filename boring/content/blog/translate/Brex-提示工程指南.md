@@ -4,6 +4,7 @@ date: "2025-11-13"
 update_date: "2025-11-13"
 description: "Brex's Prompt Engineering Guide 专业双语译稿，保留原结构与代码"
 tldr: "完整保留原文结构与格式，逐段英中对照翻译，术语统一"
+keywords: ["Brex", "提示工程指南", "双语对照"]
 ---
 # [Brex's](https://brex.com) Prompt Engineering Guide
 

@@ -5,6 +5,8 @@ description: "当内存满了，Redis 如何选择要牺牲的 Key？深入解�
 taxonomies:
   tags: [Redis, Source Code, Eviction, LRU, LFU]
 weight: 17
+tldr: "当内存满了，Redis 如何选择要牺牲的 Key？深入解析 LRU 近似算法与 LFU 的实现。"
+keywords: ["Redis", "源码阅读", "17.", "内存淘汰机制", "LRU", "LFU", "Source Code", "Eviction"]
 ---
 
 当 Redis 内存使用达到 `maxmemory` 限制时，需要执行 **内存淘汰 (Eviction)**。

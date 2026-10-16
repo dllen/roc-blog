@@ -5,6 +5,8 @@ description: "Apache Flink 源码阅读系列大纲。从 JobGraph 到 Task 调�
 taxonomies:
   tags: [Flink, Source Code, Outline, Roadmap]
 weight: 0
+tldr: "Apache Flink 源码阅读系列大纲。从 JobGraph 到 Task 调度，从 Checkpoint 到反压机制，全链路源码解析。"
+keywords: ["Flink", "源码阅读", "00.", "阅读大纲与学习路线", "Source Code", "Outline", "Roadmap"]
 ---
 
 Apache Flink 是目前最流行的大数据流计算引擎。本系列将基于 Flink 1.17+ 源码，深入剖析其底层原理。

@@ -5,6 +5,7 @@ description: "KV Cache三步曲下篇：Qwen-72B 32K单请求80GB显存算账，
 tldr: "Llama-3-70B 8K 32并发KV cache 86GB，这就是为什么70B必须上多卡+量化+PagedAttention三件套；单卡H100 80GB并发上限约16 requests/card。"
 taxonomies:
   tags: ["LLM", "KV-Cache", "GQA", "PagedAttention", "系列教程"]
+keywords: ["为什么", "ChatGPT", "第一个字永远慢", "KV", "Cache", "显存账", "五大救兵", "实操清单"]
 ---
 
 # 为什么 ChatGPT 第一个字永远慢（下）：KV Cache 显存账 + 五大救兵 + 实操清单

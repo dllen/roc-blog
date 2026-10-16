@@ -6,6 +6,7 @@ description: "解读 Simon Willison《Agentic Engineering Patterns》：当写�
 tldr: "代码免费了，好代码没有。当 AI 能把任何想法变成能跑的代码，一个工程师的不可替代性在于：定义正确的问题、囤积验证过的方案、用证据而不是声称来收尾。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Claude Code", "Simon Willison", "软件工程"]
+keywords: ["智能体工程模式", "代码免费时代的软件工程实践", "AI", "LLM", "Agent", "Claude Code", "Simon Willison", "软件工程"]
 ---
 
 > 解读对象：Simon Willison《Agentic Engineering Patterns》

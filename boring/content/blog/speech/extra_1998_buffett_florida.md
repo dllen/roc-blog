@@ -1,8 +1,11 @@
 +++
 title = "1998_buffett_florida"
 date = 1998-01-01
+description = "1998 年巴菲特佛罗里达大学演讲补充材料：完整版问答实录，含未剪辑的学生提问与巴菲特深度回应。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_1998_buffett_florida.md"
+tldr = "Buffett Talk to MBA Students at Florida University 1998 Buffett: (holds mic) Testing: One million dollars, two million dollars."
+keywords = ["1998_buffett_florida"]
 +++
 
 # Buffett Talk to MBA Students at Florida University 1998

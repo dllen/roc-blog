@@ -5,6 +5,7 @@ description: "9节点路线图下篇，涵盖MoE vs Dense选型、LLM路由三�
 tldr: "80%的生产请求不需要最强模型，LLM路由可省50~70%成本；路由+缓存+fallback=AI Gateway三件套，跟传统微服务网关同构。"
 taxonomies:
   tags: ["LLM", "Inference", "MoE", "Routing", "路线图", "系列教程"]
+keywords: ["步走完", "LLM", "推理工程", "MoE", "vs", "Dense、LLM", "路由、端到端全景", "周实操路径"]
 ---
 
 # 9 步走完 LLM 推理工程（下）：MoE vs Dense、LLM 路由、端到端全景 + 4 周实操路径

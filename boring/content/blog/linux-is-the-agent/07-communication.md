@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "IPC", "Unix Socket", "分布式", "通信"]
 extra:
   update_date: 2026-09-07
+tldr: "Agent 之间的通信、Agent 和外部服务的交互——这些听起来是分布式系统的新问题。但如果你仔细看，本地进程间通信（IPC）早在 1979 年就有完整答案了：Unix Domain Socket 的可靠传输、权限验证、文件描述符传递，比 gRPC 和 WebSocket 早了 40 年。"
+keywords: ["Agent", "的通信", "90%", "1979", "年的", "Unix", "Socket", "AI"]
 ---
 
 写完 Agent 安全，有读者问最后一个方向：Agent 之间的通信呢？

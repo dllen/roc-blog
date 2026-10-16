@@ -1,7 +1,10 @@
 ---
 title: "Is Redlock safe?"
 date: 2020-03-18T12:13:38+05:30
+description: "Redlock 安全性译文（Is Redlock safe?）：Martin Kleppmann 与 Antirez 之争，分布式锁的时序假设与容错边界。"
 update_date: 2020-03-18T12:13:38+05:30
+tldr: "原文链接 Is Redlock safe? antirez 3539 days ago."
+keywords: ["Is", "Redlock", "safe?"]
 ---
 
 [原文链接](http://antirez.com/news/101)

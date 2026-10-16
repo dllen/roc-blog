@@ -6,6 +6,8 @@ taxonomies:
   tags: ["多智能体", "协作策略", "AI Agent", "AIME", "LLM"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "斯坦福/Emory/TogetherAI 论文:AI 团队用 15 道 AIME 题目自己学会改写角色/讨论阶段/信息流动,协作通过三步流程(回顾/改写/冻结);AIME 准确率 66.7%,比最强单成员(48.8%)高 18 分,比完美路由器高 7.7 分。"
+keywords: ["Self-Organizing", "Agent", "Teams", "详解", "AI", "团队自己改写协作策略", "多智能体", "协作策略"]
 ---
 
 ## 一句话总结

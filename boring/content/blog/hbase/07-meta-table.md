@@ -1,9 +1,12 @@
 ---
 title: "HBase 源码阅读：07. Meta 表管理"
 date: 2026-01-12T10:00:00+08:00
+description: "HBase Meta 表源码解析：hbase:meta 表结构、Region 位置信息的存储与读取、客户端 Meta Cache 与服务器端协同。"
 taxonomies:
   tags: [HBase, Source Code, Meta Table, Catalog]
 weight: 7
+tldr: "表是 HBase 中最重要的一张系统表，它存储了集群中所有用户表的 Region 路由信息。"
+keywords: ["HBase", "源码阅读", "07.", "Meta", "表管理", "Source Code", "Meta Table", "Catalog"]
 ---
 
 `hbase:meta` 表是 HBase 中最重要的一张系统表，它存储了集群中所有用户表的 Region 路由信息。

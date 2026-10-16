@@ -5,9 +5,24 @@ description: "Redis 数据库的内部结构是怎样的？redisDb 结构体详�
 taxonomies:
   tags: [Redis, Source Code, Database, Key Space]
 weight: 15
+tldr: "Redis 数据库的内部结构是怎样的？redisDb 结构体详解，键空间 dict 和过期字典 expires。"
+keywords: ["Redis", "源码阅读", "15.", "DB", "结构", "键空间与过期字典", "Source Code", "Database"]
 ---
+## 0. 本章定位
+
+Redis 源码阅读：15. DB 结构 (键空间与过期字典)：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 Redis 是一个 Key-Value 数据库，每个数据库实例都由 `redisDb` 结构体表示。
+
+Redis 数据库结构 dict + expires 双 hashtable 实现是 O(1) 性能基础，理解它能解释为何 Redis 适合计数 / 缓存场景。
+
+理解 dict 与 expires 双 hashtable 是学习 Redis 过期策略（惰性删除 + 定期删除）的基础。
+
+dbAdd / dbOverwrite / dbExists 等数据库操作的源码入口是理解 Redis 键空间的关键。
 
 ## 1. redisDb 结构体
 在 `server.h` 中：

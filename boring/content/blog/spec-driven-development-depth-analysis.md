@@ -1,10 +1,13 @@
 ---
-title: "拒绝 'Vibe Coding' 的虚幻快感：深度解析 Spec-Driven Development (SDD) 与 AI 编程的未来"
+title: "深度解析 Spec-Driven Development：AI 编程的未来"
 date: 2026-02-01T10:00:00+08:00
+description: "Spec-Driven Development 深度解析：与 Vibe Coding 的对比、Spec Kit 工具链、企业落地的挑战与最佳实践。"
 draft: false
 taxonomies:
   tags: ["SDD", "Spec-Driven Development", "AI Coding", "Spec Kit", "Martin Fowler", "ThoughtWorks"]
 categories: ["Engineering"]
+tldr: "在 2025 年的 AI 编程浪潮中，一个新的热词悄然兴起—— Spec Driven Development (SDD，规格驱动开发) 。"
+keywords: ["拒绝", "'Vibe", "Coding'", "的虚幻快感", "深度解析", "Spec-Driven", "Development", "SDD"]
 ---
 
 在 2025 年的 AI 编程浪潮中，一个新的热词悄然兴起——**Spec-Driven Development (SDD，规格驱动开发)**。

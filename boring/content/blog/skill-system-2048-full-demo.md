@@ -5,6 +5,7 @@ description: "以开发一个网页版 2048 游戏为例，完整演示 Matt Poc
 tldr: "Skill 流程的核心价值是把质量门控前置——review 在 commit 前而不是上线后，决策在动手前而不是做完才发现错。"
 taxonomies:
   tags: ["AI", "LLM", "Coding Agent", "TDD", "Engineering", "2048"]
+keywords: ["Skill", "系统开发", "2048", "完整的工程流程演示", "AI", "LLM", "Coding Agent", "TDD"]
 ---
 
 用 AI 写代码，直接对话当然可以更快地拿到结果。但当项目需要跨 session 维护、需要多人交接、需要稳定质量时，直接对话的代价就开始累积。

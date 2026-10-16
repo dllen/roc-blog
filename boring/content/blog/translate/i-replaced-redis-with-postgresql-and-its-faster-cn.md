@@ -3,6 +3,8 @@ title: "用 PostgreSQL 替换 Redis（竟然更快）"
 date: "2026-01-09"
 description: "翻译自 dev.to《I Replaced Redis with PostgreSQL (And It's Faster)》，讨论如何用 PostgreSQL 统一替代 Redis 做缓存、Pub/Sub 和任务队列，并给出性能与运维对比。"
 original_url: "https://dev.to/polliog/i-replaced-redis-with-postgresql-and-its-faster-4942"
+tldr: "翻译自 dev.to《I Replaced Redis with PostgreSQL (And It's Faster)》，讨论如何用 PostgreSQL 统一替代 Redis 做缓存、Pub/Sub 和任务队列，并给出性能与运维对比。"
+keywords: ["PostgreSQL", "替换", "Redis", "竟然更快"]
 ---
 
 # 用 PostgreSQL 替换 Redis（竟然更快）

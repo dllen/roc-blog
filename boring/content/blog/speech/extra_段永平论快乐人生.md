@@ -1,8 +1,11 @@
 +++
 title = "段永平论快乐人生"
 date = 2024-01-24
+description = "段永平论快乐人生：投资只是享受生活的一种方式，谈家庭、健康、友情与\"stop doing list\"。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_段永平论快乐人生.md"
+tldr = "段永平论快乐人生 我们学大道的经营、投资理念，但回到事物的本源，我们到底在追寻什么，如大道所说，快乐人生才是根本的目的。"
+keywords = ["段永平论快乐人生"]
 +++
 
 # 段永平论快乐人生

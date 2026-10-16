@@ -5,6 +5,7 @@ description: "系统解读 Matt Pocock 开源的 AI Coding Skills 项目：从�
 tldr: "这套 Skill 系统的核心价值是两个：对齐靠 grilling，反馈靠环路——其余都是这两点的延伸。"
 taxonomies:
   tags: ["AI", "LLM", "Coding Agent", "Matt Pocock", "Engineering"]
+keywords: ["Matt", "Pocock", "Skills", "体系解析", "设计哲学与核心", "Skill", "导读", "AI"]
 ---
 
 Matt Pocock 是 TypeScript 社区的知名布道者，同时也是一位在 AI 编程工具上投入很深的工程师。他开源了一套 AI Coding Skills，目标不是给 AI 塞更多知识，而是给 AI 编程建立**工程纪律**。

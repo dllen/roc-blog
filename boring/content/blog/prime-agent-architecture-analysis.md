@@ -6,6 +6,7 @@ description: "深度拆解 Prime Agent（v0.7.1）的六大核心机制：持久
 tldr: "主流编码代理跑不远，是因为每次工具调用都是独立进程、会话线性不能分支、上下文超窗口就丢信息。Prime Agent 的解法是 RLM 模式 + Daemon 架构 + 持续内核——让代理真的能长跑。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Architecture", "Coding Agent", "Open Source", "RLM", "PrimeIntellect"]
+keywords: ["Prime", "Agent", "深度技术分析", "AI", "代理真正长跑的架构设计", "LLM", "Architecture", "Coding Agent"]
 ---
 
 ## 一、为什么现有 AI Agent "跑不远"？

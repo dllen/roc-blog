@@ -5,6 +5,8 @@ description: "Flink 源码目录结构详解。flink-runtime, flink-streaming-ja
 taxonomies:
   tags: [Flink, Source Code, Architecture]
 weight: 2
+tldr: "Flink 源码目录结构详解。flink-runtime, flink-streaming-java, flink-core 等模块的功能定位。"
+keywords: ["Flink", "源码阅读", "02.", "项目结构与核心模块", "Source Code", "Architecture"]
 ---
 
 Flink 源码工程庞大，模块众多。初读源码容易迷失在目录中。本篇梳理 Flink 的核心模块结构。

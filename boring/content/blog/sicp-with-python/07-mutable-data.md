@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Python", "SICP", "可变性", "状态", "nonlocal", "同一性"]
 categories: ["SICP-Python"]
 description: "SICP 2.4 深入解析：当引入赋值语句和状态后，程序的世界发生了翻天覆地的变化。探讨同一性（Identity）与相等性（Equality）的区别，以及非局部赋值（nonlocal）带来的副作用。"
+tldr: "SICP 2.4 深入解析：当引入赋值语句和状态后，程序的世界发生了翻天覆地的变化。探讨同一性（Identity）与相等性（Equality）的区别，以及非局部赋值（nonlocal）带来的副作用。"
+keywords: ["07.", "可变数据", "时间、状态与同一性", "Python", "SICP", "可变性", "状态", "nonlocal"]
 ---
 
 # 第七章：可变数据——时间、状态与同一性

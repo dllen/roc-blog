@@ -6,6 +6,8 @@ taxonomies:
   tags: ["WFM", "Wiki 记忆", "RAG", "LLM", "腾讯优图"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "腾讯优图 + Monash WFM(Wiki Foundation Model):把 Wiki 当作一张统一图,文本+链接不拆分,消息传递+注意力聚合,专为互相链接的 Markdown 文件夹训练;分布式训练 NCCL GPU 直连快 10.5 倍。"
+keywords: ["WFM", "详解", "Wiki", "记忆的专用检索模型", "Wiki 记忆", "RAG", "LLM", "腾讯优图"]
 ---
 
 ## 一句话总结

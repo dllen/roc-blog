@@ -5,6 +5,8 @@ update_date: 2026-09-03T21:30:00+08:00
 description: "用一台闲置旧电脑或 NAS 跑 Immich，Docker Compose 启 4 个服务（server、ML、Postgres+pgvector、Valkey），把 Google Photos 的设备同步、相册识别、远程访问全搬到自托管——并算清硬件、电费、长期存储的真实成本。"
 taxonomies:
   tags: ["自托管", "Immich", "Docker", "NAS", "家庭服务器", "照片管理"]
+tldr: "用一台闲置旧电脑或 NAS 跑 Immich，Docker Compose 启 4 个服务（server、ML、Postgres+pgvector、Valkey），把 Google Photos 的设备同步、相册识别、远程访问全搬到自托管——并算清硬件、电费、长期存储的真实成本。"
+keywords: ["Immich", "替代", "Google", "Photos", "家庭照片自托管实战", "自托管", "Docker", "NAS"]
 ---
 
 ## 引子：月费 20 美元，5 年就是一台中配 MacBook

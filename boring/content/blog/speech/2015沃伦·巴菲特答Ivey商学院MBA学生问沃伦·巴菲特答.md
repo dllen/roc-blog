@@ -1,8 +1,10 @@
 +++
 title = "2015沃伦·巴菲特答Ivey商学院MBA学生问沃伦·巴菲特答"
 date = 2015-01-01
+description = "2015 年 Ivey 商学院 MBA 学生问答：巴菲特详谈能力圈、独立思考、避免群体谬误的投资铁律。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2015沃伦·巴菲特答Ivey商学院MBA学生问沃伦·巴菲特答.md"
+tldr = "2015 沃伦·巴菲特答 Ivey 商学院 MBA 学生问沃伦·巴菲特答 Q: 1：请问您如何挑选杰出的人才？"
 +++
 
 # 2015 沃伦·巴菲特答 Ivey 商学院 MBA 学生问沃伦·巴菲特答

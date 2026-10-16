@@ -6,6 +6,7 @@ description: "解读 Anthropic《AI 原生 SDLC 手册》：从 intent.md 到闭
 tldr: "AI 原生 SDLC 不是把流程取消掉，而是把旧的控制目标翻译成新的执行机制——制品链、门、hook、eval、闭环。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "Claude Code", "SDLC", "软件工程"]
+keywords: ["intent.md", "到闭环", "AI", "LLM", "Agent", "Claude Code", "SDLC", "软件工程"]
 ---
 
 > 原文：<https://claude.com/blog/the-ai-native-sdlc-playbook>

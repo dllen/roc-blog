@@ -6,6 +6,8 @@ taxonomies:
   tags: ["SkillGym", "技能学习", "AI Agent", "LLM", "RL"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "SkillGym 把人类技能指南转成 2756 个带代码验证的训练环境(覆盖 12 个类别),让 AI 真正把技能内化到模型权重里;Qwen3.5-35B-A3B 在 Terminal-Bench 2.1 上从 2.1% 提升到 21.2%,不加载技能上下文也跑赢带技能的基座模型。"
+keywords: ["SkillGym", "详解", "把人类技能变成可验证的训练环境", "技能学习", "AI Agent", "LLM", "RL"]
 ---
 
 ## 一句话总结

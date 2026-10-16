@@ -6,6 +6,8 @@ taxonomies:
   tags: [dns, rust, memory, performance, cloudflare]
 extra:
   update_date: 2026-08-31T10:00:00+08:00
+tldr: "Cloudflare 把 1.1.1.1 DNS 缓存的单条内存占用降低 56%，全集群省下约 100TB 内存，吞吐和延迟反而更好。本文拆解其中的 5 个 Rust 优化：箱切片替代 Vec、偏移量合并分区、可选属主名、枚举装箱与 wire format 存储，并总结大规模缓存系统内存优化的通用原则。"
+keywords: ["省下", "100TB", "内存", "拆解", "Cloudflare", "1.1.1.1", "DNS", "缓存的"]
 ---
 
 1.1.1.1 是全球最大的公共 DNS 解析器之一。它背后的缓存里存着超过 **2500 亿条**记录——在这个量级下，「每条记录浪费 1 个字节」就意味着全集群白白多烧 **250GB 内存**。

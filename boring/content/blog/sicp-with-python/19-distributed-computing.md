@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Distributed Computing", "Client-Server", "Peer-to-Peer", "TCP/IP", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.6 核心内容：探索分布式计算的基础架构。从 TCP/IP 协议到 Client/Server 模型，再到 Peer-to-Peer 系统，了解现代互联网背后的协作机制。"
+tldr: "SICP 4.6 核心内容：探索分布式计算的基础架构。从 TCP/IP 协议到 Client/Server 模型，再到 Peer-to-Peer 系统，了解现代互联网背后的协作机制。"
+keywords: ["19.", "分布式计算", "连接世界的架构", "Distributed Computing", "Client-Server", "Peer-to-Peer", "TCP/IP", "SICP"]
 ---
 
 # 第十九 章：分布式计算——连接世界的架构

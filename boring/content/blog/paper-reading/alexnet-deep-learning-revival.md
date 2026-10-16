@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AlexNet", "CNN", "深度学习", "经典论文", "ImageNet"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "2012 ILSVRC 冠军 AlexNet:ReLU + GPU 训练 + Dropout + 数据增强 + LRN + 重叠池化六招合一,Top-5 错误率从 26.2% 降到 15.3%,开启深度学习黄金十年;与 LeNet 的传承关系与历史评价。"
+keywords: ["AlexNet", "详解", "深度学习的复兴", "CNN", "深度学习", "经典论文", "ImageNet"]
 ---
 
 ## 一句话故事

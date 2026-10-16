@@ -2,9 +2,11 @@
 title: "ollama 教程"
 date: 2024-02-20T02:01:58+05:30
 update_date: 2024-02-20T02:01:58+05:30
-description: "How to prompt Code Llama"
+description: "Ollama 入门：本地运行大模型的工具，支持 Llama / Mistral / Qwen 等模型，提供 REST API 与 OpenAI 兼容接口。"
 taxonomies:
   tags: [ollama, ai]
+tldr: "使用 在本地运行大模型，并完成几个辅助编程的示例。 安装 ollama 官网地址 GitHub 地址：GitHub ollama/ollama 开源模型列表：Models 可以根据官网介绍安装 ollama 到本地 <img title=\"\" src=\"https://scp net cn."
+keywords: ["ollama", "教程", "ai"]
 ---
 
 使用 `ollama` 在本地运行大模型，并完成几个辅助编程的示例。

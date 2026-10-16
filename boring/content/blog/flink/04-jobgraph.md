@@ -5,9 +5,26 @@ description: "Client 端如何将用户代码转化为 JobGraph，并提交给 D
 taxonomies:
   tags: [Flink, Source Code, JobGraph, Submission]
 weight: 4
+tldr: "Client 端如何将用户代码转化为 JobGraph，并提交给 Dispatcher。"
+keywords: ["Flink", "源码阅读", "04.", "提交流程", "JobGraph", "Source Code", "Submission"]
 ---
 
 当我们执行 `bin/flink run` 时，发生了什么？
+
+
+
+
+
+
+
+
+## 实战建议
+
+本章读完应能独立画出 flink run → StreamGraph → JobGraph 的完整链路，并解释为什么 Chain 必须在 JobGraph 阶段完成。
+
+## 0. 本章定位
+
+flink run 命令背后藏着三层拓扑转换：用户算子链 → StreamGraph（逻辑视图）→ JobGraph（优化后视图）→ ExecutionGraph（运行时并行视图）。本章聚焦前两步：StreamGraphGenerator 怎么从用户 API 生成 StreamGraph，StreamingJobGraphGenerator 如何应用 Chain / SlotSharingGroup 优化得到 JobGraph。理解这两步对后续调优至关重要——disableChain / slotSharingGroup / ChainingStrategy 等参数都只能在这一层注入。生产中遇到算子没合并或 Slot 分配异常时，回到 JobGraph 是最快的定位路径。建议先熟悉用户 API（DataStream / SQL），再读源码。
 
 ## 1. StreamGraph 的生成
 用户代码中的 `env.execute()` 是起点。

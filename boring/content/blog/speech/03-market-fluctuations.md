@@ -5,6 +5,8 @@ description = "2008年金融危机前夕，巴菲特面对Emory和UT Austin的�
 weight = 3
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/2008巴菲特答Emory与Austin大学商学院学生问巴菲特答.md"
+tldr = "2008年金融危机前夕，巴菲特面对Emory和UT Austin的学生，谈到了市场波动、分散投资以及如何在恐慌中保持理性。"
+keywords = ["市场与理性", "当潮水退去时"]
 +++
 
 > "什么东西大甩卖，人们都抢着买。只有股票大甩卖，人们不高兴。"

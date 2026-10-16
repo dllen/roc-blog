@@ -5,6 +5,7 @@ description: "中篇讲了 ZeRO-3/FSDP 的原理——这一篇讲怎么用 5 �
 tldr: "Ray Train 5 API: ScalingConfig + TorchTrainer + prepare_model(fsdp) + Checkpoint + ray.train.report · CIFAR-10 + ViT 完整可运行代码"
 taxonomies:
   tags: ["LLM", "DistributedTraining", "RayTrain", "FSDP", "PyTorch", "系列教程"]
+keywords: ["Distributed", "Training", "下篇", "Ray", "Train", "实战与分布式未来", "LLM", "DistributedTraining"]
 ---
 
 # 系列-05 · Distributed Training · 从单卡到集群（下篇）：Ray Train 实战与分布式未来

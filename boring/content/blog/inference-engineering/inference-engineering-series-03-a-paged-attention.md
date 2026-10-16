@@ -5,6 +5,7 @@ description: "Paged Attention 是 vLLM 的核心发明——借鉴 OS 虚拟内�
 tldr: "Paged Attention = OS 虚拟内存思想管理 KV cache · 60-80% 浪费 → <4% · 吞吐 2-3×"
 taxonomies:
   tags: ["LLM", "PagedAttention", "vLLM", "KVCache", "显存优化", "系列教程"]
+keywords: ["Paged", "Attention", "上篇", "60-80%", "显存浪费到", "<4%", "的工程革命", "LLM"]
 ---
 
 # Paged Attention 上篇：从 60-80% 显存浪费到 <4% 的工程革命

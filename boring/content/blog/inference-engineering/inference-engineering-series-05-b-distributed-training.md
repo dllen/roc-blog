@@ -5,6 +5,7 @@ description: "上篇三件套能省钱但不能把 70B 塞进单卡——当模�
 tldr: "ZeRO-1: 4.2 bytes/param · ZeRO-2: 2.2 bytes/param · ZeRO-3: 0.25 bytes/param · A100 64卡可训 5B → 19B → 36B → 320B"
 taxonomies:
   tags: ["LLM", "DistributedTraining", "DataParallel", "ZeRO", "FSDP", "系列教程"]
+keywords: ["Distributed", "Training", "中篇", "Data", "Parallel", "ZeRO-1", "全图", "LLM"]
 ---
 
 # 系列-05 · Distributed Training · 从单卡到集群（中篇）：Data Parallel 与 ZeRO-1/2/3 全图

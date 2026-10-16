@@ -3,6 +3,8 @@ title: "为什么 Bloom Filter 能够这样工作（双语对照）"
 date: "2026-01-31"
 description: "翻译自 Michael Nielsen 的博客《Why Bloom filters work the way they do》，深入浅出地解释了 Bloom Filter 的工作原理、数学推导及其应用。"
 original_url: "https://michaelnielsen.org/ddi/why-bloom-filters-work-the-way-they-do/"
+tldr: "翻译自 Michael Nielsen 的博客《Why Bloom filters work the way they do》，深入浅出地解释了 Bloom Filter 的工作原理、数学推导及其应用。"
+keywords: ["为什么", "Bloom", "Filter", "能够这样工作", "双语对照"]
 ---
 
 Imagine you’re a programmer who is developing a new web browser. There are many malicious sites on the web, and you want your browser to warn users when they attempt to access dangerous sites. For example, suppose the user attempts to access `http://domain/etc`. You’d like a way of checking whether `domain` is known to be a malicious site. What’s a good way of doing this?

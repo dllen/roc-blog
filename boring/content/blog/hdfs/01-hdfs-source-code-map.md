@@ -5,6 +5,8 @@ description: "HDFS 源码阅读第一步：源码下载、Maven 编译指南、I
 taxonomies:
   tags: [Hadoop, HDFS, Source Code, Build]
 weight: 1
+tldr: "HDFS 源码阅读第一步：源码下载、Maven 编译指南、IDEA 项目导入及远程调试环境配置。"
+keywords: ["HDFS", "源码阅读", "01.", "源码编译与环境搭建", "Hadoop", "Source Code", "Build"]
 ---
 
 在开始深入代码之前，我们需要先把环境搭好。Hadoop 是一个庞大的 Java 项目，构建过程可能会遇到各种环境依赖问题。

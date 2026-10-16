@@ -6,6 +6,7 @@ description: "Brent Fitzgerald 离开 AI 几周后回来，发现自己形成了
 tldr: "AI 工具没有让我更高效、更聪明、更快乐。反而让我回避那些真正值得做的事。真正重要的是：人必须是循环的核心，AI 只是偶尔被叫进来帮个忙。"
 taxonomies:
   tags: ["AI", "Productivity", "Mental Health", "Reflection", "Work-Life Balance"]
+keywords: ["度假三周后", "我意识到自己被", "AI", "工具奴役了", "Productivity", "Mental Health", "Reflection", "Work-Life Balance"]
 ---
 
 ## 假期归来

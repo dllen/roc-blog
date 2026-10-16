@@ -6,6 +6,8 @@ taxonomies:
   tags: ["MapReduce", "Big Data", "Distributed Systems", "Hadoop", "Unix Pipes", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.7 核心内容：深入理解 MapReduce 编程模型。从 Unix 管道的单机模拟到 Hadoop 集群的分布式执行，掌握大规模数据处理的核心思想。"
+tldr: "SICP 4.7 核心内容：深入理解 MapReduce 编程模型。从 Unix 管道的单机模拟到 Hadoop 集群的分布式执行，掌握大规模数据处理的核心思想。"
+keywords: ["20.", "MapReduce", "大数据处理的瑞士军刀", "Big Data", "Distributed Systems", "Hadoop", "Unix Pipes", "SICP"]
 ---
 
 # 第二十章：MapReduce——大数据处理的瑞士军刀

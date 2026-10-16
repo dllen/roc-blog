@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AlphaFold", "蛋白质折叠", "DeepMind", "诺贝尔奖", "计算生物学"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "DeepMind AlphaFold 2 如何用 Evoformer + 距离预测 + 物理引擎破解 50 年蛋白质折叠难题;CASP14 突破 90 分;2024 年获诺贝尔化学奖;新药研发、合成生物学应用。"
+keywords: ["AlphaFold", "详解", "破解生命密码", "蛋白质折叠", "DeepMind", "诺贝尔奖", "计算生物学"]
 ---
 
 ## 一句话故事

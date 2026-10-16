@@ -2,9 +2,11 @@
 title: "BTrace User's Guide"
 date: 2020-03-18T12:13:32+05:30
 update_date: 2020-03-18T12:13:32+05:30
-description: "BTrace User's Guide"
+description: "Java BTrace 教程：动态追踪工具入门，涵盖脚本编写、常用注解、生产环境安全使用与典型案例。"
 taxonomies:
   tags: [java, btrace]
+tldr: "原文地址 实验Demo 注意：btrace 版本和包名已经更新，编写 btrace 脚本时使用以下依赖，但是整体使用方式基本没有变化；"
+keywords: ["BTrace", "User's", "Guide", "java", "btrace"]
 ---
 
 - [原文地址](https://gist.github.com/yulewei/53339ccced8837686895e3c9f45557cc)

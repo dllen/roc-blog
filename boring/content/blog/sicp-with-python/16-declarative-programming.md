@@ -6,6 +6,8 @@ taxonomies:
   tags: ["SQL", "Declarative Programming", "Python", "Database", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.3 核心内容：从命令式转向声明式。学习 SQL 的核心语法（Select, Where, Join），并用 Python 实现一个简单的 SQL 解释器。"
+tldr: "SICP 4.3 核心内容：从命令式转向声明式。学习 SQL 的核心语法（Select, Where, Join），并用 Python 实现一个简单的 SQL 解释器。"
+keywords: ["16.", "声明式编程与", "SQL", "告诉计算机“要什么”", "Declarative Programming", "Python", "Database", "SICP"]
 ---
 
 # 第十六章：声明式编程与 SQL——告诉计算机“要什么”

@@ -5,9 +5,28 @@ description: "Code Generation 技术详解。为什么 Flink SQL 比手写 Java 
 taxonomies:
   tags: [Flink, Source Code, SQL, Codegen, Janino]
 weight: 20
+tldr: "Code Generation 技术详解。为什么 Flink SQL 比手写 Java 代码还快？"
+keywords: ["Flink", "源码阅读", "20.", "Table", "Runtime", "代码生成", "Source Code", "SQL"]
 ---
 
 Flink Table/SQL 的 Runtime 极度依赖 **Code Generation (代码生成)**。
+
+
+
+
+
+
+
+
+## 实战建议
+
+Codegen 质量直接影响 SQL 作业性能：聚合/Join 的数据分布倾斜会绕过 Codegen 优化，需重写 SQL。
+
+调试 Codegen 生成的代码时，可在 table.exec.resource.default-parallelism 调高并行度对比性能差异。
+
+## 0. 本章定位
+
+Flink Table/SQL Runtime 依赖 Code Generation 突破解释执行瓶颈：Calcite 优化后的 RelNode 经 Janino 生成 Java 字节码，避免虚函数调用和装箱拆箱。本章讲 Codegen 流程（CodeGenerator + 表达式翻译）、常用优化（融合算子 Fusion、投影下推 ProjectionPushDown、谓词下推 PredicatePushDown）、以及如何调试生成的代码（table.exec.resource.default-parallelism）。生产中 SQL 性能差，多半是 Codegen 没充分融合，需要重写 SQL 让算子更规整。建议结合 SQL 编译流程章一起读。
 
 ## 1. 为什么需要 Codegen？
 传统的数据库引擎（如 Hive）通常使用解释执行模型。

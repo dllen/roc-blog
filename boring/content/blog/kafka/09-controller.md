@@ -1,10 +1,20 @@
 ---
 title: "Kafka 源码阅读：09. 传统 Controller"
 date: 2026-01-15T10:00:00+08:00
+description: "Kafka 传统 Controller 源码解析：基于 ZooKeeper 的选举机制、Partition 状态机、Leader 选举与集群元数据管理。"
 taxonomies:
   tags: [Kafka, Source Code, Controller, ZooKeeper]
 weight: 9
+tldr: "在 Kafka 2.8 之前（以及 3.x 的 ZK 模式），Controller 是集群的核心管理器，强依赖 ZooKeeper。"
+keywords: ["Kafka", "源码阅读", "09.", "传统", "Controller", "Source Code", "ZooKeeper"]
 ---
+## 0. 本章定位
+
+Kafka 源码阅读：09. 传统 Controller：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 在 Kafka 2.8 之前（以及 3.x 的 ZK 模式），Controller 是集群的核心管理器，强依赖 ZooKeeper。
 

@@ -5,6 +5,8 @@ description: "BlockManager 是 NameNode 中最繁忙的组件，负责副本管�
 taxonomies:
   tags: [Hadoop, HDFS, NameNode, BlockManager]
 weight: 6
+tldr: "BlockManager 是 NameNode 中最繁忙的组件，负责副本管理、损坏块处理与副本放置策略。"
+keywords: ["HDFS", "源码阅读", "06.", "块管理", "BlockManager", "Hadoop", "NameNode"]
 ---
 
 `BlockManager` 负责管理 Block 的元数据（Block -> DataNodes 的映射），并确保副本数满足要求。

@@ -1,12 +1,26 @@
 ---
 title: "Spring 源码阅读：09. JdbcTemplate 设计模式"
 date: 2026-01-14T10:00:00+08:00
+description: "Spring JdbcTemplate 源码解析：JdbcOperations 抽象、StatementCreator / RowMapper、事务同步与连接管理。"
 taxonomies:
   tags: [Spring, Source Code, JdbcTemplate, Template Pattern]
 weight: 9
+tldr: "是模板方法模式的教科书级应用，也是 Spring 最早提供的功能之一。"
+keywords: ["Spring", "源码阅读", "09.", "JdbcTemplate", "设计模式", "Source Code", "Template Pattern"]
 ---
+## 0. 本章定位
+
+Spring 源码阅读：09. JdbcTemplate 设计模式：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 `JdbcTemplate` 是模板方法模式的教科书级应用，也是 Spring 最早提供的功能之一。
+
+JdbcTemplate 通过 JdbcOperations 接口封装 StatementCreator / ResultSetExtractor 等步骤，理解其模板方法模式对扩展很重要。
+
+JdbcTemplate 通过 DataSourceUtils 统一管理连接与事务同步，与 TransactionManager 协作实现事务边界。
 
 ## 1. 痛点：样板代码
 

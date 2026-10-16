@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Scheme", "Lisp", "SICP", "函数式编程", "解释器"]
 categories: ["SICP-Python"]
 description: "SICP 3.1-3.2 核心内容：为什么要学习 Scheme？体验 Lisp 家族的优雅与简洁。从前缀表达式到 Lambda，探索一种纯粹的编程范式。"
+tldr: "SICP 3.1-3.2 核心内容：为什么要学习 Scheme？体验 Lisp 家族的优雅与简洁。从前缀表达式到 Lambda，探索一种纯粹的编程范式。"
+keywords: ["12.", "初识", "Scheme", "Lisp", "程序员一样思考", "SICP", "函数式编程", "解释器"]
 ---
 
 # 第十二章：初识 Scheme——像 Lisp 程序员一样思考

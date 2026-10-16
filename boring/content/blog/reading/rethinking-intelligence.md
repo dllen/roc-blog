@@ -1,10 +1,13 @@
 ---
 title: "我们一直把“聪明”想窄了：深度理解才是真正的护城河"
 date: 2026-02-07T14:00:00+08:00
+description: "《重塑智能》读书笔记：环境、饮食、运动对认知能力的可塑性影响，谈大脑可塑性的最新神经科学证据。"
 draft: false
 taxonomies:
   tags: ["Thinking", "Learning", "Cognition", "Wisdom", "Nabeel Qureshi"]
 categories: ["Reading"]
+tldr: "编者按 ：在这个追求速度和效率的时代，我们往往误以为“聪明”就是反应快、算得准。"
+keywords: ["我们一直把“聪明”想窄了", "深度理解才是真正的护城河", "Thinking", "Learning", "Cognition", "Wisdom", "Nabeel Qureshi"]
 ---
 
 > **编者按**：在这个追求速度和效率的时代，我们往往误以为“聪明”就是反应快、算得准。但 Nabeel Qureshi 在他的文章 *Understanding* 中提出了一个发人深省的观点：真正的聪明，是一种对“理解”的执着追求。这是一篇关于如何打破“假懂”幻觉，构建深度认知结构的思考。

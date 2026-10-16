@@ -5,6 +5,8 @@ update_date: 2026-08-25T10:00:00+08:00
 description: "用「工厂分厂」的小故事讲透 NUMA（非一致性内存访问）的来龙去脉，再配合 numactl、libnuma、set_mempolicy/mbind 与延迟基准测试等真实代码，手把手演示查看拓扑、绑定内存与 CPU、量化本地/远端访问差异，最后给出数据库场景的调优清单。"
 taxonomies:
   tags: [numa, linux, memory, performance, system-programming, database]
+tldr: "用「工厂分厂」的小故事讲透 NUMA（非一致性内存访问）的来龙去脉，再配合 numactl、libnuma、set_mempolicy/mbind 与延迟基准测试等真实代码，手把手演示查看拓扑、绑定内存与 CPU、量化本地/远端访问差异，最后给出数据库场景的调优清单。"
+keywords: ["从「独木桥」到「分厂」", "一文读懂", "NUMA", "非一致性内存访问", "numa", "linux", "memory", "performance"]
 ---
 
 NUMA 是「多核服务器性能」这条路上绕不开的一个词。很多人在看数据库、中间件的调优文档时，都会撞见 `numactl --interleave=all`、`numa_miss`、`绑定到 NUMA 节点` 这些说法，却说不清它们到底在解决什么问题。

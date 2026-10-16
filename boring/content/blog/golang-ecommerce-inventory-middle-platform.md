@@ -5,6 +5,8 @@ update_date: 2025-10-25
 description: 电商库存中台的架构与实现，涵盖微服务设计、数据库建模、核心业务流程、秒杀优化、性能与监控，含配套时序/流程图与注释代码。
 taxonomies:
   tags: [Golang, Inventory, Microservices, Redis, Kafka, MySQL, gRPC, Seckill]
+tldr: "电商库存中台的架构与实现，涵盖微服务设计、数据库建模、核心业务流程、秒杀优化、性能与监控，含配套时序/流程图与注释代码。"
+keywords: ["Golang", "Inventory", "Microservices", "Redis", "Kafka", "MySQL", "gRPC", "Seckill"]
 ---
 
 # 概览

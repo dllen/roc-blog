@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Multimodal", "Multi-Agent", "Python", "系列教程"]
 series: "AI Agent 系列教程"
 series_order: 5
+keywords: ["Agent", "的未来", "多模态、实时交互与多", "协作", "AI", "LLM", "Multimodal", "Multi-Agent"]
 ---
 
 > 本文是 **AI Agent 系列教程** 第 5 篇（完结篇）。基于李博杰《深入理解 AI Agent》第 9-10 章改编。前四篇讲清了 Agent 的基础概念、工具调用、记忆系统、评估进化。这一篇看向 Agent 正在走向的前沿。

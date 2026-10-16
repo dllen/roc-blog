@@ -5,6 +5,8 @@ description: "HDFS 如何保证只有一个客户端能写入同一个文件？�
 taxonomies:
   tags: [Hadoop, HDFS, NameNode, Lease]
 weight: 7
+tldr: "HDFS 如何保证只有一个客户端能写入同一个文件？深入解析 LeaseManager 的软硬限制与恢复机制。"
+keywords: ["HDFS", "源码阅读", "07.", "租约管理", "LeaseManager", "Hadoop", "NameNode", "Lease"]
 ---
 
 HDFS 支持 **WORM (Write-Once-Read-Many)** 模型，且同一时刻只允许一个 Client 写入同一个文件。这是通过 **Lease (租约)** 机制实现的。

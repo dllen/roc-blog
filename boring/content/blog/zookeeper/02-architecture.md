@@ -1,10 +1,24 @@
 ---
 title: "ZooKeeper 源码阅读：02. 核心架构与模块概览"
 date: 2026-01-13T10:00:00+08:00
+description: "ZooKeeper 架构概览：文件系统 + 通知机制的数据模型、Leader/Follower/Observer 角色、ZXID 与 Zab 协议基础。"
 taxonomies:
   tags: [ZooKeeper, Source Code, Architecture]
 weight: 2
+tldr: "1. 模块结构 : 核心服务端代码，包含 Leader 选举、ZAB 协议、DataTree 等。"
+keywords: ["ZooKeeper", "源码阅读", "02.", "核心架构与模块概览", "Source Code", "Architecture"]
 ---
+## 0. 本章定位
+
+ZooKeeper 源码阅读：02. 核心架构与模块概览：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
+
+ZooKeeper 架构核心是 Zab 协议 + 内存树 + Watcher 三件套，理解它们能解释 ZK 为何适合做分布式协调服务。
+
+推荐阅读 Chubby 与 Paxos Made Simple 两篇论文，对理解 ZK 设计取舍非常有帮助。
 
 ## 1. 模块结构
 

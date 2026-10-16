@@ -2,9 +2,11 @@
 title: "读《SRE：Google运维解密》一点思考"
 date: 2020-04-01T02:01:58+05:30
 update_date: 2020-04-01T02:01:58+05:30
-description: "读《SRE：Google运维解密》一点思考"
+description: "Google SRE 核心理念：可用性、延迟、错误预算、消除琐事（Toil），以及对 DevOps 与传统运维的反思。"
 taxonomies:
   tags: [sre]
+tldr: "转载， 原文地址 读《SRE：Google 运维解密》一点思考 0、为什么诞生 SRE？"
+keywords: ["读《SRE", "Google运维解密》一点思考", "sre"]
 ---
 
 
@@ -114,11 +116,11 @@ taxonomies:
 
 ### 2.2.1 面向 SLO 编程标准的推行
 
-![](https://pic2.zhimg.com/v2-14807fdebf288bce52701eab67de5c4d_r.jpg)
+![Google SRE 三角形示意图（错误预算 / 可靠性目标 / 服务质量）](https://pic2.zhimg.com/v2-14807fdebf288bce52701eab67de5c4d_r.jpg)
 
 针对 SLO，我们举一个例子来说明以下，
 
-![](https://pic2.zhimg.com/v2-cd7bab1146c699d27cc63096b89d37e1_r.jpg)
+![SRE 关键概念：可用性、延迟、吞吐量、错误率的关联图](https://pic2.zhimg.com/v2-cd7bab1146c699d27cc63096b89d37e1_r.jpg)
 
 为什么要有 SLO，设置 SLO 的好处是什么呢？
 

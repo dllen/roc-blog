@@ -6,6 +6,8 @@ taxonomies:
   tags: ["CASD", "Prompt 优化", "AI Agent", "LLM", "微软"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "微软 CASD(Coding-Agent Skill Distillation):给编码智能体 + 整个语料库日志,让它自己写 Python 代码分析失败模式,一遍过蒸馏成行为规则;比 GEPA 提升 5.7 个百分点,成本便宜 22 倍($1.60 vs $35)。"
+keywords: ["CASD", "详解", "让智能体从日志自己总结规则", "Prompt 优化", "AI Agent", "LLM", "微软"]
 ---
 
 ## 一句话总结

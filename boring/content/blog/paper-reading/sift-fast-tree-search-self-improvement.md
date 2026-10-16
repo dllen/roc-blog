@@ -6,6 +6,8 @@ taxonomies:
   tags: ["SIFT", "自我改进", "树搜索", "LLM", "SakanaAI"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "SakanaAI / MIT SIFT:用 LLM 担任两两比较的裁判 + Bradley-Terry 模型算实力分 + 解耦树搜索,Polyglot 从 30.7% 提升到 35.1%,成本只有 DGM 的 1/10;关键洞察:裁判质量决定系统方向。"
+keywords: ["SIFT", "详解", "LLM", "当裁判", "跑树搜索做自我改进", "自我改进", "树搜索", "SakanaAI"]
 ---
 
 ## 一句话总结

@@ -7,6 +7,7 @@ taxonomies:
   tags: ["AI", "Agent Skills", "Claude", "SRE", "系列教程"]
 series: "Agent Skills 系列教程"
 series_order: 4
+keywords: ["动手写你的第一个", "Skill", "『线上故障排查』从零到能跑", "AI", "Agent Skills", "Claude", "SRE", "系列教程"]
 ---
 
 > 本文是 **Agent Skills 系列教程**第 4 篇。前三篇把地基和规则都铺好了：第 1 篇说 Agent 是「没有记忆的新人」，codebase 结构决定它的产出质量；第 2 篇说结构该怎么改——深模块把接口做窄、灰盒模块把「人定接口、AI 管实现、测试锁行为」的分工固定下来；第 3 篇给了写 skill 的三条规则——分层架构、命名约定、「skill 不必长」的克制。这一篇是实操上篇：**拿这套规则，从零写一个完整、能用的 skill。** 选的题目是后端和运维天天要面对的一件事——线上故障排查。

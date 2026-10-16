@@ -4,6 +4,8 @@ date: "2023-10-27"
 description: "通过分析 Kafka Purgatory 的重构历程，深入探讨分层时间轮（Hierarchical Timing Wheel）的设计原理、性能优势及其在高性能定时任务调度中的应用。"
 taxonomies:
   tags: ["Kafka", "System Design", "Algorithm", "Timing Wheel"]
+tldr: "通过分析 Kafka Purgatory 的重构历程，深入探讨分层时间轮（Hierarchical Timing Wheel）的设计原理、性能优势及其在高性能定时任务调度中的应用。"
+keywords: ["深入解析时间轮", "Timing", "Wheel", "Kafka", "Purgatory", "看高效定时任务调度", "System Design", "Algorithm"]
 ---
 
 在构建高性能分布式系统时，定时任务调度是一个极其常见但又充满挑战的需求。Apache Kafka 作为一个高吞吐量的消息系统，在其内部有一个被称为 "Purgatory"（炼狱）的组件，专门用于管理那些无法立即完成、需要等待特定条件满足或超时的异步请求。

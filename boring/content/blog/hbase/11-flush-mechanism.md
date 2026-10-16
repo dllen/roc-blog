@@ -1,9 +1,12 @@
 ---
 title: "HBase 源码阅读：11. Flush 机制"
 date: 2026-01-12T10:00:00+08:00
+description: "HBase MemStore Flush 机制源码解析：Flush 触发条件、FlushQuorum 决策、快照生成与 HFile 写入流程。"
 taxonomies:
   tags: [HBase, Source Code, Flush, MemStore]
 weight: 11
+tldr: "在 HBase 的 LSM Tree 架构中，数据首先写入内存中的 MemStore。"
+keywords: ["HBase", "源码阅读", "11.", "Flush", "机制", "Source Code", "MemStore"]
 ---
 
 在 HBase 的 LSM-Tree 架构中，数据首先写入内存中的 MemStore。当 MemStore 达到一定大小时，需要将数据刷写（Flush）到磁盘生成 HFile。Flush 机制是连接内存与磁盘的关键桥梁，它直接影响写入性能、内存使用率以及后续的 Compaction 压力。

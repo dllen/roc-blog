@@ -1,7 +1,10 @@
 ---
 title: "Javassist tutorial"
 date: 2019-12-01T12:13:38+05:30
+description: "Javassist 教程：Java 字节码工程工具入门，涵盖 ClassPool / CtClass / CtMethod API 与动态字节码修改实战。"
 update_date: 2019-12-01T12:13:38+05:30
+tldr: "GitHub jboss javassist/javassist: Java bytecode engineering toolkit tutorial tutorial2 tutorial3 示例代码地址 Java Bytecode Java字节码指令列表 示例： 编译java文件并查看字节码 J"
+keywords: ["Javassist", "tutorial"]
 ---
 
 [GitHub - jboss-javassist/javassist: Java bytecode engineering toolkit](https://github.com/jboss-javassist/javassist)

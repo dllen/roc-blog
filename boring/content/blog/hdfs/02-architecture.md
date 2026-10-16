@@ -5,6 +5,8 @@ description: "HDFS 架构深度解析。Master/Slave 模式的优劣、Block 设
 taxonomies:
   tags: [Hadoop, HDFS, Architecture, Design]
 weight: 2
+tldr: "HDFS 架构深度解析。Master/Slave 模式的优劣、Block 设计哲学以及 RPC 通信协议概览。"
+keywords: ["HDFS", "源码阅读", "02.", "核心架构设计", "Hadoop", "Architecture", "Design"]
 ---
 
 在深入每一行代码之前，我们需要站在高处俯瞰 HDFS 的设计哲学。HDFS 是 Google File System (GFS) 的开源实现，其核心设计目标是：**在廉价硬件上提供高吞吐量的数据访问，并具备高容错性。**

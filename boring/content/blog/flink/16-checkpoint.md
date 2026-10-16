@@ -5,9 +5,18 @@ description: "Chandy-Lamport 算法在 Flink 中的实现。Barrier 对齐与异
 taxonomies:
   tags: [Flink, Source Code, Checkpoint, Fault Tolerance]
 weight: 16
+tldr: "Chandy-Lamport 算法在 Flink 中的实现。Barrier 对齐与异步快照。"
+keywords: ["Flink", "源码阅读", "16.", "Checkpoint", "核心流程", "Source Code", "Fault Tolerance"]
 ---
 
 Flink 的容错机制基于 **Chandy-Lamport 分布式快照算法**。
+
+
+
+
+## 0. 本章定位
+
+Checkpoint 是 Flink 容错的基石：基于 Chandy-Lamport 分布式快照算法，CheckpointCoordinator 向 Source Task 注入 CheckpointBarrier，Barrier 随数据流向下游流动，到多输入 Task 时触发 Alignment（对齐）。对齐是 Exactly-Once 的关键——保证 Barrier 前的数据全处理完、Barrier 后的数据才开始处理。本章讲 Coordinator / 状态后端 / 文件系统的协作，是后续 Two-Phase Commit（17）和 HA（18）的前置。
 
 ## 1. Barrier 注入
 CheckpointCoordinator 向所有的 Source Task 发送 `CheckpointBarrier`。

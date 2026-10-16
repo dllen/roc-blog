@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Transformer", "注意力机制", "NLP", "深度学习", "经典论文"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "用图书馆管理员+电影导演的类比讲清 Google 2017 年 Transformer:Query/Key/Value、多头注意力、位置编码、Encoder-Decoder 架构;BLEU 翻译分数突破及成为 ChatGPT 祖先的进化路线。"
+keywords: ["Transformer", "详解", "注意力就是一切", "注意力机制", "NLP", "深度学习", "经典论文"]
 ---
 
 > **核心信息**：Google 2017 年发布的论文，提出了完全基于注意力机制的序列转换模型，摒弃了传统的 RNN 结构。它是 GPT、BERT、ChatGPT 等所有现代大语言模型的祖先，堪称 AI 领域的"工业革命"。

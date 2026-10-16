@@ -1,12 +1,15 @@
 ---
 title: "HBase 源码阅读：03. Master 启动流程"
 date: 2026-01-12T10:00:00+08:00
+description: "解析 HMaster 启动入口、HMasterCommandLine 参数解析、Master 与 RegionServer 的继承关系，以及启动后的核心线程组与 Procedure 状态机初始化。"
 taxonomies:
   tags: [HBase, Source Code, Master, Startup]
 weight: 3
+tldr: "解析 HMaster 启动入口、HMasterCommandLine 参数解析、Master 与 RegionServer 的继承关系，以及启动后的核心线程组与 Procedure 状态机初始化。"
+keywords: ["HBase", "源码阅读", "03.", "Master", "启动流程", "Source Code", "Startup"]
 ---
 
-HMaster 是 HBase 集群的主脑，负责元数据管理、Region 分配、负载均衡等。
+HMaster 是 HBase 集群的主脑，负责元数据管理、Region 分配、负载均衡等；本文从源码入口开始，逐步拆解 Master 启动的全流程，包括线程组、Procedure 状态机恢复与集群初始化三个关键阶段。
 
 ## 1. 入口类：`HMaster`
 

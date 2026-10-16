@@ -5,6 +5,8 @@ description: "解析 DataNode 与 NameNode 之间的生命线：心跳机制、�
 taxonomies:
   tags: [Hadoop, HDFS, DataNode, RPC]
 weight: 10
+tldr: "解析 DataNode 与 NameNode 之间的生命线：心跳机制、全量块汇报与增量块汇报。"
+keywords: ["HDFS", "源码阅读", "10.", "心跳与块汇报", "Heartbeat", "BlockReport", "Hadoop", "DataNode"]
 ---
 
 DataNode 是被动的，它通过 RPC 主动联系 NameNode。

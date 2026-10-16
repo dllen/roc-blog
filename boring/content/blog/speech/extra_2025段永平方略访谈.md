@@ -1,8 +1,11 @@
 +++
 title = "2025段永平方略访谈"
 date = 2025-01-01
+description = "2025 年段永平方略访谈：晚年集大成思考，谈企业经营、人生哲学、价值投资，以及对年轻一代的嘱托。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_2025段永平方略访谈.md"
+tldr = "段永平方略访谈 01 Q: 聊个人经历？ A: A: 方三文：这个用户问了个特别无厘头的问题，你是如何度过平常的一天，比如说今天？"
+keywords = ["2025段永平方略访谈"]
 +++
 
 # 段永平方略访谈

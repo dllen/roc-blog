@@ -5,6 +5,7 @@ description: "为什么 GPT-3 在单卡 A100 上要跑 355 年？70B 模型 Adam
 tldr: "16Ψ bytes 单卡账本 · Llama-3.1 8B seq=4096: 97GB → 1GB · gradient checkpointing 是关键"
 taxonomies:
   tags: ["LLM", "DistributedTraining", "ZeRO", "FSDP", "RayTrain", "系列教程"]
+keywords: ["Distributed", "Training", "上篇", "单卡账本", "16Ψ", "bytes", "与省钱三件套", "LLM"]
 ---
 
 # 系列-05 · Distributed Training · 从单卡到集群（上篇）：单卡账本与省钱三件套

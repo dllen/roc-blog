@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "MCP", "Tool Calling", "Cloudflare"]
 extra:
   update_date: 2026-08-31T13:00:00+08:00
+tldr: "本文拆解 Cloudflare Code Mode：把 MCP 工具渲染成 TypeScript API、让模型写代码而非发 tool-call 的新范式。从「莎士比亚学中文」的类比讲起，拆解类型生成、V8 isolate 沙箱隔离、网络封锁与密钥保护，再结合 cloudflare/agents 框架的 connector 与 snippet 机制，最后给出何时值得引入的判断清单。"
+keywords: ["Cloudflare", "Code", "Mode", "LLM", "写代码而非调工具", "MCP", "变成", "TypeScript"]
 ---
 
 让 LLM 调用外部工具，几乎成了所有 Agent 的标配。但 Cloudflare 在 2025 年底的一篇博客里抛出了一个反直觉的论点：**也许我们一直让模型用错了姿势**——不该让模型「调用工具」，而该让它「写代码」。

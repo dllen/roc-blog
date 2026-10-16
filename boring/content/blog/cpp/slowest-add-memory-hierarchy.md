@@ -5,6 +5,8 @@ update_date: 2026-09-03T20:00:00+08:00
 description: "从 64 字节 cache line 到 4KB 页边界再到 DRAM bank 通道排列，重现一次让 CPU 性能崩塌 15 倍的内存层级对抗实验，并结合 Kafka / Redis / 数据库 buffer pool 等真实工程场景剖析。"
 taxonomies:
   tags: ["C/C++", "性能优化", "内存层级", "CPU 缓存", "微架构"]
+tldr: "从 64 字节 cache line 到 4KB 页边界再到 DRAM bank 通道排列，重现一次让 CPU 性能崩塌 15 倍的内存层级对抗实验，并结合 Kafka / Redis / 数据库 buffer pool 等真实工程场景剖析。"
+keywords: ["CPU", "愤怒", "一次内存层级的对抗实验", "C/C++", "性能优化", "内存层级", "CPU 缓存", "微架构"]
 ---
 
 ## 引子：一个反直觉的发现

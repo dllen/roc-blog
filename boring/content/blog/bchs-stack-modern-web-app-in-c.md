@@ -6,6 +6,7 @@ description: "一个 C 程序、一个 SQLite 文件、三个依赖，就能上�
 tldr: "BCHS（OpenBSD + C + httpd + SQLite）用一个二进制和一个数据库文件交付商业产品；CGI 在 2026 年复兴，本质是供应链安全与复杂度控制的双重胜利。"
 taxonomies:
   tags: ["C语言", "Web架构", "CGI", "SQLite", "极简工程", "供应链安全"]
+keywords: ["写现代", "Web", "应用", "BCHS", "栈与", "CGI", "复兴", "C语言"]
 ---
 
 # 用 C 写现代 Web 应用：BCHS 栈与 CGI 复兴

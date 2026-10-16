@@ -5,6 +5,7 @@ description: "KV Cache三步曲中篇：K/V缓存4步流程（算一次存重复
 tldr: "KV Cache让推理从O(n²)降到O(n)，但注意力本身仍是O(n)；TTFT由prefill决定（compute-bound），TPOT由decode决定（memory-bound），优化方向完全不同。"
 taxonomies:
   tags: ["LLM", "KV-Cache", "TTFT", "Prefill", "系列教程"]
+keywords: ["为什么", "ChatGPT", "第一个字永远慢", "KV", "Cache", "修复方案", "TTFT", "的真相"]
 ---
 
 # 为什么 ChatGPT 第一个字永远慢（中）：KV Cache 修复方案 + TTFT 的真相

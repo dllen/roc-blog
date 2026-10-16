@@ -5,9 +5,28 @@ description: "Flink 如何高效管理数百万个定时器？基于时间轮 (T
 taxonomies:
   tags: [Flink, Source Code, Timer, Timing Wheel]
 weight: 14
+tldr: "Flink 如何高效管理数百万个定时器？基于时间轮 (Timing Wheel) 还是优先队列？"
+keywords: ["Flink", "源码阅读", "14.", "TimerService", "时间轮", "Source Code", "Timer", "Timing Wheel"]
 ---
 
 Flink 允许用户注册 ProcessingTime 和 EventTime 定时器。
+
+
+
+
+
+
+
+
+## 实战建议
+
+Timer 数量爆炸是隐形性能陷阱：监控 registeredTimers 指标，超过千万级立即清理或拆分作业。
+
+建议结合 ProcessFunction 的 onTimer 回调阅读，看 TimerService 在用户代码中的使用模式。
+
+## 0. 本章定位
+
+TimerService 支持 ProcessingTime 与 EventTime 定时器（基于 Keyed State）。HeapStateBackend 用 PriorityQueue 实现，按触发时间排序；RocksDBStateBackend 用 RocksDB 内置 Timer 实现，避免堆内堆外两套存储。理解 Timer 是理解 CEP（Pattern 内部靠 Timer）、ProcessFunction 自定义业务逻辑（含 onTimer 回调）的关键。Timer 数量爆炸（百万级）是常见性能陷阱——需配合 State 清理策略与 TTL 配置。
 
 ## 1. 优先队列
 在 HeapStateBackend 中，Timer 存储在 Java 的 `PriorityQueue` 中。

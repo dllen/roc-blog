@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Logic Programming", "Prolog", "Recursion", "Declarative Programming", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.4 核心内容：探索逻辑编程范式。通过定义事实（Facts）和规则（Rules），让计算机自动推导查询结果，实现祖先关系查找和列表拼接等复杂逻辑。"
+tldr: "SICP 4.4 核心内容：探索逻辑编程范式。通过定义事实（Facts）和规则（Rules），让计算机自动推导查询结果，实现祖先关系查找和列表拼接等复杂逻辑。"
+keywords: ["17.", "逻辑编程", "通过事实与规则进行推理", "Logic Programming", "Prolog", "Recursion", "Declarative Programming", "SICP"]
 ---
 
 # 第十七章：逻辑编程——通过事实与规则进行推理

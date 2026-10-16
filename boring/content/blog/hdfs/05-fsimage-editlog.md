@@ -5,6 +5,8 @@ description: "解析 FSEditLog 的双缓冲机制与 Checkpoint 流程。"
 taxonomies:
   tags: [Hadoop, HDFS, NameNode, Persistence]
 weight: 5
+tldr: "解析 FSEditLog 的双缓冲机制与 Checkpoint 流程。"
+keywords: ["HDFS", "源码阅读", "05.", "持久化机制", "FsImage", "EditLog", "Hadoop", "NameNode"]
 ---
 
 为了保证数据不丢失，NameNode 必须将内存中的元数据持久化到磁盘。

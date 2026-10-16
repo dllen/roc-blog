@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Pi", "Tool Design", "TypeScript", "系列教程"]
 series: "Pi Agent 系列教程"
 series_order: 2
+keywords: ["Pi", "的工具设计", "为什么", "\"约束", "\"比", "\"自由", "\"更重要", "AI"]
 ---
 
 > 本文是 **Pi Agent 系列教程**第 2 篇。基于张汉东《[pi 的设计艺术](https://zhanghandong.github.io/pi-book/)》第 19-23 章改编。上一篇讲清了 Pi 的架构——四层洋葱和 Agent Loop 引擎。今天聚焦一个具体问题：**该给 Agent 什么工具？怎么设计工具接口才能让 LLM 少犯错？**

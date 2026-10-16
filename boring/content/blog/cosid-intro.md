@@ -2,6 +2,9 @@
 title: "cosid 项目学习"
 date: 2023-03-18T12:13:38+05:30
 update_date: 2023-03-18T12:13:38+05:30
+description: "系统梳理 CosId 分布式 ID 生成框架的雪花算法与号段模式两种主策略，对比 Redis / ZooKeeper / JDBC / MongoDB 四种号段存储后端的适用场景与性能取舍。"
+tldr: "系统梳理 CosId 分布式 ID 生成框架的雪花算法与号段模式两种主策略，对比 Redis / ZooKeeper / JDBC / MongoDB 四种号段存储后端的适用场景与性能取舍。"
+keywords: ["cosid", "项目学习"]
 ---
 
 

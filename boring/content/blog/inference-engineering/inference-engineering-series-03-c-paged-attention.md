@@ -1,10 +1,11 @@
 ---
-title: "Paged Attention 下篇：配套技术全景（MQA/GQA/MLA/GTA/GLA + Continuous Batching + Speculative Decoding + Quantisation）"
+title: "Paged Attention 下篇：MQA/GQA/MLA + 推理优化"
 date: 2026-09-09
 description: "Paged Attention 解决了分配问题，KV 体积问题需要 MQA/GQA/MLA/GTA/GLA 五种压缩机制；配套的 Continuous Batching、Speculative Decoding、Quantisation 组成完整推理优化拼图。本文是下篇，附国内大厂真实案例。"
 tldr: "GQA = 当前主流（MHA 1/8 KV cache）· MLA = DeepSeek 架构级压缩（~7%）· Continuous Batching = 23× 吞吐 · Speculative Decoding = 2-3× 提速"
 taxonomies:
   tags: ["LLM", "PagedAttention", "vLLM", "KVCache", "MQA", "GQA", "MLA", "系列教程"]
+keywords: ["Paged", "Attention", "下篇", "配套技术全景", "MQA", "GQA", "MLA", "GTA"]
 ---
 
 # Paged Attention 下篇：配套技术全景

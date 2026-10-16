@@ -6,6 +6,8 @@ taxonomies:
   tags: ["HySparse2", "长上下文", "Prefill 优化", "LLM", "小米 MiMo"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "小米 MiMo 团队 HySparse2:两层 KV 共享(KV Bridging + KV Reuse),内层 token 级稀疏 + 外层跨解码器复用,80B-A3B MoE 上 Prefill FLOPs 降低 5 倍、KV Cache 从 12GB 压缩到 2.69GB,MRCR-v2 提升 11.30 分。"
+keywords: ["HySparse2", "详解", "让长上下文", "Agent", "Prefill", "便宜", "长上下文", "Prefill 优化"]
 ---
 
 ## 一句话总结

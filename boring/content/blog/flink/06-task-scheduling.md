@@ -5,9 +5,20 @@ description: "TaskManager 如何启动 Task？Slot、Task、SubTask 的关系，
 taxonomies:
   tags: [Flink, Source Code, Task, Thread Model]
 weight: 6
+tldr: "TaskManager 如何启动 Task？Slot、Task、SubTask 的关系，以及 Task 线程模型。"
+keywords: ["Flink", "源码阅读", "06.", "Task", "调度与执行", "Source Code", "Thread Model"]
 ---
 
 JobMaster 分配好 Slot 后，TaskManager 接收到 `SubmitTask` 请求。
+
+
+
+
+
+
+## 0. 本章定位
+
+Task 调度涉及 Slot 分配、Slot Sharing、CoLocation Constraint 三层机制。本章配合 ExecutionGraph 看：JobMaster 通过 SlotPool 申请 Slot，TaskManager 的 TaskSlot 表分配具体资源。同 SlotSharingGroup 的算子共享一个 Slot——这是 Flink 资源利用率比 Spark 高的关键（Spark 每个 Task 一个 Executor）。CoLocation 用于迭代计算强制两个算子在同一 TM。生产中遇到 Slot 不够或调度慢，看 ResourceManager 日志和反压指标。
 
 ## 1. Task 与 SubTask
 *   **SubTask**: Flink 并行执行的最小单位。一个 ExecutionVertex 对应一个 SubTask。

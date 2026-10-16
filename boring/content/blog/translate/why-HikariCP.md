@@ -1,7 +1,10 @@
 ---
 title: "HikariCP: Down the Rabbit Hole"
 date: 2023-12-18T12:13:38+05:30
+description: "HikariCP 译文（Why HikariCP）：作者 Brett Wooldridge 详解 HikariCP 设计哲学、数据结构优化与字节码增强。"
 update_date: 2023-12-18T12:13:38+05:30
+tldr: "原文连接 Simplicity is prerequisite for reliability."
+keywords: ["HikariCP", "Down", "the", "Rabbit", "Hole"]
 ---
 
 [原文连接](https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole)
@@ -55,7 +58,7 @@ HikariCP 包含一个称为 `ConcurrentBag` 的自定义无锁集合。这个想
 
 支持高度的并发性，极低的延迟，最小化了 [False sharing](https://en.wikipedia.org/wiki/False_sharing) 的发生。
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/v2-a9557dcd20f2d034d8f2a28c643e7974_b.jpg)
+![HikariCP 与其他 JDBC 连接池的架构对比示意图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/v2-a9557dcd20f2d034d8f2a28c643e7974_b.jpg)
 
 > 上图中`thread0`位于`core0`，而`thread1`位于`core1`，二者均想更新彼此独立的两个变量，但是由于两个变量位于同一个`cache line`中，此时可知的是两个`cache line`的状态应该都是`Shared`，而对于`cache line`的操作`core`间必须争夺主导权`（ownership）`，如果`core0`抢到了，`thread0`因此去更新`cache line`，会导致`core1`中的`cache line`状态变为`Invalid`，随后`thread1`去更新时必须通知`core0`将`cache line`刷回主存，然后它再从主从中`load`该`cache line`进高速缓存之后再进行修改，但令人抓狂的是，该修改又会使得`core0`的`cache line`失效，重复上演历史，从而高速缓存并未起到应有的作用，反而影响了性能。
 
@@ -185,7 +188,7 @@ Which brings us to...
 
 Another big hit incurred when you can't get your work done in a quanta is CPU cache-line invalidation. If your thread is preempted by the scheduler, when it does get a chance to run again all of the data it *was* frequently accessing is likely no longer in the core's L1 or core-pair L2 cache. Even more likely because you have no control over which core you will be scheduled on next.
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/cache.architecture.png)
+![HikariCP 内部 Byte Buddy 字节码优化与 FastList 数据结构示意图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/cache.architecture.png)
 
 > 在多核处理器上，缓存遇到了一个问题——一致性。不同的处理器拥有完全或部分分离的缓存。L1缓存是分离的（这很普遍），而我有多个处理器，每一个处理器共享一个L2缓存。这随着具体情况而不同，如果一个现代多核机器上拥有多级缓存，那么快速小型的缓存将被处理器独占。
 

@@ -5,6 +5,8 @@ description: "Apache ZooKeeper 源码阅读系列大纲。从 ZAB 协议到 Data
 taxonomies:
   tags: [ZooKeeper, Source Code, Outline, Roadmap]
 weight: 0
+tldr: "Apache ZooKeeper 源码阅读系列大纲。从 ZAB 协议到 DataTree，从 Leader 选举到 Watcher 机制，全链路源码解析。"
+keywords: ["ZooKeeper", "源码阅读", "00.", "阅读大纲与学习路线", "Source Code", "Outline", "Roadmap"]
 ---
 
 Apache ZooKeeper 是 Hadoop 生态系统中至关重要的分布式协调服务。本系列将基于 ZooKeeper 3.7+ 源码，深入剖析其底层原理。

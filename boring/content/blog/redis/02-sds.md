@@ -5,6 +5,8 @@ description: "深入解析 Redis 的 SDS 字符串结构。为什么 Redis 不�
 taxonomies:
   tags: [Redis, Source Code, C, Data Structure, SDS]
 weight: 2
+tldr: "深入解析 Redis 的 SDS 字符串结构。为什么 Redis 不直接使用 C 语言字符串？SDS 如何实现二进制安全、内存预分配与惰性释放？"
+keywords: ["Redis", "源码阅读", "02.", "SDS", "Simple", "Dynamic", "String", "Source Code"]
 ---
 
 在 Redis 中，字符串是最基础的数据类型。但 Redis 并没有直接使用 C 语言传统的字符串（以 `\0` 结尾的字符数组），而是自己构建了一种名为 **SDS (Simple Dynamic String，简单动态字符串)** 的抽象类型。

@@ -5,6 +5,7 @@ description: "KV Cache三步曲上篇，Part 1-3：LLM生成token机制、Q新K/
 tldr: "每生成一个token都要重算所有历史的K/V，O(n²)复杂度——这不是慢一点，是指数级不可用。KV Cache把K/V投影从O(n²)降到O(n)。"
 taxonomies:
   tags: ["LLM", "KV-Cache", "第一性原理", "系列教程"]
+keywords: ["为什么", "ChatGPT", "第一个字永远慢", "从生成机制到", "n²", "冗余", "LLM", "KV-Cache"]
 ---
 
 # 为什么 ChatGPT 第一个字永远慢（上）：从生成机制到 O(n²) 冗余

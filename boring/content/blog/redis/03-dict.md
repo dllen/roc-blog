@@ -5,6 +5,8 @@ description: "深度剖析 Redis 核心数据结构 Dict。双哈希表设计、
 taxonomies:
   tags: [Redis, Source Code, C, Data Structure, Dict, Hash]
 weight: 3
+tldr: "深度剖析 Redis 核心数据结构 Dict。双哈希表设计、哈希冲突解决、以及最精彩的渐进式 Rehash 机制详解。"
+keywords: ["Redis", "源码阅读", "03.", "Dict", "字典与渐进式", "Rehash", "Source Code", "C"]
 ---
 
 如果说 SDS 是 Redis 的肌肉，那么 **Dict (字典/哈希表)** 就是 Redis 的骨架。

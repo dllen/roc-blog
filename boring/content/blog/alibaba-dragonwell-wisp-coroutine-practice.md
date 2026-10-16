@@ -1,10 +1,13 @@
 ---
 title: "给 Java 插上翅膀：Alibaba Dragonwell Wisp 协程深度解析与实战避坑指南"
 date: 2026-02-01T12:00:00+08:00
+description: "阿里 Dragonwell Wisp 协程实战：基于 OpenJDK 协程改造的 Java 异步编程实践、性能对比与生产落地。"
 draft: false
 taxonomies:
   tags: ["Java", "Dragonwell", "Wisp", "Coroutine", "Performance", "Concurrency"]
 categories: ["Backend", "Performance Tuning"]
+tldr: "在云原生时代，高并发已成为后端服务的标配。Java 作为服务端霸主，其传统的 1:1 线程模型（一个 Java 线程对应一个内核线程）在面对海量轻量级任务时，往往因频繁的内核态/用户态切换和高昂的内存开销而显得力不从心。"
+keywords: ["Java", "插上翅膀", "Alibaba", "Dragonwell", "Wisp", "协程深度解析与实战避坑指南", "Coroutine", "Performance"]
 ---
 
 在云原生时代，高并发已成为后端服务的标配。Java 作为服务端霸主，其传统的 1:1 线程模型（一个 Java 线程对应一个内核线程）在面对海量轻量级任务时，往往因频繁的内核态/用户态切换和高昂的内存开销而显得力不从心。

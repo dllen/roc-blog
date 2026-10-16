@@ -1,10 +1,20 @@
 ---
 title: "Spring 源码阅读：03. Bean 的生命周期"
 date: 2026-01-14T10:00:00+08:00
+description: "Spring Bean 生命周期源码解析：实例化、属性注入、初始化回调、@PostConstruct / InitializingBean / init-method 顺序。"
 taxonomies:
   tags: [Spring, Source Code, Bean Lifecycle]
 weight: 3
+tldr: "在《J2EE without EJB》中，Rod 强调了 Bean Factory 应该管理对象的生命周期，而不只是简单的 。"
+keywords: ["Spring", "源码阅读", "03.", "Bean", "的生命周期", "Source Code", "Bean Lifecycle"]
 ---
+## 0. 本章定位
+
+Spring 源码阅读：03. Bean 的生命周期：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 在《J2EE without EJB》中，Rod 强调了 Bean Factory 应该管理对象的生命周期，而不只是简单的 `new`。
 

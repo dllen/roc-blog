@@ -5,6 +5,8 @@ update_date: 2024-01-11T22:01:58+05:30
 description: "Namespaces 用来做资源隔离，CGroups 用来做资源限制，Namespaces、CGroups、Chroot 是 Docker 核心基础技术。"
 taxonomies:
   tags: [docker, container]
+tldr: "Namespaces 用来做资源隔离，CGroups 用来做资源限制，Namespaces、CGroups、Chroot 是 Docker 核心基础技术。"
+keywords: ["Linux", "CGroups", "and", "Namespaces", "docker", "container"]
 ---
 
 Namespaces 用来做进程间资源隔离，Namespaces 中进程使用的资源对其他进程不可见（包括 进程ID、Hostnames、用户ID、文件、网络 等内核资源）。

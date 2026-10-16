@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AutoCompact", "上下文管理", "AI Agent", "LLM", "RL"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "AutoCompact 训练编码智能体通过裁判审查 + SFT + RL 两阶段自主决定何时压缩上下文、保留什么工作状态、如何无缝衔接继续执行;SWE-bench Verified 提升 +9.2%,SWE-PolyBench +5.0%。"
+keywords: ["AutoCompact", "详解", "让编码智能体自己决定何时压缩上下文", "上下文管理", "AI Agent", "LLM", "RL"]
 ---
 
 ## 一句话总结

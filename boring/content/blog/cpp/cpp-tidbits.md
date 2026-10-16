@@ -5,6 +5,8 @@ update_date: 2026-09-03T21:00:00+08:00
 description: "shared_ptr 析构、fold 表达式方向、用户自定义析构抑制隐式 move、std::source_location …… 14 条 C++ 容易遗忘的语言细节，每条配工程踩坑示例。"
 taxonomies:
   tags: ["C++", "边角知识", "模板", "异常", "内存模型"]
+tldr: "shared_ptr 析构、fold 表达式方向、用户自定义析构抑制隐式 move、std::source_location …… 14 条 C++ 容易遗忘的语言细节，每条配工程踩坑示例。"
+keywords: ["C++", "14", "条边角知识", "边角知识", "模板", "异常", "内存模型"]
 ---
 
 > 本文是对英文原文 [C++ Tidbits](https://blog.weineng.me/posts/cpp_tidbits/) 的中文翻译与扩展。每条附带 1-2 段工程踩坑案例，帮助你在实际项目中避坑。

@@ -1,13 +1,16 @@
 +++
 title = "2011年段永平学长在浙江大学的毕业演讲"
 date = 2011-01-01
+description = "2011 年段永平浙大毕业演讲：谈做对的事、把事做对、stop doing list 与人生阶段的优先级排序。"
 [extra]
 original_url = "https://github.com/roc-blog/buffett-chinese/blob/main/extra_2011年段永平学长在浙江大学的毕业演讲.md"
+tldr = "2011 年段永平学长在浙江大学的毕业演讲 Q: 演讲全文：？"
+keywords = ["2011年段永平学长在浙江大学的毕业演讲"]
 +++
 
 # 2011 年段永平学长在浙江大学的毕业演讲
 
-![](https://xqimg.imedao.com/177dc08488c7cea03feb2215.jpg!800.jpg)
+![段永平 2011 浙大毕业演讲现场截图](https://xqimg.imedao.com/177dc08488c7cea03feb2215.jpg!800.jpg)
 
 **Q:** 演讲全文：？
 

@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Pi", "Architecture", "Design Philosophy", "TypeScript", "系列教程"]
 series: "Pi Agent 系列教程"
 series_order: 4
+keywords: ["Pi", "的设计哲学", "极简内核、四个反主流选择与架构的适用边界", "AI", "LLM", "Agent", "Architecture", "Design Philosophy"]
 ---
 
 > 本文是 **Pi Agent 系列教程**第 4 篇（完结篇）。基于张汉东《[pi 的设计艺术](https://zhanghandong.github.io/pi-book/)》第 30-32 章改编。前三篇讲清了 Pi 的架构、工具设计、Extension 系统。这一篇做哲学层面的总结——Pi 为什么选择这条路，以及你什么时候该走这条路。

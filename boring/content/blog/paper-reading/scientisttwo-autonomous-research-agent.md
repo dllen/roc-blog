@@ -6,6 +6,8 @@ taxonomies:
   tags: ["ScientistTwo", "自主科研", "AI Agent", "LLM", "Google"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "Google + 滑铁卢大学 ScientistTwo:24 个专业化 Agent 组成流水线,自主完成读论文/找问题/做实验/写论文/同行评审全流程;107 个研究问题上 80.4% 成功率,平均相对 SOTA 提升 25.2%,通过 Stanford Agentic Reviewer 评审。"
+keywords: ["ScientistTwo", "详解", "24", "AI", "Agent", "自主完成科研全流程", "自主科研", "AI Agent"]
 ---
 
 ## 一句话总结

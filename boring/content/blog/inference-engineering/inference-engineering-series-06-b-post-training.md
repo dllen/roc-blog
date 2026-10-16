@@ -5,6 +5,7 @@ description: "SFT 教模型怎么回答，RL 教模型回答得更好——但�
 tldr: "RLHF=人类偏好·RLAIF=LLM反馈·RLVR=可验证奖励·PRM=过程奖励·Rubric=评分卡 · Bradley-Terry: P(y1>y2)=exp(r1)/(exp(r1)+exp(r2)) · KL 正则化目标"
 taxonomies:
   tags: ["LLM", "PostTraining", "RLHF", "RLAIF", "RLVR", "PRM", "系列教程"]
+keywords: ["Post-Training", "101", "中篇", "RL", "五大奖励族横向对比", "LLM", "PostTraining", "RLHF"]
 ---
 
 # 系列-06 · Post-Training 101 · 从 base 到 instruct（中）：RL 五大奖励族

@@ -5,6 +5,8 @@ description: "解析 Redis 为了省内存而设计的压缩列表。ZipList 的
 taxonomies:
   tags: [Redis, Source Code, Data Structure, ZipList, ListPack]
 weight: 4
+tldr: "解析 Redis 为了省内存而设计的压缩列表。ZipList 的连锁更新灾难是什么？新一代 ListPack 又是如何完美解决这个问题的？"
+keywords: ["Redis", "源码阅读", "04.", "ZipList", "ListPack", "内存紧凑之道", "Source Code", "Data Structure"]
 ---
 
 Redis 是一个**内存**数据库，内存就是成本。为了在存储小量数据时节省内存，Redis 设计了 ZipList（压缩列表）。但 ZipList 存在设计缺陷，因此 Redis 5.0 引入了 ListPack（紧凑列表）作为替代品，并将在 Redis 7.0+ 中逐步全面接管 ZipList 的职责。

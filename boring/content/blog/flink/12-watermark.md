@@ -5,9 +5,26 @@ description: "水位线 (Watermark) 的生成、传播与处理乱序数据的�
 taxonomies:
   tags: [Flink, Source Code, Watermark, Time]
 weight: 12
+tldr: "水位线 (Watermark) 的生成、传播与处理乱序数据的原理。"
+keywords: ["Flink", "源码阅读", "12.", "Watermark", "机制", "Source Code", "Time"]
 ---
 
 Watermark 是 Flink 处理 Event Time 和乱序数据的核心机制。
+
+
+
+
+
+
+
+
+## 实战建议
+
+Watermark 与 Allowed Lateness、EventTime 触发器共同决定窗口的最终行为，建议三章一起读，避免单独理解产生偏差。
+
+## 0. 本章定位
+
+Watermark 让 Flink 能用 Event Time 处理乱序数据。本章讲 Periodic / Punctuated 两种生成策略、WatermarkGenerator 接口实现、Watermark 在算子间的传播规则（下取最小）、与窗口、Checkpoint、Idle Source 的协同。生产中调参：auto.watermark.interval（生成周期）、idle.timeout（空闲 Source 不阻塞 watermark 推进）必读本章。乱序数据严重时需配合 Allowed Lateness 使用。建议结合窗口与 TimerService 章一起读。
 
 ## 1. Watermark 生成
 Watermark 是一种特殊的流元素 (`StreamElement`)。

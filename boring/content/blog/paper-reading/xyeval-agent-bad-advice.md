@@ -6,6 +6,8 @@ taxonomies:
   tags: ["XYEval", "Agent 评测", "DeepMind", "抗干扰", "人机协作"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "Google DeepMind XYEval:故意给 Agent 一条自信但错误的建议,各大顶级模型成绩暴跌最高 46.7%(Terminal-Bench 上 Gemini 3.1 Pro 从 67.4% 跌到 36.0%);Agent 内心知道建议不靠谱,执行时却照做。"
+keywords: ["XYEval", "详解", "Agent", "有多容易跟着错的建议走", "Agent 评测", "DeepMind", "抗干扰", "人机协作"]
 ---
 
 ## 一句话总结

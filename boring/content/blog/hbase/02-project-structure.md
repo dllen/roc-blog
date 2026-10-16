@@ -1,12 +1,15 @@
 ---
 title: "HBase 源码阅读：02. 项目结构概览"
 date: 2026-01-12T10:00:00+08:00
+description: "梳理 HBase 多模块 Maven 项目结构，逐个解读 hbase-common、hbase-server、hbase-client 等核心模块的职责、关键类与依赖关系。"
 taxonomies:
   tags: [HBase, Source Code, Architecture]
 weight: 2
+tldr: "梳理 HBase 多模块 Maven 项目结构，逐个解读 hbase-common、hbase-server、hbase-client 等核心模块的职责、关键类与依赖关系。"
+keywords: ["HBase", "源码阅读", "02.", "项目结构概览", "Source Code", "Architecture"]
 ---
 
-HBase 采用多模块 Maven 项目结构。熟悉各个模块的职责有助于快速定位代码。
+HBase 采用多模块 Maven 项目结构。熟悉各个模块的职责有助于快速定位代码。后续源码阅读章节都基于本文的模块划分展开，建议先建立全局认知再深入具体路径。理解模块边界比记住类名更重要：客户端走 hbase-client，服务端走 hbase-server，跨语言接口走 hbase-protocol-shaded，三者之间的依赖方向在编译期就已经定死。
 
 ## 1. 核心模块
 

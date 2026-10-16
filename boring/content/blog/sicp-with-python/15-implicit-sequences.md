@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Python", "Iterator", "Generator", "Lazy Evaluation", "SICP"]
 categories: ["SICP-Python"]
 description: "SICP 4.2 核心内容：深入 Python 的迭代器协议与生成器，理解惰性计算如何处理无限序列与大数据流。"
+tldr: "SICP 4.2 核心内容：深入 Python 的迭代器协议与生成器，理解惰性计算如何处理无限序列与大数据流。"
+keywords: ["15.", "隐式序列与生成器", "惰性计算的力量", "Python", "Iterator", "Generator", "Lazy Evaluation", "SICP"]
 ---
 
 # 第十五章：隐式序列与生成器——惰性计算的力量

@@ -5,6 +5,8 @@ description: "Apache Kafka 源码阅读系列大纲。从 Scala 到 Java，从 Z
 taxonomies:
   tags: [Kafka, Source Code, Outline, Roadmap]
 weight: 0
+tldr: "Apache Kafka 源码阅读系列大纲。从 Scala 到 Java，从 ZK 到 KRaft，深入剖析消息系统的王者。"
+keywords: ["Kafka", "源码阅读", "00.", "阅读大纲与学习路线", "Source Code", "Outline", "Roadmap"]
 ---
 
 Apache Kafka 是分布式流处理平台的标杆。本系列将基于 Kafka 3.x 源码（Scala + Java），深入剖析其底层原理。

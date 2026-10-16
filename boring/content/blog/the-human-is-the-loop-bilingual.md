@@ -6,6 +6,7 @@ description: "Brent Fitzgerald 离开 AI 几周后回来，发现自己形成了
 tldr: "AI 工具没有让我更高效、更聪明、更快乐。真正重要的是：人必须是循环的核心，AI 只是偶尔被叫进来帮个忙。"
 taxonomies:
   tags: ["AI", "Productivity", "Mental Health", "Reflection", "Bilingual"]
+keywords: ["中英对照", "The", "Human", "is", "the", "Loop", "人是循环本身", "AI"]
 ---
 
 ## 中英对照阅读

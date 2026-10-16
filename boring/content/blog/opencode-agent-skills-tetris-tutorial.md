@@ -6,6 +6,7 @@ description: "用 opencode 终端 agent 跑 addyosmani/agent-skills 的 24 个�
 tldr: "opencode 跟 Claude Code 不一样——它没有 /skill 命令。skill 是通过 AGENTS.md 引导 agent 自动选用的。你只说人话，agent 自己判断该跑哪个 skill。本文用俄罗斯方块做实战演示。"
 taxonomies:
   tags: ["AI", "LLM", "Coding Agent", "opencode", "agent-skills", "Tetris", "TDD", "Engineering"]
+keywords: ["opencode", "agent-skills", "开发俄罗斯方块", "自然语言驱动工程流", "AI", "LLM", "Coding Agent", "Tetris"]
 ---
 
 之前我写过 [用 Matt Pocock 的 Skill 系统开发 2048](/blog/skill-system-2048-full-demo/)，那套流程是**斜杠命令驱动**——`/grill-with-docs`、`/to-spec`、`/to-tickets`、`/implement`，每个阶段都要手动喊。

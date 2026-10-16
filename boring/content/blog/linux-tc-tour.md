@@ -2,12 +2,14 @@
 title: "Linux TC 命令材料收集和整理"
 date: 2024-01-15T12:13:32+05:30
 update_date: 2024-01-15T12:13:32+05:30
-description: "The art of letting go."
+description: "Linux TC 流量控制实战：qdisc 分类树形结构、HTB / PRIO / netem 配置、过滤器（u32 / flow）匹配规则。"
 taxonomies:
   tags: [liunx, tc]
+tldr: "介绍 tc 用于在 Linux 内核中配置流量控制。tc 是 Linux 自带的模块，一般情况下不需要另行安装，可以用 man tc 查看 tc 相关命令细节，要求内核 2."
+keywords: ["Linux", "TC", "命令材料收集和整理", "liunx", "tc"]
 ---
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/tc.png)
+![Linux TC 流量控制架构总览（qdisc / class / filter 三层）](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/tc.png)
 
 ## 介绍
 
@@ -53,7 +55,7 @@ TC模块实现流量控制功能使用的队列规定分为两类，一类是无
 
 **分类队列：** 规定是对进入网络设备的数据包根据不同的需求以分类的方式区分对待的队列规定。数据包进入一个分类的队列后，它就需要被送到某一个类中，也就是说需要对数据包做分类处理。对数据包进行分类的工具是过滤器，过滤器会返回一个决定，队列规定就根据这个决定把数据包送入相应的类进行排队。每个子类都可以再次使用它们的过滤器进行进一步的分类。直到不需要进一步分类时，数据包才进入该类包含的队列排队。除了能够包含其他队列规定之外，绝大多数分类的队列规定还能够对流量进行整形。这对于需要同时进行调度（如使用SFQ）和流量控制的场合非常有用。
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/QP43c.png)
+![tc qdisc 分类树形结构示意图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/QP43c.png)
 
 ## 基本概念
 
@@ -71,7 +73,7 @@ TC模块实现流量控制功能使用的队列规定分为两类，一类是无
 
 * pfifo_fast: 在编译内核时，如果打开了高级路由器(Advanced Router)编译选项，pfifo_fast就是系统的标准QDISC。它的队列包括三个波段(band)。在每个波段里面，使用先进先出规则。而三个波段(band)的优先级也不相同，band 0的优先级最高，band 2的最低。如果band0里面有数据包，系统就不会处理band 1里面的数据包，band 1和band 2之间也是一样。数据包是按照服务类型(Type of Service,TOS)被分配多三个波段(band)里面的。
   
-  ![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__d566EGgUEX52WNdIpSf__AQ.png)
+  ![HTB qdisc 配置示例的命令输出](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__d566EGgUEX52WNdIpSf__AQ.png)
 
 * red: Random Early Detection(随机早期探测)的简写。如果使用这种QDISC，当带宽的占用接近于规定的带宽时，系统会随机地丢弃一些数据包。它非常适合高带宽应用。
 
@@ -96,7 +98,7 @@ tc qdisc del dev DEV root
 
 * HTB： HTB是Hierarchy Token Bucket的缩写。通过在实践基础上的改进，它实现了一个丰富的连接共享类别体系。使用HTB可以很容易地保证每个类别的带宽，它也允许特定的类可以突破带宽上限，占用别的类的带宽。HTB可以通过TBF(Token Bucket Filter)实现带宽限制，也能够划分类别的优先级。
   
-  ![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__yxleicti2yy9F2K0UrpmHA.png)
+  ![tc 过滤器（u32 / flow）匹配规则的示例输出](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/1__yxleicti2yy9F2K0UrpmHA.png)
 
 * PRIO： PRIO QDISC不能限制带宽，因为属于不同类别的数据包是顺序离队的。使用PRIO QDISC可以很容易对流量进行优先级管理，只有属于高优先级类别的数据包全部发送完毕，才会发送属于低优先级类别的数据包。为了方便管理，需要使用iptables或者ipchains处理数据包的服务类型(Type Of Service,ToS)。
 

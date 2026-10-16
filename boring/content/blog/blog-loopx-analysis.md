@@ -7,6 +7,8 @@ tags:
   - 工作流
   - 开源工具
   - Python
+tldr: "LoopX 是一个轻量级本地控制平面，为长时间运行的 AI Agent 工作流提供目标级状态管理。"
+keywords: ["LoopX", "AI", "Agent", "装上「目标记忆」的控制平面"]
 ---
 
 > 当一个需求要横跨三天、三个会话、三个 Agent 才能完成时，Chat 记忆不够用了。

@@ -5,9 +5,20 @@ description: "Flink 如何管理堆外内存？MemorySegment 与 Network Buffer 
 taxonomies:
   tags: [Flink, Source Code, Memory, Buffer]
 weight: 7
+tldr: "Flink 如何管理堆外内存？MemorySegment 与 Network Buffer 的设计。"
+keywords: ["Flink", "源码阅读", "07.", "内存管理机制", "Source Code", "Memory", "Buffer"]
 ---
 
 Flink 并没有完全依赖 JVM 的垃圾回收，而是自己实现了一套内存管理机制。
+
+
+
+
+
+
+## 0. 本章定位
+
+Flink 自研内存管理是为了绕过 JVM GC 对大堆的不友好（State 几十 GB 时 Full GC 不可接受）。TaskManager 内存分四块：Heap（用户代码 + HashMapState）、Off-Heap Network（网络缓冲 + 直接内存）、Managed Memory（RocksDB + Sorting + Hash table 预分配）、JVM Overhead。本章解析各块边界与申请/释放逻辑，建议结合 TaskManager 配置参数 taskmanager.memory.* 一起读——managed.memory 配错会直接 OOM。
 
 ## 1. 内存模型
 TaskManager 的内存分为：

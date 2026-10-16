@@ -6,6 +6,8 @@ taxonomies:
   tags: ["EvoOntology", "数据 Agent", "本体", "Text-to-SQL", "MCP"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "中国人民大学 EvoOntology:Schema/Content/Tool 三层语义本体 + MCP 协议 + Builder Agent 自动构建 + 配对评估自我演化,让 Agent 运行时动态查询业务语义;给 Claude Code / Codex 一键接入。"
+keywords: ["EvoOntology", "详解", "给数据", "Agent", "配一个会进化的语义字典", "数据 Agent", "本体", "Text-to-SQL"]
 ---
 
 ## 一句话总结

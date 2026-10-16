@@ -1,9 +1,12 @@
 ---
 title: "HBase 源码阅读：15. Region 切分 (Split)"
 date: 2026-01-12T10:00:00+08:00
+description: "HBase Region Split 源码解析：SplitPolicy 策略族、splits 计算、daughter region 创建与父 region 原子关闭。"
 taxonomies:
   tags: [HBase, Source Code, Split, Region]
 weight: 15
+tldr: "Region Split 是 HBase 实现水平扩展（Scale out）的基础。"
+keywords: ["HBase", "源码阅读", "15.", "Region", "切分", "Split", "Source Code"]
 ---
 
 Region Split 是 HBase 实现水平扩展（Scale-out）的基础。当一个 Region 过大时，它会自动分裂成两个。

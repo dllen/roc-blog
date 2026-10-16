@@ -5,6 +5,7 @@ description: "9节点路线图上篇，涵盖Compute&Memory/Quantization/KV Cach
 tldr: "做AI应用的人很多，做让AI跑得起来/跑得便宜/跑得稳的人很少——2026年Inference Engineer是大厂百万年薪都招不到的稀缺工种。"
 taxonomies:
   tags: ["LLM", "Inference", "路线图", "系列教程"]
+keywords: ["步走完", "LLM", "推理工程", "为什么你该做", "Inference", "Engineer", "路线图", "系列教程"]
 ---
 
 # 9 步走完 LLM 推理工程（上）：为什么你该做 Inference Engineer

@@ -5,6 +5,8 @@ description: "解析 HDFS 的数据高速公路：基于 TCP/Netty 的 DataTrans
 taxonomies:
   tags: [Hadoop, HDFS, DataNode, Network]
 weight: 11
+tldr: "解析 HDFS 的数据高速公路：基于 TCP/Netty 的 DataTransferProtocol，以及 DataXceiver 的工作原理。"
+keywords: ["HDFS", "源码阅读", "11.", "数据传输协议", "DataTransferProtocol", "Hadoop", "DataNode", "Network"]
 ---
 
 RPC 用于传输元数据，而真正海量的数据传输走的是 **Data Transfer Protocol**。这是一个基于 TCP 的流式协议。

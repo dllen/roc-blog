@@ -5,6 +5,8 @@ description: "深入 FSDirectory 内部，解析 INode 内存结构与目录树�
 taxonomies:
   tags: [Hadoop, HDFS, NameNode, Metadata]
 weight: 4
+tldr: "深入 FSDirectory 内部，解析 INode 内存结构与目录树的锁机制。"
+keywords: ["HDFS", "源码阅读", "04.", "元数据管理", "FSDirectory", "Hadoop", "NameNode", "Metadata"]
 ---
 
 `FSDirectory` 是 NameNode 维护文件系统目录树的核心组件。它管理着所有的 `INode`。

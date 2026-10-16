@@ -5,6 +5,8 @@ update_date: 2026-08-08T19:30:00+08:00
 description: "用 Git Worktree 同时维护多个工作目录，告别 stash 与反复切换分支的低效循环。"
 taxonomies:
   tags: [Git, 开发工具, 工作流]
+tldr: "用 Git Worktree 同时维护多个工作目录，告别 stash 与反复切换分支的低效循环。"
+keywords: ["Git", "Worktree", "实践指南", "开发工具", "工作流"]
 ---
 
 在维护一个稍具规模的仓库时，我最常遇到的烦躁时刻不是代码冲突，而是“分支切换”：

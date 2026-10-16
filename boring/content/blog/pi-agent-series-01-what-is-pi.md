@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Pi", "Agent Runtime", "TypeScript", "系列教程"]
 series: "Pi Agent 系列教程"
 series_order: 1
+keywords: ["Pi", "Agent", "Loop", "AI", "LLM", "Agent Runtime", "TypeScript", "系列教程"]
 ---
 
 > 本文是 **Pi Agent 系列教程**第 1 篇。基于张汉东《[pi 的设计艺术](https://zhanghandong.github.io/pi-book/)》（CC BY-NC-SA 4.0）改编，用费曼学习法（概念 → 类比 → 动手）带你从零理解 Pi 的架构设计。

@@ -5,9 +5,16 @@ description: "工欲善其事，必先利其器。如何编译 Flink 源码，�
 taxonomies:
   tags: [Flink, Source Code, Build, Maven, IDEA]
 weight: 1
+tldr: "工欲善其事，必先利其器。如何编译 Flink 源码，并在 IDEA 中运行 WordCount 示例进行 Debug。"
+keywords: ["Flink", "源码阅读", "01.", "源码编译与环境搭建", "Source Code", "Build", "Maven", "IDEA"]
 ---
 
 阅读源码的第一步，是把源码跑起来。只有能 Debug 的源码，才是活的源码。
+
+
+## 0. 本章定位
+
+阅读源码的第一步是把源码跑起来——只有能 Debug 的源码才是活的源码。本章为后续 21 章铺路：JDK 11+ / Maven 3.6+ / IDEA 源码编译、单测运行、Standalone 集群一键启动。建议卡在某个编译错误时直接跳到 GitHub Issue 搜关键字，90% 的坑有人踩过。
 
 ## 1. 源码下载
 建议选择一个稳定的 Release 版本，例如 1.17.x 或 1.18.x。

@@ -5,6 +5,8 @@ description: "NameNode 启动全流程解析：从 main 函数入口到 RPC 服�
 taxonomies:
   tags: [Hadoop, HDFS, NameNode, Startup]
 weight: 3
+tldr: "NameNode 启动全流程解析：从 main 函数入口到 RPC 服务就绪，以及 SafeMode 的处理逻辑。"
+keywords: ["HDFS", "源码阅读", "03.", "NameNode", "启动流程", "Hadoop", "Startup"]
 ---
 
 NameNode 是 HDFS 的大脑，它的启动过程决定了整个集群何时可用。

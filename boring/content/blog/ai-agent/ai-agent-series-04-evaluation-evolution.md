@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Evaluation", "RL", "Post-Training", "Python", "系列教程"]
 series: "AI Agent 系列教程"
 series_order: 4
+keywords: ["Agent", "怎么", "\"学好", "评估体系、训练方法与持续进化", "AI", "LLM", "Evaluation", "RL"]
 ---
 
 > 本文是 **AI Agent 系列教程** 第 4 篇。基于李博杰《深入理解 AI Agent》第 6-8 章改编。前三篇我们学会了搭 Agent、装工具、加记忆。现在要回答一个更根本的问题：**怎么知道它做对了？怎么让它持续变好？**

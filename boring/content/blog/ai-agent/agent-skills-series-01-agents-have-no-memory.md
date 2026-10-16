@@ -7,6 +7,7 @@ taxonomies:
   tags: ["AI", "Agent Skills", "Claude", "软件设计", "系列教程"]
 series: "Agent Skills 系列教程"
 series_order: 1
+keywords: ["Agent", "是「没有记忆的新人」", "为什么", "codebase", "结构决定", "AI", "输出质量", "Agent Skills"]
 ---
 
 > 本文是 **Agent Skills 系列教程**第 1 篇。这一篇不写任何 skill 文件，只回答一个前置问题：为什么你的 Agent 明明有 AGENTS.md、有精心调过的 prompt，却还是稳定地产出烂代码。答案不在 prompt 里，在 codebase 的结构里。

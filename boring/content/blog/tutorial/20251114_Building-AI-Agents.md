@@ -1,11 +1,13 @@
 ---
 title: "Building AI Agents"
 date: "2025-11-14"
-description: "从零到一构建、评估与迭代 AI 代理的实践路线与资源"
+description: "AI Agent 工程实战教程：从单 Agent 到 Multi-Agent 系统设计，涵盖工具调用、规划、记忆与协作模式。"
 taxonomies:
   tags: [AI, Agents, MCP, RAG, ReAct, CoT, ToT]
 categories: [Tutorial]
 slug: "building-ai-agents"
+tldr: "为什么是代理（Agents） 从聊天到行动：LLM 由“对话”走向“执行”，代理通过工具使用、计划分解、状态记忆与自我反思完成复杂任务。"
+keywords: ["Building", "AI", "Agents", "MCP", "RAG", "ReAct", "CoT", "ToT"]
 ---
 
 ## 为什么是代理（Agents）

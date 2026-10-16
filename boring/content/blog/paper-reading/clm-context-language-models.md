@@ -6,6 +6,8 @@ taxonomies:
   tags: ["CLM", "上下文管理", "AI Agent", "LLM", "2026"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "华盛顿大学+Meta+MIT 联合 2026 年 CLM(Context Language Models):把上下文当文件,让模型用代码编辑管理;Suffix Cache Reuse 节省 35% 计算;BrowseComp-Plus 准确率 +11.4%,小模型受益尤其明显。"
+keywords: ["CLM", "详解", "让模型自己编辑上下文", "上下文管理", "AI Agent", "LLM", "2026"]
 ---
 
 > 让 AI 学会像程序员一样管理自己的"记忆"，而不是靠外部规则来塞东西。

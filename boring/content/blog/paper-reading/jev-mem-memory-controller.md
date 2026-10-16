@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Jev-Mem", "记忆系统", "AI Agent", "LLM", "认知科学"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "Jev-Mem 用 System-One 轻量控制器专职管记忆,System-Two 大模型只在复杂推理时介入;LoCoMo 基准 LLM-as-Judge 得分 0.777(比最强基线高 11%),记忆构建速度 6.6 倍,延迟降低 36.7%。"
+keywords: ["Jev-Mem", "详解", "把记忆决策从大模型手里拿走", "记忆系统", "AI Agent", "LLM", "认知科学"]
 ---
 
 > **核心洞察**：记忆的"存什么、取什么"本来不需要大模型操心——一个轻量控制器就能搞定，只有真正的推理才需要调用 LLM。

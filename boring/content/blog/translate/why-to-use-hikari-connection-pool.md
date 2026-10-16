@@ -1,7 +1,10 @@
 ---
 title: "Why to use Hikari Connection Pool ?"
 date: 2019-12-18T12:13:38+05:30
+description: "HikariCP 译文（Why use HikariCP）：对比 Druid / Tomcat JDBC Pool 的性能基准、连接池配置最佳实践与陷阱规避。"
 update_date: 2019-12-18T12:13:38+05:30
+tldr: "原文连接 Hikari Connection Pooling (or Hikari CP) is the new kid on the block, though a late entrant in pooling mechanisms, it is outperforming the ones o"
+keywords: ["Why", "to", "use", "Hikari", "Connection", "Pool"]
 ---
 
 [原文连接](https://www.linqz.io/2019/03/why-to-use-hikari-connection-pool.html)
@@ -16,7 +19,7 @@ Below benchmark graph displays connection and statement ops/ms graphs:
 
 source : [GitHub - brettwooldridge/HikariCP](https://github.com/brettwooldridge/HikariCP)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/performance_benchmark_hikaricp.png)
+![HikariCP vs Druid vs Tomcat JDBC Pool 性能基准测试对比](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/performance_benchmark_hikaricp.png)
 
 
 

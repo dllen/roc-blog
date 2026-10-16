@@ -5,6 +5,7 @@ description: "ChatGPT 能听懂指令而 GPT-3 只会续写——从续写到听
 tldr: "SFT = (prompt, response) pairs · NLL Loss · 只在 response tokens 上算 · 质量 8 维度：Correctness / Consistency / Completeness / Clarity / Coverage / Verifiability / Balance / Alignment"
 taxonomies:
   tags: ["LLM", "PostTraining", "SFT", "RLHF", "系列教程"]
+keywords: ["Post-Training", "101", "上篇", "SFT", "全景——从", "base", "instruct", "LLM"]
 ---
 
 # 系列-06 · Post-Training 101 · 从 base 到 instruct（上）：SFT 全景

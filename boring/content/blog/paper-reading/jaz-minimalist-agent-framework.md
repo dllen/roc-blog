@@ -6,6 +6,8 @@ taxonomies:
   tags: ["JAZ", "AI Agent", "极简框架", "LLM", "MIT"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "MIT 2026 年 JAZ 极简智能体框架:整个框架只有一个 invoke 原语,所有能力(记忆/反思/工具)由大模型运行时自己涌现;比 MemGPT 召回率高 8%,成本降低 50%;从预设主义到涌现主义的框架哲学转变。"
+keywords: ["JAZ", "详解", "一个原语撑起记忆和自我改进", "AI Agent", "极简框架", "LLM", "MIT"]
 ---
 
 ## 一句话总结

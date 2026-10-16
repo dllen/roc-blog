@@ -5,6 +5,8 @@ description: "Hadoop Distributed File System (HDFS) 源码阅读系列大纲。�
 taxonomies:
   tags: [Hadoop, HDFS, Source Code, Outline, Roadmap]
 weight: 0
+tldr: "Hadoop Distributed File System (HDFS) 源码阅读系列大纲。涵盖 NameNode 元数据管理、DataNode 存储引擎、客户端读写流程、HA 高可用机制等核心模块。"
+keywords: ["HDFS", "源码阅读", "00.", "阅读大纲与学习路线", "Hadoop", "Source Code", "Outline", "Roadmap"]
 ---
 
 Hadoop Distributed File System (HDFS) 是大数据生态系统的基石。尽管对象存储（如 S3）日益流行，但 HDFS 依然是理解分布式存储系统设计思想的最佳范本。

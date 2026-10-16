@@ -1,10 +1,20 @@
 ---
 title: "HBase 源码阅读：05. RPC 通信机制"
 date: 2026-01-12T10:00:00+08:00
+description: "HBase RPC 机制源码解析：Protobuf 接口定义、Connection 复用、CallQueue 优先级队列、错误重试与超时控制。"
 taxonomies:
   tags: [HBase, Source Code, RPC, Netty, Protobuf]
 weight: 5
+tldr: "HBase 的高性能离不开其定制的 RPC 框架。HBase 2."
+keywords: ["HBase", "源码阅读", "05.", "RPC", "通信机制", "Source Code", "Netty", "Protobuf"]
 ---
+## 0. 本章定位
+
+HBase 源码阅读：05. RPC 通信机制：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 HBase 的高性能离不开其定制的 RPC 框架。HBase 2.x 全面拥抱 Netty，实现了异步非阻塞的 IO 模型。
 

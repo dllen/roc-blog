@@ -5,6 +5,7 @@ description: "从编码门槛降低、反馈环优先、架构价值重估三个
 tldr: "AI 降低的是编码门槛，不是工程决策的门槛。编码变便宜后，判断力反而更值钱。"
 taxonomies:
   tags: ["AI", "LLM", "Software Engineering", "Career", "Engineering"]
+keywords: ["AI", "时代软件工程的变与不变", "LLM", "Software Engineering", "Career", "Engineering"]
 ---
 
 过去两年，大家对"AI 写代码"的讨论经常停留在两个层面：要么是模型能力的跃迁（更强的推理、更好的代码），要么是提示词技巧（Prompt Engineering）。

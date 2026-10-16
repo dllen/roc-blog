@@ -5,6 +5,7 @@ description: "SqueezeBits 原始 benchmark 完整复现：Book-Info（重复 sch
 tldr: "重复 schema → XGrammar + SGLang（只慢 8%）· 动态复杂 schema → LLGuidance + SGLang（正确率 88% vs 61%）· Framework 选型 > Backend 选型"
 taxonomies:
   tags: ["LLM", "Guided-Decoding", "结构化输出", "Benchmark", "XGrammar", "LLGuidance", "SGLang", "系列教程"]
+keywords: ["Guided", "Decoding", "性能实测", "2×2", "Benchmark", "全图", "中篇", "LLM"]
 ---
 
 # Guided Decoding 性能实测：2×2 Benchmark 全图（中篇）

@@ -5,6 +5,8 @@ update_date: 2020-04-01T02:01:58+05:30
 description: "稳定性的工作，一般都是水下的工作。就像冰山，真正强大的系统下，要有更加强大的底层支撑，水面下的问题才是真正需要解决的问题。"
 taxonomies:
   tags: [sre]
+tldr: "稳定性的工作，一般都是水下的工作。就像冰山，真正强大的系统下，要有更加强大的底层支撑，水面下的问题才是真正需要解决的问题。"
+keywords: ["系统稳定性治理最佳实践", "sre"]
 ---
 
 
@@ -66,7 +68,7 @@ taxonomies:
 
 Google SRE中（SRE三部曲）有一个层级模型来描述系统可靠性基础和高层次需求（Dickerson’s Hierarchy of Service Reliability），如下图：
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-3c0e7d1b078a3aaba185f73b212ea94b.jpeg)
+![故障分级（P0-P4）与值班响应对应关系图](https://www.on0926.com/wp-content/uploads/2022/11/frc-3c0e7d1b078a3aaba185f73b212ea94b.jpeg)
 
 该模型由Google SRE工程师Mikey Dickerson在2013年提出，将系统稳定性需求按照基础程度进行了不同层次的体系化区分，形成稳定性标准金字塔模型。
 
@@ -120,13 +122,13 @@ Google SRE中（SRE三部曲）有一个层级模型来描述系统可靠性基�
 
 3. 高可用架构设计
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-db4fc768f7a9b2dd23dc94853fd70cd0.png)
+![On-Call 轮值排班表与升级路径示意图](https://www.on0926.com/wp-content/uploads/2022/11/frc-db4fc768f7a9b2dd23dc94853fd70cd0.png)
 
 1、研发流程规范
 
 研发流程规范，指的是一个需求从提出到完成的整个过程应该是怎样流转的。一般的需求研发流程包括：产品提出需求、技术预研、需求评审、技术方案设计、测试用例评审、技术方案评审、测试用例评审、需求开发、代码评审、需求测试。不同公司根据情况会有所调整，但大差不差。
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-145a349bea96953018417ed6da284d67.jpeg)
+![故障复盘（Postmortem）模板：时间线 / 根因 / 行动项](https://www.on0926.com/wp-content/uploads/2022/11/frc-145a349bea96953018417ed6da284d67.jpeg)
 
 在这个流程中，与研发相关的几个比较重要的节点是：技术方案设计及评审、测试用例评审及评审、需求开发、代码测试覆盖率、代码评审。我们上面提到的几个影响稳定性的因素，就是因为没有做好这几个节点的工作导致的，包括：
 
@@ -204,7 +206,7 @@ Google SRE中（SRE三部曲）有一个层级模型来描述系统可靠性基�
 
 **对于高可用设计来说，一般可分为两大块，分别是：服务治理和容灾设计。**
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-edcdcac63dc9d8b96ed9def7e1570fba.png)
+![SLO / SLI / 错误预算三者的关系公式与可视化](https://www.on0926.com/wp-content/uploads/2022/11/frc-edcdcac63dc9d8b96ed9def7e1570fba.png)
 
 服务治理就包括了限流、降级、熔断、隔离等，这一些考虑点都是为了让系统在某些特殊情况下，都能稳定工作。例如限流是为了在上游请求量太大的时候，系统不至于被巨大的流量击垮，还可以正常提供服务。服务治理这块像SpringCloud Alibaba都有标准的成熟解决方案，比如可以基于sentinel实现限流、降级、熔断、隔离，隔离可以实现线程池隔离和信号量隔离，这里不再做详细介绍。
 
@@ -300,7 +302,7 @@ Google SRE中（SRE三部曲）有一个层级模型来描述系统可靠性基�
 
 上线时这个阶段，主要是确保功能按照原先设计的方案进行部署，这个阶段主要是确保规范操作，避免失误，因此可以制定相关的CheckList以及变更审批。其次，为了避免还可能存在未发现的功能缺陷，有时候还可以使用灰度发布降低风险。在这个阶段能做的一些稳定性建设如下图所示。
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-a0b549d19524602df8f138cef5cfc123.png)
+![故障演练（GameDay / Chaos Drill）的标准化流程图](https://www.on0926.com/wp-content/uploads/2022/11/frc-a0b549d19524602df8f138cef5cfc123.png)
 
 对于发布前的checklist更多可以参考前面所讲的发布计划，发布后的checklist更多的需要根据测试提供的测试用例进行生产环境回归测试验证。
 
@@ -328,7 +330,7 @@ Google SRE中（SRE三部曲）有一个层级模型来描述系统可靠性基�
 
 7. 全链路跟踪
 
-![](https://www.on0926.com/wp-content/uploads/2022/11/frc-070a501135d42084c00089a59b56bb77.png)
+![发布变更门禁（Change Advisory Board）流程示意](https://www.on0926.com/wp-content/uploads/2022/11/frc-070a501135d42084c00089a59b56bb77.png)
 
 1、监控告警
 

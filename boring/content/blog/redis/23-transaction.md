@@ -5,7 +5,16 @@ description: "Redis 事务支持 ACID 吗？为什么 Redis 不支持回滚？MU
 taxonomies:
   tags: [Redis, Source Code, Transaction, ACID]
 weight: 23
+tldr: "Redis 事务支持 ACID 吗？为什么 Redis 不支持回滚？MULTI, EXEC, WATCH 原理详解。"
+keywords: ["Redis", "源码阅读", "23.", "事务", "Transaction", "Source Code", "ACID"]
 ---
+## 0. 本章定位
+
+Redis 源码阅读：23. 事务 (Transaction)：本文为源码阅读系列的一部分，假设读者已掌握对应中间件的基本概念与 Java 并发编程。建议先在本地搭建环境，再跟着章节顺序逐节 Debug，不要一次性读完——Flink / Kafka / HBase 等系统的状态机跨多个类，单纯阅读很难形成肌肉记忆。
+
+## 实战建议
+
+读源码时建议配合官方文档 + 单测用例 + 实际日志三件套：单测展示 happy path，日志展示异常路径，文档提供整体架构。生产环境遇到问题，回到对应章节能节省大量调试时间。
 
 Redis 的事务由 `MULTI`, `EXEC`, `DISCARD`, `WATCH` 命令组成。
 代码主要在 `src/multi.c`。

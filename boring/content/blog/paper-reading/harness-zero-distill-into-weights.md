@@ -6,6 +6,8 @@ taxonomies:
   tags: ["Harness-Zero", "Agent", "模型蒸馏", "LLM", "Google"]
 extra:
   update_date: 2026-10-15T10:00:00+08:00
+tldr: "Google Harness-Zero:用 Agent-as-Harness 生成纠错示范,微调学生模型把专用 harness 的能力内化到权重里;训练后去掉 harness(44.3%)反而比挂着 harness(41.7%)更好,行为恢复率 82.3%。"
+keywords: ["Harness-Zero", "详解", "harness", "的能力蒸馏进模型权重", "Agent", "模型蒸馏", "LLM", "Google"]
 ---
 
 ## 一句话总结

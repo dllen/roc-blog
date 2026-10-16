@@ -5,6 +5,7 @@ description: "Paged Attention 三件套：block table（逻辑→物理映射）
 tldr: "block table = Paged Attention 核心数据结构 · free pool 替代连续分配 · kernel 按 table 跳读 K/V · 浪费 <4% · 吞吐 2-3×"
 taxonomies:
   tags: ["LLM", "PagedAttention", "vLLM", "KVCache", "显存优化", "系列教程"]
+keywords: ["Paged", "Attention", "中篇", "vLLM", "架构", "2-3x", "吞吐", "4%"]
 ---
 
 # Paged Attention 中篇：vLLM 架构 + 2-3x 吞吐 + 4% 浪费复现

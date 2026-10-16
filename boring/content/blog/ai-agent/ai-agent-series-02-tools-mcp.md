@@ -8,6 +8,7 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Tool Calling", "MCP", "Python", "系列教程"]
 series: "AI Agent 系列教程"
 series_order: 2
+keywords: ["Agent", "的双手", "工具调用、MCP", "协议与一个双工具", "AI", "LLM", "Tool Calling", "MCP"]
 ---
 
 > 本文是 **AI Agent 系列教程** 第 2 篇。基于李博杰《深入理解 AI Agent》第 4-5 章改编。上一篇我们搭了一个 50 行的搜索 Agent——它只有一个"手"。今天给它装上更多。

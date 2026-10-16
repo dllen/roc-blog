@@ -4,6 +4,8 @@ date: 2024-01-27T12:13:35+05:30
 update_date: 2024-01-27T12:13:35+05:30
 description: "netfilter/iptables（简称为iptables）组成Linux平台下的包过滤防火墙，与大多数的Linux软件一样，这个包过滤防火墙是免费的，它可以代替昂贵的商业防火墙解决方案，完成封包过滤、封包重定向和网络地址转换（NAT）等功能"
 tag: [linux, iptables]
+tldr: "netfilter/iptables（简称为iptables）组成Linux平台下的包过滤防火墙，与大多数的Linux软件一样，这个包过滤防火墙是免费的，它可以代替昂贵的商业防火墙解决方案，完成封包过滤、封包重定向和网络地址转换（NAT）等功能"
+keywords: ["iptables相关资料收集和整理"]
 ---
 
 ## iptables 规则表和链
@@ -24,7 +26,7 @@ tag: [linux, iptables]
 
 3. 如果数据包是要转发出去的，且内核允许转发，数据包就会如图所示向右移动，经过FORWARD链，然后到达POSTROUTING链输出。
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/az6bh6fzc9.webp)
+![iptables 规则链与表的关系示意图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/az6bh6fzc9.webp)
 
 
 
@@ -38,7 +40,7 @@ tag: [linux, iptables]
 
 Iptables采用“表”和“链”的分层结构。在REHL4中是三张表五个链。现在REHL5成了四张表五个链了，不过多出来的那个表用的也不太多，所以基本还是和以前一样。下面罗列一下这四张表和五个链。注意一定要明白这些表和链的关系及作用。
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/fjqpcju771.webp)
+![iptables 表（filter / nat / mangle / raw）的处理流程图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/fjqpcju771.webp)
 
 
 
@@ -90,9 +92,9 @@ Iptables采用“表”和“链”的分层结构。在REHL4中是三张表五�
 
 #### 管理和设置iptables规则
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/7lir5ujikd.webp)
+![数据包在 PREROUTING / INPUT / FORWARD / OUTPUT / POSTROUTING 各链的流转图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/7lir5ujikd.webp)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/zvozz5swl1.webp)
+![NAT 三种模式（SNAT / DNAT / MASQUERADE）的典型场景图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/zvozz5swl1.webp)
 
 
 

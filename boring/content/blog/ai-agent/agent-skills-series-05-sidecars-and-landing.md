@@ -7,6 +7,7 @@ taxonomies:
   tags: ["AI", "Agent Skills", "Claude", "SRE", "系列教程"]
 series: "Agent Skills 系列教程"
 series_order: 5
+keywords: ["Skill", "更强并落地团队", "sidecar", "扩展与「idea→ship", "主线」", "AI", "Agent Skills", "Claude"]
 ---
 
 > 本文是 **Agent Skills 系列教程**第 5 篇，也是收官之作。前四篇铺完了一条完整的路：第 1 篇说 Agent 是「没有记忆的新人」，codebase 结构决定它的产出质量；第 2 篇说结构该怎么改——深模块把接口做窄，灰盒模块把「人定接口、AI 管实现、测试锁行为」固定下来；第 3 篇给了写 skill 的三条规则——分层架构、命名约定、「skill 不必长」的克制；第 4 篇拿这套规则写出了一个能跑的 `incident-diagnosis` skill。这一篇回答最后两个问题：**一个 skill 写完之后，怎么让它更强、更经得起真实故障的检验？以及，当 skill 不止一个时，怎么把它们串成一条「idea→ship」的主线，真正落进团队？**

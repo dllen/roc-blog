@@ -5,6 +5,8 @@ description: "Hadoop 3.0 的重磅特性。解析 EC 如何用 1.5 倍的存储�
 taxonomies:
   tags: [Hadoop, HDFS, Erasure Coding, Storage Efficiency]
 weight: 17
+tldr: "Hadoop 3.0 的重磅特性。解析 EC 如何用 1.5 倍的存储开销实现 3 倍副本的可靠性。"
+keywords: ["HDFS", "源码阅读", "17.", "纠删码", "Erasure", "Coding", "Hadoop", "Erasure Coding"]
 ---
 
 传统的 3 副本机制虽然可靠，但存储利用率只有 33% (1TB 数据占 3TB 空间)。Erasure Coding (EC) 将这一利用率提升到了 50% 甚至更高。

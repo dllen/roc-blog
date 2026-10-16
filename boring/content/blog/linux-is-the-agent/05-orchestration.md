@@ -6,6 +6,8 @@ taxonomies:
   tags: ["AI", "LLM", "Agent", "Linux", "Makefile", "工作流", "编排", "DAG"]
 extra:
   update_date: 2026-09-05
+tldr: "多 Agent 协作、任务依赖图、工作流引擎——这些听起来是 2024 年的新技术。但如果你仔细看，它们不过是 Makefile 在 1976 年就解决过的问题：拓扑排序、增量执行、并行调度、失败传播。"
+keywords: ["Agent", "的编排", "90%", "1976", "年的", "Makefile", "AI", "LLM"]
 ---
 
 前四篇聊了 Agent 的基础设施、工具调用、记忆和评估。有读者继续问：多 Agent 协作呢？

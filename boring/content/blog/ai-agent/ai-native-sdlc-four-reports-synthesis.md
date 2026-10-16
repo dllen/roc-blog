@@ -1,11 +1,12 @@
 ---
-title: "AI Native SDLC 如何重构软件开发：Google、OpenAI、Anthropic 与 LangChain 四份报告深度解读"
+title: "AI Native SDLC 重构开发：四份报告深度解读"
 date: 2026-09-02
 update_date: 2026-09-02
 description: "交叉比较 Google、OpenAI、Anthropic、LangChain 四份 AI 原生 SDLC 报告：当代码生成从稀缺能力变成基础能力，瓶颈迁移到意图、验证、治理与判断。附四份材料的共同结论与各自盲区。"
 tldr: "AI 带来的真正变化，不是程序员少写了多少代码，而是企业必须重新设计从意图、实现、验证到生产反馈的整个软件生产系统。代码生成不再稀缺，判断才是。"
 taxonomies:
   tags: ["AI", "LLM", "Agent", "SDLC", "Vibe Coding", "软件工程"]
+keywords: ["AI", "Native", "SDLC", "如何重构软件开发", "LangChain", "四份报告深度解读", "LLM", "Agent"]
 ---
 
 > 本文交叉比较四份行业材料：Google《The New SDLC with Vibe Coding》、Anthropic《The AI-Native SDLC Playbook》、OpenAI《Building an AI-Native Engineering Team》、LangChain《The Agent Development Lifecycle》

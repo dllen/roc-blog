@@ -2,9 +2,11 @@
 title: "稳定性总结"
 date: 2024-02-08T02:01:58+05:30
 update_date: 2024-02-08T02:01:58+05:30
-description: "行稳致远，进而有为"
+description: "系统稳定性验收 QA 全流程：压测、监控、降级、应急与发布门禁，覆盖 SLO 定义与持续改进。"
 taxonomies:
   tags: [sre]
+tldr: "稳定性的重要性 用户体验 小红书 7月26日晚微博社区开始陆续反馈小红书启动崩溃，并冲上微博热搜。"
+keywords: ["稳定性总结", "sre"]
 ---
 
 ## 稳定性的重要性
@@ -144,7 +146,7 @@ taxonomies:
 
 > [请问IDC运维机房门口应该摆/拜哪位先贤？](https://www.zhihu.com/question/433899776)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217150738.png)
+![稳定性压测曲线：QPS 阶梯递增下的 P99 / 错误率变化](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217150738.png)
 
 > 系统正常，只是该系统无数异常情况下的一种特例。 —— John Allspaw
 > 
@@ -188,7 +190,7 @@ taxonomies:
     
     - 分布式系统 CAP 理论，最终一致性，trade-off (关键取舍)
       
-      ![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172320.png)
+      ![全链路压测架构图：流量标记 / 影子表 / 压测集群](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172320.png)
 
 - 树立风险意识
   
@@ -237,7 +239,7 @@ taxonomies:
 > 
 > 建立 变更规范、上线规范、树立稳定性文化 是一个非常关键且收益非常高的事情。
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217160147.png)
+![熔断 / 限流 / 降级策略配置示例](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217160147.png)
 
     人的意识是最重要的，专业能力可以锻炼培养。如果意识不足或松懈，好的能力以及机制流程也会形同虚设。
 
@@ -255,19 +257,19 @@ taxonomies:
 
 ### 稳定性建设概览
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217171836.png)
+![系统稳定性验收清单（Checklist）模板](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217171836.png)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217163625.png)
+![故障检测时间（MTTD）与恢复时间（MTTR）的关系图](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217163625.png)
 
 ### 稳定性治理
 
     上线前、上线中、上线后三个阶段进行总结稳定性治理
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172024.png)
+![系统容量评估：CPU / 内存 / 网络 / 存储 四象限压测示意](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172024.png)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172424.png)
+![压测环境与生产环境的差异隔离（影子表 / 影子流量）架构](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172424.png)
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172455.png)
+![应急预案 runbook 模板：触发条件、止血动作、升级路径](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/20240217172455.png)
 
 #### 核心要点
 
@@ -329,7 +331,7 @@ taxonomies:
 
 > 需要一个 stop doing list
 
-![](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/coder-rule.jpeg)
+![系统稳定性铁律：可监控、可灰度、可回滚、可降级](https://scp-net-cn.oss-cn-beijing.aliyuncs.com/blog-images/coder-rule.jpeg)
 
 ## 参考文档：
 
