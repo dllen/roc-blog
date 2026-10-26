@@ -37,11 +37,11 @@
     -moz-osx-font-smoothing: grayscale;
 }
 .las {
-    font-family: 'Line Awesome';
+    font-family: var(--font-icon);
     font-weight: 900;
 }
 .lab {
-    font-family: 'Line Awesome Brands';
+    font-family: var(--font-icon);
     font-weight: 400;
 }
 .la-arrow-left::before { content: "\f060"; }

@@ -2,6 +2,7 @@
 
 {% block head_extend %}
     <title>Home | {{ config.title }}</title>
+    <meta name="description" content="{{ config.description }}">
 {% endblock head_extend %}
 
 {% block jsonld %}
@@ -17,11 +18,49 @@
 {% endblock jsonld %}
 
 {% block content %}
-<div class="listing-shell">
-    {% set blog = get_section(path='blog/_index.md') %}
-    {% if blog and blog.pages %}
-        {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
+{% set blog = get_section(path='blog/_index.md') %}
+{% if blog and blog.pages %}
+    {% set limit = config.extra.homepage_latest_limit | default(value=10) %}
+    {% set tags_tax = get_taxonomy(kind='tags') %}
+    {% set_global tag_count = tags_tax.items | length %}
+    {% set_global total = blog.pages | length %}
+    {% set_global section_count = 0 %}
+    {% for sub in blog.subsections %}
+        {% set sect = get_section(path=sub) %}
+        {% if sect %}
+            {% set_global total = total + (sect.pages | length) %}
+            {% set_global section_count = section_count + 1 %}
+        {% endif %}
+    {% endfor %}
 
+    <header class="masthead">
+        <div class="masthead__lead-col">
+            <h1 class="masthead__title">{{ config.description }}</h1>
+            <p class="masthead__lead">写作与工程的存档：按时间倒序，可按分类与标签筛选。</p>
+            <div class="masthead__actions">
+                <a class="masthead__action masthead__action--primary" href="#latest">按时间浏览</a>
+                <a class="masthead__action" href="/blog/atom.xml">订阅 RSS</a>
+                <span class="masthead__count">共 {{ total }} 篇 · {{ section_count }} 个分类</span>
+            </div>
+        </div>
+        <nav class="masthead__index" aria-label="分类索引">
+            <h2 class="masthead__index-title"><a href="/blog/sections/">分类索引</a></h2>
+            <ul class="masthead__index-list">
+                {% for sub in blog.subsections %}
+                    {% set sect = get_section(path=sub) %}
+                    {% if sect and sect.pages %}
+                        <li><a class="masthead__index-link" href="{{ sect.permalink | safe }}">{{ sect.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
+
+    <div class="listing-shell">
+
+        <section class="listing-section" id="latest" aria-labelledby="latest-heading">
+            <div class="listing-heading">
+                <h2 id="latest-heading" class="listing-heading__title">最近更新</h2>
         {# Filter bar #}
         <div class="filter-bar" id="filter-bar">
             <div class="filter-dropdown" id="filter-section">
@@ -67,13 +106,8 @@
 
             <button type="button" class="filter-clear" id="filter-clear" style="display:none;">清除筛选</button>
         </div>
-
-        <section class="listing-section" aria-labelledby="latest-heading">
-            <div class="listing-heading">
-                <p class="eyebrow">导航索引</p>
-                <h2 id="latest-heading" class="listing-heading__title">最近更新</h2>
             </div>
-            <ul class="article-list" data-article-list id="article-list" style="display:none;">
+            <ul class="article-list" data-article-list id="article-list" data-limit="{{ limit }}" style="display:none;">
                 {% for p in blog.pages %}
                     {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
                 {% endfor %}
@@ -87,11 +121,12 @@
                 {% endfor %}
             </ul>
             <div class="listing-footer">
-                <a href="/blog/" class="listing-more">查看全部 ({{ blog.pages | length }} 篇) →</a>
+                <p class="listing-footer__note">共 {{ total }} 篇文章 · {{ section_count }} 个分类 · {{ tag_count }} 个标签</p>
+                <a href="/blog/" class="listing-more">浏览归档与分类</a>
             </div>
         </section>
+    </div>
     {% endif %}
-</div>
 <script>
 (function() {
     var list = document.getElementById('article-list');
@@ -108,8 +143,9 @@
     });
     items.forEach(function(item) { list.appendChild(item); });
 
-    var limit = {{ limit }};
+    var limit = parseInt(list.getAttribute('data-limit') || '10', 10);
     items.slice(limit).forEach(function(item) { item.style.display = 'none'; });
+    if (items[0]) items[0].classList.add('article-row--lead');
     list.style.display = '';
 
     var filterBar = document.getElementById('filter-bar');

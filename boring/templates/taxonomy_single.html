@@ -2,16 +2,16 @@
 
 {% block head_extend %}
     <title>#{{ term.name }} | {{ config.title }}</title>
+    <meta name="description" content="#{{ term.name }} 标签下的 {{ term.pages | length }} 篇文章。">
 {% endblock head_extend %}
 
 {% block content %}
     {{<header components={["tags", term.slug]} is_page={false}/>}}
     <div class="listing-shell">
-        <header class="listing-page-header">
-            <p class="eyebrow">Tag archive</p>
+        <div class="listing-page-header">
             <h1 class="listing-page-title">#{{ term.name }}</h1>
             <p class="listing-page-description">{{ term.pages | length }} 篇文章</p>
-        </header>
+        </div>
         <section class="listing-section" aria-labelledby="tag-posts-heading">
             <div class="listing-heading">
                 <h2 id="tag-posts-heading" class="listing-heading__title">相关文章</h2>

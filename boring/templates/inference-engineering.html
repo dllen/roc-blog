@@ -2,6 +2,7 @@
 
 {% block head_extend %}
     <title>{{ section.title }} | {{ config.title }}</title>
+    <meta name="description" content="{{ section.description | default(value=section.title) }}">
 {% endblock head_extend %}
 
 {% block content %}
@@ -10,12 +11,12 @@
     <div class="article-shell">
         <div class="article-layout" data-article-layout>
             <article class="article-main" data-article-main>
-                <header class="article-hero">
+                <div class="article-opening">
                     <h1 class="article-title">{{ section.title }}</h1>
                     {% if section.description %}
                         <p class="article-lead">{{ section.description }}</p>
                     {% endif %}
-                </header>
+                </div>
 
                 <div class="article-content">
                     {{ section.content | safe }}
@@ -31,7 +32,6 @@
                 {% if posts %}
                 <section class="listing-section" aria-labelledby="all-posts-heading">
                     <div class="listing-heading">
-                        <p class="eyebrow">All Posts</p>
                         <h2 id="all-posts-heading" class="listing-heading__title">本系列全部文章（{{ posts | length }} 篇）</h2>
                     </div>
                     <ul class="article-list" data-article-list>

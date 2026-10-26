@@ -2,6 +2,7 @@
 
 {% block head_extend %}
     <title>{{ section.title }} | {{ config.title }}</title>
+    <meta name="description" content="{{ section.description | default(value=section.title) }}">
 {% endblock head_extend %}
 
 {% block content %}
@@ -10,13 +11,12 @@
     <div class="article-shell">
         <div class="article-layout" data-article-layout>
             <article class="article-main" data-article-main>
-                <header class="article-hero">
-                    <p class="eyebrow">论文阅读 · Paper Reading</p>
+                <div class="article-opening">
                     <h1 class="article-title">{{ section.title }}</h1>
                     {% if section.description %}
                         <p class="article-lead">{{ section.description }}</p>
                     {% endif %}
-                </header>
+                </div>
 
                 <div class="article-content">
                     {{ section.content | safe }}
@@ -61,11 +61,11 @@
                 ] %}
 
                 <section class="paper-groups" aria-label="论文分组索引">
-                    {# 📘 方法论(默认展开) #}
+                    {# 方法论（默认展开） #}
                     <details class="paper-group" open>
                         <summary class="paper-group__summary">
-                            <span class="paper-group__title">📘 方法论</span>
-                            <span class="paper-group__count">1 篇 · 必读</span>
+                            <h2 class="paper-group__title">方法论</h2>
+                            <span class="paper-group__count">1 篇，必读</span>
                         </summary>
                         <div class="paper-group__body">
                             <div class="sections-grid">
@@ -88,11 +88,11 @@
                         </div>
                     </details>
 
-                    {# 📚 经典论文详细版(默认收起) #}
+                    {# 经典论文详细版（默认收起） #}
                     <details class="paper-group">
                         <summary class="paper-group__summary">
-                            <span class="paper-group__title">📚 经典论文详细版</span>
-                            <span class="paper-group__count">8 篇 · 奠基作品</span>
+                            <h2 class="paper-group__title">经典论文详细版</h2>
+                            <span class="paper-group__count">8 篇，奠基作品</span>
                         </summary>
                         <div class="paper-group__body">
                             <div class="sections-grid">
@@ -115,11 +115,11 @@
                         </div>
                     </details>
 
-                    {# 🚀 近期 LLM/Agent 论文(默认收起) #}
+                    {# 近期 LLM/Agent 论文（默认收起） #}
                     <details class="paper-group">
                         <summary class="paper-group__summary">
-                            <span class="paper-group__title">🚀 近期 LLM/Agent 论文</span>
-                            <span class="paper-group__count">21 篇 · 第一性原理</span>
+                            <h2 class="paper-group__title">近期 LLM/Agent 论文</h2>
+                            <span class="paper-group__count">21 篇，第一性原理</span>
                         </summary>
                         <div class="paper-group__body">
                             <div class="sections-grid">

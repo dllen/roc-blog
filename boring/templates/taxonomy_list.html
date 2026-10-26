@@ -2,16 +2,16 @@
 
 {% block head_extend %}
     <title>Tags | {{ config.title }}</title>
+    <meta name="description" content="全站 {{ terms | length }} 个标签，按主题检索文章。">
 {% endblock head_extend %}
 
 {% block content %}
     {{<header components={["tags"]} is_page={false}/>}}
     <div class="listing-shell">
-        <header class="listing-page-header">
-            <p class="eyebrow">Index</p>
+        <div class="listing-page-header">
             <h1 class="listing-page-title">全部标签</h1>
             <p class="listing-page-description">{{ terms | length }} 个标签</p>
-        </header>
+        </div>
         <section class="tag-index" aria-label="标签索引">
             {% for term in terms %}
                 {% set count = term.pages | length %}

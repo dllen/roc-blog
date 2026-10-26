@@ -1,0 +1,29 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Index-First (home) + Long Document (article)",
+  "theme": "brand (kept: the project own paper, amber accent, stone ink, Crimson Pro / Work Sans / JetBrains Mono)",
+  "axes": "light/roman-serif/warm",
+  "hero": "Banner (/) — the site own tagline as a masthead, the archive 23-section index set as type in the band right half",
+  "nav": "banner bar — wordmark and slogan left, sections centre, actions right, a drawer under 1024px",
+  "footer": "mast — the wordmark over the links",
+  "imagery": "none — a personal writing archive has no photography; the archive itself is the picture",
+  "photos": [],
+  "sections": "Masthead (/) · section index · listing head with filters · archive index (marginalia rows) · article opening (title, meta, tags) · body · related · mast footer",
+  "signature": "the marginalia archive index — date and topic set in the mono left margin, the title in the serif measure",
+  "entry": "Full redesign of roc-blog: tokens in OKLCH, a banner masthead carrying the archive own index, a marginalia index for every archive row, a long-document article page with its table of contents rail, and a mast footer.",
+  "fingerprint": "paper-amber-marginalia-index",
+  "waived": [
+   "37 · four families resolve: the icon font is a glyph slot, not a reading voice"
+  ],
+  "prompt": "redesign this proj — an existing Chinese engineering blog (Zola + Tailwind) keeps its content, wiring and brand, and gets a new system and composition",
+  "draw": "c62963",
+  "reviews": {
+   "hero": "fix · 5 findings · 5 resolved",
+   "finish": "subagent · 5 findings · 5 resolved"
+  },
+  "date": "2026-10-26"
+ }
+]

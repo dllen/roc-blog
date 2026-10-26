@@ -5,7 +5,8 @@ module.exports = {
         require('tailwindcss'),
         require('autoprefixer'),
         require('cssnano')({
-            preset: 'default',
+            // Keep the Hallmark stamp, its critique and the waivers in the served stylesheet.
+            preset: ['default', { discardComments: false }],
         }),
     ]
 }

@@ -1,0 +1,128 @@
+/* Tokens: the site's colour, type, space, shape and motion scale.
+   The Hallmark stamp, its critique and the waivers live in style.css. */
+:root {
+  /* --- colour: the paper-and-amber brand, rebuilt in OKLCH --- */
+  --color-paper: oklch(98.5% 0.004 91);
+  --color-paper-2: oklch(96.2% 0.009 85);
+  --color-paper-3: oklch(99.1% 0.004 91);
+  --color-ink: oklch(21.6% 0.006 56);
+  --color-ink-2: oklch(37.4% 0.009 68);
+  --color-muted: oklch(50.2% 0.018 67);
+  --color-rule: oklch(91.4% 0.013 82);
+  --color-rule-2: oklch(85.6% 0.012 80);
+  --color-accent: oklch(55.4% 0.121 66);
+  --color-accent-ink: oklch(98.5% 0.004 91);
+  --color-focus: oklch(58% 0.13 64);
+  --color-success: oklch(52.7% 0.138 149.7);
+  --color-warning: oklch(55.5% 0.146 49);
+  --color-error: oklch(50% 0.182 29.5);
+  --color-code-comment: oklch(78% 0.03 250);
+  --color-code-keyword: oklch(80% 0.08 250);
+  --color-code-number: oklch(80% 0.07 320);
+  --color-code-call: oklch(80% 0.09 45);
+  --color-code-error: oklch(80% 0.1 25);
+
+  /* --- type: three voices, plus the two icon slots --- */
+  --font-display: "Crimson Pro", "Songti SC", "Noto Serif CJK SC", serif;
+  --font-body: "Work Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-icon: "Line Awesome", "Line Awesome Brands", sans-serif;
+
+  --text-2xs: 0.75rem;
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2rem;
+  --text-display-s: clamp(2rem, 2.6vw + 0.75rem, 3rem);
+  --text-display: clamp(2.5rem, 4.5vw + 0.75rem, 4rem);
+  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem);
+  --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem);
+  --text-lead: clamp(1.0625rem, 0.35vw + 1rem, 1.25rem);
+  --tracking-display: -0.015em;
+  --leading-tight: 1.15;
+  --leading-body: 1.7;
+
+  /* --- space --- */
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 144px;
+  --site-shell: 80rem;
+  --container: 80rem;
+  --gutter: 32px;
+  --gap-columns: 32px;
+  --section-gap-s: 120px;
+  --section-gap: 144px;
+  --section-gap-l: 176px;
+
+  /* --- shape --- */
+  --radius-card: 6px;
+  --radius-pill: 999px;
+  --rule-hair: 1px;
+  --shadow-card: 0 1px 2px color-mix(in oklab, var(--color-ink) 7%, transparent);
+  --shadow-raised: 0 10px 30px color-mix(in oklab, var(--color-ink) 12%, transparent);
+
+  /* --- motion --- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  /* --- layers --- */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-sticky-nav: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
+
+.dark {
+  --color-paper: oklch(21.6% 0.006 56);
+  --color-paper-2: oklch(25% 0.006 56);
+  --color-paper-3: oklch(28.2% 0.007 50);
+  --color-ink: oklch(96.2% 0.009 85);
+  --color-ink-2: oklch(85.6% 0.008 68);
+  --color-muted: oklch(71.6% 0.009 56);
+  --color-rule: oklch(37.4% 0.009 68);
+  --color-rule-2: oklch(45% 0.01 68);
+  --color-accent: oklch(74.9% 0.107 74);
+  --color-accent-ink: oklch(21.6% 0.006 56);
+  --color-focus: oklch(74.9% 0.107 74);
+  --color-success: oklch(80% 0.182 151.7);
+  --color-warning: oklch(83.7% 0.164 84.4);
+  --color-error: oklch(71.1% 0.166 22.2);
+}
+
+@media (max-width: 60rem) {
+  :root {
+    --gutter: 24px;
+    --section-gap-s: 80px;
+    --section-gap: 96px;
+    --section-gap-l: 120px;
+  }
+}
+
+@media (max-width: 40rem) {
+  :root {
+    --gutter: 16px;
+    --section-gap-s: 56px;
+    --section-gap: 72px;
+    --section-gap-l: 96px;
+    --gap-columns: 16px;
+  }
+}

@@ -2,18 +2,19 @@
 
 {% block head_extend %}
     <title>{{ section.title }} | {{ config.title }}</title>
+    <meta name="description" content="{{ section.description | default(value=section.title) }}">
 {% endblock head_extend %}
 
 {% block content %}
     {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
 
-        {# Section description #}
-        {% if section.description %}
-        <div class="section-description">
-            <p>{{ section.description }}</p>
+        <div class="listing-page-header">
+            <h1 class="listing-page-title">{{ section.title }}</h1>
+            {% if section.description %}
+                <p class="listing-page-description">{{ section.description }}</p>
+            {% endif %}
         </div>
-        {% endif %}
 
         {# Sub-sections grid #}
         {% if section.subsections %}
@@ -44,7 +45,6 @@
         {% if posts %}
             <section class="listing-section" aria-labelledby="posts-heading">
                 <div class="listing-heading">
-                    <p class="eyebrow">Archive</p>
                     <h2 id="posts-heading" class="listing-heading__title">文章</h2>
                 </div>
                 <ul class="article-list" data-article-list>
@@ -54,10 +54,10 @@
                 </ul>
             </section>
 
-            {% if paginator and paginator.number_pagers %}
+            {% if paginator and paginator.number_pagers > 1 %}
             <nav class="listing-pagination" aria-label="分页">
                 {% if paginator.previous %}
-                    <a href="{{ paginator.previous }}" class="listing-pagination__link" aria-label="上一页">←</a>
+                    <a href="{{ paginator.previous }}" class="listing-pagination__link" aria-label="上一页">上一页</a>
                 {% endif %}
                 {% for page_number in range(start=1, end=paginator.number_pagers + 1) %}
                     {% if page_number == 1 %}
@@ -72,7 +72,7 @@
                     </a>
                 {% endfor %}
                 {% if paginator.next %}
-                    <a href="{{ paginator.next }}" class="listing-pagination__link" aria-label="下一页">→</a>
+                    <a href="{{ paginator.next }}" class="listing-pagination__link" aria-label="下一页">下一页</a>
                 {% endif %}
             </nav>
             {% endif %}

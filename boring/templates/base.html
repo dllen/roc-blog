@@ -136,14 +136,16 @@
                         <span class="site-nav__toggle-icon" aria-hidden="true" data-icon-close hidden>✕</span>
                     </button>
                     {% if config.extra.social %}
-                        {% for i in config.extra.social %}
-                            <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
-                               class="site-action"
-                               aria-label="{{ i.name }}"
-                               title="{{ i.name }}">
-                                <i class="{{ i.icon }}" aria-hidden="true"></i>
-                            </a>
-                        {% endfor %}
+                        <div class="site-actions__social">
+                            {% for i in config.extra.social %}
+                                <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
+                                   class="site-action"
+                                   aria-label="{{ i.name }}"
+                                   title="{{ i.name }}">
+                                    <i class="{{ i.icon }}" aria-hidden="true"></i>
+                                </a>
+                            {% endfor %}
+                        </div>
                     {% endif %}
                     <a href="/blog/atom.xml"
                        class="site-action"
@@ -196,6 +198,20 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+                    {% if config.extra.social %}
+                        <div class="site-mobile-drawer__group">
+                            <ul class="site-mobile-drawer__list">
+                                {% for i in config.extra.social %}
+                                    <li>
+                                        <a href="{{ i.url }}" target="_blank" rel="noopener noreferrer"
+                                           class="site-mobile-drawer__item">
+                                            {{ i.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </nav>
             </div>
             <div id="site-mobile-drawer-backdrop" class="site-mobile-drawer-backdrop" data-mobile-nav-backdrop hidden></div>
@@ -205,7 +221,10 @@
         </main>
         <footer class="site-footer">
             <div class="site-shell site-footer__inner">
-                <span>&copy; {{ now() | date(format="%Y") }} {{ config.title }}</span>
+                <div class="site-footer__mast">
+                    <span class="site-footer__wordmark">{{ config.title }}</span>
+                    <p class="site-footer__note">&copy; {{ now() | date(format="%Y") }} · {{ config.description }}</p>
+                </div>
                 <nav aria-label="Footer navigation" class="site-footer__navigation">
                     <a href="/">首页</a>
                     <a href="/tags/">标签</a>

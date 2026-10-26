@@ -1,61 +1,72 @@
 {% component article_row(item: map, show_tags: bool, show_reading_time: bool) %}
     {% set sec = "" %}
+    {% set topic = "" %}
     {% if item.components | length >= 3 %}
         {% set sec = item.components[1] %}
+        {% set sub = get_section(path="blog/" ~ sec ~ "/_index.md") %}
+        {% if sub %}
+            {% set topic = sub.title %}
+        {% endif %}
+    {% endif %}
+    {% if not topic and item.taxonomies and item.taxonomies.tags %}
+        {% set topic = item.taxonomies.tags[0] %}
     {% endif %}
     <li class="article-row" data-article-row data-section="{{ sec | safe }}" data-tags="{{ item.taxonomies.tags | default(value=[]) | join(sep=",") | safe }}">
         <a href="{{ item.permalink | safe }}" class="article-row__link">
-            <div class="article-row__heading">
-                <h2 class="article-row__title">
-                    {{ item.title }}
-                    {% if item.extra.password or item.password %}<svg class="post-locked-badge" viewBox="0 0 24 24" aria-label="加密文章" role="img" width="16" height="16"><path fill="currentColor" d="M17 8V7a5 5 0 0 0-10 0v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-1zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V7a2.1 2.1 0 1 1 4.2 0v1z"/></svg>{% endif %}
-                </h2>
-                <div class="article-row__date-group">
+            <div class="article-row__margin">
+                <span class="article-row__date-group">
                     <time class="article-row__date" datetime="{{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}">
                         {{ item.extra.update_date | default(value=item.date) | date(format="%Y-%m-%d") }}
                     </time>
                     {% if show_reading_time and item.reading_time %}
-                        <span aria-hidden="true">·</span>
                         <span class="article-row__reading-time">{{ item.reading_time }} min read</span>
                     {% endif %}
-                </div>
+                </span>
+                {% if topic %}
+                    <span class="article-row__section">{{ topic }}</span>
+                {% endif %}
             </div>
-            {% if item.description %}
-                <p class="article-row__description">{{ item.description }}</p>
-            {% endif %}
-            {% if show_tags and item.taxonomies and item.taxonomies.tags %}
-                <div class="article-row__meta">
-                    {% for tag in item.taxonomies.tags[:3] %}
-                        <span class="tag-chip">{{ tag }}</span>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            <div class="article-row__content">
+                <h3 class="article-row__title">
+                    {{ item.title }}
+                    {% if item.extra.password or item.password %}<svg class="post-locked-badge" viewBox="0 0 24 24" aria-label="加密文章" role="img" width="16" height="16"><path fill="currentColor" d="M17 8V7a5 5 0 0 0-10 0v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-1zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V7a2.1 2.1 0 1 1 4.2 0v1z"/></svg>{% endif %}
+                </h3>
+                {% if item.description %}
+                    <p class="article-row__description">{{ item.description }}</p>
+                {% endif %}
+                {% if show_tags and item.taxonomies and item.taxonomies.tags %}
+                    <div class="article-row__meta">
+                        {% for tag in item.taxonomies.tags[:3] %}
+                            <span class="tag-chip">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </a>
     </li>
 {% endcomponent article_row %}
 
 {% component header(components: array, is_page: bool) %}
-    <div class="breadcrumb-header">
+    <nav class="breadcrumb-header" aria-label="面包屑导航">
         <div class="breadcrumb-header__inner">
-            <a href="/" class="hover:text-slate-900 dark:hover:text-slate-100 transition">~</a>
+            <a href="/" class="breadcrumb-header__home" aria-label="首页">~</a>
             {% set_global rel_url = "/" %}
             {% for component in components %}
                 {% set_global rel_url = rel_url ~ component ~ '/' %}
-                <span class="mx-0.5">/</span>
+                <span class="breadcrumb-header__sep">/</span>
                 {% if not loop.last %}
-                    <a class="hover:text-slate-900 dark:hover:text-slate-100 transition"
-                       href="{{ rel_url }}">{{ component }}</a>
+                    <a href="{{ rel_url }}">{{ component }}</a>
                 {% elif is_page %}
-                    <span class="text-slate-400 dark:text-slate-500 truncate max-w-xs">{{ component }}</span>
+                    <span class="breadcrumb-header__current">{{ component }}</span>
                 {% else %}
-                    <span class="text-slate-700 dark:text-slate-200">{{ component }}</span>
+                    <span class="breadcrumb-header__current">{{ component }}</span>
                 {% endif %}
             {% endfor %}
             <button id="back-to-top" class="breadcrumb-header__back-to-top hidden" type="button" aria-label="回到顶部">
                 <i class="las la-level-up-alt" aria-hidden="true"></i>
             </button>
         </div>
-    </div>
+    </nav>
 {% endcomponent header %}
 
 {# 上一篇 / 下一篇 (同 section 内，按 date 排序) #}
@@ -94,7 +105,7 @@
   <nav class="article-pagination" aria-label="文章分页">
     {% if prev_page is defined %}
     <a href="{{ prev_page.permalink | safe }}" class="article-pagination__card">
-      <div class="article-pagination__label">← 上一篇</div>
+      <div class="article-pagination__label">上一篇</div>
       <div class="article-pagination__title">
         {{ prev_page.title }}
       </div>
@@ -108,7 +119,7 @@
     {% if next_page is defined %}
     <a href="{{ next_page.permalink | safe }}"
        class="article-pagination__card article-pagination__card--next">
-      <div class="article-pagination__label">下一篇 →</div>
+      <div class="article-pagination__label">下一篇</div>
       <div class="article-pagination__title">
         {{ next_page.title }}
       </div>
@@ -123,14 +134,14 @@
 
 {# 相关阅读 (客户端由 reading.js 计算) - 这里只输出容器 #}
 {% component related(current: map, limit: integer) %}
-  <section class="related-section" data-related-container data-current-permalink="{{ current.permalink | safe }}"
+    <section class="related-section" data-related-container data-current-permalink="{{ current.permalink | safe }}"
            data-current-tags="{{ current.taxonomies.tags | default(value=[]) | join(sep='|') }}"
            data-limit="{{ limit }}">
-    <h3 class="related-section__title">
-      相关阅读
-    </h3>
-    <div class="related-grid" data-related-list>
-      <p class="related-grid__empty">加载中…</p>
-    </div>
-  </section>
+        <h3 class="related-section__title">
+          相关阅读
+        </h3>
+        <div class="related-grid" data-related-list>
+            <p class="related-grid__empty">加载中…</p>
+        </div>
+    </section>
 {% endcomponent related %}

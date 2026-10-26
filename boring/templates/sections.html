@@ -2,18 +2,22 @@
 
 {% block head_extend %}
     <title>{{ section.title }} | {{ config.title }}</title>
+    <meta name="description" content="{{ section.description | default(value=section.title) }}">
 {% endblock head_extend %}
 
 {% block content %}
     {{<header components={section.components} is_page={false}/>}}
     <div class="listing-shell">
+        <div class="listing-page-header">
+            <h1 class="listing-page-title">{{ section.title }}</h1>
+            {% if section.description %}
+                <p class="listing-page-description">{{ section.description }}</p>
+            {% endif %}
+        </div>
+
         <section class="listing-section" aria-labelledby="sections-heading">
             <div class="listing-heading">
-                <p class="eyebrow">分类索引</p>
-                <h2 id="sections-heading" class="listing-heading__title">{{ section.title }}</h2>
-                {% if section.description %}
-                    <p class="listing-heading__description">{{ section.description }}</p>
-                {% endif %}
+                <h2 id="sections-heading" class="listing-heading__title">分类索引</h2>
             </div>
 
             <div class="sections-grid">
