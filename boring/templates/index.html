@@ -32,6 +32,8 @@
             {% set_global section_count = section_count + 1 %}
         {% endif %}
     {% endfor %}
+    {% set_global archive = load_data(path="../static/home-index.json") %}
+    {% set_global latest = archive | sort(attribute="date") | reverse %}
 
     <header class="masthead">
         <div class="masthead__lead-col">
@@ -107,17 +109,10 @@
             <button type="button" class="filter-clear" id="filter-clear" style="display:none;">清除筛选</button>
         </div>
             </div>
-            <ul class="article-list" data-article-list id="article-list" data-limit="{{ limit }}" style="display:none;">
-                {% for p in blog.pages %}
+            <ul class="article-list" data-article-list id="article-list" data-limit="{{ limit }}">
+                {% for p in latest %}
+                    {% if loop.index > limit %}{% break %}{% endif %}
                     {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
-                {% endfor %}
-                {% for sub in blog.subsections %}
-                    {% set sect = get_section(path=sub) %}
-                    {% if sect %}
-                        {% for p in sect.pages %}
-                            {{<article_row item={p} show_tags={true} show_reading_time={true}/>}}
-                        {% endfor %}
-                    {% endif %}
                 {% endfor %}
             </ul>
             <div class="listing-footer">
@@ -131,41 +126,96 @@
 (function() {
     var list = document.getElementById('article-list');
     if (!list) return;
-    var items = Array.from(list.children);
-
-    // 按 date 降序排序（读取 time[datetime]）
-    items.sort(function(a, b) {
-        var tA = a.querySelector('time');
-        var tB = b.querySelector('time');
-        var dateA = tA ? (tA.getAttribute('datetime') || tA.textContent.trim()) : '';
-        var dateB = tB ? (tB.getAttribute('datetime') || tB.textContent.trim()) : '';
-        return dateB.localeCompare(dateA);
-    });
-    items.forEach(function(item) { list.appendChild(item); });
-
-    var limit = parseInt(list.getAttribute('data-limit') || '10', 10);
-    items.slice(limit).forEach(function(item) { item.style.display = 'none'; });
-    if (items[0]) items[0].classList.add('article-row--lead');
-    list.style.display = '';
+    var serverRows = Array.prototype.slice.call(list.children);
 
     var filterBar = document.getElementById('filter-bar');
     if (filterBar) {
         filterBar.style.display = '';
         var state = { section: '', tag: '' };
+        var archive = null;
+        var generated = [];
+
+        // The whole archive arrives only when a filter is used: ten rows ship
+        // with the page, the index is fetched on demand.
+        function loadArchive() {
+            if (archive) return Promise.resolve(archive);
+            return fetch('/home-index.json', { credentials: 'same-origin' })
+                .then(function(response) {
+                    if (!response.ok) throw new Error('home index ' + response.status);
+                    return response.json();
+                })
+                .then(function(data) {
+                    archive = data;
+                    return archive;
+                });
+        }
+
+        function buildRow(item) {
+            var row = serverRows[0].cloneNode(true);
+            // the first server row is hidden while a filter is active; the
+            // clone must not inherit that
+            row.style.display = '';
+            var link = row.querySelector('.article-row__link');
+            link.setAttribute('href', item.permalink);
+            row.setAttribute('data-section', item.section || '');
+            row.setAttribute('data-tags', item.taxonomies.tags.join(','));
+
+            var date = row.querySelector('.article-row__date');
+            date.setAttribute('datetime', item.extra.update_date);
+            date.textContent = item.extra.update_date;
+
+            var reading = row.querySelector('.article-row__reading-time');
+            if (reading) reading.textContent = item.reading_time + ' min read';
+
+            var topic = row.querySelector('.article-row__section');
+            if (topic) topic.textContent = item.topic || item.taxonomies.tags[0] || '';
+
+            row.querySelector('.article-row__title').textContent = item.title;
+
+            var description = row.querySelector('.article-row__description');
+            if (description) description.textContent = item.description;
+
+            var meta = row.querySelector('.article-row__meta');
+            if (meta) {
+                meta.textContent = '';
+                item.taxonomies.tags.slice(0, 3).forEach(function(tag) {
+                    var chip = document.createElement('span');
+                    chip.className = 'tag-chip';
+                    chip.textContent = tag;
+                    meta.appendChild(chip);
+                });
+            }
+            return row;
+        }
+
+        function showServerRows() {
+            generated.forEach(function(row) { row.remove(); });
+            generated = [];
+            serverRows.forEach(function(row) { row.style.display = ''; });
+        }
 
         function applyFilter() {
             var hasFilter = !!(state.section || state.tag);
-            items.forEach(function(item, idx) {
-                var sec = item.getAttribute('data-section') || '';
-                var tagStr = (item.getAttribute('data-tags') || '').split(',');
-                var matchSection = !state.section || sec === state.section;
-                var matchTag = !state.tag || tagStr.indexOf(state.tag) >= 0;
-                var match = matchSection && matchTag;
-                var show = match && (hasFilter || idx < limit);
-                item.style.display = show ? '' : 'none';
-            });
             var clearBtn = document.getElementById('filter-clear');
             if (clearBtn) clearBtn.style.display = hasFilter ? '' : 'none';
+            if (!hasFilter) {
+                showServerRows();
+                return;
+            }
+            loadArchive().then(function(items) {
+                generated.forEach(function(row) { row.remove(); });
+                generated = [];
+                serverRows.forEach(function(row) { row.style.display = 'none'; });
+                items.forEach(function(item) {
+                    if (state.section && item.section !== state.section) return;
+                    if (state.tag && item.taxonomies.tags.indexOf(state.tag) < 0) return;
+                    var row = buildRow(item);
+                    list.appendChild(row);
+                    generated.push(row);
+                });
+            }).catch(function() {
+                showServerRows();
+            });
         }
 
         document.querySelectorAll('.filter-dropdown').forEach(function(dd) {

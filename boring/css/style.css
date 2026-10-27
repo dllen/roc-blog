@@ -763,7 +763,7 @@ textarea {
   min-width: 0;
 }
 
-.article-row--lead .article-row__title {
+.article-list > .article-row:first-child .article-row__title {
   font-size: var(--text-2xl);
   line-height: 1.2;
 }

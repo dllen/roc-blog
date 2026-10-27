@@ -15,13 +15,13 @@
   "author": "Sabu Siyad <hello@ssiyad.com>",
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/build-related-index.mjs && npx postcss css/style.css -o static/css/style.css",
+    "build": "node scripts/build-related-index.mjs && node scripts/build-home-index.mjs && npx postcss css/style.css -o static/css/style.css",
     "watch": "npx postcss css/style.css -o static/css/style.css --watch",
     "test": "node --test scripts/*.test.mjs scripts/lib/*.test.mjs static/js/*.test.mjs",
     "test:site": "node --test tests/site-output.test.mjs",
     "audit": "node scripts/audit-frontmatter.mjs",
     "og": "node scripts/og-generator.mjs",
-    "build:index": "node scripts/build-related-index.mjs"
+    "build:index": "node scripts/build-related-index.mjs && node scripts/build-home-index.mjs"
   },
   "devDependencies": {
     "jsdom": "^30.0.1"

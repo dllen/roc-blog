@@ -12,7 +12,7 @@ Zola (v0.23+) static site for a Chinese tech blog, themed with a custom `boring/
 
 ```bash
 yarn install                 # one-time
-yarn build                   # build-related-index.mjs + postcss (css/style.css → static/css/style.css)
+yarn build                   # build-related-index.mjs + build-home-index.mjs + postcss (css/style.css → static/css/style.css)
 yarn watch                   # postcss --watch only
 bash scripts/build-fonts.sh # needs pip: fonttools==4.47.0, brotli==1.1.0
 yarn og                      # generate OG images via @resvg/resvg-js
@@ -43,7 +43,7 @@ Local build mock (mirrors `.github/workflows/build.yml` build steps including `c
 
 - **Don't run yarn / zola from repo root** — every script assumes `boring/` as cwd; the site URL and relative paths break otherwise.
 - **`yarn test:site` requires a fresh `zola build -o roc-blog --force`** — the integration test reads from `boring/roc-blog/`. If output dir is missing the test fails immediately.
-- **`yarn build` does two things in order**: precomputes `related-index.json` BEFORE postcss. If postcss changes fail, the related index may be stale for that run — re-run `yarn build:index` (or full `yarn build`).
+- **`yarn build` does three things in order**: precomputes `related-index.json` and `home-index.json` BEFORE postcss. If postcss changes fail, the indexes may be stale for that run — re-run `yarn build:index` (or full `yarn build`). `home-index.json` feeds the homepage (the template reads it via `load_data`), so a bare `zola build` relies on the last `yarn build`'s copy.
 - **`boring/roc-blog/` vs `boring/public/`**: `zola build` alone writes to `public/`; the project convention uses `-o roc-blog` so the output name matches the deploy dir. CI deploys from `boring/roc-blog`; raw `zola` (e.g. `zola serve`) writes to `public/`. The two dirs can drift — always run the full `zola build -o roc-blog --force` before `yarn test:site`.
 - **Generated artifacts not to hand-edit**: `static/css/style.css`, `static/og/*.png`, `static/related-index.json`, `roc-blog/**`. Source-of-truth files live one level up or in `scripts/`.
 - **Leftover files in `boring/`** (all gitignored, but visible): `.hugo_build.lock` (pre-Zola), `yarn-error.log`, `startup.log` — never treat as source.
