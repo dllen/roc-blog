@@ -9,7 +9,7 @@ tldr: "面向工程实践的 DolphinScheduler 二次开发指南：环境搭建�
 keywords: ["Apache", "DolphinScheduler", "二次开发技术手册", "二次开发"]
 ---
 
-# 1. 项目介绍
+## 1. 项目介绍
 
 Apache DolphinScheduler 是一款面向数据工程的现代化工作流编排平台，支持通过 Web 可视化拖拽构建复杂的依赖拓扑，具备高可用与高性能的分布式架构，提供丰富的内置任务类型（Shell、Python、Spark、Flink、HTTP、SQL 等），并支持跨云与多数据中心编排。[参考：GitHub 项目主页](https://github.com/apache/dolphinscheduler)
 
@@ -29,7 +29,7 @@ Apache DolphinScheduler 是一款面向数据工程的现代化工作流编排�
    (MySQL/PG)    (Coordination)         (Shell/SQL/...)
 ```
 
-# 2. 开发环境搭建
+## 2. 开发环境搭建
 
 软硬件要求（建议值）：
 - OS：macOS/Linux（x86_64/arm64）
@@ -64,7 +64,7 @@ npm install && npm run build
 ./bin/dolphinscheduler-daemon.sh start api-server
 ```
 
-# 3. 二次开发指南
+## 3. 二次开发指南
 
 核心模块与扩展点（以 3.x 为例）：
 - Server 层：Master（调度协调）、Worker（任务执行）、API（接口与权限）。
@@ -126,7 +126,7 @@ public class FeishuAlertChannel implements AlertChannel {
 - 接入企业统一告警与审计平台。
 - 扩展资源中心（版本化脚本、集中密钥/凭据管理）。
 
-# 4. 最佳实践
+## 4. 最佳实践
 
 经验与教训：
 - 与生产环境隔离：先在独立项目/租户验证插件，再灰度到生产。
@@ -150,7 +150,7 @@ public class FeishuAlertChannel implements AlertChannel {
 - 事件驱动集成：任务完成事件推送到消息总线触发下游流程。
 - 与数据源平台/元数据中心打通，实现任务参数与血缘的自动化维护。
 
-# 5. 测试与部署
+## 5. 测试与部署
 
 测试方法：
 - 单元测试：任务/告警插件核心逻辑的快速覆盖。

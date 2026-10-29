@@ -349,4 +349,4 @@ AI Native SDLC 的实质，不是让 AI 更自由地写代码，而是建立一�
 
 ---
 
-> **系列阅读**：本文是「AI 原生 SDLC」三篇系列的终篇，横向比较四份报告。前两篇分别深入拆解了 Anthropic 手册：**[《从 intent.md 到闭环》](/blog/ai-native-sdlc-playbook-anthropic/)**，和 Simon Willison 的个人方法论：**[《智能体工程模式：代码免费时代的软件工程实践》](/blog/agentic-engineering-patterns-simon-willison/)**。
+> **系列阅读**：本文是「AI 原生 SDLC」三篇系列的终篇，横向比较四份报告。前两篇分别深入拆解了 Anthropic 手册：**[《从 intent.md 到闭环》](/blog/ai-agent/ai-native-sdlc-playbook-anthropic/)**，和 Simon Willison 的个人方法论：**[《智能体工程模式：代码免费时代的软件工程实践》](/blog/ai-agent/agentic-engineering-patterns-simon-willison/)**。

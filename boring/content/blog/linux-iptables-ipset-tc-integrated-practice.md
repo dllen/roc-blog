@@ -9,7 +9,7 @@ tldr: "以可操作的完整案例讲解防火墙过滤与带宽控制的组合�
 keywords: ["Linux", "iptables、ipset", "tc", "的综合应用实践", "网络", "iptables", "ipset", "流量控制"]
 ---
 
-# 引言
+## 引言
 
 在中小规模到企业生产环境中，常需要同时满足“连接访问控制”与“带宽/队列管理”。Linux 生态提供了三件利器：
 - iptables：基于 Netfilter 的防火墙规则管理，负责匹配并决定包的命运（ACCEPT/DROP/LOG 等）
@@ -20,7 +20,7 @@ keywords: ["Linux", "iptables、ipset", "tc", "的综合应用实践", "网络",
 
 ---
 
-# 技术背景与核心功能
+## 技术背景与核心功能
 
 - iptables（过滤防火墙）
   - 核心概念：表（`filter`/`nat`/`mangle`/`raw`/`security`）、链（`INPUT`/`FORWARD`/`OUTPUT`/`PREROUTING`/`POSTROUTING`）
@@ -44,7 +44,7 @@ keywords: ["Linux", "iptables、ipset", "tc", "的综合应用实践", "网络",
 
 ---
 
-# 完整管控案例设计：限制特定 IP 集合的带宽并过滤其访问
+## 完整管控案例设计：限制特定 IP 集合的带宽并过滤其访问
 
 目标：
 - 建立 `restricted_clients` 集合，限制其下行/上行总带宽至 10 Mbit，并禁止访问 `tcp/22`，只允许 `tcp/80`/`443`
@@ -134,7 +134,7 @@ sudo tc filter add dev eth0 parent 1: protocol ip prio 10 handle 0x1 fw flowid 1
 
 ---
 
-# 配置完整示例与逐项说明
+## 配置完整示例与逐项说明
 
 ```bash
 # ==== ipset ====
@@ -194,7 +194,7 @@ iperf3 -c <server-ip> -p 5201
 
 ---
 
-# 应用场景扩展与最佳实践
+## 应用场景扩展与最佳实践
 
 - 企业网络管理
   - 租户/部门/分环境的 IP 集合管理（ipset），配合 iptables 做端口准入控制
@@ -227,7 +227,7 @@ iperf3 -c <server-ip> -p 5201
 
 ---
 
-# cgroup 网络空间集成实践
+## cgroup 网络空间集成实践
 
 ## Host 网络模式 vs 非 Host 网络模式
 
@@ -476,7 +476,7 @@ sudo iptables -t mangle -A OUTPUT -m cgroup --cgroup 0x00010010 \
 
 ---
 
-# 注意事项与排查
+## 注意事项与排查
 
 - 操作前备份与回滚
   - 备份规则：
@@ -503,7 +503,7 @@ sudo iptables -t mangle -A OUTPUT -m cgroup --cgroup 0x00010010 \
 
 ---
 
-# 总结
+## 总结
 
 - 使用 ipset 管理名单，iptables 做准入与打标，tc 做速率与队列管理，是兼顾简单、性能与可维护性的组合
 - 建议以“标记驱动分类”的模式组织规则，保持早打标、少匹配、设备维度清晰

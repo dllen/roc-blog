@@ -11,7 +11,7 @@ tldr: "面向生产的 Flink 性能调优：资源配置、Checkpoint、状态�
 keywords: ["Apache", "Flink", "任务性能调优实践手册", "性能调优"]
 ---
 
-# 技术背景介绍
+## 技术背景介绍
 
 Apache Flink 是一款面向有状态流处理的分布式计算引擎，支持事件时间、Exactly-Once 语义、复杂窗口与跨算子状态管理。生产环境中常见的性能问题包括：
 - 吞吐达不到预期（TPS 低、CPU 空闲）
@@ -25,7 +25,7 @@ Source --> Map/FlatMap --> KeyBy --> Window/Aggregate --> Sink
            | 状态读写 | 反压传播 | Checkpoint 对齐
 ```
 
-# 核心优化方法论
+## 核心优化方法论
 
 - 资源匹配：并行度与槽位、内存与网络缓冲均衡，避免“过度/不足配置”。
 - 有状态算子优先：明确状态大小与访问模式（热/冷），选择合适状态后端与快照策略。
@@ -39,7 +39,7 @@ Source --> Map/FlatMap --> KeyBy --> Window/Aggregate --> Sink
            ^-----------------------------------------------|
 ```
 
-# 问题定位与发现
+## 问题定位与发现
 
 - 统一问题画像
   - 类型归类：吞吐不足、延迟偏高、反压频繁、Checkpoint 卡顿、数据倾斜。
@@ -69,7 +69,7 @@ Metrics -> 定位瓶颈 -> 假设与改动 -> 回归验证
          ^-------------------------------|
 ```
 
-# 核心监控指标项
+## 核心监控指标项
 
 - 吞吐与延迟
   - `numRecordsInPerSecond` / `numRecordsOutPerSecond`：核心吞吐；推荐稳定无大幅锯齿。
@@ -91,7 +91,7 @@ Metrics -> 定位瓶颈 -> 假设与改动 -> 回归验证
 
 > 注意：指标需结合业务 SLA、数据分布与链路结构评估，推荐值为经验范围，实际以回归测试与压测结果为准。
 
-# 具体调优参数配置
+## 具体调优参数配置
 
 - 任务并行度与槽位
   - `env.setParallelism(n)`：总并行度 ≈ `taskManagers × slotsPerTM`
@@ -114,7 +114,7 @@ Metrics -> 定位瓶颈 -> 假设与改动 -> 回归验证
   - 小状态/低延迟：内存（HashMapStateBackend/旧 MemoryStateBackend）
   - 大状态/落盘可靠：RocksDBStateBackend + 增量快照（提升快照与恢复效率）
 
-# 可落地的配置示例
+## 可落地的配置示例
 
 - 典型优化配置示例（Flink ≤ 1.12 常见写法）：
 ```java
@@ -164,7 +164,7 @@ env.setParallelism(4);
 // 其余状态后端与目录从配置文件生效
 ```
 
-# 性能对比测试数据
+## 性能对比测试数据
 
 - 基准测试环境
   - 集群：3 × TaskManager（8 vCPU / 16GB RAM / slots=4），1 × JobManager
@@ -181,7 +181,7 @@ env.setParallelism(4);
 | CPU 使用率（TaskManagers 平均） | 80% | 70% |
 | 网络缓冲利用率 | 高位抖动 | 稳定中位 |
 
-# 资源配置优化
+## 资源配置优化
 
 - 并行度规划
   - 槽位总量 = `TMs × slotsPerTM`，并行度应匹配关键算子压力（例如聚合/Windo w）
@@ -193,7 +193,7 @@ env.setParallelism(4);
   - `fraction` 调整至 0.1–0.2，确保数据高峰时不溢出也不浪费
   - 适度 `bufferTimeout`（5–50ms），降低小批次带来的协议开销
 
-# Checkpoint 机制调优
+## Checkpoint 机制调优
 
 - 间隔与并发
   - 缩短间隔可降低回放恢复成本，但会增加对齐频次与 I/O 压力
@@ -206,7 +206,7 @@ env.setParallelism(4);
 - 快照存储
   - HDFS/S3 推荐；本地盘仅用于缓存与 RocksDB 数据目录
 
-# 状态后端选型指南
+## 状态后端选型指南
 
 - HashMap/Memory：小状态、低延迟、快速算子，场景如轻量计数
 - RocksDB：大状态、复杂聚合、精确恢复，适合边写边查与滚动窗口
@@ -215,7 +215,7 @@ env.setParallelism(4);
   - 状态量级（MB/GB）、访问频次（QPS）、恢复期望（SLA）
   - 磁盘类型（SSD 优先）、快照存储通道（HDFS/S3）
 
-# 反压处理策略
+## 反压处理策略
 
 - 识别：Web UI BackPressure，任务日志、缓冲利用率、堆栈采样
 - 治理：
@@ -224,7 +224,7 @@ env.setParallelism(4);
   - 增加并行度与槽位，或限流上游（Kafka Source）
   - 调整 `bufferTimeout`，避免微批过小导致协议开销过大
 
-# 数据倾斜解决方案
+## 数据倾斜解决方案
 
 - 热点 key 识别：TopN 统计、采样与 UI 指标
 - 解决方案：
@@ -233,7 +233,7 @@ env.setParallelism(4);
   - 路由重平衡：`rebalance()` 或自定义 `partitioner` 将热点分摊
   - 过滤/合并小流：对极端长尾/热点做预处理
 
-# 最佳实践总结
+## 最佳实践总结
 
 - 以指标驱动迭代，严控变更范围并保留回滚路径（Savepoint）
 - 大状态首选 RocksDB + 增量快照；稳态低延迟谨慎使用非对齐快照
@@ -244,7 +244,7 @@ env.setParallelism(4);
 
 ---
 
-# 参考与延伸阅读
+## 参考与延伸阅读
 - [Flink 官方文档](https://nightlies.apache.org/flink/flink-docs-release-1.15/)
 - [Checkpoint 与状态后端](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/checkpoints/)
 - [RocksDB State Backend](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/ops/state/rocksdb/)

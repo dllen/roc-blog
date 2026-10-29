@@ -9,13 +9,13 @@ tldr: "覆盖概念、实施框架、技术方案、最佳实践与挑战，含�
 keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本", "预算", "成本优化", "可视化", "合规"]
 ---
 
-# 概览
+## 概览
 - 目标：建立可扩展、可度量、可协作的云成本管理体系，实现成本透明、预算可控与持续优化。
 - 图示：
   - 架构示意图：![FinOps 架构](/finops-architecture.svg)
   - 流程图：![FinOps 流程](/finops-process-flow.svg)
 
-# 1. 概念解析
+## 1. 概念解析
 - 定义与原则
   - FinOps 是融合财务、技术与业务的云成本运营方法论，核心原则：可视化透明、共享责任、数据驱动、快速反馈与持续优化。
   - 三个支柱：信息透明（Visibility）、效率优化（Efficiency）、治理合规（Governance）。
@@ -24,7 +24,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 与传统 IT 财务的区别
   - 传统模式以年度预算与固定资产为中心；FinOps 面向云的实时消耗与弹性资源，强调跨部门协作与数据驱动决策，迭代优化快、粒度细。
 
-# 2. 实施框架
+## 2. 实施框架
 - 分阶段路线图
   - 准备期：资产盘点、账单归集、资源标签与责任人绑定、预算与 KPI 设定；搭建数据底座（CUR/BigQuery/Snowflake）。
   - 实施期：成本可视化、自动化监控与告警、成本分摊与核算、优化策略执行（预留实例/节省计划、自动关停、规格优化）。
@@ -34,7 +34,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 关键角色与职责
   - FinOps Lead（统筹与治理）、Cloud Engineer（优化与工具）、Data Analyst（分析与模型）、Product Owner（业务价值）、Finance Analyst（核算与预算）。
 
-# 3. 技术方案
+## 3. 技术方案
 - 工具链比较（示例）
   - AWS Cost Explorer、AWS Budgets 与 Cost Anomaly Detection：原生集成度高，适合 AWS 重度用户。
   - Azure Cost Management + Advisor：强可视化与建议，适合 Azure 场景。
@@ -47,7 +47,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
   - 标签规范：`owner/team/project/env/cost-center/app`；强制策略（SCP/Azure Policy）确保入云即标注。
   - 分摊模型：直接归集（标签）、共享成本二次分摊（权重/用量比例/固定比例）、跨账号/订阅对齐。
 
-# 4. 最佳实践
+## 4. 最佳实践
 - 成本可视化实现
   - 数据仓：BigQuery/Snowflake；ETL：DBT/Glue；可视化：Looker/QuickSight/Power BI；统一维表与度量。
 - 预算控制与异常检测
@@ -56,7 +56,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
   - 建议来源：规格优化（CPU/内存/吞吐）、预留/节省计划匹配、关停空闲资源、存储冷热分层与生命周期（ILM）。
   - 执行：变更审批流（低风险自动、高风险人工）、计划窗口与回滚、自动化脚本（IaC + API）。
 
-# 5. 落地挑战
+## 5. 落地挑战
 - 常见障碍与解决方案
   - 标签缺失与不一致：推行强制策略与自动补齐；未标注直接阻断或纳入共享池并限期治理。
   - 数据质量与口径不统一：统一维表、口径定义与结算规则；审计可追溯。
@@ -66,7 +66,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 持续改进机制
   - 周期性评审、指标看板与告警复盘、优化建议闭环、成本基线动态调整。
 
-# 6. 架构与流程（参考实现）
+## 6. 架构与流程（参考实现）
 - 架构组成
   - 采集：账单、用量、资源清单与标签；
   - 存储与处理：仓库与 ETL、归一化模型、指标聚合；
@@ -75,7 +75,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 流程阶段
   - 发现→基线→预算→监控→优化→治理→复盘（形成闭环）。
 
-# 7. 关键指标与计算公式
+## 7. 关键指标与计算公式
 - 单位成本（Unit Cost）：`总云成本 / 业务量（请求数/订单数/MAU）`
 - 资源效率（Resource Efficiency）：`实际利用率 / 期望利用率`
 - 折扣覆盖率（Coverage）：`(RI+SP 折扣使用额) / 可折扣资源成本`
@@ -83,7 +83,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 预算偏差率（Budget Variance）：`(实际 - 预算) / 预算`
 - 异常波动阈值（MAD）：`|x - 中位数| > k * MAD`
 
-# 8. 实施检查清单
+## 8. 实施检查清单
 - 标签：规范、强制、审计、自动补齐；
 - 数据：账单与用量全量与增量、维表与口径定义；
 - 预算：层级、阈值与告警、审批与豁免；
@@ -91,7 +91,7 @@ keywords: ["FinOps", "建设全指南", "从理念到落地实践", "云成本",
 - 优化：建议生成、风险分级、计划窗口与回滚、自动化执行；
 - 合规：SCP/Azure Policy/OrgPolicy、配额与策略、权限最小化、审计与留痕。
 
-# 9. 实施案例（参考）
+## 9. 实施案例（参考）
 
 > 场景：大型电商企业，采用多云架构（AWS+GCP）。月均云成本约 200 万，业务为高并发促销、日常交易与推荐服务。历史上存在成本波动与预算偏差问题，标签覆盖不足导致成本归集困难，缺少异常检测与自动化优化闭环。目标是 3 个月内建立 FinOps 体系，实现透明化、预算可控、自动化优化闭环。
 
@@ -265,12 +265,12 @@ aws ce purchase-savings-plan --amount 50000 --term 1-year --payment-option all-u
   - Gartner 云成本管理与优化相关报告。
 
 
-# 10. 安全与合规
+## 10. 安全与合规
 - 策略：强制标签、配额与策略、资源准入与模板化（IaC）；
 - 权限：最小权限、双人审批、变更留痕；
 - 合规：账单与审计日志长期保留；满足 ISO 27001、SOC2、GDPR 数据保留与访问控制要求。
 
-# 参考资料
+## 参考资料
 - FinOps Foundation：《State of FinOps 2023/2024》《FinOps for Kubernetes》《FinOps Technical Standard》
 - AWS：Cost Explorer / Budgets / Anomaly Detection / CUR / Savings Plans / RI / Well-Architected Cost Optimization
 - Azure：Cost Management + Advisor / Policy / Tagging / Reservations

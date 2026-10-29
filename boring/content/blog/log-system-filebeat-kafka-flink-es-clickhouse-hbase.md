@@ -9,13 +9,13 @@ tldr: "概览 目标：构建可扩展、低延迟、可检索与可分析的日
 keywords: ["基于", "的日志系统建设", "日志", "Filebeat", "Kafka", "Flink", "Elasticsearch", "ClickHouse"]
 ---
 
-# 概览
+## 概览
 - 目标：构建可扩展、低延迟、可检索与可分析的日志平台，支持实时处理与历史归档。
 - 数据流：`Filebeat → Kafka → Flink → {Elasticsearch | ClickHouse | HBase}`。
 - 架构图：
   ![系统架构](/log-system-architecture.svg)
 
-# 1. 系统架构设计
+## 1. 系统架构设计
 - 角色定位
   - Filebeat：轻量采集器，支持多源文件、容器日志，提供行聚合、过滤与缓冲，向 Kafka 可靠投递。
   - Kafka：日志总线与缓冲层，解耦生产与消费，提供分区并行与持久化，作为 Flink Source。
@@ -31,7 +31,7 @@ keywords: ["基于", "的日志系统建设", "日志", "Filebeat", "Kafka", "Fl
   - ClickHouse：分片+副本，ReplicatedMergeTree，失败节点自动恢复；
   - HBase：HDFS 冗余、RegionServer 自动迁移，ZK 保证一致性。
 
-# 2. 技术选型分析
+## 2. 技术选型分析
 - 选择考量与对比
   - Filebeat vs Fluent Bit：生态与可维护性、配置一致性；FB 多模块成熟，FB→Kafka 链路稳定。
   - Kafka vs Pulsar：Kafka 在日志生态与 Flink Source 上成熟；事务性写与生态工具完备。
@@ -49,7 +49,7 @@ keywords: ["基于", "的日志系统建设", "日志", "Filebeat", "Kafka", "Fl
   - ClickHouse 插入：≥150MB/s（HTTP batch）；
   - HBase Put：≥50k row/s（批量 1k，Async 客户端）。
 
-# 3. 核心实现细节
+## 3. 核心实现细节
 - Filebeat 配置
 ```yaml
 filebeat.inputs:
@@ -359,7 +359,7 @@ logging.selectors: ["publish", "processors"]
   - 启用 `http.enabled: true` 暴露指标（`/stats`），采集 `beat.events`、`harvester.open_files`、`output.events` 成功/失败；
   - 用 Prometheus 抓取并设置告警：采集速率低于预期、发送失败率升高、打开文件数异常增长。
 
-# 4. 性能优化经验
+## 4. 性能优化经验
 - Filebeat：`bulk_max_size` 调整批量；启用持久队列；过滤低价值日志降低链路压力。
 - Kafka：合适分区数与 RF；Broker `num.network.threads`/`socket.send.buffer.bytes`；启用 LZ4；控制批大小与 linger。
 - Flink：优化并行度与算子链；RocksDB state、增大 `write-buffer-size`；Checkpoint 间隔与超时合理化。
@@ -368,7 +368,7 @@ logging.selectors: ["publish", "processors"]
 - HBase：RowKey 防热点；`memstore`/`blockcache` 调整；Major/Minor compaction 节奏。
 - 容量规划：按峰值吞吐与增长率规划分区/分片/Region 数量，留有 30% 余量。
 
-# 5. 运维监控方案
+## 5. 运维监控方案
 - 指标
   - Filebeat：harvesters、publish queue 使用率、掉包率。
   - Kafka：ISR、Under-Replicated Partitions、Consumer Lag、请求队列长度。
@@ -383,12 +383,12 @@ sum(rate(es_indexing_index_total[5m])) < expected_rate * 0.7
 ```
 - 运维清单：滚动升级、备份与快照、容量巡检、索引与表维护、Checkpoint 与 Savepoint 验证。
 
-# 6. 实际应用案例（示例）
+## 6. 实际应用案例（示例）
 - 规模：日均 2TB，峰值 250k events/s；端到端 p95 ≤ 500ms。
 - 查询：ES 关键词检索 p95 ≤ 200ms；CH 1 亿行聚合 p95 ≤ 2s。
 - 价值：统一日志入口、降低故障定位时间 ≥50%，支持审计与增长分析。
 
-# 7. 部署脚本示例（片段）
+## 7. 部署脚本示例（片段）
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -402,20 +402,20 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 flink run -c com.example.LogPipeline ./log-pipeline.jar
 ```
 
-# 8. 典型问题与解决
+## 8. 典型问题与解决
 - Kafka 负载不均：分区键散列不均导致热点 → 优化 Key 与增加分区。
 - Flink Checkpoint 失败：外部存储带宽不足 → 升级存储与拉长间隔、压缩状态。
 - ES 写入 429：线程池队列满 → 降低刷新频率、调大 bulk、限流入口。
 - CH parts 过多：小批次写导致合并压力 → 增大批次与控制并发。
 - HBase 热点 Region：RowKey 顺序导致集中 → 前缀散列或反转时间戳。
 
-# 9. 对比传统方案的改进
+## 9. 对比传统方案的改进
 - 相比仅 ELK：引入 Kafka 与 Flink 实现解耦与实时计算；ClickHouse/HBase 提供高效分析与长期明细，整体可用性与扩展性更佳。
 
-# 10. 架构演进方向
+## 10. 架构演进方向
 - Schema Registry+Avro/Protobuf；Kafka 分层存储；Flink Stateful Functions；ES 冷/温节点与 CCR；ClickHouse 对象存储分层；HBase 与 Data Lake（Iceberg/Hudi）打通。
 
-# 后台控制系统详细设计
+## 后台控制系统详细设计
 
 为支撑日志平台的可配置性、查询可扩展性与稳定告警能力，设计统一的后台控制系统，包含采集配置模块、查询分析模块与日志告警模块。每个模块提供架构图、技术选型、性能指标、接口定义与异常处理及一致性保障方案。
 

@@ -9,13 +9,13 @@ tldr: "电商库存中台的架构与实现，涵盖微服务设计、数据库�
 keywords: ["Golang", "Inventory", "Microservices", "Redis", "Kafka", "MySQL", "gRPC", "Seckill"]
 ---
 
-# 概览
+## 概览
 - 目标：设计并实现一个可扩展、强一致、低延迟的库存中台，支撑电商常规销售与秒杀高峰场景。
 - 图示：
   - 系统架构：![系统架构](/inventory-system-architecture.svg)
   - 库存ER关系：![数据库ER图](/inventory-db-er.svg)
 
-# 1. 系统架构设计
+## 1. 系统架构设计
 - 微服务架构（Golang）：
   - 服务划分：`inventory-service`（核心库存）、`lock-service`（分布式锁）、`flow-service`（流水与对账）、`rule-engine`（分仓与调度）、`sync-service`（仓库同步）、`api-gateway`（BFF）。
   - 通讯协议：内部 `gRPC` + Protobuf；外部 `REST/GraphQL`（BFF）；消息事件 `Kafka`。
@@ -24,7 +24,7 @@ keywords: ["Golang", "Inventory", "Microservices", "Redis", "Kafka", "MySQL", "g
   - 统一库存口径，提供原子动作与强一致出入库能力；对上承接订单、促销与风控，对下对接仓库WMS与供应链。
 - 模块交互图：见架构SVG与各模块时序图。
 
-# 2. 数据库设计
+## 2. 数据库设计
 - 核心表（字段说明摘要）：
   - `inventory_main`（库存主表）：`id(PK)`、`sku_id`、`warehouse_id`、`total`、`available`、`locked`、`reserved`、`activity_tag`、`version`、`updated_at`
   - `inventory_flow`（库存流水）：`id(PK)`、`sku_id`、`warehouse_id`、`action(Add/Lock/Unlock/Reduce/Restore/Exception)`、`delta`、`biz_order_id`、`trace_id`、`operator`、`created_at`
@@ -40,7 +40,7 @@ keywords: ["Golang", "Inventory", "Microservices", "Redis", "Kafka", "MySQL", "g
 
 ![数据库ER图](/inventory-db-er.svg)
 
-# 3. 核心业务逻辑实现
+## 3. 核心业务逻辑实现
 ## 3.1 库存变化处理（原子操作）
 - 原子动作：Add、Lock、Unlock、Reduce、Restore、Exception；保证幂等与可回滚。
 - 下单库存状态变迁：见时序图 `订单提交→库存锁定→支付成功→扣减→发货→完成`。
@@ -132,7 +132,7 @@ func (s *Service) Reduce(ctx context.Context, lockID string) error {
 
 ![分层架构](/inventory-layered-architecture.svg)
 
-# 4. 库存全流程管理
+## 4. 库存全流程管理
 - 发货仓智能调度：综合`region`、`priority`、`activity_tag`与可用量；
 - 多渠道统一：合并线上线下/跨平台库存口径；
 - 销售预测与补货：基于时序预测与安全库存策略；
@@ -140,7 +140,7 @@ func (s *Service) Reduce(ctx context.Context, lockID string) error {
 
 ![全流程交互](/inventory-full-process-interactions.svg)
 
-# 5. 秒杀场景专项优化
+## 5. 秒杀场景专项优化
 - 预锁定：活动前生成令牌桶与预热`locked`池；
 - 高并发扣减：使用Redis原子脚本 + DB异步批量对账；
 - 订单超时：TTL到期自动解锁并回滚；
@@ -148,7 +148,7 @@ func (s *Service) Reduce(ctx context.Context, lockID string) error {
 
 ![秒杀时序](/inventory-seckill-sequence.svg)
 
-# 6. 核心代码展示
+## 6. 核心代码展示
 - 分布式锁实现（Redis，简化版Redlock思想）：
 ```go
 // language: go
@@ -195,7 +195,7 @@ func (w *OutboxWorker) Run(ctx context.Context) error {
 
 ![服务调用时序](/inventory-service-call-sequence.svg)
 
-# 7. 性能优化
+## 7. 性能优化
 - 缓存策略：SKU维度缓存`available/locked`与活动池；写路径旁路缓存并以消息驱动刷新；
 - 批量优化：合并锁定/扣减请求，DB批量更新与流水写入；
 - 热点分散：分片Key、队列多分片与令牌桶节流；
@@ -205,14 +205,14 @@ func (w *OutboxWorker) Run(ctx context.Context) error {
 
 ![性能优化流程](/inventory-performance-optimization-flow.svg)
 
-# 8. 监控与报警
+## 8. 监控与报警
 - 指标：库存准确度偏差、锁等待队列、Outbox滞留、Kafka Lag、DB死锁、Redis饱和度；
 - 异常自动恢复：锁泄漏清理、过期订单批量回滚、消息重放与对账修复；
 - 报警规则：阈值、突增检测与抑制；业务级（活动池耗尽、分仓失败率）。
 
 ![监控与报警架构](/inventory-monitoring-alert-architecture.svg)
 
-# 经验教训
+## 经验教训
 - 原子动作必须围绕主表行锁+流水+消息的一致性闭环；
 - 活动库存与常规库存要分池管理，避免互相挤占；
 - 秒杀优化优先"限流+预锁+异步对账"的组合拳；
