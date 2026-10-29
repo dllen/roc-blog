@@ -1,5 +1,5 @@
 ---
-title: "Loop Engineering：让 AI Agent 真正跑起来"
+title: "Loop Engineering：Agent 循环工程化"
 date: 2026-10-27
 update_date: 2026-10-27
 description: "演示时惊艳、自动化时崩溃，问题不在模型而在你还在手工 prompt。综合 Addy Osmani、LangChain 和开源项目 loop-engineering 的框架，拆解四大循环层次、六大基础设施、七个生产模式、安全红线与十大失败模式。"
@@ -9,7 +9,7 @@ taxonomies:
   tags: ["AI Agent", "工程化", "AI编码", "自动化"]
 ---
 
-# Loop Engineering：让 AI Agent 真正跑起来
+# Loop Engineering：Agent 循环工程化
 
 用过 Claude Code、Cursor、Codex 的人都经历过同一个落差：演示时惊艳，自动化时崩溃。让它每天早上自动 review PR，它跑了一次再没动静；让它每天生成更新日志，它把所有 commit 搅成一锅；让它并行修三个 bug，三个 worktree 的改动互相覆盖。
 

@@ -22,6 +22,14 @@ taxonomies:
 
 这个「软约束 + 硬验证」的组合，是它最值得抄的地方。
 
+```mermaid
+flowchart LR
+    A[Skill 里的软约束<br/>Craft Floor / Refuse] --> B[模型生成界面]
+    B --> C[62 条确定性规则<br/>无需 LLM 与 API key]
+    C --> D[findings 回灌<br/>钩子直接甩回 agent 循环]
+    D --> B
+```
+
 ## 一、三大支柱
 
 ### 支柱一：一个 Skill，24 条命令
