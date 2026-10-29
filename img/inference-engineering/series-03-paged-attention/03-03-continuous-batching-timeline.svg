@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img" aria-label="Static vs Continuous Batching Timeline">
+  <title>Static vs Continuous Batching 时间线对比</title>
+  <desc>对比 Static Batching（等所有人完成）与 Continuous Batching（完成即释放，iteration-level scheduling）在 GPU 利用率上的差异</desc>
+
+  <defs>
+    <linearGradient id="cbBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#F59E42"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9CA9BD"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="900" height="500" fill="url(#cbBg)"/>
+
+  <!-- 标题 -->
+  <text x="450" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="24" font-weight="bold" fill="#F5F0E8">Static Batching vs Continuous Batching</text>
+  <text x="450" y="60" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#9CA9BD">等所有人完成 vs 完成即释放</text>
+
+  <!-- ===== 上半部分：Static Batching ===== -->
+  <g transform="translate(40, 80)">
+    <!-- 标签 -->
+    <rect x="0" y="0" width="160" height="28" rx="14" fill="#2D3548" stroke="#E04E3D" stroke-width="1.5"/>
+    <text x="80" y="18" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#E04E3D">Static Batching（等所有人）</text>
+
+    <!-- 时间轴 -->
+    <line x1="0" y1="60" x2="780" y2="60" stroke="#6B7280" stroke-width="1"/>
+    <!-- Step 标记 -->
+    <text x="80" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 1</text>
+    <text x="240" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 2</text>
+    <text x="400" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 3</text>
+    <text x="560" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 4</text>
+    <text x="720" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 5</text>
+
+    <!-- Req A 行 - 暖橙色 -->
+    <g transform="translate(0, 95)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Req A</text>
+      <!-- Step 1: Prefill+Decode -->
+      <rect x="40" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="110" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">P+Decode</text>
+      <!-- Step 2: Decode -->
+      <rect x="200" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="270" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 3: Decode -->
+      <rect x="360" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="430" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 4: Decode -->
+      <rect x="520" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="590" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 5: Decode -->
+      <rect x="680" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="750" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+    </g>
+
+    <!-- Req B 行 - 雾蓝色 -->
+    <g transform="translate(0, 145)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Req B</text>
+      <!-- Step 1: Waiting -->
+      <rect x="40" y="0" width="140" height="32" rx="4" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="110" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#6B7280">waiting...</text>
+      <!-- Step 2: Waiting -->
+      <rect x="200" y="0" width="140" height="32" rx="4" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+      <!-- Step 3: Prefill+Decode -->
+      <rect x="360" y="0" width="140" height="32" rx="4" fill="#9CA9BD"/>
+      <text x="430" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">P+Decode</text>
+      <!-- Step 4: DONE but GPU wasted -->
+      <rect x="520" y="0" width="140" height="32" rx="4" fill="#2D3548" stroke="#E04E3D" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="590" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">DONE (wasted)</text>
+      <!-- Step 5: wasted -->
+      <rect x="680" y="0" width="140" height="32" rx="4" fill="#2D3548" stroke="#E04E3D" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="690" y1="6" x2="810" y2="26" stroke="#E04E3D" stroke-width="1.5" opacity="0.6"/>
+      <line x1="810" y1="6" x2="690" y2="26" stroke="#E04E3D" stroke-width="1.5" opacity="0.6"/>
+    </g>
+
+    <!-- Req C 行 - 完全没出现 -->
+    <g transform="translate(0, 195)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#6B7280">Req C</text>
+      <text x="200" y="20" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#6B7280" font-style="italic">等所有人完成才能加入...</text>
+    </g>
+
+    <!-- 标注：B 完成了但 GPU 还在等 A -->
+    <g transform="translate(520, 240)">
+      <line x1="70" y1="0" x2="70" y2="-30" stroke="#E04E3D" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="70" y="-38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">B 完成了但 GPU 还在等 A</text>
+    </g>
+  </g>
+
+  <!-- ===== 分隔线 ===== -->
+  <line x1="40" y1="310" x2="860" y2="310" stroke="#6B7280" stroke-width="1" stroke-dasharray="8,4"/>
+
+  <!-- ===== 下半部分：Continuous Batching ===== -->
+  <g transform="translate(40, 325)">
+    <!-- 标签 -->
+    <rect x="0" y="0" width="220" height="28" rx="14" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="110" y="18" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#F59E42">Continuous Batching（完成即释放）</text>
+
+    <!-- 时间轴 -->
+    <line x1="0" y1="60" x2="780" y2="60" stroke="#6B7280" stroke-width="1"/>
+    <!-- Step 标记 -->
+    <text x="80" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 1</text>
+    <text x="240" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 2</text>
+    <text x="400" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 3</text>
+    <text x="560" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 4</text>
+    <text x="720" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6B7280">Step 5</text>
+
+    <!-- Req A 行 -->
+    <g transform="translate(0, 95)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Req A</text>
+      <!-- Step 1 -->
+      <rect x="40" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="110" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">P+Decode</text>
+      <!-- Step 2 -->
+      <rect x="200" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="270" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 3 -->
+      <rect x="360" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="430" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 4 -->
+      <rect x="520" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="590" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 5 -->
+      <rect x="680" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="750" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+    </g>
+
+    <!-- Req B 行 - 完成后立即释放 -->
+    <g transform="translate(0, 145)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Req B</text>
+      <!-- Step 1 -->
+      <rect x="40" y="0" width="140" height="32" rx="4" fill="#9CA9BD"/>
+      <text x="110" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">P+Decode</text>
+      <!-- Step 2 -->
+      <rect x="200" y="0" width="140" height="32" rx="4" fill="#9CA9BD"/>
+      <text x="270" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+      <!-- Step 3: DONE → 释放 -->
+      <rect x="360" y="0" width="140" height="32" rx="4" fill="#2D3548" stroke="#E04E3D" stroke-width="1.5"/>
+      <text x="430" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#E04E3D">DONE→释放</text>
+    </g>
+
+    <!-- Req C 行 - B 完成后立即加入 -->
+    <g transform="translate(0, 195)">
+      <text x="0" y="14" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Req C</text>
+      <!-- Step 1-2: 不存在 -->
+      <!-- Step 3: NEW → 加入（和 B 同一 step） -->
+      <rect x="360" y="0" width="140" height="32" rx="4" fill="#F59E42" stroke="#F59E42" stroke-width="2"/>
+      <text x="430" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">NEW→加入</text>
+      <!-- Step 4 -->
+      <rect x="520" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="590" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">P+Decode</text>
+      <!-- Step 5 -->
+      <rect x="680" y="0" width="140" height="32" rx="4" fill="#F59E42"/>
+      <text x="750" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1A1F2E">Decode</text>
+    </g>
+
+    <!-- 标注：B 完成 → C 加入 -->
+    <g transform="translate(360, 240)">
+      <line x1="70" y1="0" x2="70" y2="-30" stroke="#F59E42" stroke-width="2" marker-end="url(#arrow-orange)"/>
+      <text x="70" y="-38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#F59E42">B 完成 → C 加入：iteration-level scheduling</text>
+    </g>
+  </g>
+
+  <!-- ===== 右侧关键数据 ===== -->
+  <g transform="translate(750, 100)">
+    <rect x="0" y="0" width="130" height="140" rx="8" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="65" y="24" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#F5F0E8">关键数据</text>
+    <line x1="10" y1="34" x2="120" y2="34" stroke="#6B7280" stroke-width="1"/>
+
+    <text x="65" y="58" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="22" font-weight="bold" fill="#E04E3D">23×</text>
+    <text x="65" y="76" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">吞吐提升</text>
+
+    <text x="65" y="102" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">Anyscale 公开数据</text>
+    <text x="65" y="120" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">p50 延迟降低</text>
+  </g>
+
+  <!-- ===== 底部说明 ===== -->
+  <rect x="0" y="462" width="900" height="38" fill="#2D3548"/>
+  <text x="450" y="486" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">Continuous Batching = iteration-level scheduling · Anyscale OSDI'22</text>
+
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>DP → ZeRO 递进流程图</title>
+  <desc>Data Parallel到ZeRO-1/2/3递进 — bytes/param节省64倍，模型规模从5B扩展到320B</desc>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F5F0E8"/>
+    </marker>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="url(#bgGrad2)"/>
+
+  <!-- Title -->
+  <text x="450" y="44" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="22" font-weight="700" fill="#F5F0E8" letter-spacing="1">DP → ZeRO 递进 · bytes/param 节省 64×</text>
+  <line x1="80" y1="58" x2="820" y2="58" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ====== 4 boxes ====== -->
+
+  <!-- Box 1: DP -->
+  <rect x="30" y="100" width="170" height="130" rx="10" fill="#6B7280"/>
+  <text x="115" y="130" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="17" font-weight="700" fill="#F5F0E8">Data Parallel</text>
+  <line x1="50" y1="140" x2="180" y2="140" stroke="#9CA9BD" stroke-width="0.5"/>
+  <text x="115" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#F5F0E8">16 bytes/param</text>
+  <text x="115" y="182" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#C8C8C8">全部复制</text>
+  <!-- model size below -->
+  <text x="115" y="218" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="700" fill="#E04E3D">5B</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="200" y1="165" x2="228" y2="165" stroke="#F5F0E8" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="214" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F59E42">64×</text>
+
+  <!-- Box 2: ZeRO-1 -->
+  <rect x="230" y="100" width="170" height="130" rx="10" fill="#F59E42"/>
+  <text x="315" y="130" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="17" font-weight="700" fill="#1A1F2E">ZeRO-1</text>
+  <line x1="250" y1="140" x2="380" y2="140" stroke="#1A1F2E" stroke-width="0.5" opacity="0.4"/>
+  <text x="315" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1A1F2E">4.2 bytes/param</text>
+  <text x="315" y="182" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#1A1F2E">Optimizer 分片</text>
+  <text x="315" y="218" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="700" fill="#E04E3D">19B</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="400" y1="165" x2="428" y2="165" stroke="#F5F0E8" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="414" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F59E42">~2×</text>
+
+  <!-- Box 3: ZeRO-2 -->
+  <rect x="430" y="100" width="170" height="130" rx="10" fill="#F59E42"/>
+  <text x="515" y="130" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="17" font-weight="700" fill="#1A1F2E">ZeRO-2</text>
+  <line x1="450" y1="140" x2="580" y2="140" stroke="#1A1F2E" stroke-width="0.5" opacity="0.4"/>
+  <text x="515" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1A1F2E">2.2 bytes/param</text>
+  <text x="515" y="182" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#1A1F2E">+ Gradient 分片</text>
+  <text x="515" y="218" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="700" fill="#E04E3D">36B</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="600" y1="165" x2="628" y2="165" stroke="#F5F0E8" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="614" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#E04E3D">~9×</text>
+
+  <!-- Box 4: ZeRO-3/FSDP (highlighted) -->
+  <rect x="630" y="90" width="190" height="150" rx="10" fill="#E04E3D" stroke="#FF7060" stroke-width="2.5"/>
+  <text x="725" y="122" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="17" font-weight="700" fill="#F5F0E8">ZeRO-3 / FSDP</text>
+  <line x1="650" y1="132" x2="800" y2="132" stroke="#FF9090" stroke-width="0.5" opacity="0.6"/>
+  <text x="725" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#F5F0E8">0.25 bytes/param</text>
+  <text x="725" y="175" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="11" fill="#FFD0C0">全量分片</text>
+  <text x="725" y="218" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="34" font-weight="700" fill="#FFFFFF">320B</text>
+
+  <!-- ====== Bottom note ====== -->
+  <rect x="0" y="430" width="900" height="70" fill="#2D3548"/>
+  <text x="450" y="456" text-anchor="middle" font-family="'Noto Sans SC', sans-serif" font-size="13" fill="#9CA9BD">
+    ZeRO-3 = FSDP（PyTorch 原生）  |  DP ≤ 512 时 prefetch 隐藏通信开销
+  </text>
+  <text x="450" y="480" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#E04E3D">
+    总节省 64×  |  5B → 19B → 36B → 320B 模型规模扩展路径
+  </text>
+</svg>

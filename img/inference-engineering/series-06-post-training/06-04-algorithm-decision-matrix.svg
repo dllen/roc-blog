@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>Algorithm Decision Matrix - 四算法选型决策表</title>
+  <desc>PPO / GRPO / DPO / REINFORCE 选型指南，后训练算法决策矩阵</desc>
+  <defs>
+    <linearGradient id="bgGrad4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="arrR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9CA9BD"/>
+    </marker>
+  </defs>
+  <rect width="900" height="500" fill="url(#bgGrad4)"/>
+
+  <!-- Header -->
+  <text x="450" y="42" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="24" font-weight="700" fill="#F5F0E8">Algorithm Decision Matrix</text>
+  <text x="450" y="68" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#9CA9BD">PPO / GRPO / DPO / REINFORCE · 选型指南</text>
+
+  <!-- Row 1: 通用对话 -> PPO -->
+  <g transform="translate(55,100)">
+    <rect x="0" y="0" width="790" height="80" rx="10" fill="#2D3548"/>
+    <!-- Scene label -->
+    <text x="30" y="36" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">通用对话 / 安全对齐</text>
+    <text x="30" y="56" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">RM 成熟 · KL 控制稳定</text>
+    <!-- Arrow -->
+    <line x1="320" y1="40" x2="375" y2="40" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arrR)"/>
+    <!-- Algorithm card -->
+    <rect x="385" y="10" width="380" height="60" rx="8" fill="#1A1F2E" stroke="#9CA9BD" stroke-width="1.5"/>
+    <text x="575" y="38" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="800" fill="#9CA9BD">PPO</text>
+    <text x="575" y="58" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">最成熟 · 需要 Critic</text>
+  </g>
+
+  <!-- Row 2: 数学/代码 -> GRPO (highlighted) -->
+  <g transform="translate(55,195)">
+    <rect x="0" y="0" width="790" height="80" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="2"/>
+    <!-- Scene label -->
+    <text x="30" y="36" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">数学 / 代码 / RLVR</text>
+    <text x="30" y="56" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">DeepSeek 验证 · Critic-free</text>
+    <!-- Arrow -->
+    <line x1="320" y1="40" x2="375" y2="40" stroke="#F59E42" stroke-width="2" marker-end="url(#arrR)"/>
+    <!-- Algorithm card (highlighted) -->
+    <rect x="385" y="10" width="380" height="60" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="1.5"/>
+    <text x="575" y="38" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="800" fill="#1A1F2E">GRPO</text>
+    <text x="575" y="58" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#1A1F2E" opacity="0.7">⭐ 主流验证 · Critic-free</text>
+  </g>
+
+  <!-- Row 3: 快速迭代 -> DPO -->
+  <g transform="translate(55,290)">
+    <rect x="0" y="0" width="790" height="80" rx="10" fill="#2D3548"/>
+    <!-- Scene label -->
+    <text x="30" y="36" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">快速迭代 / 偏好已固定</text>
+    <text x="30" y="56" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">不需要 RM · Off-policy</text>
+    <!-- Arrow -->
+    <line x1="320" y1="40" x2="375" y2="40" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arrR)"/>
+    <!-- Algorithm card -->
+    <rect x="385" y="10" width="380" height="60" rx="8" fill="#1A1F2E" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="575" y="38" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="800" fill="#6B7280">DPO</text>
+    <text x="575" y="58" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">最便宜 · 无 RM</text>
+  </g>
+
+  <!-- Row 4: 长CoT推理 -> GRPO -->
+  <g transform="translate(55,385)">
+    <rect x="0" y="0" width="790" height="65" rx="10" fill="#2D3548"/>
+    <!-- Scene label -->
+    <text x="30" y="30" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#F5F0E8">长 CoT 推理</text>
+    <text x="30" y="50" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">组均值 baseline 适合长序列</text>
+    <!-- Arrow -->
+    <line x1="320" y1="33" x2="375" y2="33" stroke="#9CA9BD" stroke-width="1.5" marker-end="url(#arrR)"/>
+    <!-- Algorithm card -->
+    <rect x="385" y="5" width="380" height="55" rx="8" fill="#1A1F2E" stroke="#9CA9BD" stroke-width="1.5"/>
+    <text x="575" y="32" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="800" fill="#9CA9BD">GRPO</text>
+    <text x="575" y="50" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">组均值 baseline</text>
+  </g>
+
+  <!-- Bottom note -->
+  <text x="450" y="472" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" fill="#9CA9BD">⭐ = 当前主流；按场景选算法，不要无脑 PPO</text>
+</svg>
