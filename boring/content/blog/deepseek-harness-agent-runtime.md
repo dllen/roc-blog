@@ -218,6 +218,8 @@ dsh 的动态工具、工具表、模型服务和 Agent loop，都可以放进�
 
 不过要把论文能力与实际运行分开看：当前版本默认配置里，**只有创造模式预装了 Cordis 插件工具**，模型只有在这个模式下才能运行中定义、启动、停止动态插件。普通插件安装流程并不会让已经运行的 `dsh web` 自动发现并挂载新插件，通常仍要重启 `dsh web`。也就是说，Cordis 在框架层提供了热插拔与依赖协调的基础，但还没有完全贯通到 dsh 的常规安装部署流程里。
 
+> 上面这一节只讲了 Cordis 的「时间/空间两个维度」的结论。它的形式化推导——Revertible Effects、Reactive Coeffects、Fiber 惯性状态机，以及 Theorem 16/70/73/80 与源码的逐条对应——见 [Cordis：时空可组合性——动态组合的形式化](/blog/cordis-spatiotemporal-composability/)。
+
 ## 7. 三个层次，别混为一谈
 
 到这里可以总结出 dsh 的三层结构：

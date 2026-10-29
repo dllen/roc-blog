@@ -164,3 +164,9 @@ flowchart TD
 7. **端侧是 Always-on 的唯一出路**：云端线性计费 vs 端侧固定成本的剪刀差。
 
 一句话总结：**AI 推理的成本结构就像一家餐厅——食材（算力）不贵，房租（显存）和人工（利用率）才贵。Token 是菜单上的价格，KV Cache 是座位数，Decode 是上菜速度。想赚钱，不是买更多食材，而是让更多座位坐满、上菜更快、每道菜更省电。**
+
+---
+
+**延伸阅读**
+
+- [从 FLOPS 到美元：LLM 推理成本的数学推导](/blog/llm-inference-cost-deep-dive/) —— 进阶篇，含 Self-Attention 单层 FLOP 推导、算术强度与 Roofline 分界线、CPM 与 Spot 报价、Prefill-Decode 分离
