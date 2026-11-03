@@ -9,7 +9,7 @@ taxonomies:
   tags: ["系统设计", "分布式系统", "架构", "性能优化"]
 ---
 
-做系统设计题最常犯的错，是把知识当成清单。缓存、限流、分库分表、Raft、幂等，一条条背下来，真到设计一个具体系统时还是不知道从哪儿下手。
+「系统设计的三层」不是三组知识点，而是三个必须分别回答的问题。最容易犯的错是把它当成清单：缓存、限流、分库分表、Raft、幂等，一条条背下来，真到设计一个具体系统时还是不知道从哪儿下手。
 
 问题在于这些机制不在同一个层次上。缓存解决的是「取数据太慢」，事务解决的是「两个写入互相踩」，Raft 解决的是「多个副本谁说了算」。它们回答的是不同层的问题，混在一起看就只剩一堆名词。
 
@@ -165,8 +165,16 @@ flowchart LR
 
 一份地图的价值不在于覆盖全部地形，而在于让你知道自己在哪儿。
 
+## 进阶阅读
+
+这篇是总览，每一层的机制在这三篇里展开：
+
+- [单机为什么慢：执行与性能层](/blog/execution-and-performance-layer/) — TLB 三档成本、伪共享、内存序、有界队列背压、尾延迟
+- [共享状态：并发修改、崩溃与查找](/blog/shared-state-correctness-layer/) — 隔离级别、写偏斜、WAL 与 ARIES、B+ 树与 LSM 树
+- [跨机器协作：网络会骗你](/blog/cross-machine-coordination-layer/) — 幂等键、Raft 多数派、线性一致读、隔离令牌
+
 ## 参考
 
-- Martin Kleppmann《数据密集型应用系统设计》第 5 章（事务）、第 7 章（共识）
+- Martin Kleppmann [《数据密集型应用系统设计》](https://dataintensive.net/)第 5 章（事务）、第 7 章（共识）
 - Diego Ongaro, John Ousterhout. *In Search of an Understandable Consensus Algorithm*（Raft 原始论文）
 - Leslie Lamport. *Time, Clocks, and the Ordering of Events in a Distributed System*
