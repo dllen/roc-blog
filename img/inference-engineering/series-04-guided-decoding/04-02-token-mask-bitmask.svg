@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>Token Mask Bitmask 原理</title>
+  <desc>Guided Decoding 中 Token Mask 如何用 bitmask 屏蔽非法 token 的原理图</desc>
+  <defs>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#D1D5DB"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#F59E42"/>
+    </marker>
+    <marker id="arrow-white" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#F5F0E8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="#1A1F2E"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="bold" fill="#F5F0E8">Token Mask Bitmask 原理</text>
+  <text x="450" y="60" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">每个 vocabulary token 对应一个 bit，DFA 当前状态决定 mask = 1（合法）或 0（非法）</text>
+
+  <!-- Horizontal divider -->
+  <line x1="50" y1="78" x2="850" y2="78" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ============ Top: Vocabulary + Mask ============ -->
+  <!-- Section label -->
+  <text x="60" y="100" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Vocabulary Token 列表</text>
+
+  <!-- Token row: first few + ellipsis + last few -->
+  <!-- tokens: "the"  "cat"  "sat"  "on"  "mat"  "{"   "}"   """
+  <!-- mask:    1      0      0      1     0     1    1     1 -->
+  <!-- indices above each token -->
+  <line x1="60" y1="108" x2="840" y2="108" stroke="#2D3548" stroke-width="0.5"/>
+
+  <!-- Token items — we simulate a wide row with labels -->
+  <!-- Layout: tokens spread from x=80 to x=820 -->
+
+  <!-- Token group 1: the (mask=1, legal) -->
+  <rect x="70" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="105" y="136" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1A1F2E">the</text>
+  <text x="105" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=0</text>
+  <rect x="90" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="105" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Token group 2: cat (mask=0, illegal) -->
+  <rect x="155" y="118" width="70" height="44" rx="6" fill="#2D3548"/>
+  <text x="190" y="136" text-anchor="middle" font-family="monospace" font-size="13" fill="#6B7280">cat</text>
+  <text x="190" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">idx=1</text>
+  <rect x="175" y="168" width="30" height="18" rx="4" fill="#2D3548"/>
+  <text x="190" y="181" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">0</text>
+
+  <!-- Token group 3: sat (mask=0, illegal) -->
+  <rect x="240" y="118" width="70" height="44" rx="6" fill="#2D3548"/>
+  <text x="275" y="136" text-anchor="middle" font-family="monospace" font-size="13" fill="#6B7280">sat</text>
+  <text x="275" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">idx=2</text>
+  <rect x="260" y="168" width="30" height="18" rx="4" fill="#2D3548"/>
+  <text x="275" y="181" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">0</text>
+
+  <!-- Token group 4: on (mask=1, legal) -->
+  <rect x="325" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="360" y="136" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1A1F2E">on</text>
+  <text x="360" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=3</text>
+  <rect x="345" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="360" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Token group 5: mat (mask=0, illegal) -->
+  <rect x="410" y="118" width="70" height="44" rx="6" fill="#2D3548"/>
+  <text x="445" y="136" text-anchor="middle" font-family="monospace" font-size="13" fill="#6B7280">mat</text>
+  <text x="445" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">idx=4</text>
+  <rect x="430" y="168" width="30" height="18" rx="4" fill="#2D3548"/>
+  <text x="445" y="181" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">0</text>
+
+  <!-- Token group 6: { (mask=1, legal) -->
+  <rect x="495" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="530" y="136" text-anchor="middle" font-family="monospace" font-size="15" font-weight="bold" fill="#1A1F2E">{</text>
+  <text x="530" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=5</text>
+  <rect x="515" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="530" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Token group 7: } (mask=1, legal) -->
+  <rect x="580" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="615" y="136" text-anchor="middle" font-family="monospace" font-size="15" font-weight="bold" fill="#1A1F2E">}</text>
+  <text x="615" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=6</text>
+  <rect x="600" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="615" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Token group 8: " (mask=1, legal) -->
+  <rect x="665" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="700" y="136" text-anchor="middle" font-family="monospace" font-size="15" font-weight="bold" fill="#1A1F2E">"</text>
+  <text x="700" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=7</text>
+  <rect x="685" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="700" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Ellipsis in the middle -->
+  <text x="780" y="145" text-anchor="middle" font-family="monospace" font-size="14" fill="#6B7280">...</text>
+  <text x="780" y="180" text-anchor="middle" font-family="monospace" font-size="11" fill="#6B7280">...</text>
+
+  <!-- Last token group: C (mask=1, legal) -->
+  <rect x="810" y="118" width="70" height="44" rx="6" fill="#F59E42"/>
+  <text x="845" y="136" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1A1F2E">C</text>
+  <text x="845" y="154" text-anchor="middle" font-family="monospace" font-size="11" fill="#1A1F2E">idx=N</text>
+  <rect x="830" y="168" width="30" height="18" rx="4" fill="#F59E42"/>
+  <text x="845" y="181" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#1A1F2E">1</text>
+
+  <!-- Mask label -->
+  <text x="60" y="205" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Mask Bit</text>
+
+  <!-- ============ DFA Question Arrow ============ -->
+  <line x1="100" y1="230" x2="800" y2="230" stroke="#2D3548" stroke-width="1"/>
+  <text x="450" y="225" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#D1D5DB">DFA 当前状态合法？</text>
+  <line x1="450" y1="230" x2="450" y2="250" stroke="#D1D5DB" stroke-width="1.5" marker-end="url(#arrow-gray)"/>
+  <text x="450" y="265" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#F59E42">根据 DFA 状态更新 mask bit</text>
+
+  <!-- ============ Bottom: Core Formula Area ============ -->
+  <rect x="50" y="285" width="800" height="150" rx="12" ry="12" fill="#2D3548"/>
+
+  <text x="80" y="315" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#F5F0E8">核心公式：约束采样概率</text>
+
+  <!-- Formula 1 -->
+  <rect x="80" y="328" width="690" height="36" rx="6" fill="#1A1F2E"/>
+  <text x="110" y="352" font-family="monospace" font-size="16" fill="#F5F0E8">p_constrained(t) = softmax(logit_t)    if mask[t] = 1</text>
+
+  <!-- Formula 2 -->
+  <rect x="80" y="372" width="690" height="36" rx="6" fill="#1A1F2E"/>
+  <text x="110" y="396" font-family="monospace" font-size="16" fill="#F59E42">                    = 0                  if mask[t] = 0</text>
+
+  <!-- Side annotation -->
+  <text x="800" y="352" text-anchor="end" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#F59E42">← 合法 token</text>
+  <text x="800" y="396" text-anchor="end" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">← 概率强制置零</text>
+
+  <!-- Legend -->
+  <rect x="80" y="418" width="10" height="10" rx="2" fill="#F59E42"/>
+  <text x="96" y="427" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#F59E42">mask=1：合法 token，可采样</text>
+  <rect x="270" y="418" width="10" height="10" rx="2" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+  <text x="286" y="427" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">mask=0：非法 token，硬约束（不是软约束）</text>
+
+  <!-- Note -->
+  <text x="450" y="468" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">mask=1 → 合法 token 可采样；mask=0 → 概率强制置零（硬约束，不是软约束）</text>
+
+  <!-- Right side label for formula -->
+  <text x="830" y="315" text-anchor="end" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">硬约束</text>
+</svg>

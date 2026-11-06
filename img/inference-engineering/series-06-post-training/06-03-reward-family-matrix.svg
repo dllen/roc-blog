@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>Reward Family Matrix - 五大奖励族</title>
+  <desc>RLHF / RLAIF / RLVR / PRM / Rubric 五大奖励族横向对比表</desc>
+  <defs>
+    <linearGradient id="bgGrad3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="500" fill="url(#bgGrad3)"/>
+
+  <!-- Header -->
+  <text x="450" y="42" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="24" font-weight="700" fill="#F5F0E8">Reward Family Matrix · 五大奖励族</text>
+
+  <!-- Table header -->
+  <g transform="translate(55,75)">
+    <rect x="0" y="0" width="790" height="45" rx="8" fill="#2D3548"/>
+    <text x="120" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#9CA9BD">Reward 族</text>
+    <line x1="220" y1="8" x2="220" y2="37" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#9CA9BD">奖励来源</text>
+    <line x1="520" y1="8" x2="520" y2="37" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="28" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#9CA9BD">适用场景</text>
+  </g>
+
+  <!-- Row 1: RLHF -->
+  <g transform="translate(55,130)">
+    <rect x="0" y="0" width="790" height="70" rx="0" fill="none"/>
+    <rect x="0" y="0" width="790" height="70" rx="8" fill="#2D3548" opacity="0.5"/>
+    <text x="120" y="38" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#F5F0E8">RLHF</text>
+    <line x1="220" y1="10" x2="220" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">人类 pairwise 偏好</text>
+    <text x="380" y="50" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">OpenAI InstructGPT</text>
+    <line x1="520" y1="10" x2="520" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="35" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">通用对话 / 安全对齐</text>
+  </g>
+
+  <!-- Row 2: RLAIF -->
+  <g transform="translate(55,208)">
+    <rect x="0" y="0" width="790" height="70" rx="8" fill="#2D3548" opacity="0.5"/>
+    <text x="120" y="38" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#F5F0E8">RLAIF</text>
+    <line x1="220" y1="10" x2="220" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">LLM-as-judge + Constitution</text>
+    <text x="380" y="50" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">Anthropic Constitutional AI</text>
+    <line x1="520" y1="10" x2="520" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="35" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">可扩展迭代</text>
+  </g>
+
+  <!-- Row 3: RLVR (highlighted) -->
+  <g transform="translate(55,286)">
+    <rect x="0" y="0" width="790" height="70" rx="8" fill="#2D3548" stroke="#F59E42" stroke-width="2"/>
+    <text x="120" y="38" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#F59E42">RLVR</text>
+    <line x1="220" y1="10" x2="220" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">程序化验证（测试/匹配）</text>
+    <text x="380" y="50" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">DeepSeek-V3</text>
+    <line x1="520" y1="10" x2="520" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="35" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">数学 / 代码</text>
+    <!-- Star tag -->
+    <rect x="730" y="18" width="50" height="20" rx="10" fill="#F59E42"/>
+    <text x="755" y="32" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="10" font-weight="700" fill="#1A1F2E">⭐ 主用</text>
+  </g>
+
+  <!-- Row 4: PRM -->
+  <g transform="translate(55,364)">
+    <rect x="0" y="0" width="790" height="70" rx="8" fill="#2D3548" opacity="0.5"/>
+    <text x="120" y="38" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#F5F0E8">PRM</text>
+    <line x1="220" y1="10" x2="220" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">过程奖励模型</text>
+    <text x="380" y="50" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#6B7280">OpenAI process reward</text>
+    <line x1="520" y1="10" x2="520" y2="60" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="35" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">长程推理 / 信用分配</text>
+  </g>
+
+  <!-- Row 5: Rubric -->
+  <g transform="translate(55,442)">
+    <rect x="0" y="0" width="790" height="55" rx="8" fill="#2D3548" opacity="0.5"/>
+    <text x="120" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#F5F0E8">Rubric</text>
+    <line x1="220" y1="8" x2="220" y2="47" stroke="#3D4558" stroke-width="1"/>
+    <text x="380" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">rubric 逐项打分</text>
+    <line x1="520" y1="8" x2="520" y2="47" stroke="#3D4558" stroke-width="1"/>
+    <text x="655" y="30" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="12" fill="#9CA9BD">多维度评估</text>
+  </g>
+</svg>

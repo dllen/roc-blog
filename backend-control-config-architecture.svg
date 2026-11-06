@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    .box{fill:#f7fafc;stroke:#2d3748;stroke-width:2}
+    .title{font-family:Arial,sans-serif;font-size:16px;fill:#1a202c;font-weight:bold}
+    .text{font-family:Arial,sans-serif;font-size:14px;fill:#2d3748}
+    .note{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#2d3748;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Admin UI -->
+  <rect x="40" y="40" width="240" height="110" class="box"/>
+  <text x="60" y="70" class="title">Admin UI</text>
+  <text x="60" y="95" class="text">配置编辑 / 审计 / 回滚</text>
+  <text x="60" y="115" class="note">OpenAPI / RBAC / SSO</text>
+
+  <!-- Config Service -->
+  <rect x="330" y="30" width="290" height="130" class="box"/>
+  <text x="350" y="60" class="title">Config Service</text>
+  <text x="350" y="85" class="text">校验 / 版本化 / 灰度发布</text>
+  <text x="350" y="110" class="note">JSON Schema / Git Version</text>
+
+  <!-- Storage -->
+  <rect x="660" y="30" width="220" height="130" class="box"/>
+  <text x="680" y="60" class="title">Storage</text>
+  <text x="680" y="85" class="text">PostgreSQL + Git</text>
+  <text x="680" y="110" class="note">审计 / 回滚 / 标签</text>
+
+  <!-- KV Watch -->
+  <rect x="920" y="30" width="220" height="130" class="box"/>
+  <text x="940" y="60" class="title">KV Watch</text>
+  <text x="940" y="85" class="text">etcd / Consul</text>
+  <text x="940" y="110" class="note">订阅 / 心跳 / 会话</text>
+
+  <!-- Kafka bus -->
+  <rect x="330" y="200" width="290" height="110" class="box"/>
+  <text x="350" y="230" class="title">Kafka Bus</text>
+  <text x="350" y="255" class="text">topic: config-updates</text>
+  <text x="350" y="280" class="note">广播变更 / DLQ</text>
+
+  <!-- Snapshot Service -->
+  <rect x="660" y="200" width="220" height="110" class="box"/>
+  <text x="680" y="230" class="title">Snapshot</text>
+  <text x="680" y="255" class="text">增量快照生成</text>
+  <text x="680" y="280" class="note">灰度批次 / 生效窗口</text>
+
+  <!-- Agents -->
+  <rect x="40" y="360" width="270" height="220" class="box"/>
+  <text x="60" y="390" class="title">Agents</text>
+  <text x="60" y="415" class="text">Filebeat / Fluent Bit / 自研</text>
+  <text x="60" y="440" class="note">HTTPS/gRPC 拉取或订阅</text>
+  <text x="60" y="465" class="note">多协议: HTTP/HTTPS/TCP/UDP</text>
+
+  <!-- Runtime -->
+  <rect x="360" y="360" width="290" height="220" class="box"/>
+  <text x="380" y="390" class="title">Runtime Policies</text>
+  <text x="380" y="415" class="text">过滤/多行/频率/路径</text>
+  <text x="380" y="440" class="note">本地快照/回退/幂等</text>
+
+  <!-- Observability -->
+  <rect x="700" y="360" width="440" height="220" class="box"/>
+  <text x="720" y="390" class="title">Observability</text>
+  <text x="720" y="415" class="text">Metrics/Logs/Events</text>
+  <text x="720" y="440" class="note">Propagation p95 ≤ 5s / Avail ≥ 99.95%</text>
+
+  <!-- Arrows -->
+  <line x1="280" y1="90" x2="330" y2="90" class="arrow"/>
+  <line x1="620" y1="95" x2="660" y2="95" class="arrow"/>
+  <line x1="880" y1="95" x2="920" y2="95" class="arrow"/>
+  <line x1="475" y1="160" x2="475" y2="200" class="arrow"/>
+  <line x1="590" y1="255" x2="660" y2="255" class="arrow"/>
+  <line x1="475" y1="310" x2="475" y2="360" class="arrow"/>
+  <line x1="570" y1="470" x2="700" y2="470" class="arrow"/>
+</svg>

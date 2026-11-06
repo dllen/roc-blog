@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://scp.net.cn/blog/sitemap.xml

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="100%" height="auto" role="img">
+  <title>Bradley-Terry Formula - Reward Model 训练公式</title>
+  <desc>Bradley-Terry 偏好模型公式：P(y1 gt y2) = exp(r(y1)) / (exp(r(y1)) + exp(r(y2)))，用于 Reward Model 训练</desc>
+  <defs>
+    <linearGradient id="bgGrad6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="400" fill="url(#bgGrad6)"/>
+
+  <!-- Header -->
+  <text x="450" y="42" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="24" font-weight="700" fill="#F5F0E8">Bradley-Terry · Reward Model 训练公式</text>
+
+  <!-- Main formula card -->
+  <rect x="55" y="65" width="520" height="220" rx="14" fill="#2D3548" stroke="#6B7280" stroke-width="1.5"/>
+
+  <!-- Line 1: P formula -->
+  <text x="315" y="115" text-anchor="middle" font-family="'Courier New',Courier,monospace" font-size="22" font-weight="700" fill="#F5F0E8">P(y₁ &gt; y₂) =</text>
+
+  <!-- Fraction -->
+  <text x="315" y="145" text-anchor="middle" font-family="'Courier New',Courier,monospace" font-size="17" fill="#F5F0E8">exp(r(y₁))</text>
+  <line x1="240" y1="152" x2="390" y2="152" stroke="#F59E42" stroke-width="2"/>
+  <text x="315" y="172" text-anchor="middle" font-family="'Courier New',Courier,monospace" font-size="17" fill="#F5F0E8">exp(r(y₁)) + exp(r(y₂))</text>
+
+  <!-- Line 2: Loss formula -->
+  <line x1="100" y1="195" x2="530" y2="195" stroke="#3D4558" stroke-width="1"/>
+  <text x="315" y="225" text-anchor="middle" font-family="'Courier New',Courier,monospace" font-size="18" font-weight="700" fill="#F5F0E8">Loss = -E[log σ(r_w - r_l)]</text>
+
+  <!-- Legend items inside card -->
+  <text x="100" y="258" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">r_w = winning response 的 reward 分数</text>
+  <text x="100" y="276" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">r_l = losing response 的 reward 分数</text>
+
+  <!-- Right side explanations -->
+  <g transform="translate(600,65)">
+    <rect x="0" y="0" width="245" height="220" rx="14" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+
+    <text x="20" y="30" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">来源与应用</text>
+    <line x1="20" y1="42" x2="225" y2="42" stroke="#3D4558" stroke-width="1"/>
+
+    <text x="20" y="65" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">📖 Bradley-Terry 偏好模型（1952）</text>
+    <text x="20" y="88" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">🔧 应用：Reward Model 训练</text>
+    <text x="20" y="111" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">📊 Pairwise 数据驱动</text>
+
+    <line x1="20" y1="125" x2="225" y2="125" stroke="#3D4558" stroke-width="1"/>
+
+    <text x="20" y="148" font-family="'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#F5F0E8">符号说明</text>
+    <text x="20" y="168" font-family="'Courier New',Courier,monospace" font-size="11" fill="#F5F0E8">r_w / r_l</text>
+    <text x="95" y="168" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">= winning / losing reward</text>
+    <text x="20" y="186" font-family="'Courier New',Courier,monospace" font-size="11" fill="#F5F0E8">σ(x)</text>
+    <text x="65" y="186" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">= sigmoid 函数</text>
+    <text x="20" y="204" font-family="'Courier New',Courier,monospace" font-size="11" fill="#F5F0E8">E[log σ]</text>
+    <text x="95" y="204" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">= 对数似然期望</text>
+  </g>
+
+  <!-- Bottom flow -->
+  <rect x="55" y="310" width="790" height="55" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+  <text x="450" y="338" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" fill="#F5F0E8">RM 训练 → 用 pairwise 数据 → 得到 reward model → PPO / GRPO 用</text>
+  <text x="450" y="356" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">Pairwise 对比：让模型学会判断"哪个回答更好"，而非直接预测"正确答案"</text>
+</svg>
