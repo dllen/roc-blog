@@ -94,8 +94,8 @@ test('JetBrains Mono declares and bundles a real normal subset', async () => {
     await access(new URL('static/fonts/JetBrainsMono-subset.woff2', projectRoot));
 });
 
-test('la-solid-900-subset.woff2 contains exactly the required icon codepoints', async () => {
-    const woff2Path = new URL('static/fonts/la-solid-900-subset.woff2', projectRoot).pathname;
+test('la-solid-900-subset-v2.woff2 contains exactly the required icon codepoints', async () => {
+    const woff2Path = new URL('static/fonts/la-solid-900-subset-v2.woff2', projectRoot).pathname;
     const cmap = await getWoff2Cmap(woff2Path);
     for (const cp of SOLID_CODEPOINTS) {
         assert.ok(cmap.has(cp.toUpperCase()), `solid font missing codepoint ${cp}`);
@@ -122,7 +122,7 @@ test('subset WOFF2 files are parseable and non-empty', async () => {
         'static/fonts/WorkSans-subset.woff2',
         'static/fonts/CrimsonPro-subset.woff2',
         'static/fonts/JetBrainsMono-subset.woff2',
-        'static/fonts/la-solid-900-subset.woff2'
+        'static/fonts/la-solid-900-subset-v2.woff2'
     ];
     for (const f of files) {
         const path = new URL(f, projectRoot).pathname;

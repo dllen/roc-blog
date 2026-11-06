@@ -42,6 +42,8 @@ for font in WorkSans-VariableFont_wght CrimsonPro-VariableFont_wght JetBrainsMon
     --ignore-missing-unicodes
 done
 
+# /fonts/* 走 immutable 长缓存：增删字形时必须同步改这里的输出文件名（v3、v4…）
+# 与 css/fonts.css 的 @font-face，否则老访客会一直用缓存里的旧子集。
 LA_SOLID_CODEPOINTS=(
   '0xf002' # search
   '0xf060' # arrow-left
@@ -65,7 +67,7 @@ codepoints_to_text() {
 
 pyftsubset "${SOURCE}/la-solid-900.ttf" \
   --text="$(codepoints_to_text "${LA_SOLID_CODEPOINTS[@]}")" \
-  --output-file="${OUTPUT}/la-solid-900-subset.woff2" \
+  --output-file="${OUTPUT}/la-solid-900-subset-v2.woff2" \
   --flavor=woff2 \
   --no-hinting \
   --ignore-missing-glyphs \

@@ -256,7 +256,9 @@ alt = "支付宝赞赏二维码，用支付宝扫一扫"
 
 **样式**：`.tip-dialog`（纸张色卡片、最大 34rem、`::backdrop` 半透明墨色）、`.tip-dialog__close`（44px 触控、焦点环）、dialog 内 `.tip` 去外边距/边框、隐藏 `.tip__trigger`。
 
-**字体**：`css/fonts.css` 加 `.la-coffee::before`；`scripts/build-fonts.sh` 子集加 `0xf0f4`；重建 `static/fonts/la-solid-900-subset.woff2`；`scripts/lib/font-assets.test.mjs` 的 `iconCodepoints` 加 `la-coffee`。
+**字体**：`css/fonts.css` 加 `.la-coffee::before`；`scripts/build-fonts.sh` 子集加 `0xf0f4`；`scripts/lib/font-assets.test.mjs` 的 `iconCodepoints` 加 `la-coffee`。
+
+> **字体文件名必须带版本号**（当前 `la-solid-900-subset-v2.woff2`）：`/fonts/*` 走 `immutable` 一年长缓存，原地覆盖文件会让老访客一直用缓存里的旧子集，新增图标显示为空。增删字形时同步改 `build-fonts.sh` 的输出名与 `fonts.css` 的 `@font-face`（v3、v4…）。
 
 **测试**：`tipping.test.mjs`（无元素不报错、打开、再点关闭、遮罩关闭、状态同步）；`site-output.test.mjs` 新增顶栏按钮 + dialog + 两张码断言，并把既有断言限定到 `article.article-main details.tip`（文章页现有两份 markup）。
 
