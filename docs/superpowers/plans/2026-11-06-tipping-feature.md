@@ -725,3 +725,450 @@ git log --oneline -6
 3. 两张二维码 ≤60KB 且真机可扫
 4. 全局 `enabled=false` 与单篇 `extra.tipping: false` 都能干净关闭
 5. 全部改动按 Task 分 6 次提交，无混入无关文件（`.superpowers/` 已在 .gitignore）
+
+---
+
+## 增量 v2：顶栏咖啡入口 + 全站弹窗（Tasks 8-10）
+
+> 设计见 spec §13。行为：顶栏 `.site-actions` 咖啡图标 → 原生 `<dialog>` 弹窗（复用 `tipping` 组件）→ Esc / ✕ / 点遮罩关闭；文章页页尾面板不变。
+
+### Task 8: 字体图标 `la-coffee`
+
+**Files:**
+- Modify: `boring/css/fonts.css`（第 57 行 `.la-search::before` 之后）
+- Modify: `boring/scripts/build-fonts.sh`（`LA_SOLID_CODEPOINTS` 数组）
+- Modify: `boring/scripts/lib/font-assets.test.mjs`（`iconCodepoints` map）
+- Modify（重建）: `boring/static/fonts/la-solid-900-subset.woff2`
+
+- [ ] **Step 1: 先补测试契约（故意让测试先红）**
+
+`boring/scripts/lib/font-assets.test.mjs` 的 `iconCodepoints` map 中，`['la-tools', 'f7d9']` 那行后面加一行：
+
+```js
+    ['la-coffee', 'f0f4']
+```
+
+Run（`boring/`）:
+```bash
+python3 -m venv /tmp/fontenv && /tmp/fontenv/bin/pip install -q fonttools==4.47.0 brotli==1.1.0
+PATH=/tmp/fontenv/bin:$PATH node --test scripts/lib/font-assets.test.mjs 2>&1 | grep -E '^not ok|missing' | head -5
+```
+Expected: FAIL —— `la-coffee (f0f4) is missing from build-fonts.sh`，且子集字体 cmap 缺 `F0F4`。
+
+- [ ] **Step 2: 补 CSS 映射与字体子集清单**
+
+`boring/css/fonts.css` 第 57 行后加：
+
+```css
+.la-coffee::before { content: "\f0f4"; }
+```
+
+`boring/scripts/build-fonts.sh` 的 `LA_SOLID_CODEPOINTS` 数组中，`'0xf7d9' # tools` 之前加：
+
+```bash
+  '0xf0f4' # coffee
+```
+
+- [ ] **Step 3: 重建字体子集**
+
+Run（`boring/`，PATH 前置临时 venv，避免动全局 Python）:
+```bash
+PATH=/tmp/fontenv/bin:$PATH bash scripts/build-fonts.sh
+```
+Expected: `[fonts] done. Subset WOFF2 in static/fonts/`；`la-solid-900-subset.woff2` 体积略增（< 1KB）。
+
+- [ ] **Step 4: 验证字形真的进了子集并跑字体测试**
+
+Run（`boring/`）:
+```bash
+/tmp/fontenv/bin/python -c "from fontTools.ttLib import TTFont; f=TTFont('static/fonts/la-solid-900-subset.woff2'); print('F0F4' in {f'{c:04X}' for c in f.getBestCmap()})"
+PATH=/tmp/fontenv/bin:$PATH node --test scripts/lib/font-assets.test.mjs 2>&1 | grep -E '^# (tests|pass|fail)'
+```
+Expected: `True`；`# pass` 全过、`# fail 0`。
+
+- [ ] **Step 5: 提交**
+
+```bash
+cd /Users/shichaopeng/Work/self-dir/roc-blog
+git add boring/css/fonts.css boring/scripts/build-fonts.sh boring/scripts/lib/font-assets.test.mjs boring/static/fonts/la-solid-900-subset.woff2
+git commit -m "feat(tipping): 顶栏图标所需的 la-coffee 字形与字体子集"
+```
+
+---
+
+### Task 9: 测试先行（JS 单测 + 站点输出断言）
+
+**Files:**
+- Create: `boring/static/js/tipping.test.mjs`
+- Modify: `boring/tests/site-output.test.mjs`
+
+- [ ] **Step 1: 写 `static/js/tipping.test.mjs`**
+
+```js
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { JSDOM } from 'jsdom';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const tippingSrc = readFileSync(resolve(__dirname, 'tipping.js'), 'utf8');
+
+const markup = `<!doctype html><html><body>
+    <div class="site-actions">
+        <button id="tipping-trigger" type="button" aria-expanded="false" aria-haspopup="dialog">coffee</button>
+    </div>
+    <dialog id="tipping-dialog" aria-label="赞赏">
+        <div class="tip-dialog__body">
+            <button type="button" data-tipping-close aria-label="关闭赞赏">x</button>
+            <details class="tip">
+                <summary class="tip__trigger">赞赏</summary>
+                <div class="tip__panel"><p>panel</p></div>
+            </details>
+        </div>
+    </dialog>
+</body></html>`;
+
+function loadTipping(html = markup) {
+    const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://scp.net.cn/' });
+    dom.window.eval(tippingSrc);
+    dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    return dom;
+}
+
+test('initializes without the tipping controls', () => {
+    assert.doesNotThrow(() => loadTipping('<!doctype html><html><body></body></html>'));
+});
+
+test('trigger opens the dialog, expands the panel, and syncs aria-expanded', () => {
+    const dom = loadTipping();
+    const { document } = dom.window;
+    const trigger = document.getElementById('tipping-trigger');
+    const dialog = document.getElementById('tipping-dialog');
+
+    trigger.click();
+
+    assert.equal(dialog.hasAttribute('open'), true, 'dialog must open');
+    assert.equal(dialog.querySelector('details').open, true, 'panel must expand');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+
+    trigger.click();
+
+    assert.equal(dialog.hasAttribute('open'), false, 'second click must close');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+});
+
+test('backdrop click and close button dismiss the dialog', () => {
+    const dom = loadTipping();
+    const { document, MouseEvent } = dom.window;
+    const trigger = document.getElementById('tipping-trigger');
+    const dialog = document.getElementById('tipping-dialog');
+
+    trigger.click();
+    dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    assert.equal(dialog.hasAttribute('open'), false, 'backdrop click must close');
+
+    trigger.click();
+    dialog.querySelector('[data-tipping-close]').click();
+    assert.equal(dialog.hasAttribute('open'), false, 'close button must close');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+});
+```
+
+Run（`boring/`）:
+```bash
+node --test static/js/tipping.test.mjs 2>&1 | tail -5
+```
+Expected: FAIL —— `ENOENT ... tipping.js`（文件还不存在，符合 TDD）。
+
+- [ ] **Step 2: 站点输出断言：限定既有断言 + 新增顶栏断言**
+
+把 `article pages end with the tipping panel after related posts` 里三处选择器改成限定在文章列内：
+
+```js
+    const article = document.querySelector('article.article-main');
+    const tip = article.querySelector('details.tip');
+    const related = article.querySelector('.related-section');
+```
+
+把 `tipping panel exposes both payment channels with accessible QR images` 改成：
+
+```js
+    const article = document.querySelector('article.article-main');
+    const trigger = article.querySelector('details.tip > summary.tip__trigger');
+    const images = [...article.querySelectorAll('details.tip img.tip__qr')];
+```
+
+（其余断言不变。）
+
+在文件末尾追加：
+
+```js
+test('every page exposes the header coffee trigger and the tipping dialog', async () => {
+    for (const path of ['index.html', 'blog/index.html']) {
+        const { document } = (await loadOutput(path)).window;
+        const trigger = document.querySelector('.site-actions #tipping-trigger');
+        const dialog = document.querySelector('dialog#tipping-dialog');
+
+        assert.ok(trigger, `${path}: header tipping trigger must exist`);
+        assert.equal(trigger.getAttribute('aria-haspopup'), 'dialog');
+        assert.ok(dialog, `${path}: tipping dialog must exist`);
+        assert.equal(trigger.getAttribute('aria-label'), '赞赏');
+        assert.equal(dialog.querySelectorAll('img.tip__qr').length, 2);
+    }
+});
+
+test('article pages carry both the inline panel and the dialog copy', async () => {
+    const { dom } = await findFirstHomepageArticle();
+    const document = dom.window.document;
+
+    assert.equal(document.querySelectorAll('details.tip').length, 2, 'inline panel + dialog');
+    assert.equal(document.querySelectorAll('article.article-main details.tip').length, 1);
+    assert.equal(document.querySelectorAll('dialog#tipping-dialog details.tip').length, 1);
+});
+
+test('tipping script ships with the site', async () => {
+    const html = await readOutput('index.html');
+
+    assert.match(html, /\/js\/tipping\.js/);
+});
+```
+
+Run（`boring/`）:
+```bash
+node --test tests/site-output.test.mjs 2>&1 | grep -E '^not ok|^# (pass|fail)'
+```
+Expected: FAIL —— 新增 3 条与既有断言（限定后仍应通过的部分除外）里，至少 `every page exposes…`、`article pages carry both…`、`tipping script ships…` 三条失败。
+
+- [ ] **Step 3: 提交测试**
+
+```bash
+cd /Users/shichaopeng/Work/self-dir/roc-blog
+git add boring/static/js/tipping.test.mjs boring/tests/site-output.test.mjs
+git commit -m "test(tipping): 顶栏咖啡入口与弹窗的测试先行"
+```
+
+---
+
+### Task 10: 实现（base.html + tipping.js + 样式）
+
+**Files:**
+- Modify: `boring/templates/base.html`（body 开头守卫、site-actions 按钮、body 末尾 dialog、head 引入脚本）
+- Create: `boring/static/js/tipping.js`
+- Modify: `boring/css/style.css`（`.tip-dialog` 系列）
+
+- [ ] **Step 1: `base.html` 加守卫 + 顶栏按钮 + dialog + 脚本**
+
+`<body class="site-body">` 之后插入：
+
+```tera
+{% set tip_on = false %}
+{% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+    {% set tip_channels = config.extra.tipping.channels | default(value=[]) %}
+    {% set tip_page_on = page is not defined or (page.extra.tipping | default(value=true)) %}
+    {% set tip_on = tip_channels | length > 0 and tip_page_on %}
+{% endif %}
+```
+
+`.site-actions` 中，RSS 链接之前插入：
+
+```tera
+                    {% if tip_on %}
+                        <button id="tipping-trigger"
+                                type="button"
+                                class="site-action"
+                                aria-label="赞赏"
+                                title="赞赏"
+                                aria-haspopup="dialog"
+                                aria-expanded="false">
+                            <i class="las la-coffee" aria-hidden="true"></i>
+                        </button>
+                    {% endif %}
+```
+
+`{% block body_extra %}{% endblock %}` 之前插入：
+
+```tera
+        {% if tip_on %}
+            <dialog id="tipping-dialog" class="tip-dialog" aria-label="赞赏">
+                <div class="tip-dialog__body">
+                    <button type="button" class="tip-dialog__close" data-tipping-close aria-label="关闭赞赏">
+                        <span aria-hidden="true">✕</span>
+                    </button>
+                    {{<tipping tip={config.extra.tipping}/>}}
+                </div>
+            </dialog>
+        {% endif %}
+```
+
+`<head>` 中 `main.js` 之后插入：
+
+```tera
+        {% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+            <script src="{{ get_url(path='js/tipping.js', cachebust=true) | safe }}" defer></script>
+        {% endif %}
+```
+
+- [ ] **Step 2: 新建 `static/js/tipping.js`**
+
+```js
+(function () {
+    'use strict';
+
+    function init() {
+        var trigger = document.getElementById('tipping-trigger');
+        var dialog = document.getElementById('tipping-dialog');
+
+        if (!trigger || !dialog) {
+            return;
+        }
+
+        var panel = dialog.querySelector('details');
+
+        function isOpen() {
+            return dialog.open === true || dialog.hasAttribute('open');
+        }
+
+        function setOpen(open) {
+            if (open) {
+                if (panel) {
+                    panel.open = true;
+                }
+                if (typeof dialog.showModal === 'function') {
+                    dialog.showModal();
+                } else {
+                    dialog.setAttribute('open', '');
+                }
+            } else {
+                if (typeof dialog.close === 'function') {
+                    dialog.close();
+                } else {
+                    dialog.removeAttribute('open');
+                }
+            }
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        trigger.addEventListener('click', function () {
+            setOpen(!isOpen());
+        });
+
+        dialog.addEventListener('click', function (event) {
+            if (event.target === dialog) {
+                setOpen(false);
+            }
+        });
+
+        var closer = dialog.querySelector('[data-tipping-close]');
+        if (closer) {
+            closer.addEventListener('click', function () {
+                setOpen(false);
+            });
+        }
+
+        dialog.addEventListener('close', function () {
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+```
+
+- [ ] **Step 3: `css/style.css` 加弹窗样式**
+
+在 tipping 区块的 `@media print { .tip { display: none; } }` 之后追加：
+
+```css
+.tip-dialog {
+  width: calc(100% - 2 * var(--gutter));
+  max-width: 34rem;
+  padding: var(--space-lg);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-raised);
+}
+
+.tip-dialog::backdrop {
+  background: color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+.tip-dialog__body {
+  position: relative;
+  padding-top: var(--space-md);
+}
+
+.tip-dialog__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: var(--rule-hair) solid transparent;
+  border-radius: var(--radius-card);
+  background: none;
+  color: var(--color-muted);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+.tip-dialog__close:hover {
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.tip-dialog__close:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.tip-dialog .tip {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tip-dialog .tip__trigger {
+  display: none;
+}
+
+.tip-dialog .tip__panel {
+  margin: 0 auto;
+}
+```
+
+- [ ] **Step 4: 重建并跑全部测试**
+
+Run（`boring/`）:
+```bash
+node scripts/build-related-index.mjs && node scripts/build-home-index.mjs && node_modules/.bin/postcss css/style.css -o static/css/style.css
+zola build -o roc-blog --force >/dev/null
+node --test static/js/tipping.test.mjs 2>&1 | grep -E '^not ok|^# (pass|fail)'
+node --test tests/site-output.test.mjs 2>&1 | grep -E '^not ok|^# (pass|fail)'
+```
+Expected: 两个测试套件全过（`# fail 0`）。
+
+- [ ] **Step 5: 提交**
+
+```bash
+cd /Users/shichaopeng/Work/self-dir/roc-blog
+git add boring/templates/base.html boring/static/js/tipping.js boring/css/style.css boring/static/css/style.css boring/static/related-index.json boring/static/home-index.json
+git commit -m "feat(tipping): 顶栏咖啡入口与全站赞赏弹窗"
+```
+
+### 增量 v2 完成标准
+
+1. 任意页面顶栏有咖啡图标，点击弹窗打开，Esc/✕/遮罩关闭
+2. 文章页页尾面板行为不变（两份 markup 共存）
+3. `enabled=false` 与逐篇 `extra.tipping: false` 时，图标与弹窗都不渲染
+4. `static/js/tipping.test.mjs`、`tests/site-output.test.mjs`、`scripts/lib/font-assets.test.mjs` 全绿
+

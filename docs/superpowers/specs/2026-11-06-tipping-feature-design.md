@@ -226,3 +226,43 @@ alt = "支付宝赞赏二维码，用支付宝扫一扫"
 - **二维码可扫性**：量化/缩小可能影响识别。若扫不出，回退方案是提高分辨率到 500–600px 或直接用原图卡片。发布前必须真机扫一次。
 - **AdSense 合规**：页面最末的"赞赏"属常规捐赠入口，与广告槽不共位，风险低；若审核有异议，全局关闭即可。
 - **回滚**：删掉 `page.html` 里的调用即可恢复，样式、组件、资源、配置可保留（不渲染即无副作用）。
+
+## 13. 增量 v2（2026-11-06）：顶栏咖啡入口 + 全站弹窗
+
+**目标**：顶栏 `.site-actions` 增加咖啡图标，点击打开赞赏弹窗，再点关闭；文章页页尾面板保留。
+
+| 维度 | 决策 | 理由 |
+|---|---|---|
+| 弹出形态 | 全站原生 `<dialog>` + `showModal()` | 长文读一半也能打赏；非文章页（首页/分类）也有入口；原生焦点陷阱与 Esc |
+| 关闭路径 | Esc / 右上角 ✕ / 点遮罩（点图标位置也命中遮罩） | 满足"再点一次关掉"，且不必为模态框让触发器保持可点 |
+| 图标 | Line Awesome `la-coffee`（`f0f4`） | 与 GitHub/RSS/搜索图标同源；需重建字体子集并补契约 |
+| 复用 | dialog 内直接调用既有 `tipping` 组件 | 不复制二维码/文案 markup，配置单一来源 |
+| 语境样式 | 在 dialog 内隐藏 `summary` 触发条、去掉上边框 | 详情头在弹窗里无意义 |
+| 逐篇一致性 | `extra.tipping: false` 时顶栏图标与页尾面板一起隐藏 | 避免"关掉了还能从顶栏点开" |
+| 无 JS | 按钮与 dialog 照常渲染，点击无反应；页尾 `<details>` 仍可展开 | 可接受的渐进降级；不为此加 noscript 提示（YAGNI） |
+
+**模板守卫**（`base.html`，顶栏按钮与 dialog 共用）：
+
+```tera
+{% set tip_on = false %}
+{% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+    {% set tip_channels = config.extra.tipping.channels | default(value=[]) %}
+    {% set tip_page_on = page is not defined or (page.extra.tipping | default(value=true)) %}
+    {% set tip_on = tip_channels | length > 0 and tip_page_on %}
+{% endif %}
+```
+
+**新增文件**：`static/js/tipping.js`（~45 行，开关 dialog、遮罩点击关闭、`aria-expanded` 同步、缺元素静默退出）、`static/js/tipping.test.mjs`。
+
+**样式**：`.tip-dialog`（纸张色卡片、最大 34rem、`::backdrop` 半透明墨色）、`.tip-dialog__close`（44px 触控、焦点环）、dialog 内 `.tip` 去外边距/边框、隐藏 `.tip__trigger`。
+
+**字体**：`css/fonts.css` 加 `.la-coffee::before`；`scripts/build-fonts.sh` 子集加 `0xf0f4`；重建 `static/fonts/la-solid-900-subset.woff2`；`scripts/lib/font-assets.test.mjs` 的 `iconCodepoints` 加 `la-coffee`。
+
+**测试**：`tipping.test.mjs`（无元素不报错、打开、再点关闭、遮罩关闭、状态同步）；`site-output.test.mjs` 新增顶栏按钮 + dialog + 两张码断言，并把既有断言限定到 `article.article-main details.tip`（文章页现有两份 markup）。
+
+**验收**：
+1. 任意页面顶栏可见咖啡图标，点击弹出赞赏弹窗，Esc/✕/遮罩均可关闭
+2. 文章页页尾面板行为不变
+3. `enabled=false` 或该篇 `extra.tipping: false` 时，图标与弹窗都不渲染
+4. `node --test` 全部通过（含字体契约与新增 JS 单测）
+
