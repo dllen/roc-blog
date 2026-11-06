@@ -40,7 +40,7 @@
 - Create: `boring/scripts/tipping-qr.py`
 - Create: `boring/static/img/tip/wechat-qr.png`、`boring/static/img/tip/alipay-qr.png`（脚本产物）
 
-- [ ] **Step 1: 把两张原图移进 assets，确认根目录不再有裸图**
+- [x] **Step 1: 把两张原图移进 assets，确认根目录不再有裸图**
 
 Run（仓库根目录）:
 ```bash
@@ -51,7 +51,7 @@ ls -la boring/assets/tipping
 ```
 Expected: 两个 jpeg（约 120KB、339KB），仓库根目录 `ls wx.jpeg zfb.jpeg` 报 No such file。
 
-- [ ] **Step 2: 写裁图脚本 `boring/scripts/tipping-qr.py`**
+- [x] **Step 2: 写裁图脚本 `boring/scripts/tipping-qr.py`**
 
 ```python
 #!/usr/bin/env python3
@@ -200,7 +200,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 3: 运行脚本生成二维码 PNG**
+- [x] **Step 3: 运行脚本生成二维码 PNG**
 
 Run（`boring/`）:
 ```bash
@@ -213,11 +213,11 @@ static/img/tip/alipay-qr.png  18.9 KB
 ```
 退出码 0。（若 Pillow 未安装：`python3 -m pip install pillow numpy`。）
 
-- [ ] **Step 4: 目视确认两张裁图正确**
+- [x] **Step 4: 目视确认两张裁图正确**
 
 用 read_image 打开 `boring/static/img/tip/wechat-qr.png` 与 `alipay-qr.png`：应为**完整、居中、四周有白边的二维码**，没有残留的绿底/蓝底或"王二小(**鹏)"文字。
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 Run（仓库根目录）:
 ```bash
@@ -233,7 +233,7 @@ Expected: 提交包含 2 张 jpeg、1 个 py、2 个 png。
 **Files:**
 - Modify: `boring/config.toml`（文件末尾，`[[extra.social]]` 之后追加）
 
-- [ ] **Step 1: 追加配置**
+- [x] **Step 1: 追加配置**
 
 在 `boring/config.toml` 末尾（最后一个 `[[extra.social]]` 块之后）追加：
 
@@ -259,7 +259,7 @@ image = "img/tip/alipay-qr.png"
 alt = "支付宝赞赏二维码，用支付宝扫一扫"
 ```
 
-- [ ] **Step 2: 验证 TOML 能被 Zola 解析**
+- [x] **Step 2: 验证 TOML 能被 Zola 解析**
 
 Run（`boring/`）:
 ```bash
@@ -267,7 +267,7 @@ zola build -o roc-blog --force 2>&1 | tail -5
 ```
 Expected: 无 `Failed to parse` / `unknown field` 报错。（此时页面还没改动，赞赏块不会出现。）
 
-- [ ] **Step 3: 提交**
+- [x] **Step 3: 提交**
 
 Run（仓库根目录）:
 ```bash
@@ -282,7 +282,7 @@ git commit -m "feat(tipping): config.toml 增加 [extra.tipping] 文案与渠道
 **Files:**
 - Modify: `boring/tests/site-output.test.mjs`（第 2 行 import + 文件末尾追加 4 条 test）
 
-- [ ] **Step 1: 扩展 import**
+- [x] **Step 1: 扩展 import**
 
 把第 2 行
 
@@ -296,7 +296,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { readFile, readdir, stat } from 'node:fs/promises';
 ```
 
-- [ ] **Step 2: 在测试文件末尾追加 4 条测试**
+- [x] **Step 2: 在测试文件末尾追加 4 条测试**
 
 ```js
 test('article pages end with the tipping panel after related posts', async () => {
@@ -356,7 +356,7 @@ test('tipping styles ship in the generated stylesheet', async () => {
 });
 ```
 
-- [ ] **Step 3: 跑测试，确认按预期失败**
+- [x] **Step 3: 跑测试，确认按预期失败**
 
 Run（`boring/`）:
 ```bash
@@ -364,7 +364,7 @@ zola build -o roc-blog --force >/dev/null && yarn test:site
 ```
 Expected: 3 条失败（`article pages end with…`、`tipping panel exposes…`、`tipping styles ship…`），`tipping assets exist…` 通过（Task 1 已产出图片）。
 
-- [ ] **Step 4: 提交测试**
+- [x] **Step 4: 提交测试**
 
 Run（仓库根目录）:
 ```bash
@@ -380,7 +380,7 @@ git commit -m "test(tipping): 站点输出断言（面板位置/渠道/体积/�
 - Modify: `boring/templates/components.html`（文件末尾追加组件）
 - Modify: `boring/templates/page.html:104-106`（`{{<related …/>}}` 之后插入调用）
 
-- [ ] **Step 1: 在 `components.html` 末尾追加 `tipping` 组件**
+- [x] **Step 1: 在 `components.html` 末尾追加 `tipping` 组件**
 
 ```tera
 {# 文章页页尾赞赏：原生 details，零 JS。文案/渠道都由 config.extra.tipping 驱动 #}
@@ -421,7 +421,7 @@ git commit -m "test(tipping): 站点输出断言（面板位置/渠道/体积/�
 {% endcomponent tipping %}
 ```
 
-- [ ] **Step 2: 在 `page.html` 插入调用点**
+- [x] **Step 2: 在 `page.html` 插入调用点**
 
 把
 
@@ -449,7 +449,7 @@ git commit -m "test(tipping): 站点输出断言（面板位置/渠道/体积/�
 
 > 说明：spec §5 写的是单表达式守卫；这里拆成 `set` + 嵌套 `if` 是为了让 Tera 对 "channels 缺失 / extra.tipping 缺失" 走 `default` 而不是抛 undefined 错误，行为与 spec 一致。
 
-- [ ] **Step 3: 重建并跑测试**
+- [x] **Step 3: 重建并跑测试**
 
 Run（`boring/`）:
 ```bash
@@ -459,7 +459,7 @@ Expected: 构建成功；`article pages end with…` 与 `tipping panel exposes�
 
 若 Zola 报组件参数错误（Tera 不允许在组件调用里直接传嵌套的 config 值），退化方案：在 `page.html` 里先 `{% set tip_cfg = config.extra.tipping %}`，再 `{{<tipping tip={tip_cfg}/>}}`。
 
-- [ ] **Step 4: 提交**
+- [x] **Step 4: 提交**
 
 Run（仓库根目录）:
 ```bash
@@ -474,7 +474,7 @@ git commit -m "feat(tipping): 新增 tipping 组件并在文章页尾调用"
 **Files:**
 - Modify: `boring/css/style.css`（插在 `.related-grid__empty` 规则之后、`/* ───── search overlay ───── */` 注释之前）
 
-- [ ] **Step 1: 追加样式块**
+- [x] **Step 1: 追加样式块**
 
 在 `.related-grid__empty { ... }` 之后插入：
 
@@ -613,7 +613,7 @@ git commit -m "feat(tipping): 新增 tipping 组件并在文章页尾调用"
 
 > 不需要额外写 `prefers-reduced-motion` 规则：`style.css` 末尾已有全局 `@media (prefers-reduced-motion: reduce)` 把 `transition-duration` 压到 0.01ms，箭头过渡自动失效。
 
-- [ ] **Step 2: 重跑 PostCSS 构建样式**
+- [x] **Step 2: 重跑 PostCSS 构建样式**
 
 Run（`boring/`）:
 ```bash
@@ -621,7 +621,7 @@ yarn build
 ```
 Expected: 无报错；`static/css/style.css` 体积增加（约 +1.5KB）。
 
-- [ ] **Step 3: 重建站点并跑全部测试**
+- [x] **Step 3: 重建站点并跑全部测试**
 
 Run（`boring/`）:
 ```bash
@@ -629,7 +629,7 @@ zola build -o roc-blog --force >/dev/null && yarn test:site
 ```
 Expected: 全部通过（包括 `tipping styles ship in the generated stylesheet`）。
 
-- [ ] **Step 4: 提交**
+- [x] **Step 4: 提交**
 
 Run（仓库根目录）:
 ```bash
@@ -645,7 +645,7 @@ git commit -m "style(tipping): 赞赏面板样式（浅色/深色/窄屏/打印�
 - Modify: `boring/static/_headers`（`/og/*` 之后追加）
 - 无源码改动，执行全量校验
 
-- [ ] **Step 1: 追加 `/img/tip/*` 缓存规则**
+- [x] **Step 1: 追加 `/img/tip/*` 缓存规则**
 
 在 `boring/static/_headers` 里 `/og/*` 块之后追加：
 
@@ -654,7 +654,7 @@ git commit -m "style(tipping): 赞赏面板样式（浅色/深色/窄屏/打印�
   Cache-Control: public, max-age=31536000, immutable
 ```
 
-- [ ] **Step 2: 全量构建 + 全部测试**
+- [x] **Step 2: 全量构建 + 全部测试**
 
 Run（`boring/`）:
 ```bash
@@ -662,7 +662,7 @@ yarn build && zola build -o roc-blog --force && yarn test && yarn test:site
 ```
 Expected: `yarn test` 与 `yarn test:site` 都显示 `pass`、退出码 0。
 
-- [ ] **Step 3: 抽查生成结果**
+- [x] **Step 3: 抽查生成结果**
 
 Run（仓库根目录）:
 ```bash
@@ -671,7 +671,7 @@ grep -o 'img/tip/[a-z]*-qr.png' boring/roc-blog/blog/*/index.html | head -2
 ```
 Expected: 每个文章页 1 个带 `tip` 类的 `<details>`；图片路径为 `/img/tip/wechat-qr.png` 与 `/img/tip/alipay-qr.png`。（`minify_html = true`，属性引号可能被去掉，所以别按 `class="tip"` 精确匹配。）
 
-- [ ] **Step 4: 提交**
+- [x] **Step 4: 提交**
 
 Run（仓库根目录）:
 ```bash
