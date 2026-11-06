@@ -556,8 +556,8 @@ test('article pages end with the tipping panel after related posts', async () =>
     const document = dom.window.document;
 
     const article = document.querySelector('article.article-main');
-    const tip = document.querySelector('details.tip');
-    const related = document.querySelector('.related-section');
+    const tip = article.querySelector('details.tip');
+    const related = article.querySelector('.related-section');
 
     assert.ok(article, 'article main column must exist');
     assert.ok(tip, 'tipping details block must exist');
@@ -573,11 +573,12 @@ test('tipping panel exposes both payment channels with accessible QR images', as
     const { dom } = await findFirstHomepageArticle();
     const document = dom.window.document;
 
-    const trigger = document.querySelector('details.tip > summary.tip__trigger');
+    const article = document.querySelector('article.article-main');
+    const trigger = article.querySelector('details.tip > summary.tip__trigger');
     assert.ok(trigger, 'tipping trigger must be a summary element');
     assert.match(trigger.textContent, /赞赏/);
 
-    const images = [...document.querySelectorAll('details.tip img.tip__qr')];
+    const images = [...article.querySelectorAll('details.tip img.tip__qr')];
     assert.equal(images.length, 2, 'two payment channels must be rendered');
 
     const sources = images.map((img) => img.getAttribute('src'));
@@ -605,5 +606,34 @@ test('tipping styles ship in the generated stylesheet', async () => {
 
     assert.ok(css.includes('.tip__trigger'), 'tipping trigger styles must ship');
     assert.ok(css.includes('.tip__channel'), 'tipping channel card styles must ship');
+});
+
+test('every page exposes the header coffee trigger and the tipping dialog', async () => {
+    for (const path of ['index.html', 'blog/index.html']) {
+        const { document } = (await loadOutput(path)).window;
+        const trigger = document.querySelector('.site-actions #tipping-trigger');
+        const dialog = document.querySelector('dialog#tipping-dialog');
+
+        assert.ok(trigger, `${path}: header tipping trigger must exist`);
+        assert.equal(trigger.getAttribute('aria-haspopup'), 'dialog');
+        assert.equal(trigger.getAttribute('aria-label'), '赞赏');
+        assert.ok(dialog, `${path}: tipping dialog must exist`);
+        assert.equal(dialog.querySelectorAll('img.tip__qr').length, 2);
+    }
+});
+
+test('article pages carry both the inline panel and the dialog copy', async () => {
+    const { dom } = await findFirstHomepageArticle();
+    const document = dom.window.document;
+
+    assert.equal(document.querySelectorAll('details.tip').length, 2, 'inline panel + dialog');
+    assert.equal(document.querySelectorAll('article.article-main details.tip').length, 1);
+    assert.equal(document.querySelectorAll('dialog#tipping-dialog details.tip').length, 1);
+});
+
+test('tipping script ships with the site', async () => {
+    const html = await readOutput('index.html');
+
+    assert.match(html, /\/js\/tipping\.js/);
 });
 
