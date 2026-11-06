@@ -145,3 +145,40 @@
         </div>
     </section>
 {% endcomponent related %}
+
+{# 文章页页尾赞赏：原生 details，零 JS。文案/渠道都由 config.extra.tipping 驱动 #}
+{% component tipping(tip: map) %}
+<details class="tip">
+    <summary class="tip__trigger">
+        <span class="tip__trigger-label">{{ tip.trigger | default(value="赞赏") }}</span>
+        <span class="tip__chevron" aria-hidden="true"></span>
+    </summary>
+    <div class="tip__panel">
+        {% if tip.lead %}
+            <p class="tip__lead">{{ tip.lead }}</p>
+        {% endif %}
+        <ul class="tip__channels">
+            {% for channel in tip.channels %}
+                {% if channel.image %}
+                    <li class="tip__channel">
+                        <img class="tip__qr"
+                             src="{{ get_url(path=channel.image) | safe }}"
+                             alt="{{ channel.alt | default(value=channel.label) }}"
+                             width="384"
+                             height="384"
+                             loading="lazy"
+                             decoding="async">
+                        <p class="tip__channel-label">{{ channel.label }}</p>
+                        {% if channel.account %}
+                            <p class="tip__account">{{ channel.account }}</p>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% if tip.note %}
+            <p class="tip__note">{{ tip.note }}</p>
+        {% endif %}
+    </div>
+</details>
+{% endcomponent tipping %}

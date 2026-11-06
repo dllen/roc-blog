@@ -103,6 +103,14 @@
 
                 {{<prev_next current={page}/>}}
                 {{<related current={page} limit={3}/>}}
+
+                {% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+                    {% set tip_channels = config.extra.tipping.channels | default(value=[]) %}
+                    {% set tip_enabled_here = page.extra.tipping | default(value=true) %}
+                    {% if tip_channels | length > 0 and tip_enabled_here %}
+                        {{<tipping tip={config.extra.tipping}/>}}
+                    {% endif %}
+                {% endif %}
             </article>
 
             <aside class="article-toc-desktop" data-toc-container="desktop">

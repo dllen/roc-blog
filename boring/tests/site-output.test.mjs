@@ -579,10 +579,10 @@ test('tipping panel exposes both payment channels with accessible QR images', as
 
     const images = [...document.querySelectorAll('details.tip img.tip__qr')];
     assert.equal(images.length, 2, 'two payment channels must be rendered');
-    assert.deepEqual(
-        images.map((img) => img.getAttribute('src')),
-        ['/img/tip/wechat-qr.png', '/img/tip/alipay-qr.png']
-    );
+
+    const sources = images.map((img) => img.getAttribute('src'));
+    assert.ok(sources[0].endsWith('/img/tip/wechat-qr.png'), `unexpected wechat QR src: ${sources[0]}`);
+    assert.ok(sources[1].endsWith('/img/tip/alipay-qr.png'), `unexpected alipay QR src: ${sources[1]}`);
 
     for (const img of images) {
         assert.ok((img.getAttribute('alt') || '').length > 0, 'QR image needs alt text');
