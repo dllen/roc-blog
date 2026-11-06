@@ -67,6 +67,9 @@
         <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js" defer></script>
         <script src="{{ get_url(path='js/search.js', cachebust=true) | safe }}" defer></script>
         <script src="{{ get_url(path='js/main.js', cachebust=true) | safe }}" defer></script>
+        {% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+            <script src="{{ get_url(path='js/tipping.js', cachebust=true) | safe }}" defer></script>
+        {% endif %}
         {% if config.extra.google_adsense_client_id %}
             <script src="{{ get_url(path='js/consent.js', cachebust=true) | safe }}" defer></script>
         {% endif %}
@@ -77,6 +80,12 @@
     </head>
 
     <body class="site-body">
+        {% set tip_on = false %}
+        {% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+            {% set tip_channels = config.extra.tipping.channels | default(value=[]) %}
+            {% set tip_page_on = page is not defined or (page.extra.tipping | default(value=true)) %}
+            {% set tip_on = tip_channels | length > 0 and tip_page_on %}
+        {% endif %}
         <a class="skip-to-content" href="#main-content">跳到主要内容</a>
         <header class="site-header">
             <nav aria-label="主导航" class="site-shell site-header__inner" data-site-navigation>
@@ -146,6 +155,17 @@
                                 </a>
                             {% endfor %}
                         </div>
+                    {% endif %}
+                    {% if tip_on %}
+                        <button id="tipping-trigger"
+                                type="button"
+                                class="site-action"
+                                aria-label="赞赏"
+                                title="赞赏"
+                                aria-haspopup="dialog"
+                                aria-expanded="false">
+                            <i class="las la-coffee" aria-hidden="true"></i>
+                        </button>
                     {% endif %}
                     <a href="/blog/atom.xml"
                        class="site-action"
@@ -253,6 +273,16 @@
                     </div>
                 </div>
             </aside>
+        {% endif %}
+        {% if tip_on %}
+            <dialog id="tipping-dialog" class="tip-dialog" aria-label="赞赏">
+                <div class="tip-dialog__body">
+                    <button type="button" class="tip-dialog__close" data-tipping-close aria-label="关闭赞赏">
+                        <span aria-hidden="true">✕</span>
+                    </button>
+                    {{<tipping tip={config.extra.tipping}/>}}
+                </div>
+            </dialog>
         {% endif %}
         {% block body_extra %}{% endblock %}
     </body>

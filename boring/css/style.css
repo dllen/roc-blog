@@ -1753,6 +1753,66 @@ textarea {
   }
 }
 
+.tip-dialog {
+  width: calc(100% - 2 * var(--gutter));
+  max-width: 34rem;
+  padding: 0; /* 内边距交给 __body：让“点在 dialog 自己身上”只发生在遮罩 */
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-raised);
+}
+
+.tip-dialog::backdrop {
+  background: color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+.tip-dialog__body {
+  position: relative;
+  padding: var(--space-lg);
+}
+
+.tip-dialog__close {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: var(--rule-hair) solid transparent;
+  border-radius: var(--radius-card);
+  background: none;
+  color: var(--color-muted);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+.tip-dialog__close:hover {
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.tip-dialog__close:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.tip-dialog .tip {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tip-dialog .tip__trigger {
+  display: none;
+}
+
+.tip-dialog .tip__panel {
+  margin: 0 auto;
+}
+
 /* ───────────────────────── search overlay ───────────────────────── */
 #search-overlay {
   position: fixed;
