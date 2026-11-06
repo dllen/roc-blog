@@ -51,6 +51,8 @@ Local build mock (mirrors `.github/workflows/build.yml` build steps including `c
 - **Font build needs Python deps installed first** (`pip install fonttools==4.47.0 brotli==1.1.0`); CI installs them, locally you must run it once — otherwise `bash scripts/build-fonts.sh` silently no-ops or fails.
 - **Adding a section without updating `nav_sections`** silently hides it from the nav bar — easy to miss in review; `yarn audit` does NOT check this.
 - **Don't pull new dependencies into `package.json` without checking CSS scan paths** — Tailwind only scans templates matching its config, so any template referencing new utility classes must live under `templates/`.
+- **Zola's `cachebust=true` on `css/style.css` hashes the *source* `css/style.css`, not the built `static/css/style.css`** — edits to imported partials (`fonts.css`, `base.css`, `tokens.css`) leave the URL unchanged, so returning visitors keep the old stylesheet. The stylesheet link therefore uses a build timestamp (`?v={{ asset_version }}` in `base.html`) instead. JS files still use `cachebust=true` (their hash is content-based and correct).
+- **`/fonts/*` is `immutable` for a year** — adding/removing icon glyphs requires a new subset filename (`la-solid-900-subset-v2.woff2`, then v3…), updated in both `scripts/build-fonts.sh` and `css/fonts.css`; otherwise cached fonts render the new icon blank.
 
 ## Pointers
 

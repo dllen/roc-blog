@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" class="scroll-smooth">
     <head>
+        {% set asset_version = now() | date(format="%Y%m%d%H%M%S") %}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -63,7 +64,9 @@
             })();
         </script>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-        <link rel="stylesheet" href="{{ get_url(path='css/style.css', cachebust=true) | safe }}"/>
+        {# Zola 对 css/style.css 的 cachebust 取的是源文件 hash，@import 的 fonts.css 变化不会换 URL；
+           这里改用构建时间戳，保证每次部署 CSS URL 都变，字体/样式更新才能到达老访客 #}
+        <link rel="stylesheet" href="{{ get_url(path='css/style.css') | safe }}?v={{ asset_version }}"/>
         <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js" defer></script>
         <script src="{{ get_url(path='js/search.js', cachebust=true) | safe }}" defer></script>
         <script src="{{ get_url(path='js/main.js', cachebust=true) | safe }}" defer></script>
