@@ -127,3 +127,23 @@ name = "RSS / Blog"
 url = "https://bb4bb.me/"
 icon = "las la-tools"
 name = "Tools Site"
+
+# 文章页页尾赞赏（Tipping）。enabled = false 可全站关闭；
+# 单篇文章可在 frontmatter 用 extra.tipping = false 单独关闭。
+[extra.tipping]
+enabled = true
+trigger = "赞赏"
+lead = "如果这篇文章帮到了你，欢迎请我喝杯咖啡。"
+note = "金额随意，感谢支持"
+
+[[extra.tipping.channels]]
+label = "微信支付"
+account = "Faker(**鹏)"
+image = "img/tip/wechat-qr.png"
+alt = "微信赞赏二维码，用微信扫一扫"
+
+[[extra.tipping.channels]]
+label = "支付宝"
+account = "王二小(**鹏)"
+image = "img/tip/alipay-qr.png"
+alt = "支付宝赞赏二维码，用支付宝扫一扫"
