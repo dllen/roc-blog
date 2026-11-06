@@ -740,7 +740,7 @@ git log --oneline -6
 - Modify: `boring/scripts/lib/font-assets.test.mjs`（`iconCodepoints` map）
 - Modify（重建）: `boring/static/fonts/la-solid-900-subset.woff2`
 
-- [ ] **Step 1: 先补测试契约（故意让测试先红）**
+- [x] **Step 1: 先补测试契约（故意让测试先红）**
 
 `boring/scripts/lib/font-assets.test.mjs` 的 `iconCodepoints` map 中，`['la-tools', 'f7d9']` 那行后面加一行：
 
@@ -755,7 +755,7 @@ PATH=/tmp/fontenv/bin:$PATH node --test scripts/lib/font-assets.test.mjs 2>&1 | 
 ```
 Expected: FAIL —— `la-coffee (f0f4) is missing from build-fonts.sh`，且子集字体 cmap 缺 `F0F4`。
 
-- [ ] **Step 2: 补 CSS 映射与字体子集清单**
+- [x] **Step 2: 补 CSS 映射与字体子集清单**
 
 `boring/css/fonts.css` 第 57 行后加：
 
@@ -769,7 +769,7 @@ Expected: FAIL —— `la-coffee (f0f4) is missing from build-fonts.sh`，且子
   '0xf0f4' # coffee
 ```
 
-- [ ] **Step 3: 重建字体子集**
+- [x] **Step 3: 重建字体子集**
 
 Run（`boring/`，PATH 前置临时 venv，避免动全局 Python）:
 ```bash
@@ -777,7 +777,7 @@ PATH=/tmp/fontenv/bin:$PATH bash scripts/build-fonts.sh
 ```
 Expected: `[fonts] done. Subset WOFF2 in static/fonts/`；`la-solid-900-subset.woff2` 体积略增（< 1KB）。
 
-- [ ] **Step 4: 验证字形真的进了子集并跑字体测试**
+- [x] **Step 4: 验证字形真的进了子集并跑字体测试**
 
 Run（`boring/`）:
 ```bash
@@ -786,7 +786,7 @@ PATH=/tmp/fontenv/bin:$PATH node --test scripts/lib/font-assets.test.mjs 2>&1 | 
 ```
 Expected: `True`；`# pass` 全过、`# fail 0`。
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```bash
 cd /Users/shichaopeng/Work/self-dir/roc-blog
@@ -802,7 +802,7 @@ git commit -m "feat(tipping): 顶栏图标所需的 la-coffee 字形与字体子
 - Create: `boring/static/js/tipping.test.mjs`
 - Modify: `boring/tests/site-output.test.mjs`
 
-- [ ] **Step 1: 写 `static/js/tipping.test.mjs`**
+- [x] **Step 1: 写 `static/js/tipping.test.mjs`**
 
 ```js
 import { test } from 'node:test';
@@ -882,7 +882,7 @@ node --test static/js/tipping.test.mjs 2>&1 | tail -5
 ```
 Expected: FAIL —— `ENOENT ... tipping.js`（文件还不存在，符合 TDD）。
 
-- [ ] **Step 2: 站点输出断言：限定既有断言 + 新增顶栏断言**
+- [x] **Step 2: 站点输出断言：限定既有断言 + 新增顶栏断言**
 
 把 `article pages end with the tipping panel after related posts` 里三处选择器改成限定在文章列内：
 
@@ -941,7 +941,7 @@ node --test tests/site-output.test.mjs 2>&1 | grep -E '^not ok|^# (pass|fail)'
 ```
 Expected: FAIL —— 新增 3 条与既有断言（限定后仍应通过的部分除外）里，至少 `every page exposes…`、`article pages carry both…`、`tipping script ships…` 三条失败。
 
-- [ ] **Step 3: 提交测试**
+- [x] **Step 3: 提交测试**
 
 ```bash
 cd /Users/shichaopeng/Work/self-dir/roc-blog
@@ -958,7 +958,7 @@ git commit -m "test(tipping): 顶栏咖啡入口与弹窗的测试先行"
 - Create: `boring/static/js/tipping.js`
 - Modify: `boring/css/style.css`（`.tip-dialog` 系列）
 
-- [ ] **Step 1: `base.html` 加守卫 + 顶栏按钮 + dialog + 脚本**
+- [x] **Step 1: `base.html` 加守卫 + 顶栏按钮 + dialog + 脚本**
 
 `<body class="site-body">` 之后插入：
 
@@ -1010,7 +1010,7 @@ git commit -m "test(tipping): 顶栏咖啡入口与弹窗的测试先行"
         {% endif %}
 ```
 
-- [ ] **Step 2: 新建 `static/js/tipping.js`**
+- [x] **Step 2: 新建 `static/js/tipping.js`**
 
 ```js
 (function () {
@@ -1080,7 +1080,7 @@ git commit -m "test(tipping): 顶栏咖啡入口与弹窗的测试先行"
 })();
 ```
 
-- [ ] **Step 3: `css/style.css` 加弹窗样式**
+- [x] **Step 3: `css/style.css` 加弹窗样式**
 
 在 tipping 区块的 `@media print { .tip { display: none; } }` 之后追加：
 
@@ -1146,7 +1146,7 @@ git commit -m "test(tipping): 顶栏咖啡入口与弹窗的测试先行"
 }
 ```
 
-- [ ] **Step 4: 重建并跑全部测试**
+- [x] **Step 4: 重建并跑全部测试**
 
 Run（`boring/`）:
 ```bash
@@ -1157,7 +1157,7 @@ node --test tests/site-output.test.mjs 2>&1 | grep -E '^not ok|^# (pass|fail)'
 ```
 Expected: 两个测试套件全过（`# fail 0`）。
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```bash
 cd /Users/shichaopeng/Work/self-dir/roc-blog
