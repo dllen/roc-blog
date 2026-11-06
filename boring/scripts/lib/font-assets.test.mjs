@@ -25,7 +25,8 @@ const iconCodepoints = new Map([
     ['la-rss-square', 'f143'],
     ['la-search', 'f002'],
     ['la-sun', 'f185'],
-    ['la-tools', 'f7d9']
+    ['la-tools', 'f7d9'],
+    ['la-coffee', 'f0f4']
 ]);
 
 const SOLID_CODEPOINTS = [...iconCodepoints.entries()]

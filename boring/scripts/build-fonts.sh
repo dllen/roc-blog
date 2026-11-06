@@ -53,6 +53,7 @@ LA_SOLID_CODEPOINTS=(
   '0xf09e' # rss
   '0xf143' # rss-square
   '0xf7d9' # tools
+  '0xf0f4' # coffee
 )
 LA_BRANDS_CODEPOINTS=(
   '0xf09b' # github
