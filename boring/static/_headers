@@ -13,6 +13,10 @@
 /og/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Tipping QR codes: rarely change, keep them immutable
+/img/tip/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # Atom feed: medium cache
 /blog/atom.xml
   Cache-Control: public, max-age=3600
