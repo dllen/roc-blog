@@ -122,11 +122,12 @@ alt = "支付宝赞赏二维码，用支付宝扫一扫"
 **`boring/templates/page.html` 调用点**（`{{<related …/>}}` 之后、`</article>` 之前）：
 
 ```tera
-{% if config.extra.tipping is defined
-      and config.extra.tipping.enabled
-      and config.extra.tipping.channels
-      and (page.extra.tipping is not defined or page.extra.tipping) %}
-    {{<tipping tip={config.extra.tipping}/>}}
+{% if config.extra.tipping is defined and config.extra.tipping.enabled %}
+    {% set tip_channels = config.extra.tipping.channels | default(value=[]) %}
+    {% set tip_enabled_here = page.extra.tipping | default(value=true) %}
+    {% if tip_channels | length > 0 and tip_enabled_here %}
+        {{<tipping tip={config.extra.tipping}/>}}
+    {% endif %}
 {% endif %}
 ```
 
@@ -186,7 +187,7 @@ alt = "支付宝赞赏二维码，用支付宝扫一扫"
 |---|---|
 | `config.extra.tipping.enabled = false` | 全站不渲染（模板守卫） |
 | 某篇 frontmatter `extra.tipping: false` | 该篇不渲染 |
-| `channels` 缺失或为空 | 整个组件不渲染（调用点的 `config.extra.tipping.channels` 守卫） |
+| `channels` 缺失或为空 | 整个组件不渲染（调用点用 `default(value=[])` + `length > 0` 守卫） |
 | 某渠道缺 `image` | 跳过该渠道 |
 | 某渠道缺 `account` | 只显示渠道标签 |
 | `trigger` / `lead` / `note` 缺失 | 分别回退到默认文案 / 不渲染对应行 |
