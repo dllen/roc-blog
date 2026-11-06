@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
 
@@ -550,3 +550,60 @@ for (const path of ['index.html', '404.html']) {
         assert.equal(document.querySelectorAll('footer').length, 1);
     });
 }
+
+test('article pages end with the tipping panel after related posts', async () => {
+    const { dom } = await findFirstHomepageArticle();
+    const document = dom.window.document;
+
+    const article = document.querySelector('article.article-main');
+    const tip = document.querySelector('details.tip');
+    const related = document.querySelector('.related-section');
+
+    assert.ok(article, 'article main column must exist');
+    assert.ok(tip, 'tipping details block must exist');
+    assert.ok(related, 'related section must exist');
+    assert.ok(article.contains(tip), 'tipping block must live inside the article column');
+    assert.ok(
+        related.compareDocumentPosition(tip) & 4,
+        'tipping block must follow the related section in document order'
+    );
+});
+
+test('tipping panel exposes both payment channels with accessible QR images', async () => {
+    const { dom } = await findFirstHomepageArticle();
+    const document = dom.window.document;
+
+    const trigger = document.querySelector('details.tip > summary.tip__trigger');
+    assert.ok(trigger, 'tipping trigger must be a summary element');
+    assert.match(trigger.textContent, /赞赏/);
+
+    const images = [...document.querySelectorAll('details.tip img.tip__qr')];
+    assert.equal(images.length, 2, 'two payment channels must be rendered');
+    assert.deepEqual(
+        images.map((img) => img.getAttribute('src')),
+        ['/img/tip/wechat-qr.png', '/img/tip/alipay-qr.png']
+    );
+
+    for (const img of images) {
+        assert.ok((img.getAttribute('alt') || '').length > 0, 'QR image needs alt text');
+        assert.equal(img.getAttribute('loading'), 'lazy', 'QR image must lazy load');
+        assert.equal(img.getAttribute('width'), '384');
+        assert.equal(img.getAttribute('height'), '384');
+    }
+});
+
+test('tipping assets exist in the built output and stay under the size budget', async () => {
+    for (const name of ['wechat-qr.png', 'alipay-qr.png']) {
+        const { size } = await stat(new URL(`img/tip/${name}`, outputDirectory));
+        assert.ok(size > 0, `${name} must not be empty`);
+        assert.ok(size <= 60 * 1024, `${name} must stay under 60 KB (got ${size} bytes)`);
+    }
+});
+
+test('tipping styles ship in the generated stylesheet', async () => {
+    const css = await readFile(new URL('css/style.css', outputDirectory), 'utf8');
+
+    assert.ok(css.includes('.tip__trigger'), 'tipping trigger styles must ship');
+    assert.ok(css.includes('.tip__channel'), 'tipping channel card styles must ship');
+});
+
