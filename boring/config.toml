@@ -103,7 +103,10 @@ nav_sections = [
 google_analytics_measurement_id = ""
 
 # Google AdSense publisher ID (ca-pub-...); empty disables ads
-google_adsense_client_id = "ca-pub-3563451416072185"
+# 2026-11-06 暂时下线广告：清空即关闭 AdSense 脚本、广告槽与同意横幅。
+# 恢复时把下面这行取消注释、并把空值删掉即可：
+# google_adsense_client_id = "ca-pub-3563451416072185"
+google_adsense_client_id = ""
 
 # Google AdSense ad unit slot IDs (assigned after AdSense approval).
 # Leave empty to suppress that slot. Each slot renders an <ins class="adsbygoogle">.
