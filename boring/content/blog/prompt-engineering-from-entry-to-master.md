@@ -216,6 +216,8 @@ Pod 和 Node 有什么关系？
 | `max_tokens` | 按需 | 防止输出过长或死循环，控制成本。 |
 | `stop` | `["\n\n", "```"]` | **结构化输出神器**。遇到指定字符强制停止。 |
 
+这几个参数各自改了什么、彼此怎么耦合、以及 Hugging Face 源码里按什么顺序执行，见 [解码参数手册：温度、Top-k、Top-p 与惩罚项](/blog/decoding-parameters-temperature-top-p/)。
+
 ---
 
 ## 附录：模型训练与微调基础 (Context)

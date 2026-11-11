@@ -95,6 +95,8 @@ RAG 的完整流程：
 
 Anthropic 的实践数据：在标准 RAG 基础上加 BM25，检索失败率降低 49%；再加 Reranker，降低 67%。
 
+> 这条混合检索链路的具体机制——BM25 的打分函数、dense 与 cross-encoder 的分工、多路结果的加权合并与 RRF、以及两阶段重排里两个 `top_k` 各自的边界——见 [检索质量工程：BM25、混合检索与两阶段重排](/blog/retrieval-quality-bm25-rerank/)。
+
 ### Contextual Retrieval：给每个块加"上下文标签"
 
 这是 Anthropic 提的一个简单但有效的技巧。在把文档块嵌入向量之前，先让 LLM 给它生成一个前缀：

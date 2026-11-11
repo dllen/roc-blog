@@ -56,6 +56,8 @@ Q = XW_Q,  K = XW_K,  V = XW_V
 
 FlashAttention 把注意力计算分块放进高速片上 SRAM，避免在慢速 HBM 中物化完整的 n×n 矩阵。这是内存访问模式的真正工程优化，**但数学运算次数完全不变，计算仍然是二次的**。它更好地利用了硬件，没有改变底层数学。
 
+> 这一节的结论在 [FlashAttention：把注意力从显存搬回片上](/blog/flashattention-io-aware-tiling/) 里被拆开验证——分块、在线 softmax、一次遍历这三个机关各自省下了哪一次 HBM 往返，以及 FA-1/FA-2/FA-3 三代内核改的全是访存调度而非算术。
+
 ### GQA 是纯粹的经济决策
 
 Grouped Query Attention 让多个 query head 共享较少的 KV head。Llama 3.2 有 32 个 query head 却只共享 8 个 KV head——KV Cache 直接砍掉 4 倍，质量损失极小。几乎所有生产模型都用 GQA 的某种变体，因为**内存节省直接转化为更低的 per-token 成本**。
