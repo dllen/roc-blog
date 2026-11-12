@@ -304,5 +304,6 @@ A：不会。RoPE 作用在每个 head 的 Q、K 上，与 KV 头数无关。GQA
 - 苏剑林《Transformer 升级之路：10、RoPE 是一种 β 进制编码》：[kexue.fm/archives/9675](https://kexue.fm/archives/9675) — 把 RoPE 与「序数/进制编码」直觉打通的中文解读
 - Hugging Face Llama 文档：[huggingface.co/transformers/model_doc/llama](https://huggingface.co/transformers/model_doc/llama.html)
 - 同系列的 [MoE、LoRA 与数值精度：从零实现一遍](/blog/moe-lora-numeric-precision-explained/) — 讲义第 8 讲，同样是「原理 + 可复现代码 + 实跑校验」的路子
+- 同系列的 [Attention 机制：为什么 K/V 比 Q 窄](/blog/attention-mechanism-and-gqa/) — 讲义第 6 讲，把 causal mask 与 GQA 的张量路径逐行拆开
 - Transformer 基础：[Transformer 详解：注意力就是一切](/blog/paper-reading/transformer-explained-in-detail/)
 - 推理侧的位置编码实践：[PagedAttention 第三章](/blog/inference-engineering/inference-engineering-series-03-c-paged-attention/) — MLA 场景下 RoPE 与 KV 压缩的交互
