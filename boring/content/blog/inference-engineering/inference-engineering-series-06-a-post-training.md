@@ -229,6 +229,8 @@ Attention mask（告诉模型忽略 PAD）：
 
 > The structure of training data significantly impacts performance. An effective approach is to begin with simple instructions and gradually introduce more complex, multi-turn interactions.
 
+> 上面讲的是 SFT 的「策略层」：数据要什么形态、batch 怎么排。具体到「一份 Alpaca 数据怎么变成一个 batch」，中间还有几段容易写错的代码——切分验证集时的分层、collate 的三个 padding 值、以及 labels 的右移到底该由谁做。落地细节见 [SFT 数据流水线：从 Alpaca 到可训练的 batch](/blog/sft-data-pipeline-labels-and-collate/)。
+
 ---
 
 ## 国内大厂案例 · DeepSeek-V3 SFT 数据流水线

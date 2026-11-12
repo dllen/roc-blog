@@ -306,7 +306,7 @@ round 2: 正确 w=3.2800 grad=-28.8000 | 忘记清零 w=3.6800 grad=-32.8000
 - 后果不是「收敛慢一点」，而是**在朝错误方向走**：`w` 被推到 `3.68` 而不是 `3.28`，偏离真值 `6` 更远。轮次越多，累积的旧梯度占比越大，训练会越走越歪。
 - 判定标准很简单：如果 `p.grad` 的数量级随训练轮次持续增长，说明梯度在累积。
 - 正确写法是训练循环三件套 `optimizer.zero_grad()` → `loss.backward()` → `optimizer.step()`；`optimizer.zero_grad(set_to_none=True)` 比默认的置零更快（直接把 `.grad` 置 `None`，省掉一次清零内存写）。
-- 顺带一提：**梯度累积本身是刻意设计的特性**——大模型训练用 `gradient_accumulation_steps` 把多个小 micro-batch 的梯度加总，模拟大 batch；区别只在于你是否在累积的边界上做一次真正的清零。
+- 顺带一提：**梯度累积本身是刻意设计的特性**——大模型训练用 `gradient_accumulation_steps` 把多个小 micro-batch 的梯度加总，模拟大 batch；区别只在于你是否在累积的边界上做一次真正的清零。这条等价关系可以精确验证（累积平均与真正大 batch 的梯度误差在 1e-8 量级），见 [SFT 数据流水线](/blog/sft-data-pipeline-labels-and-collate/)一节。
 
 ## 八、detach 与 no_grad：两种截断方式
 

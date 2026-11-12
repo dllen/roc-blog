@@ -169,7 +169,8 @@ git worktree add -b agent-memory ../project-memory
 
 ## 相关阅读
 
-- 上一讲：[Git Worktree 实践指南](/blog/git-worktree/) — 多工作目录的完整用法与避坑
+- 上一讲：[从「我想撤销」推出 Git 的快照模型](/blog/git-snapshot-model-from-undo/) — 第 3 讲「版本管理 (1)」：快照、暂存区与原子变更的推导
+- 相关：[Git Worktree 实践指南](/blog/git-worktree/) — 多工作目录的完整用法与避坑
 - 讲义：[《生成式软件工程》2026 秋第 4 讲](https://jyywiki.cn/GSE/2026/lect4.md) — 本文整理自「版本管理 (2)」一讲
 - 实验：[实验一 · 会成长的个人助手](https://jyywiki.cn/GSE/2026/lab1.md) — 讲义落地的项目方向
 - Jujutsu 官方文档：[项目主页](https://www.jj-vcs.dev/latest/)、[术语说明](https://github.com/jj-vcs/jj/blob/main/docs/glossary.md)、[First-class Conflicts](https://www.jj-vcs.dev/latest/conflicts/)、[Working Copy](https://www.jj-vcs.dev/latest/working-copy/)
