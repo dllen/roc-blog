@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="auto" role="img" aria-label="Paged Attention Block Table Memory View">
+  <title>Paged Attention · Block Table 内存视图</title>
+  <desc>逻辑连续、物理分散的 Block Table 映射关系可视化，展示 Paged Attention 如何将逻辑 KV Blocks 映射到物理分散的 GPU 显存</desc>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E42"/>
+    </marker>
+    <marker id="arrowhead-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#D1D5DB"/>
+    </marker>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="900" height="600" fill="url(#bgGrad)"/>
+
+  <!-- 顶部标题区 -->
+  <!-- 标签 -->
+  <rect x="30" y="20" width="160" height="26" rx="13" fill="#2D3548" stroke="#9CA9BD" stroke-width="1"/>
+  <text x="110" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">Paged Attention · vLLM</text>
+
+  <!-- 主标题 -->
+  <text x="450" y="72" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="bold" fill="#F5F0E8" filter="url(#glow)">Paged Attention · Block Table 内存视图</text>
+
+  <!-- 副标题 -->
+  <text x="450" y="100" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="16" fill="#9CA9BD">逻辑连续 / 物理分散 / 碎片 &lt;4% / 吞吐 2-3×</text>
+
+  <!-- ===== 主视觉区域 ===== -->
+
+  <!-- 上排：逻辑 KV Blocks（请求 A） -->
+  <!-- 标签 -->
+  <text x="60" y="142" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">请求 A 的逻辑 KV Blocks（连续）</text>
+
+  <!-- 逻辑 Block 0 -->
+  <g transform="translate(80, 155)">
+    <rect width="120" height="60" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="2"/>
+    <text x="60" y="30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="bold" fill="#1A1F2E">Block 0</text>
+    <text x="60" y="48" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#1A1F2E">16 tokens</text>
+  </g>
+
+  <!-- 逻辑 Block 1 -->
+  <g transform="translate(230, 155)">
+    <rect width="120" height="60" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="2"/>
+    <text x="60" y="30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="bold" fill="#1A1F2E">Block 1</text>
+    <text x="60" y="48" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#1A1F2E">16 tokens</text>
+  </g>
+
+  <!-- 逻辑 Block 2 -->
+  <g transform="translate(380, 155)">
+    <rect width="120" height="60" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="2"/>
+    <text x="60" y="30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="bold" fill="#1A1F2E">Block 2</text>
+    <text x="60" y="48" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#1A1F2E">16 tokens</text>
+  </g>
+
+  <!-- 逻辑 Block 3 -->
+  <g transform="translate(530, 155)">
+    <rect width="120" height="60" rx="8" fill="#F59E42" stroke="#E04E3D" stroke-width="2"/>
+    <text x="60" y="30" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="bold" fill="#1A1F2E">Block 3</text>
+    <text x="60" y="48" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#1A1F2E">5 tokens</text>
+  </g>
+
+  <!-- 虚线箭头：逻辑 → 物理 -->
+  <!-- l0 → p3 -->
+  <line x1="140" y1="215" x2="300" y2="315" stroke="#F59E42" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowhead)"/>
+  <!-- l1 → p7 -->
+  <line x1="290" y1="215" x2="540" y2="315" stroke="#F59E42" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowhead)"/>
+  <!-- l2 → p1 -->
+  <line x1="440" y1="215" x2="420" y2="315" stroke="#F59E42" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowhead)"/>
+  <!-- l3 → p0 -->
+  <line x1="590" y1="215" x2="140" y2="315" stroke="#F59E42" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowhead)"/>
+
+  <!-- 中间标注：Block Table 翻译 -->
+  <g transform="translate(450, 250)">
+    <rect x="-70" y="-18" width="140" height="36" rx="6" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="0" y="6" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="bold" fill="#F59E42">Block Table</text>
+    <text x="0" y="20" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#9CA9BD">逻辑→物理 翻译</text>
+  </g>
+
+  <!-- 下排：物理 GPU KV Blocks -->
+  <!-- 标签 -->
+  <text x="60" y="340" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#9CA9BD">GPU VRAM（物理分散）</text>
+
+  <!-- 物理 Block 0 - 被请求 C 占用 -->
+  <g transform="translate(60, 355)">
+    <rect width="80" height="55" rx="6" fill="#9CA9BD" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#1A1F2E">PB#0</text>
+    <text x="40" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#1A1F2E">C 用</text>
+    <rect x="0" y="44" width="80" height="11" rx="0" fill="#E04E3D" opacity="0.7"/>
+    <text x="40" y="53" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="#F5F0E8">Req C</text>
+  </g>
+
+  <!-- 物理 Block 1 - 被请求 A 占用 -->
+  <g transform="translate(155, 355)">
+    <rect width="80" height="55" rx="6" fill="#9CA9BD" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#1A1F2E">PB#1</text>
+    <text x="40" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#1A1F2E">A 用</text>
+    <rect x="0" y="44" width="80" height="11" rx="0" fill="#F59E42" opacity="0.9"/>
+    <text x="40" y="53" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1A1F2E">Req A</text>
+  </g>
+
+  <!-- 物理 Block 2 - 空闲 -->
+  <g transform="translate(250, 355)">
+    <rect width="80" height="55" rx="6" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#6B7280">PB#2</text>
+    <text x="40" y="40" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">空闲</text>
+    <line x1="10" y1="10" x2="70" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+    <line x1="70" y1="10" x2="10" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- 物理 Block 3 - 被请求 A 占用 -->
+  <g transform="translate(345, 355)">
+    <rect width="80" height="55" rx="6" fill="#9CA9BD" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#1A1F2E">PB#3</text>
+    <text x="40" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#1A1F2E">A 用</text>
+    <rect x="0" y="44" width="80" height="11" rx="0" fill="#F59E42" opacity="0.9"/>
+    <text x="40" y="53" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1A1F2E">Req A</text>
+  </g>
+
+  <!-- 物理 Block 4 - 空闲 -->
+  <g transform="translate(440, 355)">
+    <rect width="80" height="55" rx="6" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#6B7280">PB#4</text>
+    <text x="40" y="40" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">空闲</text>
+    <line x1="10" y1="10" x2="70" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+    <line x1="70" y1="10" x2="10" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- 物理 Block 5 - 被请求 B 占用 -->
+  <g transform="translate(535, 355)">
+    <rect width="80" height="55" rx="6" fill="#9CA9BD" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#1A1F2E">PB#5</text>
+    <text x="40" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#1A1F2E">B 用</text>
+    <rect x="0" y="44" width="80" height="11" rx="0" fill="#9CA9BD" opacity="0.9"/>
+    <text x="40" y="53" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1A1F2E">Req B</text>
+  </g>
+
+  <!-- 物理 Block 6 - 空闲 -->
+  <g transform="translate(630, 355)">
+    <rect width="80" height="55" rx="6" fill="#2D3548" stroke="#6B7280" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#6B7280">PB#6</text>
+    <text x="40" y="40" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#6B7280">空闲</text>
+    <line x1="10" y1="10" x2="70" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+    <line x1="70" y1="10" x2="10" y2="45" stroke="#6B7280" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- 物理 Block 7 - 被请求 A 占用 -->
+  <g transform="translate(725, 355)">
+    <rect width="80" height="55" rx="6" fill="#9CA9BD" stroke="#6B7280" stroke-width="1.5"/>
+    <text x="40" y="22" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="bold" fill="#1A1F2E">PB#7</text>
+    <text x="40" y="38" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="10" fill="#1A1F2E">A 用</text>
+    <rect x="0" y="44" width="80" height="11" rx="0" fill="#F59E42" opacity="0.9"/>
+    <text x="40" y="53" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1A1F2E">Req A</text>
+  </g>
+
+  <!-- 映射标注：l1→p3, l2→p7, l3→p1, l4→p0 -->
+  <text x="170" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#F59E42">l0→p3</text>
+  <text x="310" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#F59E42">l1→p7</text>
+  <text x="455" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#F59E42">l2→p1</text>
+  <text x="620" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#F59E42">l3→p0</text>
+
+  <!-- ===== 右下角：关键数据 ===== -->
+  <g transform="translate(680, 135)">
+    <rect x="0" y="0" width="200" height="200" rx="10" fill="#2D3548" stroke="#6B7280" stroke-width="1"/>
+    <text x="100" y="28" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#F5F0E8">关键数据</text>
+    <line x1="15" y1="40" x2="185" y2="40" stroke="#6B7280" stroke-width="1"/>
+
+    <!-- LLaMA-2-13B FP16 -->
+    <text x="20" y="62" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">LLaMA-2-13B FP16</text>
+    <text x="20" y="78" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">4096 ctx · B=16</text>
+
+    <!-- 3.125 GiB -->
+    <text x="100" y="105" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#E04E3D">3.125</text>
+    <text x="100" y="122" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">GiB / 请求</text>
+
+    <!-- 并发对比 -->
+    <text x="20" y="148" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">Naive 并发</text>
+    <text x="100" y="148" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#E04E3D">~4</text>
+
+    <text x="20" y="166" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">vLLM 并发</text>
+    <text x="100" y="166" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" fill="#F59E42">~16</text>
+
+    <!-- 吞吐提升 -->
+    <text x="20" y="188" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">吞吐提升</text>
+    <text x="100" y="188" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" font-weight="bold" fill="#F59E42">2-3×</text>
+  </g>
+
+  <!-- ===== 底部信息条 ===== -->
+  <rect x="0" y="460" width="900" height="140" rx="0" fill="#2D3548"/>
+
+  <!-- 左下角 hack line -->
+  <text x="30" y="500" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="bold" fill="#F5F0E8">用 OS 虚拟内存的思想管理 KV cache</text>
+
+  <!-- 三列核心数据 -->
+  <!-- 列1 -->
+  <g transform="translate(30, 520)">
+    <text x="0" y="16" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">总浪费 60-80%</text>
+    <text x="0" y="40" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#E04E3D">→ ≤4%</text>
+    <text x="0" y="60" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">内部碎片减少</text>
+  </g>
+
+  <!-- 列2 -->
+  <g transform="translate(260, 520)">
+    <text x="0" y="16" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">H100 80GB 并发</text>
+    <text x="0" y="40" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F59E42">4 → 16</text>
+    <text x="0" y="60" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">4 倍并发提升</text>
+  </g>
+
+  <!-- 列3 -->
+  <g transform="translate(490, 520)">
+    <text x="0" y="16" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">GPU 吞吐提升</text>
+    <text x="0" y="40" font-family="'JetBrains Mono',monospace" font-size="28" font-weight="bold" fill="#F59E42">2-3×</text>
+    <text x="0" y="60" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">vLLM PagedAttention</text>
+  </g>
+
+  <!-- 右下角：上篇/中篇链接 -->
+  <text x="860" y="500" text-anchor="end" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#6B7280">系列-02：KV Cache 详解</text>
+  <text x="860" y="520" text-anchor="end" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#6B7280">系列-03：Paged Attention</text>
+
+</svg>

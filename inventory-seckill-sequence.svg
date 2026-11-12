@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="520" viewBox="0 0 1080 520">
+  <style>
+    .title { font: 700 20px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #222; }
+    .lane { fill: #F0F6FF; stroke: #2F6FEB; }
+    .text { font: 12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; fill: #333; }
+    .arrow { stroke: #777; stroke-width: 1.5; marker-end: url(#ah); }
+  </style>
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#777"/></marker></defs>
+  <text x="20" y="30" class="title">秒杀场景时序：预锁定、扣减与回滚</text>
+
+  <!-- Lanes -->
+  <rect x="40" y="70" width="260" height="420" rx="8" class="lane"/>
+  <text x="60" y="92" class="text">用户/网关</text>
+
+  <rect x="340" y="70" width="260" height="420" rx="8" class="lane"/>
+  <text x="360" y="92" class="text">inventory-service</text>
+
+  <rect x="640" y="70" width="200" height="420" rx="8" class="lane"/>
+  <text x="660" y="92" class="text">Redis</text>
+
+  <rect x="860" y="70" width="200" height="420" rx="8" class="lane"/>
+  <text x="880" y="92" class="text">DB/Kafka</text>
+
+  <!-- Sequence -->
+  <text x="60" y="130" class="text">获取令牌</text>
+  <line x1="160" y1="130" x2="340" y2="130" class="arrow"/>
+  <text x="360" y="130" class="text">校验令牌桶与活动池</text>
+  <line x1="460" y1="150" x2="640" y2="150" class="arrow"/>
+  <text x="660" y="150" class="text">DECR活动locked</text>
+
+  <text x="360" y="200" class="text">写DB锁记录与流水</text>
+  <line x1="460" y1="220" x2="900" y2="220" class="arrow"/>
+  <text x="920" y="220" class="text">Outbox发布(inventory.lock)</text>
+
+  <text x="60" y="280" class="text">支付成功</text>
+  <line x1="160" y1="280" x2="340" y2="280" class="arrow"/>
+  <text x="360" y="280" class="text">扣减（异步批量）</text>
+  <line x1="460" y1="300" x2="900" y2="300" class="arrow"/>
+  <text x="920" y="300" class="text">Outbox发布(inventory.reduce)</text>
+
+  <text x="60" y="360" class="text">支付失败/超时</text>
+  <line x1="160" y1="360" x2="340" y2="360" class="arrow"/>
+  <text x="360" y="360" class="text">回滚：Redis补偿+DB解锁</text>
+</svg>

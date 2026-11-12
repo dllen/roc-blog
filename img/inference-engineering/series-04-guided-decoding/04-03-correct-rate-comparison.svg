@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>正确率对比：GitHub_medium 动态复杂 Schema</title>
+  <desc>SqueezeBits Benchmark 2025-09-16: 无约束 61.1% vs XGrammar 85.2% vs LLGuidance 88.1%</desc>
+  <defs>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#D1D5DB"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="#1A1F2E"/>
+
+  <!-- Title -->
+  <text x="450" y="42" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="bold" fill="#F5F0E8">正确率对比：GitHub_medium · 动态复杂 Schema</text>
+  <text x="450" y="66" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD">数据来源：SqueezeBits Benchmark · 2025-09-16</text>
+
+  <!-- Horizontal divider -->
+  <line x1="50" y1="82" x2="850" y2="82" stroke="#2D3548" stroke-width="1"/>
+
+  <!-- ============ Y Axis ============ -->
+  <!-- Y axis line -->
+  <line x1="110" y1="100" x2="110" y2="390" stroke="#9CA9BD" stroke-width="1"/>
+
+  <!-- Y axis labels and gridlines -->
+  <!-- 100% -->
+  <line x1="110" y1="100" x2="850" y2="100" stroke="#2D3548" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <text x="100" y="104" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">100%</text>
+
+  <!-- 80% (y=190) -->
+  <line x1="110" y1="190" x2="850" y2="190" stroke="#2D3548" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <text x="100" y="194" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">80%</text>
+
+  <!-- 60% (y=280) -->
+  <line x1="110" y1="280" x2="850" y2="280" stroke="#2D3548" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <text x="100" y="284" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">60%</text>
+
+  <!-- 40% (y=370) -->
+  <line x1="110" y1="370" x2="850" y2="370" stroke="#2D3548" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <text x="100" y="374" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">40%</text>
+
+  <!-- 20% (y=460) -->
+  <text x="100" y="464" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">20%</text>
+
+  <!-- 0% -->
+  <line x1="110" y1="390" x2="850" y2="390" stroke="#9CA9BD" stroke-width="1"/>
+  <text x="100" y="394" text-anchor="end" font-family="monospace" font-size="11" fill="#9CA9BD">0%</text>
+
+  <!-- ============ Bars ============ -->
+  <!-- Bar 1: 无约束 61.1% -->
+  <!-- 61.1% of (390-100)=290px range = 177px, so top at 390-177=213 -->
+  <!-- bar x center=240, width=100, so x1=190, x2=290 -->
+  <!-- top: 390 - (61.1/100 * 290) = 390 - 177.19 = 212.81 ≈ 213 -->
+  <rect x="190" y="213" width="100" height="177" rx="6" ry="6" fill="#6B7280"/>
+  <text x="240" y="200" text-anchor="middle" font-family="monospace" font-size="28" font-weight="bold" fill="#6B7280">61.1%</text>
+  <text x="240" y="410" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#F5F0E8">无约束</text>
+  <text x="240" y="428" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">⚠ Agent 经常失败</text>
+
+  <!-- Bar 2: XGrammar 85.2% -->
+  <!-- 85.2% of 290 = 247.08, top at 390-247=143 -->
+  <rect x="400" y="143" width="100" height="247" rx="6" ry="6" fill="#F59E42"/>
+  <text x="450" y="130" text-anchor="middle" font-family="monospace" font-size="28" font-weight="bold" fill="#F59E42">85.2%</text>
+  <text x="450" y="410" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" fill="#F5F0E8">XGrammar</text>
+  <text x="450" y="428" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#9CA9BD">SGLang + XGrammar</text>
+
+  <!-- Bar 3: LLGuidance 88.1% (highlighted, tallest) -->
+  <!-- 88.1% of 290 = 255.49, top at 390-255=135 -->
+  <rect x="610" y="135" width="100" height="255" rx="6" ry="6" fill="#E04E3D" stroke="#F59E42" stroke-width="2"/>
+  <text x="660" y="122" text-anchor="middle" font-family="monospace" font-size="36" font-weight="bold" fill="#E04E3D">88.1%</text>
+  <text x="660" y="410" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#F5F0E8">LLGuidance</text>
+  <text x="660" y="428" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#E04E3D">SGLang + LLGuidance</text>
+
+  <!-- ============ Gap Annotation ============ -->
+  <!-- Dashed line connecting top of bar 1 to top of bar 3 -->
+  <!-- Bar1 top: y=213, Bar3 top: y=135 -->
+  <!-- Left edge of bar1=190, right edge of bar3=710 -->
+  <!-- We draw a horizontal dashed line at the gap level (around y=120-130) -->
+  <line x1="240" y1="205" x2="660" y2="118" stroke="#E04E3D" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="450" y="108" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#E04E3D">27pp 差距</text>
+
+  <!-- ============ Bottom Info Card ============ -->
+  <rect x="50" y="445" width="800" height="44" rx="8" ry="8" fill="#2D3548"/>
+  <text x="450" y="470" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#F5F0E8">88.1% - 61.1% = 27pp · 复杂 Schema 场景下，无约束几乎不可用</text>
+
+  <!-- Y axis label -->
+  <text x="40" y="245" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#9CA9BD" transform="rotate(-90,40,245)">正确率（%）</text>
+</svg>
