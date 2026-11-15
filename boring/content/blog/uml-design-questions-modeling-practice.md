@@ -329,3 +329,4 @@ context PaymentOrder inv:
 - 契约式设计入门：[Applying "Design by Contract"](https://ieeexplore.ieee.org/document/161279) — Bertrand Meyer 原文
 - 相关：[AI 时代的软件工程的变与不变](/blog/ai-era-software-engineering/) — 写代码变便宜之后，什么变贵了
 - 相关：[AI 原生 SDLC 实战手册](/blog/ai-agent/ai-native-sdlc-playbook-anthropic/) — 把「已决定 / 绝不能发生 / 尚未决定」落到流程上
+- 相关：[软件质量保障：错误如何传播与暴露](/blog/fault-error-failure-testing/) — 第 11 讲：契约里的 require/ensure 怎样在运行时变成可观察的失败

@@ -315,4 +315,4 @@ Stripe 用 **Blueprint** 组织混合工作流：**实现任务、修复失败�
 - [Anthropic — Building a C compiler](https://www.anthropic.com/engineering/building-c-compiler)：16 个 Agent 协作编译 Linux 时为何会撞车，以及缩小失败集合如何改变任务的可分性。
 - [Dathan Pattishall — Unorthodox Approach to Database Design (2006)](https://mysqldba.blogspot.com/2006/11/unorthodox-approach-to-database-design.html)：Friendster 亲历工程师的复盘，以及按用户拆分数据的提议为何未能在 Friendster 落地、后来在 Flickr 应用。
 - [Quibi — An Open Letter from Quibi (2020)](https://quibi-hq.medium.com/an-open-letter-from-quibi-8af6b415377f)：管理层提出的两种可能原因。讲义强调这是回顾而非实验鉴定。
-- 相关阅读：[Loop Engineering：Agent 循环工程化](/blog/loop-engineering-agent-loops/)、[Harness Engineering：让 AI 编码智能体「能用、可控、可维护」的工程体系](/blog/harness-engineering/)、[版本管理该把什么当作基本对象](/blog/version-control-redesign-for-parallel-agents/)。
+- 相关阅读：[Loop Engineering：Agent 循环工程化](/blog/loop-engineering-agent-loops/)、[Harness Engineering：让 AI 编码智能体「能用、可控、可维护」的工程体系](/blog/harness-engineering/)、[版本管理该把什么当作基本对象](/blog/version-control-redesign-for-parallel-agents/)、[软件质量保障：错误如何传播与暴露](/blog/fault-error-failure-testing/)（第 11 讲「软件质量保障 (1)」——CI 红灯要能亮，先得有值得亮的东西）。

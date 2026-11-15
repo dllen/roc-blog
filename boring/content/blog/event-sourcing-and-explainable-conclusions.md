@@ -348,3 +348,4 @@ IR 本身也需要自己的语义——讲义列出不能交给后端各自猜�
 - 上一讲：[软件工程的来龙去脉：为什么流程长这样](/blog/software-engineering-history-and-its-lessons/)
 - [重新阅读 UML：五个设计问题的建模练习](/blog/uml-design-questions-modeling-practice/)
 - [版本管理该把什么当作基本对象](/blog/version-control-redesign-for-parallel-agents/)
+- [软件质量保障：错误如何传播与暴露](/blog/fault-error-failure-testing/) — 第 11 讲：让结论可追溯，在质量领域对应的是让错误可定位
