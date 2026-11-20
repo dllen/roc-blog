@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="auto" role="img">
+  <title>SFT Data Quality - 8 Dimensions</title>
+  <desc>SFT 数据质量 8 维度速查表：Correctness / Consistency / Completeness / Clarity / Coverage / Verifiability / Balance / Alignment</desc>
+  <defs>
+    <linearGradient id="bgGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="500" fill="url(#bgGrad2)"/>
+
+  <!-- Header -->
+  <text x="450" y="42" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="24" font-weight="700" fill="#F5F0E8">SFT Data Quality · 8 Dimensions</text>
+  <text x="450" y="68" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="14" font-weight="600" fill="#E04E3D">噪声 1% → 毁掉整个 SFT</text>
+
+  <!-- 4x2 grid of cards -->
+  <g transform="translate(55,95)">
+    <!-- Row 1 -->
+    <!-- Card 1: Correctness -->
+    <rect x="0" y="0" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="18" y="30" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="45" y="28" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Correctness</text>
+    <text x="18" y="52" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">答案正确 · 事实准确</text>
+    <text x="18" y="68" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：标签噪声</text>
+
+    <!-- Card 2: Consistency -->
+    <rect x="215" y="0" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="233" y="30" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="260" y="28" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Consistency</text>
+    <text x="233" y="52" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">风格一致 · 格式统一</text>
+    <text x="233" y="68" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：标签噪声</text>
+
+    <!-- Card 3: Completeness -->
+    <rect x="430" y="0" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="448" y="30" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="475" y="28" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Completeness</text>
+    <text x="448" y="52" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">答案完整 · 解决问题</text>
+    <text x="448" y="68" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：伪推理</text>
+
+    <!-- Card 4: Clarity -->
+    <rect x="645" y="0" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="663" y="30" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="690" y="28" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Clarity</text>
+    <text x="663" y="52" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">表达清晰 · 无填充词</text>
+    <text x="663" y="68" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：伪推理</text>
+
+    <!-- Row 2 -->
+    <!-- Card 5: Coverage -->
+    <rect x="0" y="105" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="18" y="135" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="45" y="133" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Coverage</text>
+    <text x="18" y="157" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">场景覆盖 · 领域混合</text>
+    <text x="18" y="173" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：分布失配</text>
+
+    <!-- Card 6: Verifiability -->
+    <rect x="215" y="105" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="233" y="135" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="260" y="133" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Verifiability</text>
+    <text x="233" y="157" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">可验证 · 可被核查</text>
+    <text x="233" y="173" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：伪推理</text>
+
+    <!-- Card 7: Balance -->
+    <rect x="430" y="105" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="448" y="135" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="475" y="133" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Balance</text>
+    <text x="448" y="157" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">类别均衡 · 短长混合</text>
+    <text x="448" y="173" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：分布失配</text>
+
+    <!-- Card 8: Alignment -->
+    <rect x="645" y="105" width="190" height="82" rx="10" fill="#2D3548" stroke="#F59E42" stroke-width="1.5"/>
+    <text x="663" y="135" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#F59E42" font-weight="700">✓</text>
+    <text x="690" y="133" font-family="'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#F5F0E8">Alignment</text>
+    <text x="663" y="157" font-family="'Noto Sans SC',sans-serif" font-size="11" fill="#9CA9BD">人类对齐 · 目标风格</text>
+    <text x="663" y="173" font-family="'Noto Sans SC',sans-serif" font-size="10" fill="#6B7280">杀手：标签噪声</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="55" y="435" width="790" height="40" rx="8" fill="#2D3548"/>
+  <text x="450" y="460" text-anchor="middle" font-family="'Noto Sans SC',sans-serif" font-size="13" fill="#9CA9BD">8 维度缺一不可；10K 高质量 &gt; 1M 噪声</text>
+</svg>
