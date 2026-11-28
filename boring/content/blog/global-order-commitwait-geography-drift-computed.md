@@ -288,7 +288,8 @@ TSO（中心化发号）                                    无漂移问题     
 ## 六、这一章不重复已发的内容
 
 - **线性一致性与 Raft 读路径**（副本读什么时候安全、为什么要读 quorum）：见《[线性一致性与 Raft 读路径](/blog/linearizability-and-raft-read-paths/)》——那篇讲副本状态机与读路径，本文讲的是**时间戳机制怎么给出「顺序」**。
-- **一致性与并发控制的通用框架**：见《[线性一致性与 Raft 读路径](/blog/linearizability-and-raft-read-paths/)》与《[分布式锁](/blog/distributed-locks/)》——本文只把 PACELC 当定位标签用，不展开（PACELC 本身尚未单独成文，这里不挂死链）。
+- **一致性与并发控制的通用框架**：见《[线性一致性与 Raft 读路径](/blog/linearizability-and-raft-read-paths/)》与《[分布式锁](/blog/distributed-locks/)》——本文只把 PACELC 当定位标签用，不展开。
+- **PACELC 本身**：见《[一致性的三笔账：时间权重、读放大与陈旧读](/blog/consistency-time-weight-read-amplification-computed/)》——那篇把 CAP 到 PACELC 的演进与决策量化（时间权重、读放大、陈旧读概率），本文不重复。
 - **分布式锁与并发控制**（commit wait 想替代的那条路）：见《[分布式锁](/blog/distributed-locks/)》。
 
 ## 七、这三个模型判不了什么
